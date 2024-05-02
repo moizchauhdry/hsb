@@ -1,0 +1,1 @@
+input[type=number]:disabled{opacity:.5;background-color:#eee}input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{display:none;-webkit-appearance:none;margin:0}input:disabled{cursor:not-allowed}
