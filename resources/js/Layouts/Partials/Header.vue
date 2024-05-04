@@ -1,6 +1,8 @@
 <script setup>
 import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
-import DropdownLink from "@/Components/DropdownLink.vue";
+import { ref } from "vue";
+
+const dropdownOpen = ref(false);
 
 const form = useForm({
     application_token: "",
@@ -9,6 +11,10 @@ const form = useForm({
 const logout = () => {
     form.post(route("logout"));
 };
+
+const toggleDropdown =() => {
+    dropdownOpen.value = !dropdownOpen.value;
+}
 </script>
 
 <template>
@@ -172,15 +178,15 @@ const logout = () => {
                     </ul>
                 </div>
                 <div class="user-box dropdown px-3">
-                    <a class="d-flex align-items-center nav-link dropdown-toggle gap-3 dropdown-toggle-nocaret"
-                        href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a class="d-flex align-items-center nav-link dropdown-toggle gap-3 dropdown-toggle-nocaret" href="#"
+                        role="button" data-bs-toggle="dropdown" aria-expanded="false" @click="toggleDropdown">
                         <img src="../../../images/logo-icon.png" class="user-img" alt="user avatar">
                         <div class="user-info">
                             <p class="user-name mb-0"> {{ $page.props.auth.user.name }}</p>
                             <p class="designattion mb-0">Super Admin</p>
                         </div>
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end profile-dropdown">
+                    <ul class="dropdown-menu dropdown-menu-end profile-dropdown" :class="{ 'show': dropdownOpen }">
                         <li><a class="dropdown-item d-flex align-items-center" href="javascript:;"><i
                                     class="bx bx-user fs-5"></i><span>Profile</span></a>
                         </li>
@@ -190,12 +196,6 @@ const logout = () => {
                         <li><a class="dropdown-item d-flex align-items-center" href="javascript:;"><i
                                     class="bx bx-home-circle fs-5"></i><span>Dashboard</span></a>
                         </li>
-                        <!-- <li><a class="dropdown-item d-flex align-items-center" href="javascript:;"><i
-                                    class="bx bx-dollar-circle fs-5"></i><span>Earnings</span></a>
-                        </li>
-                        <li><a class="dropdown-item d-flex align-items-center" href="javascript:;"><i
-                                    class="bx bx-download fs-5"></i><span>Downloads</span></a>
-                        </li> -->
                         <li>
                             <div class="dropdown-divider mb-0"></div>
                         </li>
