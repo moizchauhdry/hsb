@@ -36,7 +36,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::prefix('user')->group(function () {
-        Route::get('/', [UserController::class, 'index'])->name('user.index');
+        Route::get('/', [UserController::class, 'index'])->name('user.index')->middleware('permission:user-list');
     });
 });
 
