@@ -26,8 +26,6 @@ import { Link } from "@inertiajs/vue3";
                     <li>
                         <Link :href="route('dashboard')"><i class='bx bx-radio-circle'></i>Analytics</Link>
                     </li>
-                    <li> <a href="#"><i class='bx bx-radio-circle'></i>Reports</a>
-                    </li>
                 </ul>
             </li>
             <li class="menu-label">Application</li>
