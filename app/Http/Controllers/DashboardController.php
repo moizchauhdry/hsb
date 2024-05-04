@@ -14,12 +14,10 @@ class DashboardController extends Controller
 {
     public function dashboard()
     {
-        $work_orders = WorkOrder::count();
-        $customer_accounts = CustomerAccount::count();
+        $data = [];
 
-        return Inertia::render('Dashboard', [
-            'work_orders' => $work_orders,
-            'customer_accounts' => $customer_accounts,
+        return Inertia::render('Dashboard/Index', [
+            'data' => $data,
         ]);
     }
 }
