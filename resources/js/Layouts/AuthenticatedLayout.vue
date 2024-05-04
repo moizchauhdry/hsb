@@ -1,12 +1,7 @@
 <script setup>
 import { ref } from "vue";
-import ApplicationLogo from "@/Components/ApplicationLogo.vue";
-import Dropdown from "@/Components/Dropdown.vue";
-import DropdownLink from "@/Components/DropdownLink.vue";
-import NavLink from "@/Components/NavLink.vue";
-import ResponsiveNavLink from "@/Components/ResponsiveNavLink.vue";
-import { Link } from "@inertiajs/vue3";
 import Sidebar from "@/Layouts/Partials/Sidebar.vue";
+import Header from "@/Layouts/Partials/Header.vue";
 
 
 const showingNavigationDropdown = ref(false);
@@ -17,6 +12,7 @@ const showingNavigationDropdown = ref(false);
     <div class="wrapper">
 
         <Sidebar></Sidebar>
+        <Header></Header>
 
         <!-- Page Content -->
         <main>
@@ -30,7 +26,7 @@ const showingNavigationDropdown = ref(false);
         <a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a>
         <!--End Back To Top Button-->
         <footer class="page-footer">
-            <p class="mb-0">Copyright © 2022. All right reserved.</p>
+            <p class="mb-0">Copyright © 2024. All right reserved.</p>
         </footer>
     </div>
     <!--end wrapper-->

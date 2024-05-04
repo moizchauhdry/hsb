@@ -55,7 +55,7 @@ defineProps({
                             <div class="card-body">
                                 <div class="d-flex align-items-center">
                                     <div>
-                                        <p class="mb-0 text-secondary">Store Visitors</p>
+                                        <p class="mb-0 text-secondary">Total Visitors</p>
                                         <h4 class="my-1">8.6K</h4>
                                         <p class="mb-0 font-13 text-success"><i
                                                 class="bx bxs-up-arrow align-middle"></i>3.2% from last week</p>
@@ -84,9 +84,9 @@ defineProps({
                             </div>
                         </div>
                     </div>
-                </div><!--end row-->
+                </div>
 
-                <div class="row">
+                <!-- <div class="row">
                     <div class="col-12 col-lg-8 d-flex">
                         <div class="card radius-10 w-100">
                             <div class="card-body">
@@ -187,10 +187,10 @@ defineProps({
                             </ul>
                         </div>
                     </div>
-                </div><!--end row-->
+                </div> -->
 
 
-                <div class="row">
+                <!-- <div class="row">
                     <div class="col-12 col-lg-4 d-flex">
                         <div class="card radius-10 overflow-hidden w-100">
                             <div class="card-body">
@@ -412,10 +412,10 @@ defineProps({
                         </div>
                     </div>
 
-                </div><!--end row-->
+                </div> -->
 
 
-                <div class="card radius-10">
+                <!-- <div class="card radius-10">
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-3">
                             <div>
@@ -561,7 +561,7 @@ defineProps({
                             </table>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
         <!--end page wrapper -->
