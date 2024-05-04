@@ -1,3 +1,7 @@
+<script setup>
+import { Link } from "@inertiajs/vue3";
+</script>
+
 <template>
     <div class="sidebar-wrapper" data-simplebar="true">
         <div class="sidebar-header">
@@ -19,7 +23,8 @@
                     <div class="menu-title">Dashboard</div>
                 </a>
                 <ul>
-                    <li> <a href="#"><i class='bx bx-radio-circle'></i>Analytics</a>
+                    <li>
+                        <Link :href="route('dashboard')"><i class='bx bx-radio-circle'></i>Analytics</Link>
                     </li>
                     <li> <a href="#"><i class='bx bx-radio-circle'></i>Reports</a>
                     </li>
@@ -33,15 +38,15 @@
                     <div class="menu-title">User Management</div>
                 </a>
                 <ul>
-                    <li> 
-                        <a href="#"><i class='bx bx-radio-circle'></i>List Users</a>
+                    <li>
+                        <Link :href="route('user.index')"><i class='bx bx-radio-circle'></i>List Users</Link>
                     </li>
-                    <li> 
+                    <li>
                         <a href="#"><i class='bx bx-radio-circle'></i>Role & Permissions</a>
                     </li>
                 </ul>
             </li>
-                       
+
         </ul>
         <!--end navigation-->
     </div>

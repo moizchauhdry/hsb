@@ -172,7 +172,7 @@ const logout = () => {
                     </ul>
                 </div>
                 <div class="user-box dropdown px-3">
-                    <a class="d-flex align-items-center nav-link dropdown-toggle gap-3 dropdown-toggle-nocaret show"
+                    <a class="d-flex align-items-center nav-link dropdown-toggle gap-3 dropdown-toggle-nocaret"
                         href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <img src="../../../images/logo-icon.png" class="user-img" alt="user avatar">
                         <div class="user-info">
@@ -180,7 +180,7 @@ const logout = () => {
                             <p class="designattion mb-0">Super Admin</p>
                         </div>
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end show profile-dropdown">
+                    <ul class="dropdown-menu dropdown-menu-end profile-dropdown">
                         <li><a class="dropdown-item d-flex align-items-center" href="javascript:;"><i
                                     class="bx bx-user fs-5"></i><span>Profile</span></a>
                         </li>
