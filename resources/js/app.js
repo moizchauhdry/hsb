@@ -1,5 +1,16 @@
-import './bootstrap';
-import '../css/app.css';
+// import './bootstrap';
+// import '../css/app.css';
+
+// Bootstrap CSS
+import '../css/bootstrap.min.css';
+import '../css/bootstrap-extended.css';
+import '../css/main.css'; // app.css
+import '../css/icons.css';
+
+// Theme Style CSS
+import '../css/dark-theme.css';
+import '../css/semi-dark.css';
+import '../css/header-colors.css';
 
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
