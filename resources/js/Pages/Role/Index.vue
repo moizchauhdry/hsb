@@ -2,14 +2,14 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head } from "@inertiajs/vue3";
 defineProps({
-    users: Object,
+    roles: Object,
 });
 </script>
 
 
 <template>
 
-    <Head title="Users" />
+    <Head title="Roles" />
 
     <AuthenticatedLayout>
         <!--start page wrapper -->
@@ -23,7 +23,7 @@ defineProps({
                             <ol class="breadcrumb mb-0 p-0">
                                 <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">User List</li>
+                                <li class="breadcrumb-item active" aria-current="page">Role & Permission</li>
                             </ol>
                         </nav>
                     </div>
@@ -56,19 +56,17 @@ defineProps({
                                     <tr>
                                         <th>ID</th>
                                         <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Role</th>
-                                        <th>Register Date</th>
+                                        <th>Created Date</th>
+                                        <th>Updated Date</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <template v-for="(user, index) in users.data">
+                                    <template v-for="(role, index) in roles.data">
                                         <tr>
-                                            <td>{{ user.id }}</td>
-                                            <td>{{ user.name }}</td>
-                                            <td>{{ user.email }}</td>
-                                            <td>{{ user.role }}</td>
-                                            <td>{{ user.created_at }}</td>
+                                            <td>{{ role.id }}</td>
+                                            <td>{{ role.name }}</td>
+                                            <td>{{ role.created_at }}</td>
+                                            <td>{{ role.updated_at }}</td>
                                         </tr>
                                     </template>
                                 </tbody>

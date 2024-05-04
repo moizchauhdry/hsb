@@ -42,7 +42,7 @@ import { Link } from "@inertiajs/vue3";
                         <Link :href="route('user.index')"><i class='bx bx-radio-circle'></i>List Users</Link>
                     </li>
                     <li>
-                        <a href="#"><i class='bx bx-radio-circle'></i>Role & Permissions</a>
+                        <Link :href="route('role.index')"><i class='bx bx-radio-circle'></i>Role & Permissions</Link>
                     </li>
                 </ul>
             </li>
