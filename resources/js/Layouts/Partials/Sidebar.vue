@@ -25,26 +25,21 @@
                     </li>
                 </ul>
             </li>
+            <li class="menu-label">Application</li>
             <li>
                 <a href="javascript:;" class="has-arrow">
                     <div class="parent-icon"><i class="bx bx-category"></i>
                     </div>
-                    <div class="menu-title">Application</div>
+                    <div class="menu-title">User Management</div>
                 </a>
                 <ul>
-                    <li> <a href="#"><i class='bx bx-radio-circle'></i>Audit Trail</a>
+                    <li> 
+                        <a href="#"><i class='bx bx-radio-circle'></i>List Users</a>
                     </li>
-                    <li> <a href="#"><i class='bx bx-radio-circle'></i>Role & Permissions</a>
+                    <li> 
+                        <a href="#"><i class='bx bx-radio-circle'></i>Role & Permissions</a>
                     </li>
                 </ul>
-            </li>
-            <li class="menu-label">User Management</li>
-            <li>
-                <a href="widgets.html">
-                    <div class="parent-icon"><i class='bx bx-user'></i>
-                    </div>
-                    <div class="menu-title">Users</div>
-                </a>
             </li>
                        
         </ul>

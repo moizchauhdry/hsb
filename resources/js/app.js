@@ -1,5 +1,5 @@
-// import './bootstrap';
-// import '../css/app.css';
+import './bootstrap';
+import '../css/app.css';
 
 // Bootstrap CSS
 import '../css/bootstrap.min.css';
