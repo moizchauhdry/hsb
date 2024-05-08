@@ -36,12 +36,16 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::prefix('user')->group(function () {
+    Route::prefix('users')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('user.index')->middleware('permission:user-list');
+        Route::post('/create', [UserController::class, 'create'])->name('user.create')->middleware('permission:user-create');
+        Route::post('/update', [UserController::class, 'update'])->name('user.update')->middleware('permission:user-update');
     });
 
-    Route::prefix('role')->group(function () {
+    Route::prefix('roles')->group(function () {
         Route::get('/', [RoleController::class, 'index'])->name('role.index')->middleware('permission:role-list');
+        Route::post('/create', [RoleController::class, 'create'])->name('role.create')->middleware('permission:role-create');
+        Route::post('/update', [RoleController::class, 'update'])->name('role.update')->middleware('permission:role-update');
     });
 });
 
