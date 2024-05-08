@@ -38,6 +38,7 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('user')->group(function () {
         Route::get('list', [UserController::class, 'index'])->name('user.index')->middleware('permission:user-list');
+        Route::post('store', [UserController::class, 'store'])->name('user.store')->middleware('permission:user-update');
         Route::post('update', [UserController::class, 'update'])->name('user.update')->middleware('permission:user-update');
     });
 
