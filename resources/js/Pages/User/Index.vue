@@ -28,7 +28,7 @@ const create = () => {
 };
 
 const submit = () => {
-    form.post(route("user.store"), {
+    form.post(route("user.create"), {
         preserveScroll: true,
         onSuccess: () => closeModal(),
         onError: () => error(),
@@ -82,19 +82,18 @@ const closeModal = () => {
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb mb-0 p-0">
                                 <li class="breadcrumb-item"><a href="javascript:;">
-                                    <i class="bx bx-home-alt"></i></a>
+                                        <i class="bx bx-home-alt"></i></a>
                                 </li>
                                 <li class="breadcrumb-item active" aria-current="page">User List</li>
                             </ol>
                         </nav>
                     </div>
                     <div class="ms-auto">
-                        <div class="btn-group">
+                            <!-- CREATE & UPDATE MODAL -->
                             <div class="col">
-                                <!-- Button trigger modal -->
                                 <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#exampleLargeModal" @click="create"><i class="bx bx-plus"></i>Add</button>
-                                <!-- Modal -->
+                                    data-bs-target="#exampleLargeModal" @click="create"><i
+                                        class="bx bx-plus"></i>Add</button>
                                 <div class="modal fade show" id="exampleLargeModal" tabindex="-1" aria-hidden="true"
                                     style="display: block;" v-if="user_modal">
                                     <div class="modal-dialog modal-md">
@@ -193,13 +192,8 @@ const closeModal = () => {
                                     </div>
                                 </div>
                             </div>
-                        </div>
                     </div>
                 </div>
-
-                <!--end breadcrumb-->
-                <!-- <h6 class="mb-0 text-uppercase">Admin Users</h6>
-                <hr /> -->
 
                 <div class="card">
                     <div class="card-body">

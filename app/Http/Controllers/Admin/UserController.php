@@ -33,7 +33,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function create(Request $request)
     {
         $validate = $request->validate([
             'name' => ['required', 'string', 'min:5', 'max:50'],
@@ -56,7 +56,6 @@ class UserController extends Controller
 
     public function update(Request $request)
     {
-        // dd($request->all());
         $user = User::findOrFail($request->user_id);
 
         $validate = $request->validate([
@@ -65,8 +64,6 @@ class UserController extends Controller
             'email' => ['required', 'string', 'email', 'max:50'],
             'role' => ['required'],
         ]);
-
-        // dd($user);
 
         $data = [
             'name' => $request->name,
