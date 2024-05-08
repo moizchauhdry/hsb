@@ -37,7 +37,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::prefix('user')->group(function () {
-        Route::get('/', [UserController::class, 'index'])->name('user.index')->middleware('permission:user-list');
+        Route::get('list', [UserController::class, 'index'])->name('user.index')->middleware('permission:user-list');
+        Route::post('update', [UserController::class, 'update'])->name('user.update')->middleware('permission:user-update');
     });
 
     Route::prefix('role')->group(function () {

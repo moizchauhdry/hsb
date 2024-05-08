@@ -21,12 +21,12 @@ class PermissionSeeder extends Seeder
             // Role
             'role-list',
             'role-create',
-            'role-edit',
+            'role-update',
 
             // User
             'user-list',
             'user-create',
-            'user-edit',
+            'user-update',
             'user-delete',
             
         ];
