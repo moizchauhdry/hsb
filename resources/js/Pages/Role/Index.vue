@@ -124,7 +124,7 @@ const closeModal = () => {
                                                             </div>
                                                         </template>
 
-                                                        <InputError :message="form.errors.name" />
+                                                        <InputError :message="form.errors.permissions" />
                                                     </div>
                                                 </div>
                                             </div>
