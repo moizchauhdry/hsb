@@ -28,7 +28,7 @@ const submit = () => {
         preserveScroll: true,
         onSuccess: () => closeModal(),
         onError: () => error(),
-        onFinish: () => form.reset(),
+        onFinish: () => { },
     });
 };
 
@@ -46,7 +46,7 @@ const update = () => {
         preserveScroll: true,
         onSuccess: () => closeModal(),
         onError: () => error(),
-        onFinish: () => form.reset(),
+        onFinish: () => { },
     });
 };
 
