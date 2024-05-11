@@ -17,6 +17,10 @@ const form = useForm({
     name: "",
     phone: "",
     email: "",
+    address: "",
+    cnic_number: "",
+    designation: "",
+    qualification: "",
     password: "",
     password_confirmation: "",
     role: "",
@@ -44,6 +48,10 @@ const edit = (user) => {
     form.name = user.name;
     form.phone = user.phone;
     form.email = user.email;
+    form.address = user.address;
+    form.cnic_number =  user.cnic_number;
+    form.designation = user.designation;
+    form.qualification= user.qualification;
     form.role = user.role_id;
 };
 
@@ -96,7 +104,7 @@ const closeModal = () => {
                                     class="bx bx-plus"></i>Add</button>
                             <div class="modal fade show" id="exampleLargeModal" tabindex="-1" aria-hidden="true"
                                 style="display: block;" v-if="user_modal">
-                                <div class="modal-dialog modal-md">
+                                <div class="modal-dialog modal-lg">
                                     <div class="modal-content">
                                         <form @submit.prevent="edit_mode ? update() : submit()">
                                             <div class="modal-header">
@@ -106,7 +114,7 @@ const closeModal = () => {
                                             </div>
                                             <div class="modal-body">
                                                 <div class="row g-3">
-                                                    <div class="col-md-12">
+                                                    <div class="col-md-6">
                                                         <label for="input13" class="form-label">Name</label>
                                                         <div class="position-relative input-icon">
                                                             <input type="text" class="form-control" id="input13"
@@ -116,7 +124,7 @@ const closeModal = () => {
                                                         </div>
                                                         <InputError :message="form.errors.name" />
                                                     </div>
-                                                    <div class="col-md-12">
+                                                    <div class="col-md-6">
                                                         <label for="input15" class="form-label">Phone</label>
                                                         <div class="position-relative input-icon">
                                                             <input type="text" class="form-control" id="input15"
@@ -135,6 +143,47 @@ const closeModal = () => {
                                                                     class='bx bx-envelope'></i></span>
                                                         </div>
                                                         <InputError :message="form.errors.email" />
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <label for="input16" class="form-label">Address</label>
+                                                        <div class="position-relative input-icon">
+                                                            <input type="text" class="form-control" id="input16"
+                                                                placeholder="Address" v-model="form.address">
+                                                            <span class="position-absolute top-50 translate-middle-y"><i
+                                                                    class='bx bx-home-smile'></i></span>
+                                                        </div>
+                                                        <InputError :message="form.errors.address" />
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="input16" class="form-label">Cnic Number</label>
+                                                        <div class="position-relative input-icon">
+                                                            <input type="text" class="form-control" id="input16"
+                                                                placeholder="CNIC NO." v-model="form.cnic_number">
+                                                            <span class="position-absolute top-50 translate-middle-y"><i
+                                                                    class='bx bx-id-card'></i></span>
+                                                        </div>
+                                                        <InputError :message="form.errors.cnic_number" />
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="input16" class="form-label">Designation</label>
+                                                        <div class="position-relative input-icon">
+                                                            <input type="text" class="form-control" id="input16"
+                                                                placeholder="Designation" v-model="form.designation">
+                                                            <span class="position-absolute top-50 translate-middle-y"><i
+                                                                    class='bx bx-chair'></i></span>
+                                                        </div>
+                                                        <InputError :message="form.errors.designation" />
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="input16" class="form-label">Qualification</label>
+                                                        <div class="position-relative input-icon">
+                                                            <input type="text" class="form-control" id="input16"
+                                                                placeholder="Qualification" v-model="form.qualification">
+                                                            <span class="position-absolute top-50 translate-middle-y"><i
+                                                                    class='bx bx-book-reader'></i></span>
+                                                        </div>
+                                                        <InputError :message="form.errors.qualification" />
                                                     </div>
 
                                                     <template v-if="!edit_mode">

@@ -20,6 +20,10 @@ class UserController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
+                'address' => $user->address,
+                'cnic_number' => $user->cnic_number,
+                'designation' => $user->designation,
+                'qualification' => $user->qualification,
                 'role' => $user->roles[0]->name ?? '-',
                 'role_id' => $user->roles[0]->id ?? NULL,
                 'created_at' => $user->created_at->format('d-m-Y h:i A'),
@@ -39,6 +43,10 @@ class UserController extends Controller
             'name' => ['required', 'string', 'min:5', 'max:50'],
             'email' => ['required', 'string', 'email', 'max:50', 'unique:users'],
             // 'phone' => ['required', 'unique:users', 'max:50'],
+            'address' => ['required', 'string', 'min:5', 'max:100'],
+            'cnic_number' => ['required'],
+            'designation' => ['required'],
+            'qualification' => ['required'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'role' => ['required'],
         ]);
@@ -47,6 +55,10 @@ class UserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             // 'phone' => $request->phone,
+            'address' => $request->address,
+            'cnic_number'  =>  $request->cnic_number,
+            'designation'  =>  $request->designation,
+            'qualification'   => $request->qualification,
             'password' => Hash::make($request->password),
         ];
 
@@ -62,6 +74,10 @@ class UserController extends Controller
             'user_id' => ['required'],
             'name' => ['required', 'string', 'min:5', 'max:50'],
             'email' => ['required', 'string', 'email', 'max:50'],
+            'address' => ['required', 'string', 'min:5', 'max:100'],
+            'cnic_number' => ['required'],
+            'designation' => ['required'],
+            'qualification' => ['required'],
             'role' => ['required'],
         ]);
 
@@ -69,6 +85,10 @@ class UserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             // 'phone' => $request->phone,
+            'address' => $request->address,
+            'cnic_number'  =>  $request->cnic_number,
+            'designation'  =>  $request->designation,
+            'qualification'   => $request->qualification,
             'password' => Hash::make($request->password),
         ];
 
