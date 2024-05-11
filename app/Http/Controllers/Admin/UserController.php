@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
@@ -21,7 +20,8 @@ class UserController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'address' => $user->address,
-                'cnic_number' => $user->cnic_number,
+                'cnic_no' => $user->cnic_no,
+                'phone' => $user->phone,
                 'designation' => $user->designation,
                 'qualification' => $user->qualification,
                 'role' => $user->roles[0]->name ?? '-',
@@ -42,9 +42,9 @@ class UserController extends Controller
         $validate = $request->validate([
             'name' => ['required', 'string', 'min:5', 'max:50'],
             'email' => ['required', 'string', 'email', 'max:50', 'unique:users'],
-            // 'phone' => ['required', 'unique:users', 'max:50'],
+            'phone' => ['required', 'unique:users', 'max:50'],
             'address' => ['required', 'string', 'min:5', 'max:100'],
-            'cnic_number' => ['required'],
+            'cnic_no' => ['required'],
             'designation' => ['required'],
             'qualification' => ['required'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
@@ -54,9 +54,9 @@ class UserController extends Controller
         $data = [
             'name' => $request->name,
             'email' => $request->email,
-            // 'phone' => $request->phone,
+            'phone' => $request->phone,
             'address' => $request->address,
-            'cnic_number'  =>  $request->cnic_number,
+            'cnic_no'  =>  $request->cnic_no,
             'designation'  =>  $request->designation,
             'qualification'   => $request->qualification,
             'password' => Hash::make($request->password),
@@ -67,7 +67,7 @@ class UserController extends Controller
     }
 
     public function update(Request $request)
-    {
+    {        
         $user = User::findOrFail($request->user_id);
 
         $validate = $request->validate([
@@ -75,7 +75,8 @@ class UserController extends Controller
             'name' => ['required', 'string', 'min:5', 'max:50'],
             'email' => ['required', 'string', 'email', 'max:50'],
             'address' => ['required', 'string', 'min:5', 'max:100'],
-            'cnic_number' => ['required'],
+            'phone' => ['required'],
+            'cnic_no' => ['required'],
             'designation' => ['required'],
             'qualification' => ['required'],
             'role' => ['required'],
@@ -84,9 +85,9 @@ class UserController extends Controller
         $data = [
             'name' => $request->name,
             'email' => $request->email,
-            // 'phone' => $request->phone,
+            'phone' => $request->phone,
             'address' => $request->address,
-            'cnic_number'  =>  $request->cnic_number,
+            'cnic_no'  =>  $request->cnic_no,
             'designation'  =>  $request->designation,
             'qualification'   => $request->qualification,
             'password' => Hash::make($request->password),

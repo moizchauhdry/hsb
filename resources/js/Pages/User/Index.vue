@@ -18,7 +18,7 @@ const form = useForm({
     phone: "",
     email: "",
     address: "",
-    cnic_number: "",
+    cnic_no: "",
     designation: "",
     qualification: "",
     password: "",
@@ -49,9 +49,9 @@ const edit = (user) => {
     form.phone = user.phone;
     form.email = user.email;
     form.address = user.address;
-    form.cnic_number =  user.cnic_number;
+    form.cnic_no = user.cnic_no;
     form.designation = user.designation;
-    form.qualification= user.qualification;
+    form.qualification = user.qualification;
     form.role = user.role_id;
 };
 
@@ -104,7 +104,7 @@ const closeModal = () => {
                                     class="bx bx-plus"></i>Add</button>
                             <div class="modal fade show" id="exampleLargeModal" tabindex="-1" aria-hidden="true"
                                 style="display: block;" v-if="user_modal">
-                                <div class="modal-dialog modal-lg">
+                                <div class="modal-dialog modal-md">
                                     <div class="modal-content">
                                         <form @submit.prevent="edit_mode ? update() : submit()">
                                             <div class="modal-header">
@@ -114,23 +114,23 @@ const closeModal = () => {
                                             </div>
                                             <div class="modal-body">
                                                 <div class="row g-3">
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
+                                                        <label for="input21" class="form-label">Role</label>
+                                                        <select id="input21" class="form-select" v-model="form.role">
+                                                            <option value="">Choose...</option>
+                                                            <template v-for="role in roles" :key="role.id">
+                                                                <option :value="role.id">{{ role.name }}</option>
+                                                            </template>
+                                                        </select>
+                                                        <InputError :message="form.errors.role" />
+                                                    </div>
+                                                    <div class="col-md-8">
                                                         <label for="input13" class="form-label">Name</label>
                                                         <div class="position-relative input-icon">
                                                             <input type="text" class="form-control" id="input13"
-                                                                placeholder="Name" v-model="form.name">
+                                                                placeholder="" v-model="form.name">
                                                             <span class="position-absolute top-50 translate-middle-y"><i
                                                                     class='bx bx-user'></i></span>
-                                                        </div>
-                                                        <InputError :message="form.errors.name" />
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <label for="input15" class="form-label">Phone</label>
-                                                        <div class="position-relative input-icon">
-                                                            <input type="text" class="form-control" id="input15"
-                                                                placeholder="Phone" v-model="form.phone">
-                                                            <span class="position-absolute top-50 translate-middle-y"><i
-                                                                    class='bx bx-phone'></i></span>
                                                         </div>
                                                         <InputError :message="form.errors.name" />
                                                     </div>
@@ -138,38 +138,38 @@ const closeModal = () => {
                                                         <label for="input16" class="form-label">Email</label>
                                                         <div class="position-relative input-icon">
                                                             <input type="text" class="form-control" id="input16"
-                                                                placeholder="Email" v-model="form.email">
+                                                                placeholder="" v-model="form.email">
                                                             <span class="position-absolute top-50 translate-middle-y"><i
                                                                     class='bx bx-envelope'></i></span>
                                                         </div>
                                                         <InputError :message="form.errors.email" />
                                                     </div>
+                                                    <div class="col-md-6">
+                                                        <label for="input15" class="form-label">Phone</label>
+                                                        <div class="position-relative input-icon">
+                                                            <input type="text" class="form-control" id="input15"
+                                                                placeholder="" v-model="form.phone">
+                                                            <span class="position-absolute top-50 translate-middle-y"><i
+                                                                    class='bx bx-phone'></i></span>
+                                                        </div>
+                                                        <InputError :message="form.errors.phone" />
+                                                    </div>
 
                                                     <div class="col-md-6">
-                                                        <label for="input16" class="form-label">Address</label>
+                                                        <label for="input16" class="form-label">CNIC</label>
                                                         <div class="position-relative input-icon">
                                                             <input type="text" class="form-control" id="input16"
-                                                                placeholder="Address" v-model="form.address">
-                                                            <span class="position-absolute top-50 translate-middle-y"><i
-                                                                    class='bx bx-home-smile'></i></span>
-                                                        </div>
-                                                        <InputError :message="form.errors.address" />
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <label for="input16" class="form-label">Cnic Number</label>
-                                                        <div class="position-relative input-icon">
-                                                            <input type="text" class="form-control" id="input16"
-                                                                placeholder="CNIC NO." v-model="form.cnic_number">
+                                                                placeholder="xxxxx-xxxxxxx-x" v-model="form.cnic_no">
                                                             <span class="position-absolute top-50 translate-middle-y"><i
                                                                     class='bx bx-id-card'></i></span>
                                                         </div>
-                                                        <InputError :message="form.errors.cnic_number" />
+                                                        <InputError :message="form.errors.cnic_no" />
                                                     </div>
                                                     <div class="col-md-6">
                                                         <label for="input16" class="form-label">Designation</label>
                                                         <div class="position-relative input-icon">
                                                             <input type="text" class="form-control" id="input16"
-                                                                placeholder="Designation" v-model="form.designation">
+                                                                placeholder="" v-model="form.designation">
                                                             <span class="position-absolute top-50 translate-middle-y"><i
                                                                     class='bx bx-chair'></i></span>
                                                         </div>
@@ -179,11 +179,19 @@ const closeModal = () => {
                                                         <label for="input16" class="form-label">Qualification</label>
                                                         <div class="position-relative input-icon">
                                                             <input type="text" class="form-control" id="input16"
-                                                                placeholder="Qualification" v-model="form.qualification">
+                                                                placeholder=""
+                                                                v-model="form.qualification">
                                                             <span class="position-absolute top-50 translate-middle-y"><i
                                                                     class='bx bx-book-reader'></i></span>
                                                         </div>
                                                         <InputError :message="form.errors.qualification" />
+                                                    </div>
+
+                                                    <div class="col-md-12">
+                                                        <label for="input16" class="form-label">Address</label>
+                                                        <textarea v-model="form.address" class="form-control"
+                                                            rows="4"></textarea>
+                                                        <InputError :message="form.errors.address" />
                                                     </div>
 
                                                     <template v-if="!edit_mode">
@@ -191,7 +199,7 @@ const closeModal = () => {
                                                             <label for="input17" class="form-label">Password</label>
                                                             <div class="position-relative input-icon">
                                                                 <input type="password" class="form-control" id="input17"
-                                                                    placeholder="Password" v-model="form.password">
+                                                                    placeholder="" v-model="form.password">
                                                                 <span
                                                                     class="position-absolute top-50 translate-middle-y"><i
                                                                         class='bx bx-lock-alt'></i></span>
@@ -203,7 +211,7 @@ const closeModal = () => {
                                                                 Password</label>
                                                             <div class="position-relative input-icon">
                                                                 <input type="password" class="form-control" id="input17"
-                                                                    placeholder="Password"
+                                                                    placeholder=""
                                                                     v-model="form.password_confirmation">
                                                                 <span
                                                                     class="position-absolute top-50 translate-middle-y"><i
@@ -212,16 +220,7 @@ const closeModal = () => {
                                                         </div>
                                                     </template>
 
-                                                    <div class="col-md-12">
-                                                        <label for="input21" class="form-label">Role</label>
-                                                        <select id="input21" class="form-select" v-model="form.role">
-                                                            <option value="">Choose...</option>
-                                                            <template v-for="role in roles" :key="role.id">
-                                                                <option :value="role.id">{{ role.name }}</option>
-                                                            </template>
-                                                        </select>
-                                                        <InputError :message="form.errors.role" />
-                                                    </div>
+                                                    
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
