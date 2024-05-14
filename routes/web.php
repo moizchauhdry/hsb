@@ -1,12 +1,13 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\WorkOrderController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\CustomerAccountController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\WorkOrderController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\ClassOfBusinessController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +41,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('user.index')->middleware('permission:user-list');
         Route::post('/create', [UserController::class, 'create'])->name('user.create')->middleware('permission:user-create');
         Route::post('/update', [UserController::class, 'update'])->name('user.update')->middleware('permission:user-update');
+    });
+
+    Route::prefix('class-of-business')->group(function () {
+        Route::get('/', [ClassOfBusinessController::class, 'index'])->name('class-of-business.index')->middleware('permission:user-list');
+        Route::post('/create', [ClassOfBusinessController::class, 'create'])->name('class-of-business.create')->middleware('permission:user-create');
+        Route::post('/update', [ClassOfBusinessController::class, 'update'])->name('class-of-business.update')->middleware('permission:user-update');
     });
 
     Route::prefix('roles')->group(function () {
