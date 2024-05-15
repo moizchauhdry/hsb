@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Insurance;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Support\Facades\DB;
 
 class InsuranceSeeder extends Seeder
 {
@@ -13,18 +14,26 @@ class InsuranceSeeder extends Seeder
      */
     public function run(): void
     {
-       // Insert some stuff
-       Insurance::upsert(array(
-        [
-            'id'    => 1,
-            'name'  => 'Insurance 1',
-            'company_logo' => '',
-        ],
-        [
-            'id'    => 2,
-            'name'  => 'Insurance 2',
-            'company_logo' => '',
-        ],
-    ),['name'],['id','name','company_logo']);
+        DB::table('insurances')->truncate();
+
+        $insurances = [
+            ['name'  => 'IGI General Insurance Limited'],
+            ['name'  => 'Habib General Insurance Limited'],
+            ['name'  => 'Jubilee General Insurance Limited'],
+            ['name'  => 'Chubb Insurance Pakistan Limited'],
+            ['name'  => 'Atlas Insurance Limited'],
+            ['name'  => 'IGI Life Insurance'],
+            ['name'  => 'Jubilee Life Insurance'],
+            ['name'  => 'EFU General Insurance Limited'],
+            ['name'  => 'EFU Life Assurance'],
+            ['name'  => 'UBL Insurer Limited'],
+            ['name'  => 'Askari General Insurance Co. Ltd'],
+            ['name'  => 'Pak-Qatar Takaful'],
+            ['name'  => 'Salaam Takaful Limited']
+        ];
+
+        foreach ($insurances as $insurance) {
+            Insurance::create($insurance);
+        }
     }
 }
