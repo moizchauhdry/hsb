@@ -6,6 +6,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\WorkOrderController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\AgencyController;
+use App\Http\Controllers\Admin\InsuranceController;
 use App\Http\Controllers\CustomerAccountController;
 use App\Http\Controllers\Admin\ClassOfBusinessController;
 
@@ -47,6 +49,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [ClassOfBusinessController::class, 'index'])->name('class-of-business.index')->middleware('permission:user-list');
         Route::post('/create', [ClassOfBusinessController::class, 'create'])->name('class-of-business.create')->middleware('permission:user-create');
         Route::post('/update', [ClassOfBusinessController::class, 'update'])->name('class-of-business.update')->middleware('permission:user-update');
+    });
+
+    Route::prefix('insurance')->group(function () {
+        Route::get('/', [InsuranceController::class, 'index'])->name('insurance.index')->middleware('permission:user-list');
+    });
+
+    Route::prefix('agency')->group(function () {
+        Route::get('/', [AgencyController::class, 'index'])->name('agency.index')->middleware('permission:user-list');
     });
 
     Route::prefix('roles')->group(function () {

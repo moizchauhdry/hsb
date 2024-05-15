@@ -73,7 +73,7 @@ const closeModal = () => {
             <div class="page-content">
                 <!--breadcrumb-->
                 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-                    <div class="breadcrumb-title pe-3">Class Of Business / Insurance </div>
+                    <div class="breadcrumb-title pe-3">Class Of Business </div>
                     <div class="ps-3">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb mb-0 p-0">
@@ -96,7 +96,7 @@ const closeModal = () => {
                                     <div class="modal-content">
                                         <form @submit.prevent="edit_mode ? update() : submit()">
                                             <div class="modal-header">
-                                                <h5 class="modal-title">Class Of Business / Insurance</h5>
+                                                <h5 class="modal-title">Class Of Business</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                     aria-label="Close" @click="closeModal"></button>
                                             </div>
