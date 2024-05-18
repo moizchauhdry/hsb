@@ -46,7 +46,27 @@ import { Link } from "@inertiajs/vue3";
                 <a href="javascript:;" class="has-arrow">
                     <div class="parent-icon"><i class="bx bx-category"></i>
                     </div>
-                    <div class="menu-title">Class of business / Insurance</div>
+                    <div class="menu-title">Insurance</div>
+                </a>
+                <ul>
+                    <li>
+                        <Link :href="route('insurance.index')"><i class='bx bx-radio-circle'></i>List insurance</Link>
+                    </li>
+                </ul>
+                <a href="javascript:;" class="has-arrow">
+                    <div class="parent-icon"><i class="bx bx-category"></i>
+                    </div>
+                    <div class="menu-title">Agency</div>
+                </a>
+                <ul>
+                    <li>
+                        <Link :href="route('agency.index')"><i class='bx bx-radio-circle'></i>List agency</Link>
+                    </li>
+                </ul>
+                <a href="javascript:;" class="has-arrow">
+                    <div class="parent-icon"><i class="bx bx-category"></i>
+                    </div>
+                    <div class="menu-title">Class of business</div>
                 </a>
                 <ul>
                     <li>
