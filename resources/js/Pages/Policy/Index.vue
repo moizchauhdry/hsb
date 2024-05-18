@@ -3,6 +3,8 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
 import InputError from "@/Components/InputError.vue";
 import { ref } from "vue";
+import VueDatePicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
 
 defineProps({
     insurances: Object,
@@ -136,7 +138,7 @@ const closeModal = () => {
                                     class="bx bx-plus"></i>Add</button>
                             <div class="modal fade show" id="exampleLargeModal" tabindex="-1" aria-hidden="true"
                                 style="display: block;" v-if="policy_modal">
-                                <div class="modal-dialog modal-md">
+                                <div class="modal-dialog modal-lg">
                                     <div class="modal-content">
                                         <form @submit.prevent="edit_mode ? update() : submit()">
                                             <div class="modal-header">
@@ -158,11 +160,14 @@ const closeModal = () => {
                                                     </div>
                                                     <div class="col-md-6">
                                                         <label for="input21" class="form-label">Insurance</label>
-                                                        
-                                                        <select id="input21" class="form-select" v-model="form.insurance_id" multiple="">
+
+                                                        <select id="input21" class="form-select"
+                                                            v-model="form.insurance_id" multiple="">
                                                             <option value="">Choose...</option>
-                                                            <template v-for="insurance in insurances" :key="insurance.id">
-                                                                <option :value="insurance.id">{{ insurance.name }}</option>
+                                                            <template v-for="insurance in insurances"
+                                                                :key="insurance.id">
+                                                                <option :value="insurance.id">{{ insurance.name }}
+                                                                </option>
                                                             </template>
                                                         </select>
                                                         <InputError :message="form.errors.insurance_id" />
@@ -172,14 +177,16 @@ const closeModal = () => {
                                                         <div class="position-relative input-icon">
                                                             <input type="text" class="form-control" id="input13"
                                                                 placeholder="" v-model="form.co_insurance">
-                                                            <span class="position-absolute top-50 translate-middle-y">%</span>
+                                                            <span
+                                                                class="position-absolute top-50 translate-middle-y">%</span>
                                                         </div>
                                                         <InputError :message="form.errors.co_insurance" />
                                                     </div>
                                                     <div class="col-md-6">
                                                         <label for="input21" class="form-label">Takefull type</label>
-                                                        
-                                                        <select id="input21" class="form-select" v-model="form.takeful_type">
+
+                                                        <select id="input21" class="form-select"
+                                                            v-model="form.takeful_type">
                                                             <option selected disabled>Choose...</option>
                                                             <option value="1">Direct 100%</option>
                                                             <option value="0">Our lead</option>
@@ -198,8 +205,9 @@ const closeModal = () => {
                                                     </div>
                                                     <div class="col-md-6">
                                                         <label for="input21" class="form-label">Agency</label>
-                                                        
-                                                        <select id="input21" class="form-select" v-model="form.agency_id">
+
+                                                        <select id="input21" class="form-select"
+                                                            v-model="form.agency_id">
                                                             <option value="">Choose...</option>
                                                             <template v-for="agency in agencies" :key="agency.id">
                                                                 <option :value="agency.id">{{ agency.name }}</option>
@@ -218,27 +226,33 @@ const closeModal = () => {
                                                         <InputError :message="form.errors.agency_code" />
                                                     </div>
                                                     <div class="col-md-6">
-                                                        <label for="input21" class="form-label">Class of business</label>
-                                                        
-                                                        <select id="input21" class="form-select" v-model="form.class_of_business_id">
+                                                        <label for="input21" class="form-label">Class of
+                                                            business</label>
+
+                                                        <select id="input21" class="form-select"
+                                                            v-model="form.class_of_business_id">
                                                             <option value="">Choose...</option>
-                                                            <template v-for="classOfBus in classOfBusiness" :key="classOfBus.id">
-                                                                <option :value="classOfBus.id">{{ classOfBus.b_class_name }}</option>
+                                                            <template v-for="classOfBus in classOfBusiness"
+                                                                :key="classOfBus.id">
+                                                                <option :value="classOfBus.id">{{
+                                                                    classOfBus.b_class_name }}</option>
                                                             </template>
                                                         </select>
                                                         <InputError :message="form.errors.class_of_business_id" />
                                                     </div>
                                                     <div class="col-md-6">
-                                                        <label for="input21" class="form-label">Orignal/Endorsment</label>
-                                                        
-                                                        <select id="input21" class="form-select" v-model="form.orignal_endorsment">
+                                                        <label for="input21"
+                                                            class="form-label">Orignal/Endorsment</label>
+
+                                                        <select id="input21" class="form-select"
+                                                            v-model="form.orignal_endorsment">
                                                             <option selected disabled>Choose...</option>
                                                             <option value="new">New</option>
                                                             <option value="renewal">Renewal</option>
                                                         </select>
                                                         <InputError :message="form.errors.orignal_endorsment" />
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <!-- <div class="col-md-6">
                                                         <label for="input13" class="form-label">Date of insurance</label>
                                                         <div class="position-relative input-icon">
                                                             <input type="date" class="form-control" id="input13"
@@ -246,22 +260,34 @@ const closeModal = () => {
                                                             <span class="position-absolute top-50 translate-middle-y"></span>
                                                         </div>
                                                         <InputError :message="form.errors.date_of_insurance" />
-                                                    </div>
+                                                    </div> -->
+
                                                     <div class="col-md-6">
-                                                        <label for="input13" class="form-label">Policy start period</label>
+                                                        <label for="" class="form-label">Date of insurance</label>
+                                                        <VueDatePicker v-model="form.date_of_insurance" :teleport="true">
+                                                        </VueDatePicker>
+                                                        <InputError :message="form.errors.date_of_insurance" />
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <label for="input13" class="form-label">Policy start
+                                                            period</label>
                                                         <div class="position-relative input-icon">
                                                             <input type="date" class="form-control" id="input13"
                                                                 placeholder="" v-model="form.policy_start_period">
-                                                            <span class="position-absolute top-50 translate-middle-y"></span>
+                                                            <span
+                                                                class="position-absolute top-50 translate-middle-y"></span>
                                                         </div>
                                                         <InputError :message="form.errors.policy_start_period" />
                                                     </div>
                                                     <div class="col-md-6">
-                                                        <label for="input13" class="form-label">Policy end period</label>
+                                                        <label for="input13" class="form-label">Policy end
+                                                            period</label>
                                                         <div class="position-relative input-icon">
                                                             <input type="date" class="form-control" id="input13"
                                                                 placeholder="" v-model="form.policy_end_period">
-                                                            <span class="position-absolute top-50 translate-middle-y"></span>
+                                                            <span
+                                                                class="position-absolute top-50 translate-middle-y"></span>
                                                         </div>
                                                         <InputError :message="form.errors.policy_end_period" />
                                                     </div>
@@ -270,7 +296,8 @@ const closeModal = () => {
                                                         <div class="position-relative input-icon">
                                                             <input type="text" class="form-control" id="input13"
                                                                 placeholder="" v-model="form.sum_insured">
-                                                            <span class="position-absolute top-50 translate-middle-y">%</span>
+                                                            <span
+                                                                class="position-absolute top-50 translate-middle-y">%</span>
                                                         </div>
                                                         <InputError :message="form.errors.sum_insured" />
                                                     </div>
@@ -279,7 +306,8 @@ const closeModal = () => {
                                                         <div class="position-relative input-icon">
                                                             <input type="text" class="form-control" id="input13"
                                                                 placeholder="" v-model="form.gross_premium">
-                                                            <span class="position-absolute top-50 translate-middle-y">%</span>
+                                                            <span
+                                                                class="position-absolute top-50 translate-middle-y">%</span>
                                                         </div>
                                                         <InputError :message="form.errors.gross_premium" />
                                                     </div>
@@ -288,7 +316,8 @@ const closeModal = () => {
                                                         <div class="position-relative input-icon">
                                                             <input type="text" class="form-control" id="input13"
                                                                 placeholder="" v-model="form.net_premium">
-                                                            <span class="position-absolute top-50 translate-middle-y">%</span>
+                                                            <span
+                                                                class="position-absolute top-50 translate-middle-y">%</span>
                                                         </div>
                                                         <InputError :message="form.errors.net_premium" />
                                                     </div>
@@ -297,7 +326,8 @@ const closeModal = () => {
                                                         <div class="position-relative input-icon">
                                                             <input type="text" class="form-control" id="input13"
                                                                 placeholder="" v-model="form.cover_note_no">
-                                                            <span class="position-absolute top-50 translate-middle-y">%</span>
+                                                            <span
+                                                                class="position-absolute top-50 translate-middle-y">%</span>
                                                         </div>
                                                         <InputError :message="form.errors.cover_note_no" />
                                                     </div>
@@ -306,7 +336,8 @@ const closeModal = () => {
                                                         <div class="position-relative input-icon">
                                                             <input type="text" class="form-control" id="input13"
                                                                 placeholder="" v-model="form.installment_plan">
-                                                            <span class="position-absolute top-50 translate-middle-y">%</span>
+                                                            <span
+                                                                class="position-absolute top-50 translate-middle-y">%</span>
                                                         </div>
                                                         <InputError :message="form.errors.installment_plan" />
                                                     </div>
@@ -315,7 +346,8 @@ const closeModal = () => {
                                                         <div class="position-relative input-icon">
                                                             <input type="text" class="form-control" id="input13"
                                                                 placeholder="" v-model="form.leader">
-                                                            <span class="position-absolute top-50 translate-middle-y">%</span>
+                                                            <span
+                                                                class="position-absolute top-50 translate-middle-y">%</span>
                                                         </div>
                                                         <InputError :message="form.errors.leader" />
                                                     </div>
@@ -324,7 +356,8 @@ const closeModal = () => {
                                                         <div class="position-relative input-icon">
                                                             <input type="text" class="form-control" id="input13"
                                                                 placeholder="" v-model="form.leader_policy_no">
-                                                            <span class="position-absolute top-50 translate-middle-y">%</span>
+                                                            <span
+                                                                class="position-absolute top-50 translate-middle-y">%</span>
                                                         </div>
                                                         <InputError :message="form.errors.leader_policy_no" />
                                                     </div>
@@ -333,7 +366,8 @@ const closeModal = () => {
                                                         <div class="position-relative input-icon">
                                                             <input type="text" class="form-control" id="input13"
                                                                 placeholder="" v-model="form.branch">
-                                                            <span class="position-absolute top-50 translate-middle-y">%</span>
+                                                            <span
+                                                                class="position-absolute top-50 translate-middle-y">%</span>
                                                         </div>
                                                         <InputError :message="form.errors.branch" />
                                                     </div>
@@ -342,13 +376,14 @@ const closeModal = () => {
                                                         <div class="position-relative input-icon">
                                                             <input type="text" class="form-control" id="input13"
                                                                 placeholder="" v-model="form.brokerage_amount">
-                                                            <span class="position-absolute top-50 translate-middle-y">%</span>
+                                                            <span
+                                                                class="position-absolute top-50 translate-middle-y">%</span>
                                                         </div>
                                                         <InputError :message="form.errors.brokerage_amount" />
                                                     </div>
                                                     <div class="col-md-6">
                                                         <label for="input21" class="form-label">User</label>
-                                                        
+
                                                         <select id="input21" class="form-select" v-model="form.user_id">
                                                             <option value="">Choose...</option>
                                                             <template v-for="user in users" :key="user.id">
@@ -362,7 +397,8 @@ const closeModal = () => {
                                                         <div class="position-relative input-icon">
                                                             <input type="text" class="form-control" id="input13"
                                                                 placeholder="" v-model="form.tax">
-                                                            <span class="position-absolute top-50 translate-middle-y">%</span>
+                                                            <span
+                                                                class="position-absolute top-50 translate-middle-y">%</span>
                                                         </div>
                                                         <InputError :message="form.errors.tax" />
                                                     </div>
@@ -371,7 +407,8 @@ const closeModal = () => {
                                                         <div class="position-relative input-icon">
                                                             <input type="text" class="form-control" id="input13"
                                                                 placeholder="" v-model="form.percentage">
-                                                            <span class="position-absolute top-50 translate-middle-y">%</span>
+                                                            <span
+                                                                class="position-absolute top-50 translate-middle-y">%</span>
                                                         </div>
                                                         <InputError :message="form.errors.percentage" />
                                                     </div>
@@ -390,7 +427,7 @@ const closeModal = () => {
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
 
                 <div class="card">
@@ -429,4 +466,3 @@ const closeModal = () => {
     </AuthenticatedLayout>
 
 </template>
-
