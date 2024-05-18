@@ -23,6 +23,7 @@ return new class extends Migration
             $table->enum('orignal_endorsment', ['new', 'renewal'])->default('new');
             $table->date('date_of_insurance')->nullable();
             $table->date('policy_start_period')->nullable();
+            $table->date('policy_end_period')->nullable();
             $table->string('sum_insured')->nullable();
             $table->string('gross_premium')->nullable();
             $table->string('net_premium')->nullable();

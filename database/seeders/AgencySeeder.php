@@ -14,7 +14,7 @@ class AgencySeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('agencies')->truncate();
+        // DB::table('agencies')->truncate();
 
         $agencies = [
             [

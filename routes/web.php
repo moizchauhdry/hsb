@@ -7,6 +7,7 @@ use App\Http\Controllers\WorkOrderController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AgencyController;
+use App\Http\Controllers\Admin\PolicyController;
 use App\Http\Controllers\Admin\InsuranceController;
 use App\Http\Controllers\CustomerAccountController;
 use App\Http\Controllers\Admin\ClassOfBusinessController;
@@ -57,6 +58,12 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('agency')->group(function () {
         Route::get('/', [AgencyController::class, 'index'])->name('agency.index')->middleware('permission:user-list');
+    });
+
+    Route::prefix('policy')->group(function () {
+        Route::get('/', [PolicyController::class, 'index'])->name('policy.index')->middleware('permission:user-list');
+        Route::post('/create', [PolicyController::class, 'create'])->name('policy.create')->middleware('permission:user-create');
+        Route::post('/update', [PolicyController::class, 'update'])->name('policy.update')->middleware('permission:user-update');
     });
 
     Route::prefix('roles')->group(function () {

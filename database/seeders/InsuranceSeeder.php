@@ -14,7 +14,7 @@ class InsuranceSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('insurances')->truncate();
+        // DB::table('insurances')->truncate();
 
         $insurances = [
             ['name'  => 'IGI General Insurance Limited'],

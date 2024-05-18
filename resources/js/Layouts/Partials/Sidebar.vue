@@ -73,6 +73,16 @@ import { Link } from "@inertiajs/vue3";
                         <Link :href="route('class-of-business.index')"><i class='bx bx-radio-circle'></i>List Class of business</Link>
                     </li>
                 </ul>
+                <a href="javascript:;" class="has-arrow">
+                    <div class="parent-icon"><i class="bx bx-category"></i>
+                    </div>
+                    <div class="menu-title">Policies</div>
+                </a>
+                <ul>
+                    <li>
+                        <Link :href="route('policy.index')"><i class='bx bx-radio-circle'></i>List policies</Link>
+                    </li>
+                </ul>
             </li>
 
         </ul>
