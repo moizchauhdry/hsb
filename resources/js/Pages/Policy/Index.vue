@@ -393,7 +393,9 @@ const closeModal = () => {
                                 <thead>
                                     <tr>
                                         <th>ID</th>
+                                        <th>Policy No</th>
                                         <th>Client Name</th>
+                                        <th>Takeful Type</th>
                                         <th>Created Date</th>
                                         <th></th>
                                     </tr>
@@ -402,7 +404,12 @@ const closeModal = () => {
                                     <template v-for="(policy, index) in policies.data">
                                         <tr>
                                             <td>{{ policy.id }}</td>
+                                            <td>{{ policy.policy_no }}</td>
                                             <td>{{ policy.client_name }}</td>
+                                            <td>
+                                                <div v-if="policy.takeful_type == 1">Direct 100%</div>
+                                                <div v-if="policy.takeful_type == 0">Our lead</div>
+                                            </td>
                                             <td>{{ policy.created_at }}</td>
                                             <td>
                                                 <button type="button" @click="edit(policy)" title="Edit"
