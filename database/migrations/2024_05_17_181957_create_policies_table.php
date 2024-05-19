@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('policies', function (Blueprint $table) {
             $table->id();
             $table->string('client_name')->nullable();
+            $table->foreignId('insurance_id')->nullable()->constrained('insurances')->onDelete('cascade');
             $table->string('co_insurance')->nullable();
             $table->boolean('takeful_type')->default(TRUE);
             $table->string('policy_no')->nullable();

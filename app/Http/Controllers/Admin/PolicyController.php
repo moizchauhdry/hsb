@@ -22,7 +22,7 @@ class PolicyController extends Controller
             ->through(fn ($policy) => [
                 'id' => $policy->id,
                 'client_name' => $policy->client_name,
-                'insurance_id' => $policy->insurance,
+                'insurance_id' => $policy->insurance_id,
                 'co_insurance' => $policy->co_insurance,
                 'takeful_type' => $policy->takeful_type,
                 'policy_no' => $policy->policy_no,
@@ -66,6 +66,7 @@ class PolicyController extends Controller
     {
         $validate = $request->validate([
             'client_name' => ['required', 'string', 'min:5', 'max:50'],
+            'insurance_id' => ['required'],
             'co_insurance' => ['required'],
             'takeful_type' => ['required'],
             'policy_no' => ['required'],
@@ -92,6 +93,7 @@ class PolicyController extends Controller
 
         $data = [
             'client_name' => $request->client_name,
+            'insurance_id' => $request->insurance_id,
             'co_insurance' => $request->co_insurance,
             'takeful_type' => $request->takeful_type,
             'policy_no' => $request->policy_no,
@@ -117,20 +119,6 @@ class PolicyController extends Controller
         ];
 
         $policy = Policy::create($data);
-
-        if($request->has('insurance_id'))
-        {
-            $insuranceRequest = $request->insurance_id;
-            foreach($insuranceRequest as $insurance){
-                $data = [
-                    'policy_id' => $policy->id,
-                    'insurance_id' => $insurance,
-                ];
-
-                PolicyInsurance::create($data);
-            }
-
-        }
     }
 
     public function update(Request $request)
@@ -165,6 +153,7 @@ class PolicyController extends Controller
 
         $data = [
             'client_name' => $request->client_name,
+            'insurance_id' => $request->insurance_id,
             'co_insurance' => $request->co_insurance,
             'takeful_type' => $request->takeful_type,
             'policy_no' => $request->policy_no,
@@ -190,30 +179,5 @@ class PolicyController extends Controller
         ];
 
         $policy->update($data);
-
-        if($request->has('insurance_id'))
-        {
-            $insuranceRequest = $request->insurance_id;
-            foreach($insuranceRequest as $insurance){
-                $ins = PolicyInsurance::where('insurance_id',$insurance)
-                  ->where('policy_id',$policy->id)->first();
-                if(!empty($ins)){
-                    $data = [
-                        'policy_id' => $policy->id,
-                        'insurance_id' => $insurance,
-                    ];
-
-                    $ins->update($data);
-
-                } else {
-
-                    $data = [
-                        'policy_id' => $policy->id,
-                        'insurance_id' => $insurance,
-                    ];
-                    PolicyInsurance::create($data);
-                }
-            }
-        }
     }
 }
