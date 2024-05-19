@@ -149,7 +149,7 @@ const closeModal = () => {
                                             </div>
                                             <div class="modal-body">
                                                 <div class="row g-3">
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <label for="input13" class="form-label">Client Name</label>
 
                                                         <input type="text" class="form-control" id="input13"
@@ -157,7 +157,7 @@ const closeModal = () => {
 
                                                         <InputError :message="form.errors.client_name" />
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <label for="input21" class="form-label">Insurance</label>
 
                                                         <select id="input21" class="form-select"
@@ -171,7 +171,7 @@ const closeModal = () => {
                                                         </select>
                                                         <InputError :message="form.errors.insurance_id" />
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <label for="input13" class="form-label">Co insurance</label>
 
                                                         <input type="text" class="form-control" id="input13"
@@ -179,7 +179,7 @@ const closeModal = () => {
 
                                                         <InputError :message="form.errors.co_insurance" />
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <label for="input21" class="form-label">Takefull type</label>
 
                                                         <select id="input21" class="form-select"
@@ -190,7 +190,7 @@ const closeModal = () => {
                                                         </select>
                                                         <InputError :message="form.errors.insurance_name" />
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <label for="input13" class="form-label">Policy No</label>
 
                                                         <input type="text" class="form-control" id="input13"
@@ -198,7 +198,7 @@ const closeModal = () => {
 
                                                         <InputError :message="form.errors.policy_no" />
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <label for="input21" class="form-label">Agency</label>
 
                                                         <select id="input21" class="form-select"
@@ -210,7 +210,7 @@ const closeModal = () => {
                                                         </select>
                                                         <InputError :message="form.errors.agency_id" />
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <label for="input13" class="form-label">Agency Code</label>
 
                                                         <input type="text" class="form-control" id="input13"
@@ -218,7 +218,7 @@ const closeModal = () => {
 
                                                         <InputError :message="form.errors.agency_code" />
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <label for="input21" class="form-label">Class of
                                                             business</label>
 
@@ -233,7 +233,7 @@ const closeModal = () => {
                                                         </select>
                                                         <InputError :message="form.errors.class_of_business_id" />
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <label for="input21"
                                                             class="form-label">Orignal/Endorsment</label>
 
@@ -245,7 +245,7 @@ const closeModal = () => {
                                                         </select>
                                                         <InputError :message="form.errors.orignal_endorsment" />
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <label for="" class="form-label">Date of insurance</label>
                                                         <VueDatePicker v-model="form.date_of_insurance" :teleport="true">
                                                         </VueDatePicker>
@@ -253,7 +253,7 @@ const closeModal = () => {
                                                         <InputError :message="form.errors.date_of_insurance" />
                                                     </div>
 
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <label for="input13" class="form-label">Policy start
                                                             period</label>
                                                         <VueDatePicker v-model="form.policy_start_period" :teleport="true">
@@ -261,7 +261,7 @@ const closeModal = () => {
 
                                                         <InputError :message="form.errors.policy_start_period" />
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <label for="input13" class="form-label">Policy end
                                                             period</label>
                                                         <VueDatePicker v-model="form.policy_end_period" :teleport="true">
@@ -269,7 +269,7 @@ const closeModal = () => {
 
                                                         <InputError :message="form.errors.policy_end_period" />
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <label for="input13" class="form-label">Sum insured</label>
 
                                                         <input type="text" class="form-control" id="input13"
@@ -277,7 +277,7 @@ const closeModal = () => {
 
                                                         <InputError :message="form.errors.sum_insured" />
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <label for="input13" class="form-label">Gross premium</label>
 
                                                         <input type="text" class="form-control" id="input13"
@@ -285,7 +285,7 @@ const closeModal = () => {
 
                                                         <InputError :message="form.errors.gross_premium" />
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <label for="input13" class="form-label">Net premium</label>
 
                                                         <input type="text" class="form-control" id="input13"
@@ -293,7 +293,7 @@ const closeModal = () => {
 
                                                         <InputError :message="form.errors.net_premium" />
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <label for="input13" class="form-label">Cover note no</label>
 
                                                         <input type="text" class="form-control" id="input13"
@@ -301,7 +301,7 @@ const closeModal = () => {
 
                                                         <InputError :message="form.errors.cover_note_no" />
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <label for="input13" class="form-label">Installment plan</label>
 
                                                         <input type="text" class="form-control" id="input13"
@@ -309,7 +309,7 @@ const closeModal = () => {
 
                                                         <InputError :message="form.errors.installment_plan" />
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <label for="input13" class="form-label">Leader</label>
 
                                                         <input type="text" class="form-control" id="input13"
@@ -317,7 +317,7 @@ const closeModal = () => {
 
                                                         <InputError :message="form.errors.leader" />
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <label for="input13" class="form-label">Leader policy no</label>
 
                                                         <input type="text" class="form-control" id="input13"
@@ -325,7 +325,7 @@ const closeModal = () => {
 
                                                         <InputError :message="form.errors.leader_policy_no" />
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <label for="input13" class="form-label">Branch</label>
 
                                                         <input type="text" class="form-control" id="input13"
@@ -333,7 +333,7 @@ const closeModal = () => {
 
                                                         <InputError :message="form.errors.branch" />
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <label for="input13" class="form-label">Brokerage amount</label>
 
                                                         <input type="text" class="form-control" id="input13"
@@ -341,7 +341,7 @@ const closeModal = () => {
 
                                                         <InputError :message="form.errors.brokerage_amount" />
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <label for="input21" class="form-label">User</label>
 
                                                         <select id="input21" class="form-select" v-model="form.user_id">
@@ -352,7 +352,7 @@ const closeModal = () => {
                                                         </select>
                                                         <InputError :message="form.errors.user_id" />
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <label for="input13" class="form-label">Tax</label>
 
                                                         <input type="text" class="form-control" id="input13"
@@ -360,7 +360,7 @@ const closeModal = () => {
 
                                                         <InputError :message="form.errors.tax" />
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <label for="input13" class="form-label">Percentage</label>
 
                                                         <input type="text" class="form-control" id="input13"

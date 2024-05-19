@@ -8,10 +8,11 @@ use App\Models\Agency;
 use App\Models\Policy;
 use App\Models\Insurance;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use App\Models\ClassOfBusiness;
 use App\Models\PolicyInsurance;
-use App\Http\Controllers\Controller;
 use Monolog\Handler\IFTTTHandler;
+use App\Http\Controllers\Controller;
 
 class PolicyController extends Controller
 {
@@ -91,6 +92,14 @@ class PolicyController extends Controller
             'percentage' => ['required'],
         ]);
 
+        $date_of_insurance = Carbon::parse($request->date_of_insurance);
+        $policy_start_period = Carbon::parse($request->policy_start_period);
+        $policy_end_period = Carbon::parse($request->policy_end_period);
+        // Format the date as per your requirement
+        $dateOfInsurance = $date_of_insurance->format('Y-m-d');
+        $policyStartPeriod = $policy_start_period->format('Y-m-d');
+        $policyEndPeriod = $policy_end_period->format('Y-m-d');
+
         $data = [
             'client_name' => $request->client_name,
             'insurance_id' => $request->insurance_id,
@@ -101,9 +110,9 @@ class PolicyController extends Controller
             'agency_code' => $request->agency_code,
             'class_of_business_id' => $request->class_of_business_id,
             'orignal_endorsment' => $request->orignal_endorsment,
-            'date_of_insurance' => $request->date_of_insurance,
-            'policy_start_period' => $request->policy_start_period,
-            'policy_end_period' => $request->policy_end_period,
+            'date_of_insurance' => $dateOfInsurance,
+            'policy_start_period' => $policyStartPeriod,
+            'policy_end_period' => $policyEndPeriod,
             'sum_insured' => $request->sum_insured,
             'gross_premium' => $request->gross_premium,
             'net_premium' => $request->net_premium,
@@ -151,6 +160,14 @@ class PolicyController extends Controller
             'percentage' => ['required'],
         ]);
 
+        $date_of_insurance = Carbon::parse($request->date_of_insurance);
+        $policy_start_period = Carbon::parse($request->policy_start_period);
+        $policy_end_period = Carbon::parse($request->policy_end_period);
+        // Format the date as per your requirement
+        $dateOfInsurance = $date_of_insurance->format('Y-m-d');
+        $policyStartPeriod = $policy_start_period->format('Y-m-d');
+        $policyEndPeriod = $policy_end_period->format('Y-m-d');
+
         $data = [
             'client_name' => $request->client_name,
             'insurance_id' => $request->insurance_id,
@@ -161,9 +178,9 @@ class PolicyController extends Controller
             'agency_code' => $request->agency_code,
             'class_of_business_id' => $request->class_of_business_id,
             'orignal_endorsment' => $request->orignal_endorsment,
-            'date_of_insurance' => $request->date_of_insurance,
-            'policy_start_period' => $request->policy_start_period,
-            'policy_end_period' => $request->policy_end_period,
+            'date_of_insurance' => $dateOfInsurance,
+            'policy_start_period' => $policyStartPeriod,
+            'policy_end_period' => $policyEndPeriod,
             'sum_insured' => $request->sum_insured,
             'gross_premium' => $request->gross_premium,
             'net_premium' => $request->net_premium,
