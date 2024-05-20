@@ -8,11 +8,12 @@ import "@vuepic/vue-datepicker/dist/main.css";
 import CreateEdit from "./CreateEdit.vue";
 
 defineProps({
-    insurances: Object,
-    policies: Object,
-    agencies: Object,
-    classOfBusiness: Object,
-    users: Object,
+    insurances: Array,
+    policies: Array,
+    agencies: Array,
+    classOfBusiness: Array,
+    users: Array,
+    clients: Array
 });
 
 const policy_modal = ref(false);

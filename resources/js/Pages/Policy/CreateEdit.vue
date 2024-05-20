@@ -7,17 +7,23 @@ import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 
 defineProps({
-    insurances: Object,
-    policies: Object,
-    agencies: Object,
-    classOfBusiness: Object,
-    users: Object,
+    insurances: Array,
+    policies: Array,
+    agencies: Array,
+    classOfBusiness: Array,
+    users: Array,
+    clients: Array,
 });
 
 const policy_modal = ref(false);
 const edit_mode = ref(false);
+const step = 1;
 
 const form = useForm({
+
+    current_step: 1,
+    total_step: 3,
+
     policy_id: "",
     client_id: "",
     insurance_id: "",
@@ -31,6 +37,7 @@ const form = useForm({
     date_of_insurance: "",
     policy_start_period: "",
     policy_end_period: "",
+    
     sum_insured: "",
     gross_premium: "",
     net_premium: "",
@@ -53,7 +60,12 @@ const create = () => {
 const submit = () => {
     form.post(route("policy.create"), {
         preserveScroll: true,
-        onSuccess: () => closeModal(),
+        onSuccess: () => {
+            form.current_step++;
+            if (form.current_step > 3) {
+                closeModal();
+            }
+        },
         onError: () => error(),
         onFinish: () => { },
     });
@@ -108,6 +120,20 @@ const closeModal = () => {
     form.reset();
 };
 
+
+const previousStep = () => {
+    console.log('previous');
+    if (form.current_step > 1) {
+        form.current_step--;
+    }
+}
+
+const nextStep = () => {
+    console.log('next');
+    if (form.current_step < form.total_step) {
+        submit();
+    }
+}
 </script>
 
 <template>
@@ -132,9 +158,8 @@ const closeModal = () => {
                                     <div class="card-header">
                                         <div class="d-lg-flex flex-lg-row align-items-lg-center justify-content-lg-between"
                                             role="tablist">
-                                            <div class="step" data-target="#test-l-1">
-                                                <div class="step-trigger" role="tab" id="stepper1trigger1"
-                                                    aria-controls="test-l-1">
+                                            <div class="step">
+                                                <div class="step-trigger" role="tab">
                                                     <div class="bs-stepper-circle">1</div>
                                                     <div class="">
                                                         <h5 class="mb-0 steper-title">Personal Info
@@ -145,9 +170,8 @@ const closeModal = () => {
                                                 </div>
                                             </div>
                                             <div class="bs-stepper-line"></div>
-                                            <div class="step" data-target="#test-l-2">
-                                                <div class="step-trigger" role="tab" id="stepper1trigger2"
-                                                    aria-controls="test-l-2">
+                                            <div class="step">
+                                                <div class="step-trigger" role="tab">
                                                     <div class="bs-stepper-circle">2</div>
                                                     <div class="">
                                                         <h5 class="mb-0 steper-title">Account
@@ -158,9 +182,8 @@ const closeModal = () => {
                                                 </div>
                                             </div>
                                             <div class="bs-stepper-line"></div>
-                                            <div class="step" data-target="#test-l-3">
-                                                <div class="step-trigger" role="tab" id="stepper1trigger3"
-                                                    aria-controls="test-l-3">
+                                            <div class="step">
+                                                <div class="step-trigger" role="tab">
                                                     <div class="bs-stepper-circle">3</div>
                                                     <div class="">
                                                         <h5 class="mb-0 steper-title">Education</h5>
@@ -173,230 +196,263 @@ const closeModal = () => {
                                         </div>
                                     </div>
 
-                                </div>
-                            </div>
+                                    <div class="card-body">
+                                        <template v-if="form.current_step == 1">
+                                            <div class="row g-2">
+                                                <div class="col-md-4">
+                                                    <label for="input13" class="form-label">Client Name</label>
 
-                            <div class="row g-3">
-                                <div class="col-md-4">
-                                    <label for="input13" class="form-label">Client Name</label>
+                                                    <select id="input21" class="form-select" v-model="form.client_id">
+                                                        <template v-for="client in clients" :key="client.id">
+                                                            <option :value="client.id">{{ client.name }}
+                                                            </option>
+                                                        </template>
+                                                    </select>
 
-                                    <select id="input21" class="form-select" v-model="form.client_id">
-                                        <template v-for="client in clients" :key="client.id">
-                                            <option :value="client.id">{{ client.name }}
-                                            </option>
+                                                    <InputError :message="form.errors.client_id" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="input21" class="form-label">Insurance</label>
+
+                                                    <select id="input21" class="form-select"
+                                                        v-model="form.insurance_id">
+                                                        <template v-for="insurance in insurances" :key="insurance.id">
+                                                            <option :value="insurance.id">{{ insurance.name }}
+                                                            </option>
+                                                        </template>
+                                                    </select>
+                                                    <InputError :message="form.errors.insurance_id" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="input13" class="form-label">Co insurance</label>
+
+                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                        v-model="form.co_insurance">
+
+                                                    <InputError :message="form.errors.co_insurance" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="input21" class="form-label">Takefull type</label>
+
+                                                    <select id="input21" class="form-select"
+                                                        v-model="form.takeful_type">
+
+                                                        <option value="1">Direct 100%</option>
+                                                        <option value="0">Our lead</option>
+                                                    </select>
+                                                    <InputError :message="form.errors.insurance_name" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="input13" class="form-label">Policy No</label>
+
+                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                        v-model="form.policy_no">
+
+                                                    <InputError :message="form.errors.policy_no" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="input21" class="form-label">Agency</label>
+
+                                                    <select id="input21" class="form-select" v-model="form.agency_id">
+                                                        <template v-for="agency in agencies" :key="agency.id">
+                                                            <option :value="agency.id">{{ agency.name }}</option>
+                                                        </template>
+                                                    </select>
+                                                    <InputError :message="form.errors.agency_id" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="input13" class="form-label">Agency Code</label>
+
+                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                        v-model="form.agency_code">
+
+                                                    <InputError :message="form.errors.agency_code" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="input21" class="form-label">Class of
+                                                        business</label>
+
+                                                    <select id="input21" class="form-select"
+                                                        v-model="form.class_of_business_id">
+                                                        <template v-for="classOfBus in classOfBusiness"
+                                                            :key="classOfBus.id">
+                                                            <option :value="classOfBus.id">{{
+                                                                classOfBus.b_class_name }}</option>
+                                                        </template>
+                                                    </select>
+                                                    <InputError :message="form.errors.class_of_business_id" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="input21" class="form-label">Orignal/Endorsment</label>
+
+                                                    <select id="input21" class="form-select"
+                                                        v-model="form.orignal_endorsment">
+
+                                                        <option value="new">New</option>
+                                                        <option value="renewal">Renewal</option>
+                                                    </select>
+                                                    <InputError :message="form.errors.orignal_endorsment" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="" class="form-label">Date of insurance</label>
+                                                    <VueDatePicker v-model="form.date_of_insurance" :teleport="true">
+                                                    </VueDatePicker>
+
+                                                    <InputError :message="form.errors.date_of_insurance" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="input13" class="form-label">Policy start
+                                                        period</label>
+                                                    <VueDatePicker v-model="form.policy_start_period" :teleport="true">
+                                                    </VueDatePicker>
+
+                                                    <InputError :message="form.errors.policy_start_period" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="input13" class="form-label">Policy end
+                                                        period</label>
+                                                    <VueDatePicker v-model="form.policy_end_period" :teleport="true">
+                                                    </VueDatePicker>
+
+                                                    <InputError :message="form.errors.policy_end_period" />
+                                                </div>
+                                            </div>
                                         </template>
-                                    </select>
 
-                                    <InputError :message="form.errors.client_id" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="input21" class="form-label">Insurance</label>
+                                        <template v-if="form.current_step == 2">
+                                            <div class="row g-2">
+                                                <div class="col-md-4">
+                                                    <label for="input13" class="form-label">Sum insured</label>
 
-                                    <select id="input21" class="form-select" v-model="form.insurance_id">
-                                        <template v-for="insurance in insurances" :key="insurance.id">
-                                            <option :value="insurance.id">{{ insurance.name }}
-                                            </option>
+                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                        v-model="form.sum_insured">
+
+                                                    <InputError :message="form.errors.sum_insured" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="input13" class="form-label">Gross premium</label>
+
+                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                        v-model="form.gross_premium">
+
+                                                    <InputError :message="form.errors.gross_premium" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="input13" class="form-label">Net premium</label>
+
+                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                        v-model="form.net_premium">
+
+                                                    <InputError :message="form.errors.net_premium" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="input13" class="form-label">Cover note no</label>
+
+                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                        v-model="form.cover_note_no">
+
+                                                    <InputError :message="form.errors.cover_note_no" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="input13" class="form-label">Installment plan</label>
+
+                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                        v-model="form.installment_plan">
+
+                                                    <InputError :message="form.errors.installment_plan" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="input13" class="form-label">Leader</label>
+
+                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                        v-model="form.leader">
+
+                                                    <InputError :message="form.errors.leader" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="input13" class="form-label">Leader policy no</label>
+
+                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                        v-model="form.leader_policy_no">
+
+                                                    <InputError :message="form.errors.leader_policy_no" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="input13" class="form-label">Branch</label>
+
+                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                        v-model="form.branch">
+
+                                                    <InputError :message="form.errors.branch" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="input13" class="form-label">Brokerage amount</label>
+
+                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                        v-model="form.brokerage_amount">
+
+                                                    <InputError :message="form.errors.brokerage_amount" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="input21" class="form-label">User</label>
+
+                                                    <select id="input21" class="form-select" v-model="form.user_id">
+                                                        <template v-for="user in users" :key="user.id">
+                                                            <option :value="user.id">{{ user.name }}</option>
+                                                        </template>
+                                                    </select>
+                                                    <InputError :message="form.errors.user_id" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="input13" class="form-label">Tax</label>
+
+                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                        v-model="form.tax">
+
+                                                    <InputError :message="form.errors.tax" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="input13" class="form-label">Percentage</label>
+
+                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                        v-model="form.percentage">
+
+                                                    <InputError :message="form.errors.percentage" />
+                                                </div>
+                                            </div>
                                         </template>
-                                    </select>
-                                    <InputError :message="form.errors.insurance_id" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="input13" class="form-label">Co insurance</label>
 
-                                    <input type="text" class="form-control" id="input13" placeholder=""
-                                        v-model="form.co_insurance">
-
-                                    <InputError :message="form.errors.co_insurance" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="input21" class="form-label">Takefull type</label>
-
-                                    <select id="input21" class="form-select" v-model="form.takeful_type">
-
-                                        <option value="1">Direct 100%</option>
-                                        <option value="0">Our lead</option>
-                                    </select>
-                                    <InputError :message="form.errors.insurance_name" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="input13" class="form-label">Policy No</label>
-
-                                    <input type="text" class="form-control" id="input13" placeholder=""
-                                        v-model="form.policy_no">
-
-                                    <InputError :message="form.errors.policy_no" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="input21" class="form-label">Agency</label>
-
-                                    <select id="input21" class="form-select" v-model="form.agency_id">
-                                        <template v-for="agency in agencies" :key="agency.id">
-                                            <option :value="agency.id">{{ agency.name }}</option>
+                                        <template v-if="form.current_step == 3">
+                                            <h6>Please finalize data.</h6>
                                         </template>
-                                    </select>
-                                    <InputError :message="form.errors.agency_id" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="input13" class="form-label">Agency Code</label>
+                                    </div>
 
-                                    <input type="text" class="form-control" id="input13" placeholder=""
-                                        v-model="form.agency_code">
+                                    <div class="card-footer">
+                                        <div class="col-12">
+                                            <div class="d-flex align-items-center gap-3">
 
-                                    <InputError :message="form.errors.agency_code" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="input21" class="form-label">Class of
-                                        business</label>
+                                                <button class="btn btn-outline-secondary px-4" type="button"
+                                                    @click="previousStep" v-if="[2,3].includes(form.current_step)"><i
+                                                        class='bx bx-left-arrow-alt me-2'></i>Previous</button>
 
-                                    <select id="input21" class="form-select" v-model="form.class_of_business_id">
-                                        <template v-for="classOfBus in classOfBusiness" :key="classOfBus.id">
-                                            <option :value="classOfBus.id">{{
-                                                classOfBus.b_class_name }}</option>
-                                        </template>
-                                    </select>
-                                    <InputError :message="form.errors.class_of_business_id" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="input21" class="form-label">Orignal/Endorsment</label>
+                                                <button class="btn btn-primary px-4" type="button"
+                                                    @click="nextStep" v-if="[1, 2].includes(form.current_step)">Next<i
+                                                        class='bx bx-right-arrow-alt ms-2'></i></button>
 
-                                    <select id="input21" class="form-select" v-model="form.orignal_endorsment">
-
-                                        <option value="new">New</option>
-                                        <option value="renewal">Renewal</option>
-                                    </select>
-                                    <InputError :message="form.errors.orignal_endorsment" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="" class="form-label">Date of insurance</label>
-                                    <VueDatePicker v-model="form.date_of_insurance" :teleport="true">
-                                    </VueDatePicker>
-
-                                    <InputError :message="form.errors.date_of_insurance" />
-                                </div>
-
-                                <div class="col-md-4">
-                                    <label for="input13" class="form-label">Policy start
-                                        period</label>
-                                    <VueDatePicker v-model="form.policy_start_period" :teleport="true">
-                                    </VueDatePicker>
-
-                                    <InputError :message="form.errors.policy_start_period" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="input13" class="form-label">Policy end
-                                        period</label>
-                                    <VueDatePicker v-model="form.policy_end_period" :teleport="true">
-                                    </VueDatePicker>
-
-                                    <InputError :message="form.errors.policy_end_period" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="input13" class="form-label">Sum insured</label>
-
-                                    <input type="text" class="form-control" id="input13" placeholder=""
-                                        v-model="form.sum_insured">
-
-                                    <InputError :message="form.errors.sum_insured" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="input13" class="form-label">Gross premium</label>
-
-                                    <input type="text" class="form-control" id="input13" placeholder=""
-                                        v-model="form.gross_premium">
-
-                                    <InputError :message="form.errors.gross_premium" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="input13" class="form-label">Net premium</label>
-
-                                    <input type="text" class="form-control" id="input13" placeholder=""
-                                        v-model="form.net_premium">
-
-                                    <InputError :message="form.errors.net_premium" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="input13" class="form-label">Cover note no</label>
-
-                                    <input type="text" class="form-control" id="input13" placeholder=""
-                                        v-model="form.cover_note_no">
-
-                                    <InputError :message="form.errors.cover_note_no" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="input13" class="form-label">Installment plan</label>
-
-                                    <input type="text" class="form-control" id="input13" placeholder=""
-                                        v-model="form.installment_plan">
-
-                                    <InputError :message="form.errors.installment_plan" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="input13" class="form-label">Leader</label>
-
-                                    <input type="text" class="form-control" id="input13" placeholder=""
-                                        v-model="form.leader">
-
-                                    <InputError :message="form.errors.leader" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="input13" class="form-label">Leader policy no</label>
-
-                                    <input type="text" class="form-control" id="input13" placeholder=""
-                                        v-model="form.leader_policy_no">
-
-                                    <InputError :message="form.errors.leader_policy_no" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="input13" class="form-label">Branch</label>
-
-                                    <input type="text" class="form-control" id="input13" placeholder=""
-                                        v-model="form.branch">
-
-                                    <InputError :message="form.errors.branch" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="input13" class="form-label">Brokerage amount</label>
-
-                                    <input type="text" class="form-control" id="input13" placeholder=""
-                                        v-model="form.brokerage_amount">
-
-                                    <InputError :message="form.errors.brokerage_amount" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="input21" class="form-label">User</label>
-
-                                    <select id="input21" class="form-select" v-model="form.user_id">
-                                        <template v-for="user in users" :key="user.id">
-                                            <option :value="user.id">{{ user.name }}</option>
-                                        </template>
-                                    </select>
-                                    <InputError :message="form.errors.user_id" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="input13" class="form-label">Tax</label>
-
-                                    <input type="text" class="form-control" id="input13" placeholder=""
-                                        v-model="form.tax">
-
-                                    <InputError :message="form.errors.tax" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="input13" class="form-label">Percentage</label>
-
-                                    <input type="text" class="form-control" id="input13" placeholder=""
-                                        v-model="form.percentage">
-
-                                    <InputError :message="form.errors.percentage" />
+                                                <button class="btn btn-success px-4" v-if="form.current_step == 3">Submit</button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="modal-footer">
+                        <!-- <div class="modal-footer">
                             <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal"
                                 @click="closeModal">Close</button>
 
                             <button type="submit" class="btn btn-primary btn-sm">
                                 {{ edit_mode ? 'Save & Update' : 'Save & Submit' }}</button>
-                        </div>
+                        </div> -->
                     </form>
                 </div>
             </div>
