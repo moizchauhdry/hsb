@@ -21,8 +21,15 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'role_users_id',
         'phone',
+        'cnic_name',
         'cnic_no',
+        'cnic_expiry_date',
+        'father_name',
+        'gender',
+        'dob',
+        'type',
         'designation',
         'qualification',
         'address',
@@ -47,4 +54,6 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    
 }

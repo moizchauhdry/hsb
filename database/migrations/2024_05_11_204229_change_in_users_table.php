@@ -14,9 +14,16 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->string('phone')->nullable()->after('email');
             $table->string('address')->nullable()->after('phone');
-            $table->string('cnic_no')->nullable()->after('address');
-            $table->string('designation')->nullable()->after('cnic_no');
+            $table->string('cnic_name')->nullable()->after('address');
+            $table->string('cnic_no')->nullable()->after('cnic_name');
+            $table->date('cnic_expiry_date')->nullable()->after('cnic_no');
+            $table->string('father_name')->nullable()->after('cnic_expiry_date');
+            $table->enum('gender', ['male', 'female','others'])->after('father_name')->nullable()->default('male');
+            $table->date('dob')->nullable()->after('gender');
+            $table->enum('type', ['individual', 'business'])->after('dob')->nullable()->default('individual');
+            $table->string('designation')->nullable()->after('type');
             $table->string('qualification')->nullable()->after('designation');
+            $table->bigInteger('role_users_id')->unsigned()->index('users_role_users_id');
         });
     }
 
@@ -28,9 +35,16 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('phone');
             $table->dropColumn('address');
+            $table->dropColumn('cnic_name');
             $table->dropColumn('cnic_no');
+            $table->dropColumn('cnic_expiry_date');
+            $table->dropColumn('father_name');
+            $table->dropColumn('gender');
+            $table->dropColumn('dob');
+            $table->dropColumn('type');
             $table->dropColumn('designation');
             $table->dropColumn('qualification');
+            $table->dropColumn('user_role_id');
         });
     }
 };

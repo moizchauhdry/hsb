@@ -1,12 +1,16 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\WorkOrderController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\AgencyController;
+use App\Http\Controllers\Admin\PolicyController;
+use App\Http\Controllers\Admin\InsuranceController;
 use App\Http\Controllers\CustomerAccountController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\WorkOrderController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\ClassOfBusinessController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +44,28 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('user.index')->middleware('permission:user-list');
         Route::post('/create', [UserController::class, 'create'])->name('user.create')->middleware('permission:user-create');
         Route::post('/update', [UserController::class, 'update'])->name('user.update')->middleware('permission:user-update');
+    });
+
+    Route::prefix('class-of-business')->group(function () {
+        Route::get('/', [ClassOfBusinessController::class, 'index'])->name('class-of-business.index')->middleware('permission:user-list');
+        Route::post('/create', [ClassOfBusinessController::class, 'create'])->name('class-of-business.create')->middleware('permission:user-create');
+        Route::post('/update', [ClassOfBusinessController::class, 'update'])->name('class-of-business.update')->middleware('permission:user-update');
+    });
+
+    Route::prefix('insurance')->group(function () {
+        Route::get('/', [InsuranceController::class, 'index'])->name('insurance.index')->middleware('permission:user-list');
+    });
+
+    Route::prefix('agency')->group(function () {
+        Route::get('/', [AgencyController::class, 'index'])->name('agency.index')->middleware('permission:user-list');
+    });
+
+    Route::prefix('policy')->group(function () {
+        Route::get('/', [PolicyController::class, 'index'])->name('policy.index')->middleware('permission:user-list');
+        Route::get('/create', [PolicyController::class, 'create'])->name('policy.create');
+        Route::post('/store', [PolicyController::class, 'store'])->name('policy.store');
+        Route::get('/edit', [PolicyController::class, 'edit'])->name('policy.edit');
+        Route::post('/update', [PolicyController::class, 'update'])->name('policy.update');
     });
 
     Route::prefix('roles')->group(function () {
