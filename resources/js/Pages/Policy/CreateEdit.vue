@@ -135,9 +135,9 @@ const nextStep = () => {
                                                     </div>
 
                                                     <div class="">
-                                                        <h5 class="mb-0 steper-title">Personal Info
+                                                        <h5 class="mb-0 steper-title">Policy Info
                                                         </h5>
-                                                        <p class="mb-0 steper-sub-title">Enter Your
+                                                        <p class="mb-0 steper-sub-title">Enter Policy
                                                             Details</p>
                                                     </div>
                                                 </div>
@@ -150,10 +150,9 @@ const nextStep = () => {
                                                         2
                                                     </div>
                                                     <div class="">
-                                                        <h5 class="mb-0 steper-title">Account
-                                                            Details</h5>
+                                                        <h5 class="mb-0 steper-title">Policy Amount</h5>
                                                         <p class="mb-0 steper-sub-title">Setup
-                                                            Account Details</p>
+                                                            Policy Amount</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -165,9 +164,9 @@ const nextStep = () => {
                                                         3
                                                     </div>
                                                     <div class="">
-                                                        <h5 class="mb-0 steper-title">Education</h5>
-                                                        <p class="mb-0 steper-sub-title">Education
-                                                            Details</p>
+                                                        <h5 class="mb-0 steper-title">Confirmation</h5>
+                                                        <p class="mb-0 steper-sub-title">Policy
+                                                            Confirmation</p>
                                                     </div>
                                                 </div>
                                             </div>
