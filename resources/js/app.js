@@ -12,6 +12,10 @@ import '../css/dark-theme.css';
 import '../css/semi-dark.css';
 import '../css/header-colors.css';
 
+import '../plugins/bs-stepper/css/bs-stepper.css';
+
+
+
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';

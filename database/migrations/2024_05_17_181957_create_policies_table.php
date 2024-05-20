@@ -13,15 +13,15 @@ return new class extends Migration
     {
         Schema::create('policies', function (Blueprint $table) {
             $table->id();
-            $table->string('client_id')->nullable()->constrained('users')->onDelete('cascade');
-            $table->foreignId('insurance_id')->nullable()->constrained('insurances')->onDelete('cascade');
+            $table->string('client_id')->nullable();
+            $table->foreignId('insurance_id')->nullable();
             $table->string('co_insurance')->nullable();
-            $table->boolean('takeful_type')->default(TRUE);
+            $table->boolean('takeful_type')->nullable()->default(true);
             $table->string('policy_no')->nullable();
-            $table->foreignId('agency_id')->nullable()->constrained('agencies')->onDelete('cascade');
+            $table->foreignId('agency_id')->nullable();
             $table->string('agency_code')->nullable();
-            $table->foreignId('class_of_business_id')->nullable()->constrained('class_of_businesses')->onDelete('cascade');
-            $table->enum('orignal_endorsment', ['new', 'renewal'])->default('new');
+            $table->foreignId('class_of_business_id')->nullable();
+            $table->enum('orignal_endorsment', ['new', 'renewal'])->nullable()->default('new');
             $table->date('date_of_insurance')->nullable();
             $table->date('policy_start_period')->nullable();
             $table->date('policy_end_period')->nullable();
@@ -34,7 +34,7 @@ return new class extends Migration
             $table->string('leader_policy_no')->nullable();
             $table->string('branch')->nullable();
             $table->string('brokerage_amount')->nullable();
-            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
+            $table->foreignId('user_id')->nullable();
             $table->string('tax')->nullable();
             $table->string('percentage')->nullable();
             $table->timestamps();

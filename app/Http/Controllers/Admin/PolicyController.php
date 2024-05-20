@@ -68,32 +68,34 @@ class PolicyController extends Controller
     public function create(Request $request)
     {
         $validate = $request->validate([
-            'client_id' => ['required'],
-            'insurance_id' => ['required'],
-            'co_insurance' => ['required'],
-            'takeful_type' => ['required'],
-            'policy_no' => ['required'],
-            'agency_id' => ['required'],
-            'agency_code' => ['required'],
-            'class_of_business_id' => ['required'],
-            'orignal_endorsment' => ['required'],
-            'date_of_insurance' => ['required'],
-            'policy_start_period' => ['required'],
-            'policy_end_period' => ['required'],
-            'sum_insured' => ['required'],
-            'gross_premium' => ['required'],
-            'net_premium' => ['required'],
-            'cover_note_no' => ['required'],
-            'installment_plan' => ['required'],
-            'leader' => ['required'],
-            'leader_policy_no' => ['required'],
-            'branch' => ['required'],
-            'brokerage_amount' => ['required'],
-            'user_id' => ['required'],
-            'tax' => ['required'],
-            'percentage' => ['required'],
+            'client_id' => ['nullable'],
+            'insurance_id' => ['nullable'],
+            'co_insurance' => ['nullable'],
+            'takeful_type' => ['nullable'],
+            'policy_no' => ['nullable'],
+            'agency_id' => ['nullable'],
+            'agency_code' => ['nullable'],
+            'class_of_business_id' => ['nullable'],
+            'orignal_endorsment' => ['nullable'],
+            'date_of_insurance' => ['nullable'],
+            'policy_start_period' => ['nullable'],
+            'policy_end_period' => ['nullable'],
+            'sum_insured' => ['nullable'],
+            'gross_premium' => ['nullable'],
+            'net_premium' => ['nullable'],
+            'cover_note_no' => ['nullable'],
+            'installment_plan' => ['nullable'],
+            'leader' => ['nullable'],
+            'leader_policy_no' => ['nullable'],
+            'branch' => ['nullable'],
+            'brokerage_amount' => ['nullable'],
+            'user_id' => ['nullable'],
+            'tax' => ['nullable'],
+            'percentage' => ['nullable'],
         ]);
 
+        dd('s');
+        
         $date_of_insurance = Carbon::parse($request->date_of_insurance);
         $policy_start_period = Carbon::parse($request->policy_start_period);
         $policy_end_period = Carbon::parse($request->policy_end_period);
