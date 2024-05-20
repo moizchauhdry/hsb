@@ -22,7 +22,7 @@ class PolicyController extends Controller
             ->withQueryString()
             ->through(fn ($policy) => [
                 'id' => $policy->id,
-                'client_name' => $policy->client_name,
+                'client_name' => $policy->client->name,
                 'insurance_id' => $policy->insurance_id,
                 'co_insurance' => $policy->co_insurance,
                 'takeful_type' => $policy->takeful_type,
@@ -52,9 +52,11 @@ class PolicyController extends Controller
         $insurances = Insurance::select('id', 'name')->get();
         $agencies = Agency::select('id', 'name')->get();
         $classOfBusiness = ClassOfBusiness::select('id', 'b_class_name')->get();
-        $users = User::select('id', 'name')->get();
+        $users = User::where('role_users_id', 1)->select('id', 'name')->get();
+        $clients = User::where('role_users_id', 2)->select('id', 'name')->get();
 
         return Inertia::render('Policy/Index', [
+            'clients' => $clients,
             'insurances' => $insurances,
             'policies' => $policies,
             'agencies' => $agencies,
@@ -66,7 +68,7 @@ class PolicyController extends Controller
     public function create(Request $request)
     {
         $validate = $request->validate([
-            'client_name' => ['required', 'string', 'min:5', 'max:50'],
+            'client_id' => ['required'],
             'insurance_id' => ['required'],
             'co_insurance' => ['required'],
             'takeful_type' => ['required'],
@@ -101,7 +103,7 @@ class PolicyController extends Controller
         $policyEndPeriod = $policy_end_period->format('Y-m-d');
 
         $data = [
-            'client_name' => $request->client_name,
+            'client_id' => $request->client_id,
             'insurance_id' => $request->insurance_id,
             'co_insurance' => $request->co_insurance,
             'takeful_type' => $request->takeful_type,
@@ -135,7 +137,7 @@ class PolicyController extends Controller
         $policy = Policy::findOrFail($request->policy_id);
 
         $validate = $request->validate([
-            'client_name' => ['required', 'string', 'min:5', 'max:50'],
+            'client_id' => ['required'],
             'co_insurance' => ['required'],
             'takeful_type' => ['required'],
             'policy_no' => ['required'],
@@ -169,7 +171,7 @@ class PolicyController extends Controller
         $policyEndPeriod = $policy_end_period->format('Y-m-d');
 
         $data = [
-            'client_name' => $request->client_name,
+            'client_id' => $request->client_id,
             'insurance_id' => $request->insurance_id,
             'co_insurance' => $request->co_insurance,
             'takeful_type' => $request->takeful_type,

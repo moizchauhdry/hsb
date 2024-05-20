@@ -19,7 +19,7 @@ const edit_mode = ref(false);
 
 const form = useForm({
     policy_id: "",
-    client_name: "",
+    client_id: "",
     insurance_id: "",
     co_insurance: "",
     takeful_type: "",
@@ -64,7 +64,7 @@ const edit = (policy) => {
     edit_mode.value = true;
 
     form.policy_id = policy.id;
-    form.client_name = policy.client_name;
+    form.client_id = policy.client_id;
     form.insurance_id = policy.insurance_id;
     form.co_insurance = policy.co_insurance;
     form.takeful_type = policy.takeful_type;
@@ -152,17 +152,22 @@ const closeModal = () => {
                                                     <div class="col-md-4">
                                                         <label for="input13" class="form-label">Client Name</label>
 
-                                                        <input type="text" class="form-control" id="input13"
-                                                            placeholder="" v-model="form.client_name">
+                                                        <select id="input21" class="form-select"
+                                                            v-model="form.client_id">
+                                                            <template v-for="client in clients"
+                                                                :key="client.id">
+                                                                <option :value="client.id">{{ client.name }}
+                                                                </option>
+                                                            </template>
+                                                        </select>
 
-                                                        <InputError :message="form.errors.client_name" />
+                                                        <InputError :message="form.errors.client_id" />
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="input21" class="form-label">Insurance</label>
 
                                                         <select id="input21" class="form-select"
                                                             v-model="form.insurance_id">
-                                                            <option value="">Choose...</option>
                                                             <template v-for="insurance in insurances"
                                                                 :key="insurance.id">
                                                                 <option :value="insurance.id">{{ insurance.name }}
@@ -184,7 +189,7 @@ const closeModal = () => {
 
                                                         <select id="input21" class="form-select"
                                                             v-model="form.takeful_type">
-                                                            <option selected disabled>Choose...</option>
+                                
                                                             <option value="1">Direct 100%</option>
                                                             <option value="0">Our lead</option>
                                                         </select>
@@ -203,7 +208,6 @@ const closeModal = () => {
 
                                                         <select id="input21" class="form-select"
                                                             v-model="form.agency_id">
-                                                            <option value="">Choose...</option>
                                                             <template v-for="agency in agencies" :key="agency.id">
                                                                 <option :value="agency.id">{{ agency.name }}</option>
                                                             </template>
@@ -224,7 +228,6 @@ const closeModal = () => {
 
                                                         <select id="input21" class="form-select"
                                                             v-model="form.class_of_business_id">
-                                                            <option value="">Choose...</option>
                                                             <template v-for="classOfBus in classOfBusiness"
                                                                 :key="classOfBus.id">
                                                                 <option :value="classOfBus.id">{{
@@ -239,7 +242,7 @@ const closeModal = () => {
 
                                                         <select id="input21" class="form-select"
                                                             v-model="form.orignal_endorsment">
-                                                            <option selected disabled>Choose...</option>
+                                
                                                             <option value="new">New</option>
                                                             <option value="renewal">Renewal</option>
                                                         </select>
@@ -345,7 +348,6 @@ const closeModal = () => {
                                                         <label for="input21" class="form-label">User</label>
 
                                                         <select id="input21" class="form-select" v-model="form.user_id">
-                                                            <option value="">Choose...</option>
                                                             <template v-for="user in users" :key="user.id">
                                                                 <option :value="user.id">{{ user.name }}</option>
                                                             </template>

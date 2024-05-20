@@ -21,6 +21,7 @@ class UserSeeder extends Seeder
             'name' => 'Moiz Chauhdry',
             'email' => 'moizchauhdry@gmail.com',
             'password' => Hash::make('12345678'),
+            'role_users_id' => 1,
         ];
 
         $user = User::updateOrCreate(['email' => 'moizchauhdry@gmail.com'], $data);

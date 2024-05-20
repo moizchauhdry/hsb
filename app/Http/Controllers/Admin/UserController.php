@@ -70,6 +70,7 @@ class UserController extends Controller
             'dob'  =>  $request->dob,
             'type'  =>  $request->type,
             'designation'  =>  $request->designation,
+            'role_users_id'  =>  $validate['role'],
             'qualification'   => $request->qualification,
             'password' => Hash::make($request->password),
         ];
@@ -106,6 +107,7 @@ class UserController extends Controller
             'gender'  =>  $request->gender,
             'dob'  =>  $request->dob,
             'type'  =>  $request->type,
+            'role_users_id'  =>  $validate['role'],
             'designation'  =>  $request->designation,
             'qualification'   => $request->qualification,
             'password' => Hash::make($request->password),

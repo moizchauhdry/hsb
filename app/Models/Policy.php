@@ -10,4 +10,9 @@ class Policy extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+    public function client()
+    {
+        return $this->belongsTo(User::class)->where('role_users_id', 2);
+    }
 }
