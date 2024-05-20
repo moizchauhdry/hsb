@@ -14,6 +14,7 @@ use App\Models\PolicyInsurance;
 use Monolog\Handler\IFTTTHandler;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class PolicyController extends Controller
 {
@@ -200,5 +201,49 @@ class PolicyController extends Controller
         ];
 
         $policy->update($data);
+    }
+
+    public function detail($id)
+    {
+        try {
+            $policy = Policy::find($id);
+
+            $policyResponse = [
+                'id' => $policy->id,
+                'client_name' => $policy->client->name,
+                'insurance_id' => $policy->insurance->name,
+                'co_insurance' => $policy->co_insurance,
+                'takeful_type' => $policy->takeful_type,
+                'policy_no' => $policy->policy_no,
+                'agency_id' => $policy->agency->name,
+                'agency_code' => $policy->agency_code,
+                'class_of_business_id' => $policy->classOfBusiness->b_class_name,
+                'orignal_endorsment' => $policy->orignal_endorsment,
+                'date_of_insurance' => $policy->date_of_insurance,
+                'policy_start_period' => $policy->policy_start_period,
+                'policy_end_period' => $policy->policy_end_period,
+                'sum_insured' => $policy->sum_insured,
+                'gross_premium' => $policy->gross_premium,
+                'net_premium' => $policy->net_premium,
+                'cover_note_no' => $policy->cover_note_no,
+                'installment_plan' => $policy->installment_plan,
+                'leader' => $policy->leader,
+                'leader_policy_no' => $policy->leader_policy_no,
+                'branch' => $policy->branch,
+                'brokerage_amount' => $policy->brokerage_amount,
+                'user_id' => $policy->user->name,
+                'tax' => $policy->tax,
+                'percentage' => $policy->percentage,
+                'created_at' => $policy->created_at->format('d-m-Y h:i A'),
+            ];
+                
+    
+            return Inertia::render('Policy/Detail', [
+                'policy' => $policyResponse
+            ]);
+        } catch (ModelNotFoundException $e) {
+            // Handle case when policy with the given ID doesn't exist
+            return response()->json(['error' => 'Policy not found'], 404);
+        }
     }
 }

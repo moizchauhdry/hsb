@@ -62,10 +62,16 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('policy')->group(function () {
         Route::get('/', [PolicyController::class, 'index'])->name('policy.index')->middleware('permission:user-list');
+<<<<<<< HEAD
         Route::get('/create', [PolicyController::class, 'create'])->name('policy.create');
         Route::post('/store', [PolicyController::class, 'store'])->name('policy.store');
         Route::get('/edit', [PolicyController::class, 'edit'])->name('policy.edit');
         Route::post('/update', [PolicyController::class, 'update'])->name('policy.update');
+=======
+        Route::post('/create', [PolicyController::class, 'create'])->name('policy.create')->middleware('permission:user-create');
+        Route::post('/update', [PolicyController::class, 'update'])->name('policy.update')->middleware('permission:user-update');
+        Route::get('/detail/{id}', [PolicyController::class, 'detail'])->name('policy.detail')->middleware('permission:user-update');
+>>>>>>> 4a34db5 (policy detail)
     });
 
     Route::prefix('roles')->group(function () {

@@ -40,14 +40,22 @@ defineProps({
 
                 <div class="card">
                     <div class="card-body">
+                        <div class="d-lg-flex align-items-center mb-4 gap-3">
+                            <div class="position-relative">
+                                <input type="text" class="form-control ps-5 radius-30" placeholder="Search Policy"> <span
+                                    class="position-absolute top-50 product-show translate-middle-y"><i
+                                        class="bx bx-search"></i></span>
+                            </div>
+                        </div>
                         <div class="table-responsive">
-                            <table id="example" class="table table-striped table-bordered" style="width:100%">
-                                <thead>
+                            <table class="table mb-0">
+                                <thead class="table-light">
                                     <tr>
                                         <th>ID</th>
                                         <th>Policy No</th>
                                         <th>Client Name</th>
                                         <th>Created Date</th>
+                                        <th>View Details</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -59,8 +67,16 @@ defineProps({
                                             <td>{{ policy.client_name }}</td>
                                             <td>{{ policy.created_at }}</td>
                                             <td>
-                                                <button type="button" title="Edit" clas="btn btn-primary"><i
-                                                        class="bx bx-edit"></i></button>
+                                                <a :href="'/policy/detail/' + policy.id"
+                                                    class="btn btn-primary btn-sm radius-30 px-4">View Details</a>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex order-actions">
+                                                    <button type="button" @click="edit(policy)" title="Edit"
+                                                        clas="btn btn-primary"><i class="bx bx-edit"></i></button>
+
+                                                </div>
+
                                             </td>
                                         </tr>
                                     </template>
