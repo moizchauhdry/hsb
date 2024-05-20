@@ -1,111 +1,80 @@
 <script setup>
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
 import InputError from "@/Components/InputError.vue";
 import { ref } from "vue";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
+import axios from 'axios';
 
 defineProps({
-    insurances: Array,
-    policies: Array,
-    agencies: Array,
-    classOfBusiness: Array,
-    users: Array,
-    clients: Array,
+    policy: Object,
 });
 
-const policy_modal = ref(false);
+const modal = ref(false);
 const edit_mode = ref(false);
-const step = 1;
+const policy = usePage().props.policy;
 
-const form = useForm({
+const users = ref([]);
+const clients = ref([]);
+const insurances = ref([]);
+const agencies = ref([]);
+const cobs = ref([]);
 
-    current_step: 1,
-    total_step: 3,
-
-    policy_id: "",
-    client_id: "",
-    insurance_id: "",
-    co_insurance: "",
-    takeful_type: "",
-    policy_no: "",
-    agency_id: "",
-    agency_code: "",
-    class_of_business_id: "",
-    orignal_endorsment: "",
-    date_of_insurance: "",
-    policy_start_period: "",
-    policy_end_period: "",
-    
-    sum_insured: "",
-    gross_premium: "",
-    net_premium: "",
-    cover_note_no: "",
-    installment_plan: "",
-    leader: "",
-    leader_policy_no: "",
-    branch: "",
-    brokerage_amount: "",
-    user_id: "",
-    tax: "",
-    percentage: "",
-});
 
 const create = () => {
-    policy_modal.value = true;
+    modal.value = true;
     edit_mode.value = false;
+
+    axios.get("/policy/create")
+        .then(({ data }) => {
+            users.value = data.users;
+            clients.value = data.clients;
+            insurances.value = data.insurances;
+            agencies.value = data.agencies;
+            cobs.value = data.cobs;
+        });
 };
 
+const form = useForm({
+    current_step: 1,
+    total_step: 3,
+    policy_id: policy?.id,
+    client_id: policy?.client_id,
+    insurance_id: policy?.insurance_id,
+    co_insurance: policy?.co_insurance,
+    takeful_type: policy?.takeful_type,
+    policy_no: policy?.policy_no,
+    agency_id: policy?.agency_id,
+    agency_code: policy?.agency_code,
+    class_of_business_id: policy?.class_of_business_id,
+    orignal_endorsment: policy?.orignal_endorsment,
+    date_of_insurance: policy?.date_of_insurance,
+    policy_start_period: policy?.policy_start_period,
+    policy_end_period: policy?.policy_end_period,
+    sum_insured: policy?.sum_insured,
+    gross_premium: policy?.gross_premium,
+    net_premium: policy?.net_premium,
+    cover_note_no: policy?.cover_note_no,
+    installment_plan: policy?.installment_plan,
+    leader: policy?.leader,
+    leader_policy_no: policy?.leader_policy_no,
+    branch: policy?.branch,
+    brokerage_amount: policy?.brokerage_amount,
+    user_id: policy?.user_id,
+    tax: policy?.tax,
+    percentage: policy?.percentage,
+});
+
+
 const submit = () => {
-    form.post(route("policy.create"), {
+    form.post(route("policy.store"), {
         preserveScroll: true,
         onSuccess: () => {
             form.current_step++;
             if (form.current_step > 3) {
-                closeModal();
+                close();
             }
         },
-        onError: () => error(),
-        onFinish: () => { },
-    });
-};
-
-const edit = (policy) => {
-    policy_modal.value = true;
-    edit_mode.value = true;
-
-    form.policy_id = policy.id;
-    form.client_id = policy.client_id;
-    form.insurance_id = policy.insurance_id;
-    form.co_insurance = policy.co_insurance;
-    form.takeful_type = policy.takeful_type;
-    form.policy_no = policy.policy_no;
-    form.agency_id = policy.agency_id;
-    form.agency_code = policy.agency_code;
-    form.class_of_business_id = policy.class_of_business_id;
-    form.orignal_endorsment = policy.orignal_endorsment;
-    form.date_of_insurance = policy.date_of_insurance;
-    form.policy_start_period = policy.policy_start_period;
-    form.policy_end_period = policy.policy_end_period;
-    form.sum_insured = policy.sum_insured;
-    form.gross_premium = policy.gross_premium;
-    form.net_premium = policy.net_premium;
-    form.cover_note_no = policy.cover_note_no;
-    form.installment_plan = policy.installment_plan;
-    form.leader = policy.leader;
-    form.leader_policy_no = policy.leader_policy_no;
-    form.branch = policy.branch;
-    form.brokerage_amount = policy.brokerage_amount;
-    form.user_id = policy.user_id;
-    form.tax = policy.tax;
-    form.percentage = policy.percentage;
-};
-
-const update = () => {
-    form.post(route("policy.update"), {
-        preserveScroll: true,
-        onSuccess: () => closeModal(),
         onError: () => error(),
         onFinish: () => { },
     });
@@ -115,11 +84,10 @@ const error = () => {
     // alert('error');
 };
 
-const closeModal = () => {
-    policy_modal.value = false;
+const close = () => {
+    modal.value = false;
     form.reset();
 };
-
 
 const previousStep = () => {
     console.log('previous');
@@ -140,15 +108,16 @@ const nextStep = () => {
     <div class="col">
         <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleLargeModal"
             @click="create"><i class="bx bx-plus"></i>Add</button>
+
         <div class="modal fade show" id="exampleLargeModal" tabindex="-1" aria-hidden="true" style="display: block;"
-            v-if="policy_modal">
+            v-if="modal">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
-                    <form @submit.prevent="edit_mode ? update() : submit()">
+                    <form @submit.prevent="submit()">
                         <div class="modal-header">
                             <h5 class="modal-title">Policies</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-                                @click="closeModal"></button>
+                                @click="close"></button>
                         </div>
                         <div class="modal-body">
 
@@ -160,7 +129,11 @@ const nextStep = () => {
                                             role="tablist">
                                             <div class="step">
                                                 <div class="step-trigger" role="tab">
-                                                    <div class="bs-stepper-circle">1</div>
+                                                    <div class="bs-stepper-circle"
+                                                        :class="{ 'bs-stepper-circle-active': form.current_step == 1 }">
+                                                        1
+                                                    </div>
+
                                                     <div class="">
                                                         <h5 class="mb-0 steper-title">Personal Info
                                                         </h5>
@@ -172,7 +145,10 @@ const nextStep = () => {
                                             <div class="bs-stepper-line"></div>
                                             <div class="step">
                                                 <div class="step-trigger" role="tab">
-                                                    <div class="bs-stepper-circle">2</div>
+                                                    <div class="bs-stepper-circle"
+                                                        :class="{ 'bs-stepper-circle-active': form.current_step == 2 }">
+                                                        2
+                                                    </div>
                                                     <div class="">
                                                         <h5 class="mb-0 steper-title">Account
                                                             Details</h5>
@@ -184,7 +160,10 @@ const nextStep = () => {
                                             <div class="bs-stepper-line"></div>
                                             <div class="step">
                                                 <div class="step-trigger" role="tab">
-                                                    <div class="bs-stepper-circle">3</div>
+                                                    <div class="bs-stepper-circle"
+                                                        :class="{ 'bs-stepper-circle-active': form.current_step == 3 }">
+                                                        3
+                                                    </div>
                                                     <div class="">
                                                         <h5 class="mb-0 steper-title">Education</h5>
                                                         <p class="mb-0 steper-sub-title">Education
@@ -201,7 +180,6 @@ const nextStep = () => {
                                             <div class="row g-2">
                                                 <div class="col-md-4">
                                                     <label for="input13" class="form-label">Client Name</label>
-
                                                     <select id="input21" class="form-select" v-model="form.client_id">
                                                         <template v-for="client in clients" :key="client.id">
                                                             <option :value="client.id">{{ client.name }}
@@ -274,10 +252,8 @@ const nextStep = () => {
 
                                                     <select id="input21" class="form-select"
                                                         v-model="form.class_of_business_id">
-                                                        <template v-for="classOfBus in classOfBusiness"
-                                                            :key="classOfBus.id">
-                                                            <option :value="classOfBus.id">{{
-                                                                classOfBus.b_class_name }}</option>
+                                                        <template v-for="cob in cobs" :key="cob.id">
+                                                            <option :value="cob.id">{{ cob.b_class_name }}</option>
                                                         </template>
                                                     </select>
                                                     <InputError :message="form.errors.class_of_business_id" />
@@ -432,14 +408,15 @@ const nextStep = () => {
                                             <div class="d-flex align-items-center gap-3">
 
                                                 <button class="btn btn-outline-secondary px-4" type="button"
-                                                    @click="previousStep" v-if="[2,3].includes(form.current_step)"><i
+                                                    @click="previousStep" v-if="[2, 3].includes(form.current_step)"><i
                                                         class='bx bx-left-arrow-alt me-2'></i>Previous</button>
 
-                                                <button class="btn btn-primary px-4" type="button"
-                                                    @click="nextStep" v-if="[1, 2].includes(form.current_step)">Next<i
+                                                <button class="btn btn-primary px-4" type="button" @click="nextStep"
+                                                    v-if="[1, 2].includes(form.current_step)">Next<i
                                                         class='bx bx-right-arrow-alt ms-2'></i></button>
 
-                                                <button class="btn btn-success px-4" v-if="form.current_step == 3">Submit</button>
+                                                <button class="btn btn-success px-4"
+                                                    v-if="form.current_step == 3">Submit</button>
                                             </div>
                                         </div>
                                     </div>
@@ -448,7 +425,7 @@ const nextStep = () => {
                         </div>
                         <!-- <div class="modal-footer">
                             <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal"
-                                @click="closeModal">Close</button>
+                                @click="close">Close</button>
 
                             <button type="submit" class="btn btn-primary btn-sm">
                                 {{ edit_mode ? 'Save & Update' : 'Save & Submit' }}</button>
@@ -459,3 +436,17 @@ const nextStep = () => {
         </div>
     </div>
 </template>
+
+<style>
+.bs-stepper-circle-active {
+    width: 2.7rem;
+    height: 2.7rem;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    background-color: #008cff;
+    border-radius: 50%;
+}
+</style>

@@ -13,6 +13,7 @@ use App\Models\ClassOfBusiness;
 use App\Models\PolicyInsurance;
 use Monolog\Handler\IFTTTHandler;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Redirect;
 
 class PolicyController extends Controller
 {
@@ -23,50 +24,36 @@ class PolicyController extends Controller
             ->through(fn ($policy) => [
                 'id' => $policy->id,
                 'client_name' => $policy->client->name,
-                'insurance_id' => $policy->insurance_id,
-                'co_insurance' => $policy->co_insurance,
-                'takeful_type' => $policy->takeful_type,
                 'policy_no' => $policy->policy_no,
-                'agency_id' => $policy->agency_id,
-                'agency_code' => $policy->agency_code,
-                'class_of_business_id' => $policy->class_of_business_id,
-                'orignal_endorsment' => $policy->orignal_endorsment,
-                'date_of_insurance' => $policy->date_of_insurance,
-                'policy_start_period' => $policy->policy_start_period,
-                'policy_end_period' => $policy->policy_end_period,
-                'sum_insured' => $policy->sum_insured,
-                'gross_premium' => $policy->gross_premium,
-                'net_premium' => $policy->net_premium,
-                'cover_note_no' => $policy->cover_note_no,
-                'installment_plan' => $policy->installment_plan,
-                'leader' => $policy->leader,
-                'leader_policy_no' => $policy->leader_policy_no,
-                'branch' => $policy->branch,
-                'brokerage_amount' => $policy->brokerage_amount,
-                'user_id' => $policy->user_id,
-                'tax' => $policy->tax,
-                'percentage' => $policy->percentage,
                 'created_at' => $policy->created_at->format('d-m-Y h:i A'),
             ]);
 
-        $insurances = Insurance::select('id', 'name')->get();
-        $agencies = Agency::select('id', 'name')->get();
-        $classOfBusiness = ClassOfBusiness::select('id', 'b_class_name')->get();
-        $users = User::where('role_users_id', 1)->select('id', 'name')->get();
-        $clients = User::where('role_users_id', 2)->select('id', 'name')->get();
-
         return Inertia::render('Policy/Index', [
-            'clients' => $clients,
-            'insurances' => $insurances,
             'policies' => $policies,
-            'agencies' => $agencies,
-            'classOfBusiness' => $classOfBusiness,
-            'users' => $users,
-            'clients' => $clients,
+            'policy' => NULL,
         ]);
     }
 
-    public function create(Request $request)
+    public function create()
+    {
+        $users = User::select('id', 'name')->where('role_users_id', 1)->get()->toArray();
+        $clients = User::select('id', 'name')->where('role_users_id', 2)->get()->toArray();
+        $insurances = Insurance::select('id', 'name')->get()->toArray();
+        $agencies = Agency::select('id', 'name')->get()->toArray();
+        $cobs = ClassOfBusiness::select('id', 'b_class_name')->get()->toArray();
+
+        $data = [
+            'users' => $users,
+            'clients' => $clients,
+            'insurances' => $insurances,
+            'agencies' => $agencies,
+            'cobs' => $cobs
+        ];
+
+        return response()->json($data);
+    }
+
+    public function store(Request $request)
     {
         // dd($request->all());
 
