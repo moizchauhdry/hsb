@@ -32,10 +32,6 @@ defineProps({
                             </ol>
                         </nav>
                     </div>
-                    <div class="ms-auto">
-                        <CreateEdit v-bind="$props"></CreateEdit>
-                    </div>
-
                 </div>
 
                 <div class="card">
@@ -45,6 +41,9 @@ defineProps({
                                 <input type="text" class="form-control ps-5 radius-30" placeholder="Search Policy"> <span
                                     class="position-absolute top-50 product-show translate-middle-y"><i
                                         class="bx bx-search"></i></span>
+                            </div>
+                            <div class="ms-auto">
+                                <CreateEdit v-bind="$props"></CreateEdit>
                             </div>
                         </div>
                         <div class="table-responsive">
@@ -68,15 +67,11 @@ defineProps({
                                             <td>{{ policy.created_at }}</td>
                                             <td>
                                                 <a :href="'/policy/detail/' + policy.id"
-                                                    class="btn btn-primary btn-sm radius-30 px-4">View Details</a>
+                                                    class="btn btn-primary btn-sm radius-30">View details</a>
                                             </td>
                                             <td>
-                                                <div class="d-flex order-actions">
-                                                    <button type="button" @click="edit(policy)" title="Edit"
-                                                        clas="btn btn-primary"><i class="bx bx-edit"></i></button>
-
-                                                </div>
-
+                                                <button type="button" @click="edit(policy)" title="Edit"
+                                                    class="btn btn-primary btn-sm radius-30"><i class="bx bx-edit"></i></button>
                                             </td>
                                         </tr>
                                     </template>

@@ -2,6 +2,7 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
 import { ref } from "vue";
+import Uploads from "./Uploads.vue";
 
 defineProps({
     policy: Object,
@@ -10,6 +11,9 @@ defineProps({
 
 
 </script>
+
+<style> table, th, td { padding: 3px !important; font-size: 14px !important; } #lc-table td { border: 1px solid rgb(194, 189, 189) !important; text-align: left !important; } #lc-table th { border: 1px solid rgb(194, 189, 189) !important; text-align: left !important; } table { width: 100%; border-collapse: collapse; } fieldset legend { color: green; font-weight: 600; } fieldset.border { border: 2px solid #17af23 !important; border-radius: 5px !important; }
+    fieldset.member-border { border: 2px solid #17af23 !important; border-radius: 5px !important;} .mb-4 { margin-bottom: 20px } .custom-image-preview { width: 100px; height: 100px } </style>
 
 
 <template>
@@ -37,113 +41,114 @@ defineProps({
 
                 <div class="card">
                     <div class="card-body">
+                        <div class="d-lg-flex align-items-center mb-4 gap-3">
+                            <div class="ms-auto">
+                                <Uploads v-bind="$props"></Uploads>
+                            </div>
+                        </div>
                         <div class="table-responsive">
-                            <table id="example" class="table table-striped table-bordered" style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <td>{{ policy.id }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Client Name</th>
-                                        <td>{{ policy.client_name }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Insurance</th>
-                                        <td>{{ policy.insurance_id }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Co Insurance</th>
-                                        <td>{{ policy.co_insurance }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Takefull type</th>
-                                        <td v-if="policy.takeful_type == 0">Direct 100%</td>
-                                        <td v-if="policy.takeful_type == 1">Our lead</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Policy No.</th>
-                                        <td>{{ policy.policy_no }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Agency</th>
-                                        <td>{{ policy.agency_id }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Agency code</th>
-                                        <td>{{ policy.agency_code }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Class of business</th>
-                                        <td>{{ policy.class_of_business_id }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Orignal Endorsment</th>
-                                        <td>{{ policy.orignal_endorsment }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Date of insurance</th>
-                                        <td>{{ policy.date_of_insurance }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Policy start period</th>
-                                        <td>{{ policy.policy_start_period }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Policy end period</th>
-                                        <td>{{ policy.policy_end_period }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Sum insured </th>
-                                        <td> {{ policy.sum_insured }} </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Gross Premium </th>
-                                        <td> {{ policy.gross_premium }} </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Net Premium </th>
-                                        <td> {{ policy.net_premium }} </td>
-                                    </tr>
-                                    <tr>
-                                        <th> Cover Note No </th>
-                                        <td> {{ policy.cover_note_no }} </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Installment Plan </th>
-                                        <td> {{ policy.installment_plan }} </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Leader </th>
-                                        <td> {{ policy.leader }} </td>
-                                    </tr>
-                                    <tr>
-                                        <th>leader_policy_no </th>
-                                        <td> {{ policy.leader_policy_no }} </td>
-                                    </tr>
-                                    <tr>
-                                        <th>branch </th>
-                                        <td> {{ policy.branch }} </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Brokerage Amount </th>
-                                        <td> {{ policy.brokerage_amount }} </td>
-                                    </tr>
-                                    <tr>
-                                        <th>User </th>
-                                        <td> {{ policy.user_id }} </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Tax</th>
-                                        <td> {{ policy.tax }} </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Percentage</th>
-                                        <td> {{ policy.percentage }} </td>
-                                    </tr>
-                                </thead>
+                            <fieldset class="border p-4 mb-4" id="partner">
+                                <legend class="w-auto title">Policy Info</legend>
+                                <div class="row">
+                                    <table class="table table-bordered">
+                                        <tr>
+                                            <th>ID</th>
+                                            <td>{{ policy.id }}</td>
+                                            <th>Client Name</th>
+                                            <td>{{ policy.client_name }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Insurance</th>
+                                            <td>{{ policy.insurance_id }}</td>
 
-                            </table>
+                                            <th>Co Insurance</th>
+                                            <td>{{ policy.co_insurance }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Takefull type</th>
+                                            <td v-if="policy.takeful_type == 0">Direct 100%</td>
+                                            <td v-if="policy.takeful_type == 1">Our lead</td>
+                                            <th>Policy No.</th>
+                                            <td>{{ policy.policy_no }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Agency</th>
+                                            <td>{{ policy.agency_id }}</td>
+                                        
+                                            <th>Agency code</th>
+                                            <td>{{ policy.agency_code }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Class of business</th>
+                                            <td>{{ policy.class_of_business_id }}</td>
+                                        
+                                            <th>Orignal Endorsment</th>
+                                            <td>{{ policy.orignal_endorsment }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Date of insurance</th>
+                                            <td>{{ policy.date_of_insurance }}</td>
+                                    
+                                            <th>Policy start period</th>
+                                            <td>{{ policy.policy_start_period }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Policy end period</th>
+                                            <td>{{ policy.policy_end_period }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </fieldset>
+                            <fieldset class="border p-4 mb-4" id="partner">
+                                <legend class="w-auto">Policy Amount</legend>
+                                <div class="row">
+                                    <table class="table table-bordered">
+                                        <tr>
+                                            <th>Sum insured </th>
+                                            <td> {{ policy.sum_insured }} </td>
+                                       
+                                            <th>Gross Premium </th>
+                                            <td> {{ policy.gross_premium }} </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Net Premium </th>
+                                            <td> {{ policy.net_premium }} </td>
+                                        
+                                            <th> Cover Note No </th>
+                                            <td> {{ policy.cover_note_no }} </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Installment Plan </th>
+                                            <td> {{ policy.installment_plan }} </td>
+                                        
+                                            <th>Leader </th>
+                                            <td> {{ policy.leader }} </td>
+                                        </tr>
+                                        <tr>
+                                            <th>leader_policy_no </th>
+                                            <td> {{ policy.leader_policy_no }} </td>
+                                       
+                                            <th>branch </th>
+                                            <td> {{ policy.branch }} </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Brokerage Amount </th>
+                                            <td> {{ policy.brokerage_amount }} </td>
+                                        
+                                            <th>User </th>
+                                            <td> {{ policy.user_id }} </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Tax</th>
+                                            <td> {{ policy.tax }} </td>
+                                      
+                                            <th>Percentage</th>
+                                            <td> {{ policy.percentage }} </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </fieldset>
+                                
                         </div>
                     </div>
                 </div>
@@ -152,5 +157,4 @@ defineProps({
         </div>
         <!--end page wrapper -->
     </AuthenticatedLayout>
-
 </template>
