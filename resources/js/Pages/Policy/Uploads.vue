@@ -65,11 +65,7 @@ const uploadFiles = (files) => {
 </script>
 
 <template>
-
-    <Head title="Uploads" />
-
     <AuthenticatedLayout>
-
         <div class="col">
             <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#uploadsLargeModal"
                 @click="create"><i class='bx bx-cloud-upload'></i>Uploads</button>

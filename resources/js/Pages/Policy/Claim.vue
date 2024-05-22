@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
+import { useForm, usePage } from "@inertiajs/vue3";
 import InputError from "@/Components/InputError.vue";
 import { onMounted, ref } from "vue";
 import axios from 'axios';
@@ -40,11 +40,7 @@ const closeModal = () => {
 
 </script>
 <template>
-
-<Head title="Claims" />
-
 <AuthenticatedLayout>
-
     <div class="col">
         <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#claimsLargeModal"
             @click="create"><i class='bx bx-plus'></i>Claim</button>
@@ -66,6 +62,7 @@ const closeModal = () => {
                                     <div class="col-md-12">
                                         <label for="input13" class="form-label">Claim</label>
                                        <textarea class="form-control" id="claim" v-model="form.claim" ></textarea>
+                                       <InputError :message="form.errors.claim" />
                                     </div>
                                 </div>
                             </div>
