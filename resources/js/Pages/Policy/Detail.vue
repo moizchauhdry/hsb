@@ -3,27 +3,28 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
 import { ref } from "vue";
 import Uploads from "./Uploads.vue";
+import AdditionalNotes from "./AdditionalNotes.vue";
 import Claim from "./Claim.vue";
 
 const { props } = usePage();
 
 defineProps({
     policy: Object,
-    policyNotes: Object
+    policyNotes: Object,
+    policyClaims: Object,
+    assetUrl: Object,
 });
 
 
 
 </script>
 
-<style> table, th, td { padding: 3px !important; font-size: 14px !important; } #lc-table td { border: 1px solid rgb(194, 189, 189) !important; text-align: left !important; } #lc-table th { border: 1px solid rgb(194, 189, 189) !important; text-align: left !important; } table { width: 100%; border-collapse: collapse; } fieldset legend { color: black; font-weight: 600; } fieldset.border { border: 2px solid #037DE2 !important; border-radius: 5px !important; }
+<style> table, th, td { padding: 3px !important; font-size: 14px !important; } #lc-table td { border: 1px solid rgb(194, 189, 189) !important; text-align: left !important; } #lc-table th { border: 1px solid rgb(194, 189, 189) !important; text-align: left !important; } table { width: 100%; border-collapse: collapse; } fieldset legend { color: black; font-weight: 500; font-size: 18px; } fieldset.border { border: 2px solid #037DE2 !important; border-radius: 5px !important; }
     fieldset.member-border { border: 2px solid blue !important; border-radius: 5px !important;} .mb-4 { margin-bottom: 20px } .custom-image-preview { width: 100px; height: 100px } </style>
 
 
 <template>
-
     <Head title="Policies" />
-
     <AuthenticatedLayout>
         <!--start page wrapper -->
         <div class="page-wrapper">
@@ -46,14 +47,16 @@ defineProps({
                 <div class="card">
                     <div class="card-body">
                         <div class="d-lg-flex align-items-center mb-4 gap-3">
-                            <div class="ms-auto d-flex" style="width: 205px;">
+                            <div class="ms-auto d-flex" style="width: 310px;">
                                 <Uploads v-bind="$props"></Uploads>
+                                <AdditionalNotes v-bind="$props"></AdditionalNotes>
                                 <Claim v-bind="$props"></Claim>
                             </div>
                         </div>
                         <div class="table-responsive">
+                            <h5 class="w-auto title">Policy Info</h5>
                             <fieldset class="border p-4 mb-4" id="partner">
-                                <legend class="w-auto title">Policy Info</legend>
+                                
                                 <div class="row">
                                     <table class="table table-bordered">
                                         <tr>
@@ -104,8 +107,9 @@ defineProps({
                                     </table>
                                 </div>
                             </fieldset>
+                            <h5 class="w-auto">Policy Amount</h5>
                             <fieldset class="border p-4 mb-4" id="partner">
-                                <legend class="w-auto">Policy Amount</legend>
+                              
                                 <div class="row">
                                     <table class="table table-bordered">
                                         <tr>
@@ -153,24 +157,67 @@ defineProps({
                                     </table>
                                 </div>
                             </fieldset>
-
-                            <fieldset class="border p-4 mb-4" id="partner" v-if="JSON.parse(JSON.stringify(props.policyNotes))?.length > 0 ? JSON.parse(JSON.stringify(props.policyNotes)) : undefined">
-                                <legend class="w-auto">Policy Notes</legend>
+                            <h5 class="w-auto">Policy Claims</h5>
+                            <fieldset class="border p-4 mb-4" id="partner">
+                               
                                 <div class="row">
                                     <table class="table table-bordered">
-                                        <template v-for="(policyNote, index) in JSON.parse(JSON.stringify(props.policyNotes))">
+                                        <template  v-for="(policyClaim, index) in JSON.parse(JSON.stringify(props.policyClaims))" :key="index">
                                             <tr>
-                                                <td> {{ policyNote.additional_notes }} </td>
+                                                <th>Progress</th>
+                                                <td>{{ policyClaim.progress }}</td>
+                                            </tr> 
+                                            <tr>
+                                                <th>Settled</th>
+                                                <td>{{ policyClaim.settled }}</td>
                                             </tr>
+                                            <tr> 
+                                                <th>Status</th>
+                                                <td>{{ policyClaim.status }}</td>
+                                            </tr> 
+                                            <tr>
+                                                <th>Detail</th>
+                                                <td colspan="1">{{ policyClaim.detail }}</td>
+                                            </tr> 
                                         </template>
                                     </table>
                                 </div>
                             </fieldset>
-                                
+                            <h5 class="w-auto">Additional Notes</h5>
+                            <fieldset class="border p-4 mb-4" id="partner">
+                                <div class="row">
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                            <tr v-if="props.policyNotes && props.policyNotes.length > 0" v-for="(policyNote, index) in props.policyNotes" :key="index">
+                                                <td>{{ policyNote.additional_notes }}</td>
+                                            </tr>
+                                            <tr v-else>
+                                                <td colspan="1">No records found</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </fieldset>
+                            <h5 class="w-auto">Uploads</h5>
+                            <fieldset class="border p-4 mb-4" id="partner">
+                                <div class="row">
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                            <tr v-if="props.policyUploads && props.policyUploads.length > 0" v-for="(policyUpload, index) in props.policyUploads" :key="index">
+                                                <td><img :src="props.assetUrl + '/' + policyUpload.upload" class="w-25" alt=""></td>
+
+                                            </tr>
+                                            <tr v-else>
+                                                <td colspan="1">No records found</td>
+                                            </tr>
+                                        </tbody>
+
+                                    </table>
+                                </div>
+                            </fieldset>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
         <!--end page wrapper -->

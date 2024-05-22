@@ -7,13 +7,17 @@ use Inertia\Inertia;
 use App\Models\Agency;
 use App\Models\Policy;
 use App\Models\Insurance;
+use App\Models\PolicyNote;
+use Illuminate\Http\File;
+use App\Models\PolicyClaim;
+use App\Models\PolicyUpload;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Models\ClassOfBusiness;
-use App\Models\PolicyNote;
 use App\Models\PolicyInsurance;
 use Monolog\Handler\IFTTTHandler;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -239,9 +243,14 @@ class PolicyController extends Controller
             ];
 
             $policyNotes = PolicyNote::where('policy_id',$policy->id)->get();
+            $policyClaims = PolicyClaim::where('policy_id',$policy->id)->get();
+            $policyUploads = PolicyUpload::where('policy_id',$policy->id)->get();
             return Inertia::render('Policy/Detail', [
                 'policy' => $policyResponse,
-                'policyNotes' => $policyNotes
+                'policyNotes' => $policyNotes,
+                'policyClaims' => $policyClaims,
+                'policyUploads' => $policyUploads,
+                'assetUrl' => asset('storage')
             ]);
 
            
@@ -251,17 +260,17 @@ class PolicyController extends Controller
         }
     }
 
-    public function claim(Request $request)
+    public function additionalNotes(Request $request)
     {
         $request->validate([
             'policy_id' => ['required'],
-            'claim' => ['required'],
+            'additionalNotes' => ['required'],
         ]);
 
         try {
             $data = [
                 'policy_id' => $request->policy_id,
-                'additional_notes' => $request->claim,
+                'additional_notes' => $request->additionalNotes,
             ];
 
             PolicyNote::create($data);
@@ -271,4 +280,78 @@ class PolicyController extends Controller
             return response()->json(['error' => 'Policy not found'], 404);
         }
     }
+
+    public function claims(Request $request)
+    {
+        $request->validate([
+            'policy_id' => ['required'],
+            'detail' => ['required'],
+            'progress' => ['required'],
+            'settled' => ['required'],
+            'status' => ['required']
+        ]);
+
+        try {
+            $data = [
+                'policy_id' => $request->policy_id,
+                'detail' => $request->detail,
+                'progress' => $request->progress,
+                'settled' => $request->settled,
+                'status' => $request->status,
+            ];
+
+            PolicyClaim::create($data);
+
+        } catch (ModelNotFoundException $e) {
+            // Handle case when policy with the given ID doesn't exist
+            return response()->json(['error' => 'Policy not found'], 404);
+        }
+    }
+
+    public function uploads(Request $request)
+    {
+        $request->validate([
+            'policy_id' => ['required'],
+            'uploads' => ['required'], 
+            'type' => ['required'],
+        ]);
+
+        try {
+            $data = [
+                'policy_id' => $request->policy_id,
+                'type' => $request->type,
+            ];
+
+            $policyUpload = PolicyUpload::create($data);
+
+            $policyUploadDirectory = 'policyUploads';
+            if ($request->hasFile('uploads')) {
+    
+                // Assuming $request->file('uploads') returns an array of uploaded files
+                $files = $request->file('uploads');
+
+                foreach ($files as $file) {
+                    // Get the original file name
+                    $fileName = $file->getClientOriginalName();
+
+                    // Check if the storage directory exists, if not create it
+                    if (!Storage::exists($policyUploadDirectory)) {
+                        Storage::makeDirectory($policyUploadDirectory);
+                    }
+
+                    // Store the file and get the path
+                    $imageUrl = Storage::putFile($policyUploadDirectory, new File($file));
+
+                    // Update the policy upload with the file path
+                    $policyUpload->update(['upload' => $imageUrl]);
+                }
+            }
+
+        } catch (ModelNotFoundException $e) {
+            // Handle case when policy with the given ID doesn't exist
+            return response()->json(['error' => 'Policy not found'], 404);
+        }
+
+    }
+
 }

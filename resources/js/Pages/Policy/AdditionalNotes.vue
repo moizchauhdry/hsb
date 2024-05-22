@@ -10,10 +10,7 @@ const claim_modal = ref(false);
 const edit_mode = ref(false);
 const form = useForm({
     policy_id: JSON.parse(JSON.stringify((props.policy.id))) ?? "",
-    detail: "",
-    progress: "",
-    settled: "",
-    status: "",
+    additionalNotes: "",
 });
 
 
@@ -23,7 +20,7 @@ const create = () => {
 };
 
 const submit = () => {
-    form.post(route("policy.claims"), {
+    form.post(route("policy.additionalNotes"), {
         preserveScroll: true,
         onSuccess: () => closeModal(),
         onError: () => error(),
@@ -46,51 +43,26 @@ const closeModal = () => {
 <AuthenticatedLayout>
     <div class="col">
         <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#claimsLargeModal"
-            @click="create">Add Claims</button>
+            @click="create">Policy Notes</button>
             <div class="modal fade show" id="claimsLargeModal" tabindex="-1" aria-hidden="true" style="display: block;"
             v-if="claim_modal">
             <div class="modal fade show" id="claimsLargeModal" tabindex="-1" aria-hidden="true"
                 style="display: block;">
-                <div class="modal-dialog modal-lg">
+                <div class="modal-dialog modal-md">
                     <div class="modal-content">
                         <form @submit.prevent="edit_mode ? update() : submit()">
                             <div class="modal-header">
-                                <h5 class="modal-title">Add Claims</h5>
+                                <h5 class="modal-title">Add Policy Notes</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close" @click="closeModal"></button>
                             </div>
                             <div class="modal-body">
                                 <input type="hidden" v-model="form.policy_id">
                                 <div class="row g-3">
-                                    <div class="col-md-4">
-                                        <label for="input13" class="form-label">Progress</label>
-                                        <input type="text" class="form-control" id="input13"
-                                            placeholder="" v-model="form.progress">
-                                        
-                                        <InputError :message="form.errors.progress" />
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label for="input13" class="form-label">Settled</label>
-                                        <input type="text" class="form-control" id="input13"
-                                            placeholder="" v-model="form.settled">
-                                       
-                                        <InputError :message="form.errors.settled" />
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label for="input21" class="form-label">Status</label>
-
-                                        <select id="input21" class="form-select"
-                                            v-model="form.status">
-
-                                            <option value="open">Open</option>
-                                            <option value="close">Close</option>
-                                        </select>
-                                        <InputError :message="form.errors.status" />
-                                    </div>
                                     <div class="col-md-12">
-                                        <label for="input13" class="form-label">Detail</label>
-                                       <textarea class="form-control" id="detail" v-model="form.detail" ></textarea>
-                                       <InputError :message="form.errors.detail" />
+                                        <label for="input13" class="form-label">Policy Notes</label>
+                                       <textarea class="form-control" id="additionalNotes" v-model="form.additionalNotes" ></textarea>
+                                       <InputError :message="form.errors.additionalNotes" />
                                     </div>
                                 </div>
                             </div>

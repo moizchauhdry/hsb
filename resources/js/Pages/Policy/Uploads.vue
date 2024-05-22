@@ -5,25 +5,36 @@ import InputError from "@/Components/InputError.vue";
 import { ref } from "vue";
 import axios from 'axios';
 
-
+const { props } = usePage();
 const uploads_modal = ref(false);
 const edit_mode = ref(false);
 
-const create = () => {
-  uploads_modal.value = true;
-  edit_mode.value = false;
+const handleFileChange = (event) => {
+    // Access the selected files from the event
+    const selectedFiles = event.target.files;
+    // Update the data property with the selected files
+    form.uploads = selectedFiles;
 };
 
+const form = useForm({
+    policy_id: props.policy.id ?? "",
+    uploads: null,
+    type: "",
+});
+
+const create = () => {
+    uploads_modal.value = true;
+    edit_mode.value = false;
+};
 
 const submit = () => {
-    form.post(route("class-of-business.create"), {
+    form.post(route("policy.uploads"), {
         preserveScroll: true,
         onSuccess: () => closeModal(),
         onError: () => error(),
         onFinish: () => { },
     });
 };
-
 
 const error = () => {
     // alert('error');
@@ -34,34 +45,6 @@ const closeModal = () => {
     form.reset();
 };
 
-const handleDragOver = (event) => {
-    event.preventDefault();
-};
-const handleDrop = (event) => {
-    event.preventDefault();
-    const files = event.dataTransfer.files;
-    this.uploadFiles(files);
-};
-const selectFiles = () => {
-    const inputElement = document.getElementById('image-uploadify');
-    inputElement.click();
-};
-const uploadFiles = (files) => {
-      const formData = new FormData();
-      for (let i = 0; i < files.length; i++) {
-        formData.append('images[]', files[i]);
-      }
-
-      axios.post('/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      }).then(response => {
-        console.log(response.data);
-      }).catch(error => {
-        console.error(error);
-      });
-    };
 </script>
 
 <template>
@@ -75,7 +58,7 @@ const uploadFiles = (files) => {
                     style="display: block;">
                     <div class="modal-dialog modal-md">
                         <div class="modal-content">
-                            <form @submit.prevent="edit_mode ? update() : submit()">
+                            <form @submit.prevent="edit_mode ? update() : submit()" enctype="multipart/form-data">
                                 <div class="modal-header">
                                     <h5 class="modal-title">Uploads</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -83,18 +66,23 @@ const uploadFiles = (files) => {
                                 </div>
                                 <div class="modal-body">
                                     <div class="row g-3">
-                                        <input id="image-uploadify" type="file" accept=".xlsx,.xls,image/*,.doc,audio/*,.docx,video/*,.ppt,.pptx,.txt,.pdf" multiple style="display: none;">
-                                        <div class="imageuploadify well" @dragover="handleDragOver" @drop="handleDrop">
-                                        <div class="imageuploadify-overlay">
-                                            <i class="fa fa-picture-o"></i>
+                                        <input type="hidden" v-model="form.policy_id">
+                                        <div class="col-md-12">
+                                            <label for="input13" class="form-label">Uploads</label>
+                                            <input type="file" class="form-control" id="input13" @change="handleFileChange">
                                         </div>
-                                        <div class="imageuploadify-images-list text-center">
-                                            <i class="bx bxs-cloud-upload"></i>
-                                            <span class="imageuploadify-message">Drag & Drop Your File(s) Here To Upload</span>
-                                            <!-- Call selectFiles function when button is clicked -->
-                                            <button type="button" class="btn btn-default" @click="selectFiles">or select file(s) to upload</button>
+                                        <div class="col-md-12">
+                                            <label for="input21" class="form-label">Type</label>
+
+                                            <select id="input21" class="form-select"
+                                                v-model="form.type">
+
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                            </select>
+                                            <InputError :message="form.errors.type" />
                                         </div>
-                                        </div>
+                                       
                                     </div>
                                 </div>
                                 <div class="modal-footer">
