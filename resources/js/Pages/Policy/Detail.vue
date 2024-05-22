@@ -12,8 +12,6 @@ defineProps({
     policyNotes: Object
 });
 
-console.log(JSON.parse(JSON.stringify(props.policyNotes)));
-
 
 
 </script>
@@ -156,7 +154,7 @@ console.log(JSON.parse(JSON.stringify(props.policyNotes)));
                                 </div>
                             </fieldset>
 
-                            <fieldset class="border p-4 mb-4" id="partner">
+                            <fieldset class="border p-4 mb-4" id="partner" v-if="JSON.parse(JSON.stringify(props.policyNotes))?.length > 0 ? JSON.parse(JSON.stringify(props.policyNotes)) : undefined">
                                 <legend class="w-auto">Policy Notes</legend>
                                 <div class="row">
                                     <table class="table table-bordered">
