@@ -67,6 +67,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/edit', [PolicyController::class, 'edit'])->name('policy.edit');
         Route::post('/update', [PolicyController::class, 'update'])->name('policy.update');
         Route::get('/detail/{id}', [PolicyController::class, 'detail'])->name('policy.detail');
+        Route::post('/claim', [PolicyController::class, 'claim'])->name('policy.claim');
     });
 
     Route::prefix('roles')->group(function () {

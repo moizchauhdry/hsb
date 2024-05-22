@@ -10,6 +10,7 @@ use App\Models\Insurance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Models\ClassOfBusiness;
+use App\Models\PolicyNote;
 use App\Models\PolicyInsurance;
 use Monolog\Handler\IFTTTHandler;
 use App\Http\Controllers\Controller;
@@ -236,11 +237,35 @@ class PolicyController extends Controller
                 'percentage' => $policy->percentage,
                 'created_at' => $policy->created_at->format('d-m-Y h:i A'),
             ];
-                
-    
+
+            $policyNotes = PolicyNote::where('policy_id',$policy->id)->get();
             return Inertia::render('Policy/Detail', [
-                'policy' => $policyResponse
+                'policy' => $policyResponse,
+                'policyNotes' => $policyNotes
             ]);
+
+           
+        } catch (ModelNotFoundException $e) {
+            // Handle case when policy with the given ID doesn't exist
+            return response()->json(['error' => 'Policy not found'], 404);
+        }
+    }
+
+    public function claim(Request $request)
+    {
+        $request->validate([
+            'policy_id' => ['required'],
+            'claim' => ['required'],
+        ]);
+
+        try {
+            $data = [
+                'policy_id' => $request->policy_id,
+                'additional_notes' => $request->claim,
+            ];
+
+            PolicyNote::create($data);
+
         } catch (ModelNotFoundException $e) {
             // Handle case when policy with the given ID doesn't exist
             return response()->json(['error' => 'Policy not found'], 404);

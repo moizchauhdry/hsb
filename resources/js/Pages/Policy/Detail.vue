@@ -3,10 +3,16 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
 import { ref } from "vue";
 import Uploads from "./Uploads.vue";
+import Claim from "./Claim.vue";
+
+const { props } = usePage();
 
 defineProps({
     policy: Object,
+    policyNotes: Object
 });
+
+console.log(JSON.parse(JSON.stringify(props.policyNotes)));
 
 
 
@@ -42,8 +48,9 @@ defineProps({
                 <div class="card">
                     <div class="card-body">
                         <div class="d-lg-flex align-items-center mb-4 gap-3">
-                            <div class="ms-auto">
+                            <div class="ms-auto d-flex" style="width: 205px;">
                                 <Uploads v-bind="$props"></Uploads>
+                                <Claim v-bind="$props"></Claim>
                             </div>
                         </div>
                         <div class="table-responsive">
@@ -145,6 +152,19 @@ defineProps({
                                             <th>Percentage</th>
                                             <td> {{ policy.percentage }} </td>
                                         </tr>
+                                    </table>
+                                </div>
+                            </fieldset>
+
+                            <fieldset class="border p-4 mb-4" id="partner">
+                                <legend class="w-auto">Policy Notes</legend>
+                                <div class="row">
+                                    <table class="table table-bordered">
+                                        <template v-for="(policyNote, index) in JSON.parse(JSON.stringify(props.policyNotes))">
+                                            <tr>
+                                                <td> {{ policyNote.additional_notes }} </td>
+                                            </tr>
+                                        </template>
                                     </table>
                                 </div>
                             </fieldset>
