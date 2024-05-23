@@ -66,6 +66,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/store', [PolicyController::class, 'store'])->name('policy.store');
         Route::get('/edit', [PolicyController::class, 'edit'])->name('policy.edit');
         Route::post('/update', [PolicyController::class, 'update'])->name('policy.update');
+        Route::get('/detail/{id}', [PolicyController::class, 'detail'])->name('policy.detail');
+        Route::post('/additional-notes', [PolicyController::class, 'additionalNotes'])->name('policy.additionalNotes');
+        Route::post('/claims', [PolicyController::class, 'claims'])->name('policy.claims');
+        Route::post('/uploads', [PolicyController::class, 'uploads'])->name('policy.uploads');
     });
 
     Route::prefix('roles')->group(function () {

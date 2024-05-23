@@ -17,18 +17,28 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $data = [
+        $role = Role::updateOrCreate(['name' => 'admin'], ['name' => 'admin']);
+        Role::updateOrCreate(['name' => 'client'], ['name' => 'client']);
+
+        $permissions = Permission::pluck('id', 'id')->all();
+        $role->syncPermissions($permissions);
+
+        $admin = User::updateOrCreate(['email' => 'moizchauhdry@gmail.com'], [
             'name' => 'Moiz Chauhdry',
             'email' => 'moizchauhdry@gmail.com',
             'password' => Hash::make('12345678'),
             'role_users_id' => 1,
-        ];
+        ]);
 
-        $user = User::updateOrCreate(['email' => 'moizchauhdry@gmail.com'], $data);
+        $admin->assignRole(1);
 
-        $role = Role::updateOrCreate(['name' => 'Admin'], ['name' => 'Admin']);
-        $permissions = Permission::pluck('id', 'id')->all();
-        $role->syncPermissions($permissions);
-        $user->assignRole([$role->id]);
+        $client = User::updateOrCreate(['email' => 'client@gmail.com'], [
+            'name' => 'Client',
+            'email' => 'client@gmail.com',
+            'password' => Hash::make('12345678'),
+            'role_users_id' => 2,
+        ]);
+
+        $client->assignRole(2);
     }
 }

@@ -13,6 +13,7 @@ import '../css/semi-dark.css';
 import '../css/header-colors.css';
 
 import '../plugins/bs-stepper/css/bs-stepper.css';
+import '../plugins/image-loadify/css/img-loadify.css';
 
 
 
