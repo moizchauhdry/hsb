@@ -14,7 +14,9 @@ use App\Models\PolicyUpload;
 use Illuminate\Http\Request;
 use App\Models\BusinessClass;
 use Illuminate\Support\Carbon;
+use App\Models\PolicyClaimNote;
 use App\Models\PolicyInsurance;
+use App\Models\PolicyClaimUpload;
 use Monolog\Handler\IFTTTHandler;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
@@ -281,32 +283,6 @@ class PolicyController extends Controller
         }
     }
 
-    public function claims(Request $request)
-    {
-        $request->validate([
-            'policy_id' => ['required'],
-            'detail' => ['required'],
-            'progress' => ['required'],
-            'settled' => ['required'],
-            'status' => ['required']
-        ]);
-
-        try {
-            $data = [
-                'policy_id' => $request->policy_id,
-                'detail' => $request->detail,
-                'progress' => $request->progress,
-                'settled' => $request->settled,
-                'status' => $request->status,
-            ];
-
-            PolicyClaim::create($data);
-
-        } catch (ModelNotFoundException $e) {
-            // Handle case when policy with the given ID doesn't exist
-            return response()->json(['error' => 'Policy not found'], 404);
-        }
-    }
 
     public function uploads(Request $request)
     {
@@ -353,5 +329,107 @@ class PolicyController extends Controller
         }
 
     }
+
+    // Policy Claim function Start
+
+    public function claims(Request $request)
+    {
+        $request->validate([
+            'policy_id' => ['required'],
+            'detail' => ['required'],
+            'progress' => ['required'],
+            'settled' => ['required'],
+            'status' => ['required']
+        ]);
+
+        try {
+            $data = [
+                'policy_id' => $request->policy_id,
+                'detail' => $request->detail,
+                'progress' => $request->progress,
+                'settled' => $request->settled,
+                'status' => $request->status,
+            ];
+
+            PolicyClaim::create($data);
+
+        } catch (ModelNotFoundException $e) {
+            // Handle case when policy with the given ID doesn't exist
+            return response()->json(['error' => 'Policy not found'], 404);
+        }
+    }
+
+    public function claimUpload(Request $request)
+    {
+        $request->validate([
+            'policy_id' => ['required'],
+            'policy_claim_id' => ['required'], 
+            'uploads' => ['required'],
+        ]);
+
+        try {
+            $data = [
+                'policy_id' => $request->policy_id,
+                'policy_claim_id' => $request->policy_claim_id,
+            ];
+
+            $policyClaimUpload = PolicyClaimUpload::create($data);
+
+            $policyClaimUploadDirectory = 'policyClaimUploads';
+            if ($request->hasFile('uploads')) {
+    
+                // Assuming $request->file('uploads') returns an array of uploaded files
+                $files = $request->file('uploads');
+
+                foreach ($files as $file) {
+                    // Get the original file name
+                    $fileName = $file->getClientOriginalName();
+
+                    // Check if the storage directory exists, if not create it
+                    if (!Storage::exists($policyClaimUploadDirectory)) {
+                        Storage::makeDirectory($policyClaimUploadDirectory);
+                    }
+
+                    // Store the file and get the path
+                    $imageUrl = Storage::putFile($policyClaimUploadDirectory, new File($file));
+
+                    // Update the policy upload with the file path
+                    $policyClaimUpload->update(['file_url' => $imageUrl]);
+                }
+            }
+
+        } catch (ModelNotFoundException $e) {
+            // Handle case when policy with the given ID doesn't exist
+            return response()->json(['error' => 'Policy not found'], 404);
+        }
+
+
+
+    }
+
+    public function claimNote(Request $request)
+    {
+        $request->validate([
+            'policy_id' => ['required'],
+            'policy_claim_id' => ['required'], 
+            'note' => ['required']
+        ]);
+
+        try {
+            $data = [
+                'policy_id' => $request->policy_id,
+                'policy_claim_id' => $request->policy_claim_id,
+                'note' => $request->note,
+            ];
+
+            PolicyClaimNote::create($data);
+
+        } catch (ModelNotFoundException $e) {
+            // Handle case when policy with the given ID doesn't exist
+            return response()->json(['error' => 'Policy not found'], 404);
+        }
+    }
+
+    // Policy Claim function End
 
 }

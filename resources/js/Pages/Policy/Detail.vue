@@ -5,15 +5,24 @@ import { ref } from "vue";
 import Uploads from "./Uploads.vue";
 import AdditionalNotes from "./AdditionalNotes.vue";
 import Claim from "./Claim.vue";
+import ClaimNote from "./Claim/Notes.vue";
+import ClaimUpload from "./Claim/Upload.vue";
+import ClaimEdit from "./Claim/Edit.vue";
 
 const { props } = usePage();
 
 defineProps({
-    policy: Object,
-    policyNotes: Object,
-    policyClaims: Object,
-    assetUrl: Object,
+  policy: Object,
+  policyNotes: Object,
+  policyClaims: Object,
+  assetUrl: Object,
 });
+
+const isOpen = ref(new Array(props.policyNotes.length).fill(false)); // Array to store isOpen states for each accordion item
+
+const toggleAccordion = (index) => {
+  isOpen.value[index] = !isOpen.value[index]; // Toggle the isOpen state for the specific accordion item
+};
 
 </script>
 
@@ -55,7 +64,6 @@ defineProps({
                           
                             <fieldset class="border p-4 mb-4" id="partner">
                                 <h5 class="w-auto title">Policy Info</h5>
-                                
                                 <div class="row">
                                     <table class="table table-bordered">
                                         <tr>
@@ -106,9 +114,9 @@ defineProps({
                                     </table>
                                 </div>
                             </fieldset>
-                            <h5 class="w-auto">Policy Amount</h5>
+                           
                             <fieldset class="border p-4 mb-4" id="partner">
-                              
+                                <h5 class="w-auto">Policy Amount</h5>
                                 <div class="row">
                                     <table class="table table-bordered">
                                         <tr>
@@ -156,62 +164,102 @@ defineProps({
                                     </table>
                                 </div>
                             </fieldset>
-                            <h5 class="w-auto">Policy Claims</h5>
+
                             <fieldset class="border p-4 mb-4" id="partner">
-                               
+                                <h5 class="w-auto">Notes</h5>
                                 <div class="row">
-                                    <table class="table table-bordered">
-                                        <template  v-for="(policyClaim, index) in JSON.parse(JSON.stringify(props.policyClaims))" :key="index">
-                                            <tr>
-                                                <th>Progress</th>
-                                                <td>{{ policyClaim.progress }}</td>
-                                            </tr> 
-                                            <tr>
-                                                <th>Settled</th>
-                                                <td>{{ policyClaim.settled }}</td>
-                                            </tr>
-                                            <tr> 
-                                                <th>Status</th>
-                                                <td>{{ policyClaim.status }}</td>
-                                            </tr> 
-                                            <tr>
-                                                <th>Detail</th>
-                                                <td colspan="1">{{ policyClaim.detail }}</td>
-                                            </tr> 
-                                        </template>
-                                    </table>
+                                    <div class="table-responsive">
+                                        <table class="table mb-0">
+                                            <tbody>
+                                                <div class="accordion accordion-flush" id="accordionExample">
+                                                    <template v-for="(policyNote, index) in policyNotes" :key="index">
+                                                        <div class="accordion-item">
+                                                            <h2 class="accordion-header" :id="'heading-' + policyNote.id">
+                                                            <button class="accordion-button" type="button" @click="toggleAccordion(index)" :aria-expanded="isOpen[index]" :aria-controls="'collapse-' + policyNote.id">
+                                                                {{ policyNote.additional_notes }}
+                                                            </button>
+                                                            </h2>
+                                                            <div :id="'collapse-' + policyNote.id" class="accordion-collapse" :class="{ 'show': isOpen[index] }" :aria-labelledby="'heading-' + policyNote.id" data-bs-parent="#accordionExample2">
+                                                            <div class="accordion-body">
+                                                                <p>{{ policyNote.additional_notes }}</p>
+                                                            </div>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                </div>   
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </fieldset>
-                            <h5 class="w-auto">Additional Notes</h5>
+        
                             <fieldset class="border p-4 mb-4" id="partner">
+                                <h5 class="w-auto">Policy Claims</h5>
                                 <div class="row">
-                                    <table class="table table-bordered">
-                                        <tbody>
-                                            <tr v-if="props.policyNotes && props.policyNotes.length > 0" v-for="(policyNote, index) in props.policyNotes" :key="index">
-                                                <td>{{ policyNote.additional_notes }}</td>
-                                            </tr>
-                                            <tr v-else>
-                                                <td colspan="1">No records found</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                    <div class="table-responsive">
+                                        <table class="table mb-0">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Sr No.</th>
+                                                    <th>ID</th>
+                                                    <th>Progress</th>
+                                                    <th>Settled</th>
+                                                    <th>Detail</th>
+                                                    <th>Status</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <template v-for="(policyClaim, index) in JSON.parse(JSON.stringify(props.policyClaims))" :key="index">
+                                                    <tr>
+                                                        <td>{{ ++index }}</td>
+                                                        <td>{{ policyClaim.id }}</td>
+                                                        <td>{{ policyClaim.progress }}</td>
+                                                        <td>{{ policyClaim.settled }}</td>
+                                                        <td>{{ policyClaim.detail }}</td>
+                                                        <td><span class="badge bg-primary">{{ policyClaim.status }}</span></td>
+                                                        <td>
+                                                            <div class="d-lg-flex align-items-center mb-4 gap-3">
+                                                                <div class="ms-auto d-flex">
+                                                                    <ClaimNote v-bind="$props" :policyClaim="policyClaim" @click="create"></ClaimNote>
+                                                                    <ClaimUpload v-bind="$props" :policyClaim="policyClaim" @click="create"></ClaimUpload>
+                                                                    <ClaimEdit v-bind="$props" :policyClaim="policyClaim" @click="edit"></ClaimEdit>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr> 
+                                                </template>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </fieldset>
-                            <h5 class="w-auto">Uploads</h5>
+                       
+                            
+                         
                             <fieldset class="border p-4 mb-4" id="partner">
+                                <h5 class="w-auto">Uploads</h5>
                                 <div class="row">
-                                    <table class="table table-bordered">
-                                        <tbody>
-                                            <tr v-if="props.policyUploads && props.policyUploads.length > 0" v-for="(policyUpload, index) in props.policyUploads" :key="index">
-                                                <td><img :src="props.assetUrl + '/' + policyUpload.upload" class="w-25" alt=""></td>
-
-                                            </tr>
-                                            <tr v-else>
-                                                <td colspan="1">No records found</td>
-                                            </tr>
-                                        </tbody>
-
-                                    </table>
+                                    <div class="table-responsive">
+                                        <table class="table mb-0">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Sr No.</th>
+                                                    <th>Type</th>
+                                                    <th>File</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <template v-for="(policyUpload, index) in JSON.parse(JSON.stringify(props.policyUploads))" :key="index">
+                                                    <tr>
+                                                        <td>{{ ++index }}</td>
+                                                        <td>{{ policyUpload.type }}</td>
+                                                        <td><img :src="props.assetUrl + '/' + policyUpload.upload" alt="" style="height: 100px;width: 100px;"></td>
+                                                    </tr>
+                                                </template>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </fieldset>
                         </div>
