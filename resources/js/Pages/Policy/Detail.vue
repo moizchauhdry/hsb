@@ -62,7 +62,7 @@ defineProps({
                                         <tr>
                                             <th>ID</th>
                                             <td>{{ policy.id }}</td>
-                                            <th>Client Name</th>
+                                            <th>Client</th>
                                             <td>{{ policy.client_name }}</td>
                                         </tr>
                                         <tr>
@@ -87,7 +87,7 @@ defineProps({
                                             <td>{{ policy.agency_code }}</td>
                                         </tr>
                                         <tr>
-                                            <th>Class of business</th>
+                                            <th>Class business</th>
                                             <td>{{ policy.class_of_business_id }}</td>
                                         
                                             <th>Orignal Endorsment</th>

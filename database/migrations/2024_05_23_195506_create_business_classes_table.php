@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('class_of_businesses', function (Blueprint $table) {
+        Schema::create('business_classes', function (Blueprint $table) {
             $table->id();
-            $table->string('b_class_name');
-            $table->string('brokeage_rate_percentage')->nullable();
-            $table->longText('insurance_name')->nullable();
+            $table->string('class_name');
+            $table->string('percentage')->nullable();
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('class_of_businesses');
+        Schema::dropIfExists('business_classes');
     }
 };

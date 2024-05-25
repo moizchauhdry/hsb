@@ -101,7 +101,27 @@ const nextStep = () => {
     if (form.current_step < form.total_step) {
         submit();
     }
-}
+};
+
+const validateInput = (event) => {
+    const regex = /^[0-9]*$/;
+    const input = event.target.value;
+
+    if (!regex.test(input)) {
+        // If the input is not a valid integer, prevent the input from being entered
+        event.preventDefault();
+    } else {
+        // Update the form value with the valid input
+        form.agency_code = input;
+        form.sum_insured = input;
+        form.gross_premium = input;
+        form.net_premium = input;
+        form.brokerage_amount = input;
+        form.tax = input;
+        form.percentage = input;
+    }
+};
+
 </script>
 
 <template>
@@ -178,7 +198,7 @@ const nextStep = () => {
                                         <template v-if="form.current_step == 1">
                                             <div class="row g-2">
                                                 <div class="col-md-4">
-                                                    <label for="input13" class="form-label">Client Name</label>
+                                                    <label for="input13" class="form-label">Client</label>
                                                     <select id="input21" class="form-select" v-model="form.client_id">
                                                         <template v-for="client in clients" :key="client.id">
                                                             <option :value="client.id">{{ client.name }}
@@ -239,15 +259,11 @@ const nextStep = () => {
                                                 </div>
                                                 <div class="col-md-4">
                                                     <label for="input13" class="form-label">Agency Code</label>
-
-                                                    <input type="text" class="form-control" id="input13" placeholder=""
-                                                        v-model="form.agency_code">
-
+                                                    <input type="number" class="form-control" id="input13" placeholder="" v-model="form.agency_code" @input="validateInput">
                                                     <InputError :message="form.errors.agency_code" />
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <label for="input21" class="form-label">Class of
-                                                        business</label>
+                                                    <label for="input21" class="form-label">Class business</label>
 
                                                     <select id="input21" class="form-select"
                                                         v-model="form.class_of_business_id">
@@ -299,7 +315,7 @@ const nextStep = () => {
                                                 <div class="col-md-4">
                                                     <label for="input13" class="form-label">Sum insured</label>
 
-                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                    <input type="number" class="form-control" id="input13" placeholder=""
                                                         v-model="form.sum_insured">
 
                                                     <InputError :message="form.errors.sum_insured" />
@@ -307,7 +323,7 @@ const nextStep = () => {
                                                 <div class="col-md-4">
                                                     <label for="input13" class="form-label">Gross premium</label>
 
-                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                    <input type="number" class="form-control" id="input13" placeholder=""
                                                         v-model="form.gross_premium">
 
                                                     <InputError :message="form.errors.gross_premium" />
@@ -315,7 +331,7 @@ const nextStep = () => {
                                                 <div class="col-md-4">
                                                     <label for="input13" class="form-label">Net premium</label>
 
-                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                    <input type="number" class="form-control" id="input13" placeholder=""
                                                         v-model="form.net_premium">
 
                                                     <InputError :message="form.errors.net_premium" />
@@ -363,7 +379,7 @@ const nextStep = () => {
                                                 <div class="col-md-4">
                                                     <label for="input13" class="form-label">Brokerage amount</label>
 
-                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                    <input type="number" class="form-control" id="input13" placeholder=""
                                                         v-model="form.brokerage_amount">
 
                                                     <InputError :message="form.errors.brokerage_amount" />
@@ -381,7 +397,7 @@ const nextStep = () => {
                                                 <div class="col-md-4">
                                                     <label for="input13" class="form-label">Tax</label>
 
-                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                    <input type="number" class="form-control" id="input13" placeholder=""
                                                         v-model="form.tax">
 
                                                     <InputError :message="form.errors.tax" />
@@ -389,7 +405,7 @@ const nextStep = () => {
                                                 <div class="col-md-4">
                                                     <label for="input13" class="form-label">Percentage</label>
 
-                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                    <input type="number" class="form-control" id="input13" placeholder=""
                                                         v-model="form.percentage">
 
                                                     <InputError :message="form.errors.percentage" />
