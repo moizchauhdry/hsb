@@ -74,14 +74,57 @@ class BusinessClassController extends Controller
 
     public function edit($id)
     {        
-        $business_cls = BusinessClass::find($id);
+        $business_cls = BusinessClass::with('businessInsurance')->where('id',$id)->first();
         $insurances = Insurance::select('id', 'name')->get()->toArray();
-
+        
         $data = [
             'insurances' => $insurances,
             'business_cls' => $business_cls,
         ];
 
         return response()->json($data);
+    }
+
+    public function update(Request $request)
+    {
+        $business_cls = BusinessClass::where('id',$request->business_class_id)->first();
+
+        $validate = $request->validate([
+            'class_name' => ['required', 'string', 'min:5', 'max:50'],
+            'percentage' => ['required'],
+            'insurance_id*' => ['required'],
+        ]);
+
+        $data = [
+            'class_name' => $request->class_name,
+            'percentage' => $request->percentage,
+        ];
+
+        $business_cls->update($data);
+
+        if($request->insurance_id) {
+            $insuranceIDs = $request->insurance_id;
+            foreach($insuranceIDs as $insuranceID)
+            {
+                $businessClassInsurance = BusinessClassInsurance::where('business_class_id',$request->business_class_id)
+                    ->where('insurance_id',$insuranceID)->first();
+                if(!empty($businessClassInsurance))
+                {
+                    $data = [
+                        'insurance_id' => $insuranceID,
+                        'business_class_id' => $request->business_class_id,
+                    ];
+
+                    $businessClassInsurance->update($data);
+                } else {
+                    $data = [
+                        'insurance_id' => $insuranceID,
+                        'business_class_id' => $request->business_class_id,
+                    ];
+
+                    BusinessClassInsurance::create($data);
+                }
+            }
+        }
     }
 }

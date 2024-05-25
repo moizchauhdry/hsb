@@ -7,18 +7,15 @@ import { ref } from "vue";
 const { props } = usePage();
 
 
+const policyClaimNotes = ref([]);
 const notes_modal = ref(false);
 const edit_mode = ref(false);
 const form = useForm({
   policy_id: props.policy.id ?? "",
-  status: "", // Note: I'm unsure what `status` should be here.
+  policy_claim_id: "",
   note: "",
 });
 
-const create = () => {
-  notes_modal.value = true;
-  edit_mode.value = false;
-};
 
 const submit = () => {
   form.post(route("policy.claimNote"), {
@@ -37,14 +34,27 @@ const closeModal = () => {
   notes_modal.value = false;
   form.reset();
 };
+
+const claimNote = (id) => {
+  notes_modal.value = true;
+  edit_mode.value = false;
+
+  form.policy_id = props.policy.id ?? "";
+  form.policy_claim_id = id;
+  form.note = '';
+
+  axios.get(`/policy/get/claim/note/${props.policy.id}`)
+    .then(({ data }) => {
+      console.log(data);
+      policyClaimNotes.value = data.policyClaimNotes;
+    });
+};
+
+defineExpose({ claimNote: (id) => claimNote(id) });
 </script>
 <template>
     <AuthenticatedLayout>
       <div class="col">
-        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#notesLargeModal" @click="create"
-          style="margin-inline: 5px; font-size: 10px; width:40px;">
-          <i class='bx bxs-note'></i>
-        </button>
         <div class="modal fade show" id="notesLargeModal" tabindex="-1" aria-hidden="true" style="display: block;" v-if="notes_modal">
           <div class="modal fade show" id="notesLargeModal" tabindex="-1" aria-hidden="true" style="display: block;">
             <div class="modal-dialog modal-lg">
@@ -56,11 +66,36 @@ const closeModal = () => {
                   </div>
                   <div class="modal-body">
                     <input type="hidden" v-model="form.policy_id">
+                    <input type="hidden" v-model="form.policy_claim_id">
                     <div class="row g-3">
                       <div class="col-md-12">
                         <label for="input13" class="form-label">Note</label>
                         <textarea class="form-control" id="detail" v-model="form.note"></textarea>
                         <InputError :message="form.errors.note" />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="table-responsive">
+                        <table id="example" class="table table-striped table-bordered" style="width:100%">
+                          <thead>
+                            <tr>
+                              <th>Sr No.</th>
+                              <th>Claim ID</th>
+                              <th>Notes</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <template v-for="(policyClaimNote, index) in policyClaimNotes" :key="policyClaimNote.id">
+                              <tr>
+                                <td>{{ ++index }}</td>
+                                <td>{{ policyClaimNote.id }}</td>
+                                <td>{{ policyClaimNote.note }}</td>
+                              </tr>
+                            </template>
+                          </tbody>
+                        </table>
                       </div>
                     </div>
                   </div>
@@ -76,6 +111,7 @@ const closeModal = () => {
           </div>
         </div>
       </div>
+    
     </AuthenticatedLayout>
 </template>
 

@@ -332,6 +332,17 @@ class PolicyController extends Controller
 
     // Policy Claim function Start
 
+    public function getClaim($id)
+    {
+
+        $policyClaim = PolicyClaim::find($id);
+        $data = [
+            "policyClaim" => $policyClaim
+        ];
+
+        return response()->json($data);
+    }
+
     public function claims(Request $request)
     {
         $request->validate([
@@ -357,6 +368,46 @@ class PolicyController extends Controller
             // Handle case when policy with the given ID doesn't exist
             return response()->json(['error' => 'Policy not found'], 404);
         }
+    }
+
+    
+    public function updateClaim(Request $request)
+    {
+        $policyClaim = PolicyClaim::where('id',$request->claim_id)->first();
+       
+        $request->validate([
+            'policy_id' => ['required'],
+            'detail' => ['required'],
+            'progress' => ['required'],
+            'settled' => ['required'],
+            'status' => ['required']
+        ]);
+
+
+     
+        $data = [
+            'policy_id' => $request->policy_id,
+            'detail' => $request->detail,
+            'progress' => $request->progress,
+            'settled' => $request->settled,
+            'status' => $request->status
+        ];
+        $policyClaim->update($data);
+
+        
+    }
+
+    
+
+    public function getClaimUpload($id)
+    {
+
+        $policyClaimUploads = PolicyClaimUpload::where('policy_id',$id)->get()->toArray();
+        $data = [
+            "policyClaimUploads" => $policyClaimUploads
+        ];
+
+        return response()->json($data);
     }
 
     public function claimUpload(Request $request)
@@ -405,6 +456,17 @@ class PolicyController extends Controller
 
 
 
+    }
+
+    public function getClaimNote($id)
+    {
+
+        $policyClaimNotes = PolicyClaimNote::where('policy_id',$id)->get()->toArray();
+        $data = [
+            "policyClaimNotes" => $policyClaimNotes
+        ];
+
+        return response()->json($data);
     }
 
     public function claimNote(Request $request)

@@ -10,17 +10,13 @@ const claim_modal = ref(false);
 const edit_mode = ref(false);
 const form = useForm({
     policy_id: JSON.parse(JSON.stringify((props.policy.id))) ?? "",
+    claim_id: "",
     detail: "",
     progress: "",
     settled: "",
     status: "",
 });
 
-
-const edit = () => {
-  claim_modal.value = true;
-  edit_mode.value = true;
-};
 
 const submit = () => {
     form.post(route("policy.claims"), {
@@ -41,12 +37,36 @@ const closeModal = () => {
     form.reset();
 };
 
+const claimEdit = (id) => {
+    claim_modal.value = true;
+    edit_mode.value = true;
+
+  axios.get(`/policy/get/claim/${id}`)
+    .then(({ data }) => {
+        form.policy_id = props.policy.id ?? "";
+        form.claim_id = id;
+        form.detail= data.policyClaim.detail;
+        form.progress= data.policyClaim.progress;
+        form.settled= data.policyClaim.settled;
+        form.status= data.policyClaim.status;
+    });
+};
+
+defineExpose({ claimEdit: (id) => claimEdit(id) });
+
+const update = () => {
+    form.post(route("policy.updateClaim"), {
+        preserveScroll: true,
+        onSuccess: () => closeModal(),
+        onError: () => error(),
+        onFinish: () => { },
+    });
+};
+
 </script>
 <template>
 <AuthenticatedLayout>
     <div class="col">
-        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#EditLargeModal" style="font-size: 10px; width:40px;"
-        @click="edit"><i class='bx bx-edit'></i></button>
             <div class="modal fade show" id="EditLargeModal" tabindex="-1" aria-hidden="true" style="display: block;"
             v-if="claim_modal">
             <div class="modal fade show" id="EditLargeModal" tabindex="-1" aria-hidden="true"
@@ -61,6 +81,7 @@ const closeModal = () => {
                             </div>
                             <div class="modal-body">
                                 <input type="hidden" v-model="form.policy_id">
+                                <input type="hidden" v-model="form.claim_id">
                                 <div class="row g-3">
                                     <div class="col-md-4">
                                         <label for="input13" class="form-label">Progress</label>
