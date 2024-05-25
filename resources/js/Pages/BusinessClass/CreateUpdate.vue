@@ -63,6 +63,21 @@ const validateInput = (event) => {
     }
 };
 
+const edit = (id) => {
+    modal.value = true;
+    edit_mode.value = true;
+
+    axios.get(`/business-class/edit/${id}`)
+        .then(({ data }) => {
+            form.business_class_id = data.business_cls.id;
+            form.class_name = data.business_cls.class_name;
+            form.percentage = data.business_cls.percentage;
+            form.insurance_id = data.business_cls.insurance_id;
+        });
+};
+
+defineExpose({ edit: (id) => edit(id) });
+
 </script>
 
 <template>
@@ -84,23 +99,22 @@ const validateInput = (event) => {
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label for="input13" class="form-label">Class Name</label>
-                                    <input type="text" class="form-control" id="input13"
-                                        placeholder="" v-model="form.class_name">
-                                    
+                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                        v-model="form.class_name">
+
                                     <InputError :message="form.errors.class_name" />
                                 </div>
                                 <div class="col-md-6">
                                     <label for="input13" class="form-label">Percentage</label>
-                                    <input type="number" class="form-control" id="input13"
-                                        placeholder="" v-model="form.percentage" @input="validateInput">
-                                    
+                                    <input type="number" class="form-control" id="input13" placeholder=""
+                                        v-model="form.percentage" @input="validateInput">
+
                                     <InputError :message="form.errors.percentage" />
                                 </div>
                                 <div class="col-md-12">
                                     <label for="input21" class="form-label">Insurance</label>
 
-                                    <select id="input21" class="form-select" multiple
-                                        v-model="form.insurance_id">
+                                    <select id="input21" class="form-select" multiple v-model="form.insurance_id">
                                         <template v-for="insurance in insurances" :key="insurance.id">
                                             <option :value="insurance.id">{{ insurance.name }}
                                             </option>
@@ -111,8 +125,8 @@ const validateInput = (event) => {
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary btn-sm"
-                                data-bs-dismiss="modal" @click="closeModal">Close</button>
+                            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal"
+                                @click="closeModal">Close</button>
                             <button type="submit" class="btn btn-primary btn-sm">
                                 {{ edit_mode ? 'Save & Update' : 'Save & Submit' }}</button>
                         </div>

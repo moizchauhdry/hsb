@@ -46,7 +46,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/update', [UserController::class, 'update'])->name('user.update')->middleware('permission:user-update');
     });
 
-    Route::prefix('businessClass')->group(function () {
+    Route::prefix('business-class')->group(function () {
         Route::get('/', [BusinessClassController::class, 'index'])->name('businessClass.index')->middleware('permission:user-list');
         Route::get('/create', [BusinessClassController::class, 'create'])->name('businessClass.create');
         Route::post('/store', [BusinessClassController::class, 'store'])->name('businessClass.store');
