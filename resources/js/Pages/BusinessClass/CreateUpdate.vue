@@ -15,13 +15,13 @@ const businessClass = usePage().props.businessClass;
 const insurances = ref([]);
 
 const create = () => {
-    modal.value = true;
-    edit_mode.value = false;
+  modal.value = true;
+  edit_mode.value = false;
 
-    axios.get("/businessClass/create")
-        .then(({ data }) => {
-            insurances.value = data.insurances;
-        });
+  axios.get("/business-class/create")
+    .then(({ data }) => {
+      insurances.value = data.insurances;
+    });
 };
 
 const form = useForm({
@@ -64,19 +64,29 @@ const validateInput = (event) => {
 };
 
 const edit = (id) => {
-    modal.value = true;
-    edit_mode.value = true;
+  modal.value = true;
+  edit_mode.value = true;
 
-    axios.get(`/business-class/edit/${id}`)
-        .then(({ data }) => {
-            form.business_class_id = data.business_cls.id;
-            form.class_name = data.business_cls.class_name;
-            form.percentage = data.business_cls.percentage;
-            form.insurance_id = data.business_cls.insurance_id;
-        });
+  axios.get(`/business-class/edit/${id}`)
+    .then(({ data }) => {
+      form.business_class_id = data.business_cls.id;
+      form.class_name = data.business_cls.class_name;
+      form.percentage = data.business_cls.percentage;
+      insurances.value = data.insurances;
+      form.insurance_id = data.business_cls.business_insurance.map(rel => rel.insurance_id);
+    });
 };
 
 defineExpose({ edit: (id) => edit(id) });
+
+const update = () => {
+    form.post(route("businessClass.update"), {
+        preserveScroll: true,
+        onSuccess: () => closeModal(),
+        onError: () => error(),
+        onFinish: () => { },
+    });
+};
 
 </script>
 
@@ -89,7 +99,7 @@ defineExpose({ edit: (id) => edit(id) });
             v-if="modal">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
-                    <form @submit.prevent="submit()">
+                    <form @submit.prevent="edit_mode ? update() : submit()">
                         <div class="modal-header">
                             <h5 class="modal-title">Business Class</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
@@ -115,9 +125,15 @@ defineExpose({ edit: (id) => edit(id) });
                                     <label for="input21" class="form-label">Insurance</label>
 
                                     <select id="input21" class="form-select" multiple v-model="form.insurance_id">
-                                        <template v-for="insurance in insurances" :key="insurance.id">
-                                            <option :value="insurance.id">{{ insurance.name }}
-                                            </option>
+                                        <template v-if="insurances.length > 0">
+                                            <template v-for="insurance in insurances" :key="insurance.id">
+                                                <option :value="insurance.id" :selected="edit_mode && form.insurance_id.includes(insurance.id)">
+                                                {{ insurance.name }}
+                                                </option>
+                                            </template>
+                                        </template>
+                                        <template v-else>
+                                            <p>No insurance options available.</p>
                                         </template>
                                     </select>
                                     <InputError :message="form.errors.insurance_id" />

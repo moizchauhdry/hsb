@@ -10,4 +10,9 @@ class BusinessClass extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+    public function businessInsurance()
+    {
+        return $this->hasMany(BusinessClassInsurance::class,'business_class_id','id');
+    }
 }

@@ -11,24 +11,49 @@ import ClaimEdit from "./Claim/Edit.vue";
 
 const { props } = usePage();
 
+const isOpen = ref(new Array(props.policyNotes.length).fill(false)); // Array to store isOpen states
+
 defineProps({
   policy: Object,
   policyNotes: Object,
   policyClaims: Object,
   assetUrl: Object,
+  // Add a new prop for single-open behavior
+  desiredSingleOpenBehavior: {
+    type: Boolean,
+    default: false, // Set default to false (optional)
+  },
 });
 
-const isOpen = ref(new Array(props.policyNotes.length).fill(false)); // Array to store isOpen states for each accordion item
-
 const toggleAccordion = (index) => {
-  isOpen.value[index] = !isOpen.value[index]; // Toggle the isOpen state for the specific accordion item
+  // Toggle the isOpen state for the clicked item only
+  isOpen.value[index] = !isOpen.value[index];
+
+  // Optionally close other accordion items (if single-open behavior is desired)
+  if (props.desiredSingleOpenBehavior) {
+    isOpen.value.fill(false, 0, index); // Close previous items
+    isOpen.value.fill(false, index + 1); // Close subsequent items
+  }
 };
 
+const claim_note_ref = ref(null);
+const claim_upload_ref = ref(null);
+const claim_edit_ref = ref(null);
+
+const claimNote = (id) => {
+    claim_note_ref.value.claimNote(id)
+};
+
+const claimUpload = (id) => {
+    claim_upload_ref.value.claimUpload(id)
+};
+
+const claimEdit = (id) => {
+    claim_edit_ref.value.claimEdit(id)
+};
+
+
 </script>
-
-<style> table, th, td { padding: 3px !important; font-size: 14px !important; } #lc-table td { border: 1px solid rgb(194, 189, 189) !important; text-align: left !important; } #lc-table th { border: 1px solid rgb(194, 189, 189) !important; text-align: left !important; } table { width: 100%; border-collapse: collapse; } fieldset legend { color: black; font-weight: 500; font-size: 18px; } fieldset.border { border: 2px solid #037DE2 !important; border-radius: 5px !important; }
-    fieldset.member-border { border: 2px solid blue !important; border-radius: 5px !important;} .mb-4 { margin-bottom: 20px } .custom-image-preview { width: 100px; height: 100px } </style>
-
 
 <template>
     <Head title="Policies" />
@@ -171,22 +196,25 @@ const toggleAccordion = (index) => {
                                     <div class="table-responsive">
                                         <table class="table mb-0">
                                             <tbody>
+                                               
+                                                    
                                                 <div class="accordion accordion-flush" id="accordionExample">
                                                     <template v-for="(policyNote, index) in policyNotes" :key="index">
-                                                        <div class="accordion-item">
-                                                            <h2 class="accordion-header" :id="'heading-' + policyNote.id">
-                                                            <button class="accordion-button" type="button" @click="toggleAccordion(index)" :aria-expanded="isOpen[index]" :aria-controls="'collapse-' + policyNote.id">
-                                                                {{ policyNote.additional_notes }}
-                                                            </button>
-                                                            </h2>
-                                                            <div :id="'collapse-' + policyNote.id" class="accordion-collapse" :class="{ 'show': isOpen[index] }" :aria-labelledby="'heading-' + policyNote.id" data-bs-parent="#accordionExample2">
-                                                            <div class="accordion-body">
-                                                                <p>{{ policyNote.additional_notes }}</p>
-                                                            </div>
-                                                            </div>
+                                                    <div class="accordion-item">
+                                                        <h2 class="accordion-header" :id="'heading-' + policyNote.id">
+                                                        <button class="accordion-button" type="button" @click="toggleAccordion(index)" :aria-expanded="isOpen[index]" :aria-controls="'collapse-' + policyNote.id">
+                                                            {{ policyNote.additional_notes }}
+                                                        </button>
+                                                        </h2>
+                                                        <div :id="'collapse-' + policyNote.id" class="accordion-collapse" :class="{ 'show': isOpen[index] }" :aria-labelledby="'heading-' + policyNote.id" data-bs-parent="#accordionExample2">
+                                                        <div class="accordion-body">
+                                                            <p>{{ policyNote.additional_notes }}</p>
                                                         </div>
+                                                        </div>
+                                                    </div>
                                                     </template>
-                                                </div>   
+                                                </div>
+                                                     
                                             </tbody>
                                         </table>
                                     </div>
@@ -197,6 +225,11 @@ const toggleAccordion = (index) => {
                                 <h5 class="w-auto">Policy Claims</h5>
                                 <div class="row">
                                     <div class="table-responsive">
+                                        <div class="ms-auto">
+                                            <ClaimNote v-bind="$props" ref="claim_note_ref"></ClaimNote>
+                                            <ClaimUpload v-bind="$props" ref="claim_upload_ref"></ClaimUpload>
+                                            <ClaimEdit v-bind="$props" ref="claim_edit_ref"></ClaimEdit>
+                                        </div>
                                         <table class="table mb-0">
                                             <thead class="table-light">
                                                 <tr>
@@ -221,10 +254,20 @@ const toggleAccordion = (index) => {
                                                         <td>
                                                             <div class="d-lg-flex align-items-center mb-4 gap-3">
                                                                 <div class="ms-auto d-flex">
-                                                                    <ClaimNote v-bind="$props" :policyClaim="policyClaim" @click="create"></ClaimNote>
-                                                                    <ClaimUpload v-bind="$props" :policyClaim="policyClaim" @click="create"></ClaimUpload>
-                                                                    <ClaimEdit v-bind="$props" :policyClaim="policyClaim" @click="edit"></ClaimEdit>
+                                                                    <button type="button" @click="claimNote(policyClaim.id)" title="Note"
+                                                                        data-bs-toggle="modal" data-bs-target="#notesLargeModal"
+                                                                        class="btn btn-primary btn-sm" style="margin-inline: 5px; font-size: 10px; width:40px;"> <i class='bx bxs-note'></i></button>
+
+                                                                    <button type="button" @click="claimUpload(policyClaim.id)" title="Uploads"
+                                                                        data-bs-toggle="modal" data-bs-target="#notesUploadLargeModal"
+                                                                        class="btn btn-primary btn-sm" style="margin-inline: 5px; font-size: 10px; width:40px;">  <i class='bx bx-cloud-upload'></i></button>
+
+                                                                    <button type="button" @click="claimEdit(policyClaim.id)" title="Edit"
+                                                                        data-bs-toggle="modal" data-bs-target="#EditLargeModal"
+                                                                        class="btn btn-primary btn-sm" style="font-size: 10px; width:40px;">  <i class='bx bx-edit'></i></button>
+
                                                                 </div>
+                                                                   
                                                             </div>
                                                         </td>
                                                     </tr> 
@@ -234,9 +277,7 @@ const toggleAccordion = (index) => {
                                     </div>
                                 </div>
                             </fieldset>
-                       
-                            
-                         
+                    
                             <fieldset class="border p-4 mb-4" id="partner">
                                 <h5 class="w-auto">Uploads</h5>
                                 <div class="row">
@@ -270,3 +311,6 @@ const toggleAccordion = (index) => {
         <!--end page wrapper -->
     </AuthenticatedLayout>
 </template>
+
+<style> table, th, td { padding: 3px !important; font-size: 14px !important; } #lc-table td { border: 1px solid rgb(194, 189, 189) !important; text-align: left !important; } #lc-table th { border: 1px solid rgb(194, 189, 189) !important; text-align: left !important; } table { width: 100%; border-collapse: collapse; } fieldset legend { color: black; font-weight: 500; font-size: 18px; } fieldset.border { border: 2px solid #037DE2 !important; border-radius: 5px !important; }
+    fieldset.member-border { border: 2px solid blue !important; border-radius: 5px !important;} .mb-4 { margin-bottom: 20px } .custom-image-preview { width: 100px; height: 100px } </style>

@@ -71,9 +71,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/detail/{id}', [PolicyController::class, 'detail'])->name('policy.detail');
         Route::post('/additional-notes', [PolicyController::class, 'additionalNotes'])->name('policy.additionalNotes');
         Route::post('/uploads', [PolicyController::class, 'uploads'])->name('policy.uploads');
+        Route::get('/get/claim/{id}', [PolicyController::class, 'getClaim'])->name('policy.getClaim');
         Route::post('/claims', [PolicyController::class, 'claims'])->name('policy.claims');
+        Route::post('/claim/update', [PolicyController::class, 'updateClaim'])->name('policy.updateClaim');
+        Route::get('/get/claim/upload/{id}', [PolicyController::class, 'getClaimUpload'])->name('policy.getClaimUpload');
         Route::post('/claim/upload', [PolicyController::class, 'claimUpload'])->name('policy.claimUpload');
         Route::post('/claim/note', [PolicyController::class, 'claimNote'])->name('policy.claimNote');
+        Route::get('/get/claim/note/{id}', [PolicyController::class, 'getClaimNote'])->name('policy.getClaimNote');
+       
     });
 
     Route::prefix('roles')->group(function () {
