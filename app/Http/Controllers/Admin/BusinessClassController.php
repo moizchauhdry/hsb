@@ -103,27 +103,16 @@ class BusinessClassController extends Controller
         $business_cls->update($data);
 
         if($request->insurance_id) {
+            BusinessClassInsurance::where('business_class_id',$request->business_class_id)->delete();
             $insuranceIDs = $request->insurance_id;
             foreach($insuranceIDs as $insuranceID)
             {
-                $businessClassInsurance = BusinessClassInsurance::where('business_class_id',$request->business_class_id)
-                    ->where('insurance_id',$insuranceID)->first();
-                if(!empty($businessClassInsurance))
-                {
-                    $data = [
-                        'insurance_id' => $insuranceID,
-                        'business_class_id' => $request->business_class_id,
-                    ];
-
-                    $businessClassInsurance->update($data);
-                } else {
-                    $data = [
-                        'insurance_id' => $insuranceID,
-                        'business_class_id' => $request->business_class_id,
-                    ];
-
-                    BusinessClassInsurance::create($data);
-                }
+                $data = [
+                    'insurance_id' => $insuranceID,
+                    'business_class_id' => $request->business_class_id,
+                ];
+                BusinessClassInsurance::create($data);
+             
             }
         }
     }

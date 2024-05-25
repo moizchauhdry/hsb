@@ -82,7 +82,7 @@ defineExpose({ edit: (id) => edit(id) });
 const update = () => {
     form.post(route("businessClass.update"), {
         preserveScroll: true,
-        onSuccess: () => closeModal(),
+        onSuccess: () => close(),
         onError: () => error(),
         onFinish: () => { },
     });
