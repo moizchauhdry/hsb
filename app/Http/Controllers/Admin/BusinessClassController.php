@@ -74,14 +74,13 @@ class BusinessClassController extends Controller
 
     public function edit($id)
     {        
-        $businessClass = BusinessClass::find($id);
+        $business_cls = BusinessClass::find($id);
         $insurances = Insurance::select('id', 'name')->get()->toArray();
 
         $data = [
             'insurances' => $insurances,
-            'businessClass' => $businessClass,
+            'business_cls' => $business_cls,
         ];
-
 
         return response()->json($data);
     }
