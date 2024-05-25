@@ -66,8 +66,9 @@ defineProps({
                                             <td>{{ policy.client_name }}</td>
                                             <td>{{ policy.created_at }}</td>
                                             <td>
-                                               
-                                                    <Link></Link>
+                                                <Link :href="route('policy.detail', policy.id)" class="btn btn-primary">
+                                                   View Detail
+                                                </Link>
                                             </td>
                                             <td>
                                                 <button type="button" @click="edit(policy)" title="Edit"

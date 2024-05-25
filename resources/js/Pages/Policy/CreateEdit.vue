@@ -263,12 +263,12 @@ const validateInput = (event) => {
                                                     <InputError :message="form.errors.agency_code" />
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <label for="input21" class="form-label">Class business</label>
+                                                    <label for="input21" class="form-label">Business Class</label>
 
                                                     <select id="input21" class="form-select"
                                                         v-model="form.class_of_business_id">
                                                         <template v-for="cob in cobs" :key="cob.id">
-                                                            <option :value="cob.id">{{ cob.b_class_name }}</option>
+                                                            <option :value="cob.id">{{ cob.class_name }}</option>
                                                         </template>
                                                     </select>
                                                     <InputError :message="form.errors.class_of_business_id" />

@@ -15,8 +15,6 @@ defineProps({
     assetUrl: Object,
 });
 
-
-
 </script>
 
 <style> table, th, td { padding: 3px !important; font-size: 14px !important; } #lc-table td { border: 1px solid rgb(194, 189, 189) !important; text-align: left !important; } #lc-table th { border: 1px solid rgb(194, 189, 189) !important; text-align: left !important; } table { width: 100%; border-collapse: collapse; } fieldset legend { color: black; font-weight: 500; font-size: 18px; } fieldset.border { border: 2px solid #037DE2 !important; border-radius: 5px !important; }
@@ -54,8 +52,9 @@ defineProps({
                             </div>
                         </div>
                         <div class="table-responsive">
-                            <h5 class="w-auto title">Policy Info</h5>
+                          
                             <fieldset class="border p-4 mb-4" id="partner">
+                                <h5 class="w-auto title">Policy Info</h5>
                                 
                                 <div class="row">
                                     <table class="table table-bordered">

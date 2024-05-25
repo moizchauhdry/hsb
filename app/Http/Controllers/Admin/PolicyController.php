@@ -222,7 +222,7 @@ class PolicyController extends Controller
                 'policy_no' => $policy->policy_no,
                 'agency_id' => $policy->agency->name,
                 'agency_code' => $policy->agency_code,
-                'class_of_business_id' => $policy->classOfBusiness->b_class_name,
+                'class_of_business_id' => $policy->businessClass->class_name,
                 'orignal_endorsment' => $policy->orignal_endorsment,
                 'date_of_insurance' => $policy->date_of_insurance,
                 'policy_start_period' => $policy->policy_start_period,
