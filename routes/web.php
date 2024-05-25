@@ -10,7 +10,7 @@ use App\Http\Controllers\Admin\AgencyController;
 use App\Http\Controllers\Admin\PolicyController;
 use App\Http\Controllers\Admin\InsuranceController;
 use App\Http\Controllers\CustomerAccountController;
-use App\Http\Controllers\Admin\ClassOfBusinessController;
+use App\Http\Controllers\Admin\BusinessClassController;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,10 +46,12 @@ Route::middleware('auth')->group(function () {
         Route::post('/update', [UserController::class, 'update'])->name('user.update')->middleware('permission:user-update');
     });
 
-    Route::prefix('class-of-business')->group(function () {
-        Route::get('/', [ClassOfBusinessController::class, 'index'])->name('class-of-business.index')->middleware('permission:user-list');
-        Route::post('/create', [ClassOfBusinessController::class, 'create'])->name('class-of-business.create')->middleware('permission:user-create');
-        Route::post('/update', [ClassOfBusinessController::class, 'update'])->name('class-of-business.update')->middleware('permission:user-update');
+    Route::prefix('businessClass')->group(function () {
+        Route::get('/', [BusinessClassController::class, 'index'])->name('businessClass.index')->middleware('permission:user-list');
+        Route::get('/create', [BusinessClassController::class, 'create'])->name('businessClass.create');
+        Route::post('/store', [BusinessClassController::class, 'store'])->name('businessClass.store');
+        Route::get('/edit/{id}', [BusinessClassController::class, 'edit'])->name('businessClass.edit');
+        Route::post('/update', [BusinessClassController::class, 'update'])->name('businessClass.update');
     });
 
     Route::prefix('insurance')->group(function () {

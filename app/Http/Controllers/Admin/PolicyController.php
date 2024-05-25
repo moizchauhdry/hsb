@@ -7,13 +7,13 @@ use Inertia\Inertia;
 use App\Models\Agency;
 use App\Models\Policy;
 use App\Models\Insurance;
-use App\Models\PolicyNote;
 use Illuminate\Http\File;
+use App\Models\PolicyNote;
 use App\Models\PolicyClaim;
 use App\Models\PolicyUpload;
 use Illuminate\Http\Request;
+use App\Models\BusinessClass;
 use Illuminate\Support\Carbon;
-use App\Models\ClassOfBusiness;
 use App\Models\PolicyInsurance;
 use Monolog\Handler\IFTTTHandler;
 use App\Http\Controllers\Controller;
@@ -46,7 +46,7 @@ class PolicyController extends Controller
         $clients = User::select('id', 'name')->where('role_users_id', 2)->get()->toArray();
         $insurances = Insurance::select('id', 'name')->get()->toArray();
         $agencies = Agency::select('id', 'name')->get()->toArray();
-        $cobs = ClassOfBusiness::select('id', 'b_class_name')->get()->toArray();
+        $cobs = BusinessClass::select('id', 'class_name')->get()->toArray();
 
         $data = [
             'users' => $users,
@@ -222,7 +222,7 @@ class PolicyController extends Controller
                 'policy_no' => $policy->policy_no,
                 'agency_id' => $policy->agency->name,
                 'agency_code' => $policy->agency_code,
-                'class_of_business_id' => $policy->classOfBusiness->b_class_name,
+                'class_of_business_id' => $policy->businessClass->class_name,
                 'orignal_endorsment' => $policy->orignal_endorsment,
                 'date_of_insurance' => $policy->date_of_insurance,
                 'policy_start_period' => $policy->policy_start_period,
