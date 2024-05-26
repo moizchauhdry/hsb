@@ -3,16 +3,21 @@ import { ref } from "vue";
 import Sidebar from "@/Layouts/Partials/Sidebar.vue";
 import Header from "@/Layouts/Partials/Header.vue";
 
+const toggleSidebar = () => {
+    const wrapper = document.querySelector('.wrapper');
+    if (wrapper) {
+        wrapper.classList.toggle('toggled');
+    }
+};
 
-const showingNavigationDropdown = ref(false);
 </script>
 
 <template>
     <!--wrapper-->
     <div class="wrapper">
 
-        <Sidebar></Sidebar>
-        <Header></Header>
+        <Sidebar @toggle="toggleSidebar"></Sidebar>
+        <Header @toggle="toggleSidebar"></Header>
 
         <!-- Page Content -->
         <main>

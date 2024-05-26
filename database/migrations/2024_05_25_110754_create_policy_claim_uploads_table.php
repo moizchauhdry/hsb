@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('class_of_businesses', function (Blueprint $table) {
+        Schema::create('policy_claim_uploads', function (Blueprint $table) {
             $table->id();
-            $table->string('b_class_name');
-            $table->string('brokeage_rate_percentage')->nullable();
-            $table->longText('insurance_name')->nullable();
+            $table->foreignId('policy_id')->constrained('policies')->onDelete('cascade');
+            $table->foreignId('policy_claim_id')->constrained('policy_claims')->onDelete('cascade');
+            $table->string('file_url')->nullable();
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('class_of_businesses');
+        Schema::dropIfExists('policy_claim_uploads');
     }
 };

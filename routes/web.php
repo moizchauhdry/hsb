@@ -3,14 +3,12 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\WorkOrderController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AgencyController;
 use App\Http\Controllers\Admin\PolicyController;
 use App\Http\Controllers\Admin\InsuranceController;
-use App\Http\Controllers\CustomerAccountController;
-use App\Http\Controllers\Admin\ClassOfBusinessController;
+use App\Http\Controllers\Admin\BusinessClassController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,12 +23,6 @@ use App\Http\Controllers\Admin\ClassOfBusinessController;
 
 Route::get('/', function () {
     return redirect()->route('login');
-    // return Inertia::render('Welcome', [
-    //     'canLogin' => Route::has('login'),
-    //     'canRegister' => Route::has('register'),
-    //     'laravelVersion' => Application::VERSION,
-    //     'phpVersion' => PHP_VERSION,
-    // ]);
 });
 
 Route::get('/dashboard', [DashboardController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
@@ -46,10 +38,12 @@ Route::middleware('auth')->group(function () {
         Route::post('/update', [UserController::class, 'update'])->name('user.update')->middleware('permission:user-update');
     });
 
-    Route::prefix('class-of-business')->group(function () {
-        Route::get('/', [ClassOfBusinessController::class, 'index'])->name('class-of-business.index')->middleware('permission:user-list');
-        Route::post('/create', [ClassOfBusinessController::class, 'create'])->name('class-of-business.create')->middleware('permission:user-create');
-        Route::post('/update', [ClassOfBusinessController::class, 'update'])->name('class-of-business.update')->middleware('permission:user-update');
+    Route::prefix('business-class')->group(function () {
+        Route::get('/', [BusinessClassController::class, 'index'])->name('businessClass.index')->middleware('permission:user-list');
+        Route::get('/create', [BusinessClassController::class, 'create'])->name('businessClass.create');
+        Route::post('/store', [BusinessClassController::class, 'store'])->name('businessClass.store');
+        Route::get('/edit/{id}', [BusinessClassController::class, 'edit'])->name('businessClass.edit');
+        Route::post('/update', [BusinessClassController::class, 'update'])->name('businessClass.update');
     });
 
     Route::prefix('insurance')->group(function () {
@@ -64,12 +58,18 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [PolicyController::class, 'index'])->name('policy.index')->middleware('permission:user-list');
         Route::get('/create', [PolicyController::class, 'create'])->name('policy.create');
         Route::post('/store', [PolicyController::class, 'store'])->name('policy.store');
-        Route::get('/edit', [PolicyController::class, 'edit'])->name('policy.edit');
+        Route::get('/edit/{id}', [PolicyController::class, 'edit'])->name('policy.edit');
         Route::post('/update', [PolicyController::class, 'update'])->name('policy.update');
         Route::get('/detail/{id}', [PolicyController::class, 'detail'])->name('policy.detail');
         Route::post('/additional-notes', [PolicyController::class, 'additionalNotes'])->name('policy.additionalNotes');
-        Route::post('/claims', [PolicyController::class, 'claims'])->name('policy.claims');
         Route::post('/uploads', [PolicyController::class, 'uploads'])->name('policy.uploads');
+        Route::get('/get/claim/{id}', [PolicyController::class, 'getClaim'])->name('policy.getClaim');
+        Route::post('/claims', [PolicyController::class, 'claims'])->name('policy.claims');
+        Route::post('/claim/update', [PolicyController::class, 'updateClaim'])->name('policy.updateClaim');
+        Route::get('/get/claim/upload/{id}', [PolicyController::class, 'getClaimUpload'])->name('policy.getClaimUpload');
+        Route::post('/claim/upload', [PolicyController::class, 'claimUpload'])->name('policy.claimUpload');
+        Route::post('/claim/note', [PolicyController::class, 'claimNote'])->name('policy.claimNote');
+        Route::get('/get/claim/note/{id}', [PolicyController::class, 'getClaimNote'])->name('policy.getClaimNote');
     });
 
     Route::prefix('roles')->group(function () {

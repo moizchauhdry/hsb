@@ -15,13 +15,33 @@ const logout = () => {
 const toggleDropdown =() => {
     dropdownOpen.value = !dropdownOpen.value;
 }
+
+const props = defineProps({
+    closeable: {
+        type: Boolean,
+        default: true,
+    },
+});
+
+const emit = defineEmits(['toggle']);
+
+const toggle = () => {
+    if (props.closeable) {
+        emit('toggle');
+    }
+};
 </script>
 
 <template>
     <header>
         <div class="topbar d-flex align-items-center">
             <nav class="navbar navbar-expand gap-3">
-                <div class="mobile-toggle-menu"><i class='bx bx-menu'></i>
+                
+                <!-- <div class="mobile-toggle-menu">
+                    <i class='bx bx-menu'></i>
+                </div> -->
+                <div class="toggle-menu cursor-pointer" @click="toggle">
+                    <i class='bx bx-menu text-xl'></i>
                 </div>
 
                 <div class="search-bar d-lg-block d-none" data-bs-toggle="modal" data-bs-target="#SearchModal">

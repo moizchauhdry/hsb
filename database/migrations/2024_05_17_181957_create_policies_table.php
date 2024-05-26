@@ -25,18 +25,18 @@ return new class extends Migration
             $table->date('date_of_insurance')->nullable();
             $table->date('policy_start_period')->nullable();
             $table->date('policy_end_period')->nullable();
-            $table->string('sum_insured')->nullable();
-            $table->string('gross_premium')->nullable();
-            $table->string('net_premium')->nullable();
+            $table->decimal('sum_insured',8,2)->nullable();
+            $table->decimal('gross_premium',8,2)->nullable();
+            $table->decimal('net_premium',8,2)->nullable();
             $table->string('cover_note_no')->nullable();
             $table->string('installment_plan')->nullable();
             $table->string('leader')->nullable();
             $table->string('leader_policy_no')->nullable();
             $table->string('branch')->nullable();
-            $table->string('brokerage_amount')->nullable();
+            $table->decimal('brokerage_amount',8,2)->nullable();
             $table->foreignId('user_id')->nullable();
-            $table->string('tax')->nullable();
-            $table->string('percentage')->nullable();
+            $table->decimal('tax',8,2)->nullable();
+            $table->decimal('percentage',8,2)->nullable();
             $table->timestamps();
         });
     }

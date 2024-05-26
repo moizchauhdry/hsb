@@ -5,6 +5,7 @@ import { ref } from "vue";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import axios from 'axios';
+import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 defineProps({
     policy: Object,
@@ -12,7 +13,6 @@ defineProps({
 
 const modal = ref(false);
 const edit_mode = ref(false);
-const policy = usePage().props.policy;
 
 const users = ref([]);
 const clients = ref([]);
@@ -20,6 +20,35 @@ const insurances = ref([]);
 const agencies = ref([]);
 const cobs = ref([]);
 
+const form = useForm({
+    current_step: 1,
+    total_step: 3,
+    policy_id: "",
+    client_id: "",
+    insurance_id: "",
+    co_insurance: "",
+    takeful_type: "",
+    policy_no: "",
+    agency_id: "",
+    agency_code: "",
+    class_of_business_id: "",
+    orignal_endorsment: "",
+    date_of_insurance: "",
+    policy_start_period: "",
+    policy_end_period: "",
+    sum_insured: "",
+    gross_premium: "",
+    net_premium: "",
+    cover_note_no: "",
+    installment_plan: "",
+    leader: "",
+    leader_policy_no: "",
+    branch: "",
+    brokerage_amount: "",
+    user_id: "",
+    tax: "",
+    percentage: "",
+});
 
 const create = () => {
     modal.value = true;
@@ -35,79 +64,137 @@ const create = () => {
         });
 };
 
-const form = useForm({
-    current_step: 1,
-    total_step: 3,
-    policy_id: policy?.id,
-    client_id: policy?.client_id,
-    insurance_id: policy?.insurance_id,
-    co_insurance: policy?.co_insurance,
-    takeful_type: policy?.takeful_type,
-    policy_no: policy?.policy_no,
-    agency_id: policy?.agency_id,
-    agency_code: policy?.agency_code,
-    class_of_business_id: policy?.class_of_business_id,
-    orignal_endorsment: policy?.orignal_endorsment,
-    date_of_insurance: policy?.date_of_insurance,
-    policy_start_period: policy?.policy_start_period,
-    policy_end_period: policy?.policy_end_period,
-    sum_insured: policy?.sum_insured,
-    gross_premium: policy?.gross_premium,
-    net_premium: policy?.net_premium,
-    cover_note_no: policy?.cover_note_no,
-    installment_plan: policy?.installment_plan,
-    leader: policy?.leader,
-    leader_policy_no: policy?.leader_policy_no,
-    branch: policy?.branch,
-    brokerage_amount: policy?.brokerage_amount,
-    user_id: policy?.user_id,
-    tax: policy?.tax,
-    percentage: policy?.percentage,
-});
-
-
 const submit = () => {
-    form.post(route("policy.store"), {
-        preserveScroll: true,
-        onSuccess: () => {
-            form.current_step++;
-            if (form.current_step > 3) {
-                close();
-            }
-        },
-        onError: () => error(),
-        onFinish: () => { },
-    });
+
+    // console.log(edit_mode);
+
+    if (!edit_mode.value) {
+        form.post(route("policy.store"), {
+            preserveScroll: true,
+            onSuccess: () => {
+                form.current_step++;
+                if (form.current_step > 3) {
+                    close();
+                }
+            },
+            onError: () => error(),
+            onFinish: () => { },
+        });
+    } else {
+        form.post(route("policy.update"), {
+            preserveScroll: true,
+            onSuccess: () => {
+                form.current_step++;
+                if (form.current_step > 3) {
+                    close();
+                }
+            },
+            onError: () => error(),
+            onFinish: () => { },
+        });
+    }
 };
 
 const error = () => {
     // alert('error');
 };
 
-const close = () => {
-    modal.value = false;
-    form.reset();
-};
-
 const previousStep = () => {
-    console.log('previous');
+    // console.log('previous');
     if (form.current_step > 1) {
         form.current_step--;
     }
 }
 
 const nextStep = () => {
-    console.log('next');
+    // console.log('next');
     if (form.current_step < form.total_step) {
         submit();
     }
-}
+};
+
+const close = () => {
+    modal.value = false;
+    form.current_step = 1;
+    form.errors = {};
+
+    form.policy_id = "";
+    form.client_id = "";
+    form.insurance_id = "";
+    form.co_insurance = "";
+    form.takeful_type = "";
+    form.policy_no = "";
+    form.agency_id = "";
+    form.agency_code = "";
+    form.class_of_business_id = "";
+    form.orignal_endorsment = "";
+    form.date_of_insurance = "";
+    form.policy_start_period = "";
+    form.policy_end_period = "";
+    form.sum_insured = "";
+    form.gross_premium = "";
+    form.net_premium = "";
+    form.cover_note_no = "";
+    form.installment_plan = "";
+    form.leader = "";
+    form.leader_policy_no = "";
+    form.branch = "";
+    form.brokerage_amount = "";
+    form.user_id = "";
+    form.tax = "";
+    form.percentage = "";
+};
+
+const edit = (id) => {
+    modal.value = true;
+    edit_mode.value = true;
+
+    axios.get(`/policy/edit/${id}`)
+        .then(({ data }) => {
+
+            users.value = data.users;
+            clients.value = data.clients;
+            insurances.value = data.insurances;
+            agencies.value = data.agencies;
+            cobs.value = data.cobs;
+
+            form.policy_id = data.policy.id;
+            form.client_id = data.policy.client_id;
+            form.insurance_id = data.policy.insurance_id;
+            form.co_insurance = data.policy.co_insurance;
+            form.takeful_type = data.policy.takeful_type;
+            form.policy_no = data.policy.policy_no;
+            form.agency_id = data.policy.agency_id;
+            form.agency_code = data.policy.agency_code;
+            form.class_of_business_id = data.policy.class_of_business_id;
+            form.orignal_endorsment = data.policy.orignal_endorsment;
+            form.date_of_insurance = data.policy.date_of_insurance;
+            form.policy_start_period = data.policy.policy_start_period;
+            form.policy_end_period = data.policy.policy_end_period;
+            form.sum_insured = data.policy.sum_insured;
+            form.gross_premium = data.policy.gross_premium;
+            form.net_premium = data.policy.net_premium;
+            form.cover_note_no = data.policy.cover_note_no;
+            form.installment_plan = data.policy.installment_plan;
+            form.leader = data.policy.leader;
+            form.leader_policy_no = data.policy.leader_policy_no;
+            form.branch = data.policy.branch;
+            form.brokerage_amount = data.policy.brokerage_amount;
+            form.user_id = data.policy.user_id;
+            form.tax = data.policy.tax;
+            form.percentage = data.policy.percentage;
+        });
+};
+
+
+
+defineExpose({ edit: (id) => edit(id) });
 </script>
 
 <template>
     <div class="col">
-        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleLargeModal"
-            @click="create"><i class="bx bx-plus"></i>Add</button>
+
+        <PrimaryButton @click="create">Add Policy</PrimaryButton>
 
         <div class="modal fade show" id="exampleLargeModal" tabindex="-1" aria-hidden="true" style="display: block;"
             v-if="modal">
@@ -120,7 +207,6 @@ const nextStep = () => {
                                 @click="close"></button>
                         </div>
                         <div class="modal-body">
-
                             <div id="stepper1" class="bs-stepper">
                                 <div class="card">
 
@@ -178,7 +264,7 @@ const nextStep = () => {
                                         <template v-if="form.current_step == 1">
                                             <div class="row g-2">
                                                 <div class="col-md-4">
-                                                    <label for="input13" class="form-label">Client Name</label>
+                                                    <label for="input13" class="form-label">Client</label>
                                                     <select id="input21" class="form-select" v-model="form.client_id">
                                                         <template v-for="client in clients" :key="client.id">
                                                             <option :value="client.id">{{ client.name }}
@@ -239,20 +325,17 @@ const nextStep = () => {
                                                 </div>
                                                 <div class="col-md-4">
                                                     <label for="input13" class="form-label">Agency Code</label>
-
-                                                    <input type="text" class="form-control" id="input13" placeholder=""
-                                                        v-model="form.agency_code">
-
+                                                    <input type="number" class="form-control" id="input13"
+                                                        placeholder="" v-model="form.agency_code">
                                                     <InputError :message="form.errors.agency_code" />
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <label for="input21" class="form-label">Class of
-                                                        business</label>
+                                                    <label for="input21" class="form-label">Business Class</label>
 
                                                     <select id="input21" class="form-select"
                                                         v-model="form.class_of_business_id">
                                                         <template v-for="cob in cobs" :key="cob.id">
-                                                            <option :value="cob.id">{{ cob.b_class_name }}</option>
+                                                            <option :value="cob.id">{{ cob.class_name }}</option>
                                                         </template>
                                                     </select>
                                                     <InputError :message="form.errors.class_of_business_id" />
@@ -299,24 +382,24 @@ const nextStep = () => {
                                                 <div class="col-md-4">
                                                     <label for="input13" class="form-label">Sum insured</label>
 
-                                                    <input type="text" class="form-control" id="input13" placeholder=""
-                                                        v-model="form.sum_insured">
+                                                    <input type="number" class="form-control" id="input13"
+                                                        placeholder="" v-model="form.sum_insured">
 
                                                     <InputError :message="form.errors.sum_insured" />
                                                 </div>
                                                 <div class="col-md-4">
                                                     <label for="input13" class="form-label">Gross premium</label>
 
-                                                    <input type="text" class="form-control" id="input13" placeholder=""
-                                                        v-model="form.gross_premium">
+                                                    <input type="number" class="form-control" id="input13"
+                                                        placeholder="" v-model="form.gross_premium">
 
                                                     <InputError :message="form.errors.gross_premium" />
                                                 </div>
                                                 <div class="col-md-4">
                                                     <label for="input13" class="form-label">Net premium</label>
 
-                                                    <input type="text" class="form-control" id="input13" placeholder=""
-                                                        v-model="form.net_premium">
+                                                    <input type="number" class="form-control" id="input13"
+                                                        placeholder="" v-model="form.net_premium">
 
                                                     <InputError :message="form.errors.net_premium" />
                                                 </div>
@@ -363,8 +446,8 @@ const nextStep = () => {
                                                 <div class="col-md-4">
                                                     <label for="input13" class="form-label">Brokerage amount</label>
 
-                                                    <input type="text" class="form-control" id="input13" placeholder=""
-                                                        v-model="form.brokerage_amount">
+                                                    <input type="number" class="form-control" id="input13"
+                                                        placeholder="" v-model="form.brokerage_amount">
 
                                                     <InputError :message="form.errors.brokerage_amount" />
                                                 </div>
@@ -381,16 +464,16 @@ const nextStep = () => {
                                                 <div class="col-md-4">
                                                     <label for="input13" class="form-label">Tax</label>
 
-                                                    <input type="text" class="form-control" id="input13" placeholder=""
-                                                        v-model="form.tax">
+                                                    <input type="number" class="form-control" id="input13"
+                                                        placeholder="" v-model="form.tax">
 
                                                     <InputError :message="form.errors.tax" />
                                                 </div>
                                                 <div class="col-md-4">
                                                     <label for="input13" class="form-label">Percentage</label>
 
-                                                    <input type="text" class="form-control" id="input13" placeholder=""
-                                                        v-model="form.percentage">
+                                                    <input type="number" class="form-control" id="input13"
+                                                        placeholder="" v-model="form.percentage">
 
                                                     <InputError :message="form.errors.percentage" />
                                                 </div>

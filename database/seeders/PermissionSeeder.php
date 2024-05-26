@@ -28,7 +28,11 @@ class PermissionSeeder extends Seeder
             'user-list',
             'user-create',
             'user-update',
-            'user-delete',
+
+            // Permission
+            'policy-list',
+            'policy-create',
+            'policy-update',
 
         ];
 
