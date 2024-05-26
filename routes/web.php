@@ -3,13 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\WorkOrderController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AgencyController;
 use App\Http\Controllers\Admin\PolicyController;
 use App\Http\Controllers\Admin\InsuranceController;
-use App\Http\Controllers\CustomerAccountController;
 use App\Http\Controllers\Admin\BusinessClassController;
 
 /*
@@ -60,7 +58,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [PolicyController::class, 'index'])->name('policy.index')->middleware('permission:user-list');
         Route::get('/create', [PolicyController::class, 'create'])->name('policy.create');
         Route::post('/store', [PolicyController::class, 'store'])->name('policy.store');
-        Route::get('/edit', [PolicyController::class, 'edit'])->name('policy.edit');
+        Route::get('/edit/{id}', [PolicyController::class, 'edit'])->name('policy.edit');
         Route::post('/update', [PolicyController::class, 'update'])->name('policy.update');
         Route::get('/detail/{id}', [PolicyController::class, 'detail'])->name('policy.detail');
         Route::post('/additional-notes', [PolicyController::class, 'additionalNotes'])->name('policy.additionalNotes');

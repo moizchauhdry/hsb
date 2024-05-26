@@ -37,8 +37,7 @@ class PolicyController extends Controller
             ]);
 
         return Inertia::render('Policy/Index', [
-            'policies' => $policies,
-            'policy' => NULL,
+            'policies' => $policies
         ]);
     }
 
@@ -63,7 +62,7 @@ class PolicyController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->all());
+        // dd('store');
 
         $current_step = $request->current_step;
 
@@ -71,42 +70,41 @@ class PolicyController extends Controller
             $request->validate([
                 'client_id' => ['required'],
                 'insurance_id' => ['required'],
-                'co_insurance' => ['required'],
-                'takeful_type' => ['required'],
-                'policy_no' => ['required'],
-                'agency_id' => ['required'],
-                'agency_code' => ['required'],
-                'class_of_business_id' => ['required'],
-                'orignal_endorsment' => ['required'],
-                'date_of_insurance' => ['required'],
-                'policy_start_period' => ['required'],
-                'policy_end_period' => ['required'],
+                'co_insurance' => ['nullable'],
+                'takeful_type' => ['nullable'],
+                'policy_no' => ['nullable'],
+                'agency_id' => ['nullable'],
+                'agency_code' => ['nullable'],
+                'class_of_business_id' => ['nullable'],
+                'orignal_endorsment' => ['nullable'],
+                'date_of_insurance' => ['nullable'],
+                'policy_start_period' => ['nullable'],
+                'policy_end_period' => ['nullable'],
             ]);
         }
 
         if ($current_step == 2) {
             $request->validate([
-                'sum_insured' => ['required'],
-                'gross_premium' => ['required'],
-                'net_premium' => ['required'],
-                'cover_note_no' => ['required'],
-                'installment_plan' => ['required'],
-                'leader' => ['required'],
-                'leader_policy_no' => ['required'],
-                'branch' => ['required'],
-                'brokerage_amount' => ['required'],
+                'sum_insured' => ['nullable'],
+                'gross_premium' => ['nullable'],
+                'net_premium' => ['nullable'],
+                'cover_note_no' => ['nullable'],
+                'installment_plan' => ['nullable'],
+                'leader' => ['nullable'],
+                'leader_policy_no' => ['nullable'],
+                'branch' => ['nullable'],
+                'brokerage_amount' => ['nullable'],
                 'user_id' => ['required'],
-                'tax' => ['required'],
-                'percentage' => ['required'],
+                'tax' => ['nullable'],
+                'percentage' => ['nullable'],
             ]);
         }
-
 
         if ($current_step == 3) {
             $date_of_insurance = Carbon::parse($request->date_of_insurance);
             $policy_start_period = Carbon::parse($request->policy_start_period);
             $policy_end_period = Carbon::parse($request->policy_end_period);
-            // Format the date as per your requirement
+
             $dateOfInsurance = $date_of_insurance->format('Y-m-d');
             $policyStartPeriod = $policy_start_period->format('Y-m-d');
             $policyEndPeriod = $policy_end_period->format('Y-m-d');
@@ -140,13 +138,38 @@ class PolicyController extends Controller
 
             $policy = Policy::create($data);
         }
+        
+    }
+
+    public function edit($id)
+    {
+        $policy = Policy::where('id', $id)->first();
+
+        $users = User::select('id', 'name')->where('role_users_id', 1)->get()->toArray();
+        $clients = User::select('id', 'name')->where('role_users_id', 2)->get()->toArray();
+        $insurances = Insurance::select('id', 'name')->get()->toArray();
+        $agencies = Agency::select('id', 'name')->get()->toArray();
+        $cobs = BusinessClass::select('id', 'class_name')->get()->toArray();
+
+        $data = [
+            'policy' => $policy,
+            'users' => $users,
+            'clients' => $clients,
+            'insurances' => $insurances,
+            'agencies' => $agencies,
+            'cobs' => $cobs
+        ];
+
+        return response()->json($data);
     }
 
     public function update(Request $request)
     {
-        $policy = Policy::findOrFail($request->policy_id);
+        // dd($request->all());
 
-        $validate = $request->validate([
+        $policy = Policy::find($request->policy_id);
+
+       $request->validate([
             'client_id' => ['required'],
             'co_insurance' => ['required'],
             'takeful_type' => ['required'],
@@ -208,6 +231,8 @@ class PolicyController extends Controller
         ];
 
         $policy->update($data);
+
+        // dd('success update');
     }
 
     public function detail($id)
@@ -244,9 +269,9 @@ class PolicyController extends Controller
                 'created_at' => $policy->created_at->format('d-m-Y h:i A'),
             ];
 
-            $policyNotes = PolicyNote::where('policy_id',$policy->id)->get();
-            $policyClaims = PolicyClaim::where('policy_id',$policy->id)->get();
-            $policyUploads = PolicyUpload::where('policy_id',$policy->id)->get();
+            $policyNotes = PolicyNote::where('policy_id', $policy->id)->get();
+            $policyClaims = PolicyClaim::where('policy_id', $policy->id)->get();
+            $policyUploads = PolicyUpload::where('policy_id', $policy->id)->get();
             return Inertia::render('Policy/Detail', [
                 'policy' => $policyResponse,
                 'policyNotes' => $policyNotes,
@@ -254,8 +279,6 @@ class PolicyController extends Controller
                 'policyUploads' => $policyUploads,
                 'assetUrl' => asset('storage')
             ]);
-
-           
         } catch (ModelNotFoundException $e) {
             // Handle case when policy with the given ID doesn't exist
             return response()->json(['error' => 'Policy not found'], 404);
@@ -276,7 +299,6 @@ class PolicyController extends Controller
             ];
 
             PolicyNote::create($data);
-
         } catch (ModelNotFoundException $e) {
             // Handle case when policy with the given ID doesn't exist
             return response()->json(['error' => 'Policy not found'], 404);
@@ -288,7 +310,7 @@ class PolicyController extends Controller
     {
         $request->validate([
             'policy_id' => ['required'],
-            'uploads' => ['required'], 
+            'uploads' => ['required'],
             'type' => ['required'],
         ]);
 
@@ -302,7 +324,7 @@ class PolicyController extends Controller
 
             $policyUploadDirectory = 'policyUploads';
             if ($request->hasFile('uploads')) {
-    
+
                 // Assuming $request->file('uploads') returns an array of uploaded files
                 $files = $request->file('uploads');
 
@@ -322,12 +344,10 @@ class PolicyController extends Controller
                     $policyUpload->update(['upload' => $imageUrl]);
                 }
             }
-
         } catch (ModelNotFoundException $e) {
             // Handle case when policy with the given ID doesn't exist
             return response()->json(['error' => 'Policy not found'], 404);
         }
-
     }
 
     // Policy Claim function Start
@@ -363,18 +383,17 @@ class PolicyController extends Controller
             ];
 
             PolicyClaim::create($data);
-
         } catch (ModelNotFoundException $e) {
             // Handle case when policy with the given ID doesn't exist
             return response()->json(['error' => 'Policy not found'], 404);
         }
     }
 
-    
+
     public function updateClaim(Request $request)
     {
-        $policyClaim = PolicyClaim::where('id',$request->claim_id)->first();
-       
+        $policyClaim = PolicyClaim::where('id', $request->claim_id)->first();
+
         $request->validate([
             'policy_id' => ['required'],
             'detail' => ['required'],
@@ -384,7 +403,7 @@ class PolicyController extends Controller
         ]);
 
 
-     
+
         $data = [
             'policy_id' => $request->policy_id,
             'detail' => $request->detail,
@@ -393,16 +412,14 @@ class PolicyController extends Controller
             'status' => $request->status
         ];
         $policyClaim->update($data);
-
-        
     }
 
-    
+
 
     public function getClaimUpload($id)
     {
 
-        $policyClaimUploads = PolicyClaimUpload::where('policy_id',$id)->get()->toArray();
+        $policyClaimUploads = PolicyClaimUpload::where('policy_id', $id)->get()->toArray();
         $data = [
             "policyClaimUploads" => $policyClaimUploads
         ];
@@ -414,7 +431,7 @@ class PolicyController extends Controller
     {
         $request->validate([
             'policy_id' => ['required'],
-            'policy_claim_id' => ['required'], 
+            'policy_claim_id' => ['required'],
             'uploads' => ['required'],
         ]);
 
@@ -428,7 +445,7 @@ class PolicyController extends Controller
 
             $policyClaimUploadDirectory = 'policyClaimUploads';
             if ($request->hasFile('uploads')) {
-    
+
                 // Assuming $request->file('uploads') returns an array of uploaded files
                 $files = $request->file('uploads');
 
@@ -448,20 +465,16 @@ class PolicyController extends Controller
                     $policyClaimUpload->update(['file_url' => $imageUrl]);
                 }
             }
-
         } catch (ModelNotFoundException $e) {
             // Handle case when policy with the given ID doesn't exist
             return response()->json(['error' => 'Policy not found'], 404);
         }
-
-
-
     }
 
     public function getClaimNote($id)
     {
 
-        $policyClaimNotes = PolicyClaimNote::where('policy_id',$id)->get()->toArray();
+        $policyClaimNotes = PolicyClaimNote::where('policy_id', $id)->get()->toArray();
         $data = [
             "policyClaimNotes" => $policyClaimNotes
         ];
@@ -473,7 +486,7 @@ class PolicyController extends Controller
     {
         $request->validate([
             'policy_id' => ['required'],
-            'policy_claim_id' => ['required'], 
+            'policy_claim_id' => ['required'],
             'note' => ['required']
         ]);
 
@@ -485,7 +498,6 @@ class PolicyController extends Controller
             ];
 
             PolicyClaimNote::create($data);
-
         } catch (ModelNotFoundException $e) {
             // Handle case when policy with the given ID doesn't exist
             return response()->json(['error' => 'Policy not found'], 404);
