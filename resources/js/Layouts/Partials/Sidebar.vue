@@ -1,5 +1,7 @@
 <script setup>
 import { Link } from "@inertiajs/vue3";
+import { ref } from "vue";
+import { computed, onMounted, onUnmounted, watch } from 'vue';
 
 const props = defineProps({
     closeable: {
@@ -15,6 +17,38 @@ const toggle = () => {
         emit('toggle');
     }
 };
+
+
+const isSubmenuVisible = ref({
+    dashboard: false,
+});
+
+const toggleList = (menu) => {
+    isSubmenuVisible.value[menu] = !isSubmenuVisible.value[menu];
+};
+
+watch(
+    () => {
+        if (route().current('dashboard')) {
+            isSubmenuVisible.value.dashboard = true;
+        }
+        else if (route().current('user.index') || route().current('role.index')) {
+            isSubmenuVisible.value.user = true;
+        }
+        else if (route().current('insurance.index')) {
+            isSubmenuVisible.value.insurance = true;
+        }
+        else if (route().current('agency.index')) {
+            isSubmenuVisible.value.agency = true;
+        }
+        else if (route().current('businessClass.index')) {
+            isSubmenuVisible.value.businessClass = true;
+        }
+        else if (route().current('policy.index')) {
+            isSubmenuVisible.value.policy = true;
+        }
+    }
+);
 </script>
 
 <template>
@@ -32,72 +66,86 @@ const toggle = () => {
         </div>
         <!--navigation-->
         <ul class="metismenu" id="menu">
-            <li>
-                <a href="javascript:;" class="has-arrow">
+            <li :class="{ 'mm-active': route().current('dashboard') }">
+                <a href="#" class="has-arrow" @click="toggleList('dashboard')">
                     <div class="parent-icon"><i class='bx bx-home-alt'></i>
                     </div>
                     <div class="menu-title">Dashboard</div>
                 </a>
-                <ul>
-                    <li>
+                <ul :class="{ 'hidden': !isSubmenuVisible.dashboard }">
+                    <li :class="{ 'mm-active': route().current('dashboard') }">
                         <Link :href="route('dashboard')"><i class='bx bx-radio-circle'></i>Analytics</Link>
                     </li>
                 </ul>
             </li>
+
             <li class="menu-label">Application</li>
-            <li>
-                <a href="javascript:;" class="has-arrow">
+            <li :class="{ 'mm-active': route().current('user.index') || route().current('role.index') }">
+                <a href="#" class="has-arrow" @click="toggleList('user')">
                     <div class="parent-icon"><i class="bx bx-category"></i>
                     </div>
                     <div class="menu-title">User Management</div>
                 </a>
-                <ul>
-                    <li>
+                <ul :class="{ 'hidden': !isSubmenuVisible.user }">
+                    <li :class="{ 'mm-active': route().current('user.index') }">
                         <Link :href="route('user.index')"><i class='bx bx-radio-circle'></i>List Users</Link>
                     </li>
-                    <li>
+                    <li :class="{ 'mm-active': route().current('role.index') }">
                         <Link :href="route('role.index')"><i class='bx bx-radio-circle'></i>Role & Permissions</Link>
                     </li>
                 </ul>
-                <a href="javascript:;" class="has-arrow">
+            </li>
+
+            <li class="menu-label">Policy</li>
+            <li :class="{ 'mm-active': route().current('insurance.index') }">
+                <a href="#" class="has-arrow" @click="toggleList('insurance')">
                     <div class="parent-icon"><i class="bx bx-category"></i>
                     </div>
                     <div class="menu-title">Insurance</div>
                 </a>
-                <ul>
-                    <li>
-                        <Link :href="route('insurance.index')"><i class='bx bx-radio-circle'></i>List insurance</Link>
+                <ul :class="{ 'hidden': !isSubmenuVisible.insurance }">
+                    <li :class="{ 'mm-active': route().current('insurance.index') }">
+                        <Link :href="route('insurance.index')"><i class='bx bx-radio-circle'></i>List</Link>
                     </li>
                 </ul>
-                <a href="javascript:;" class="has-arrow">
+            </li>
+
+            <li :class="{ 'mm-active': route().current('agency.index') }">
+                <a href="#" class="has-arrow" @click="toggleList('agency')">
                     <div class="parent-icon"><i class="bx bx-category"></i>
                     </div>
                     <div class="menu-title">Agency</div>
                 </a>
-                <ul>
-                    <li>
-                        <Link :href="route('agency.index')"><i class='bx bx-radio-circle'></i>List agency</Link>
+                <ul :class="{ 'hidden': !isSubmenuVisible.agency }">
+                    <li :class="{ 'mm-active': route().current('agency.index') }">
+                        <Link :href="route('agency.index')"><i class='bx bx-radio-circle'></i>List</Link>
                     </li>
                 </ul>
-                <a href="javascript:;" class="has-arrow">
+            </li>
+
+            <li :class="{ 'mm-active': route().current('businessClass.index') }">
+                <a href="#" class="has-arrow" @click="toggleList('businessClass')">
                     <div class="parent-icon"><i class="bx bx-category"></i>
                     </div>
                     <div class="menu-title">Business Class</div>
                 </a>
-                <ul>
-                    <li>
-                        <Link :href="route('businessClass.index')"><i class='bx bx-radio-circle'></i>List Business Class
+                <ul :class="{ 'hidden': !isSubmenuVisible.businessClass }">
+                    <li :class="{ 'mm-active': route().current('businessClass.index') }">
+                        <Link :href="route('businessClass.index')"><i class='bx bx-radio-circle'></i>List
                         </Link>
                     </li>
                 </ul>
-                <a href="javascript:;" class="has-arrow">
+            </li>
+
+            <li :class="{ 'mm-active': route().current('policy.index') }">
+                <a href="#" class="has-arrow" @click="toggleList('policy')">
                     <div class="parent-icon"><i class="bx bx-category"></i>
                     </div>
                     <div class="menu-title">Policies</div>
                 </a>
-                <ul>
-                    <li>
-                        <Link :href="route('policy.index')"><i class='bx bx-radio-circle'></i>List policies</Link>
+                <ul :class="{ 'hidden': !isSubmenuVisible.policy }">
+                    <li :class="{ 'mm-active': route().current('policy.index') }">
+                        <Link :href="route('policy.index')"><i class='bx bx-radio-circle'></i>List</Link>
                     </li>
                 </ul>
             </li>

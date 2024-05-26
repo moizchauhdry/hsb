@@ -25,12 +25,6 @@ use App\Http\Controllers\Admin\BusinessClassController;
 
 Route::get('/', function () {
     return redirect()->route('login');
-    // return Inertia::render('Welcome', [
-    //     'canLogin' => Route::has('login'),
-    //     'canRegister' => Route::has('register'),
-    //     'laravelVersion' => Application::VERSION,
-    //     'phpVersion' => PHP_VERSION,
-    // ]);
 });
 
 Route::get('/dashboard', [DashboardController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
@@ -78,7 +72,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/claim/upload', [PolicyController::class, 'claimUpload'])->name('policy.claimUpload');
         Route::post('/claim/note', [PolicyController::class, 'claimNote'])->name('policy.claimNote');
         Route::get('/get/claim/note/{id}', [PolicyController::class, 'getClaimNote'])->name('policy.getClaimNote');
-       
     });
 
     Route::prefix('roles')->group(function () {
