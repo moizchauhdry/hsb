@@ -67,17 +67,34 @@ const form = useForm({
 
 
 const submit = () => {
-    form.post(route("policy.store"), {
-        preserveScroll: true,
-        onSuccess: () => {
-            form.current_step++;
-            if (form.current_step > 3) {
-                close();
-            }
-        },
-        onError: () => error(),
-        onFinish: () => { },
-    });
+
+    // console.log(edit_mode);
+
+    if (!edit_mode.value) {
+        form.post(route("policy.store"), {
+            preserveScroll: true,
+            onSuccess: () => {
+                form.current_step++;
+                if (form.current_step > 3) {
+                    close();
+                }
+            },
+            onError: () => error(),
+            onFinish: () => { },
+        });
+    } else {
+        form.post(route("policy.update"), {
+            preserveScroll: true,
+            onSuccess: () => {
+                form.current_step++;
+                if (form.current_step > 3) {
+                    close();
+                }
+            },
+            onError: () => error(),
+            onFinish: () => { },
+        });
+    }
 };
 
 const error = () => {
@@ -103,23 +120,56 @@ const nextStep = () => {
     }
 };
 
-const validateInput = (event) => {
-    const regex = /^[0-9]*$/;
-    const input = event.target.value;
 
-    if (!regex.test(input)) {
-        // If the input is not a valid integer, prevent the input from being entered
-        event.preventDefault();
-    } else {
-        // Update the form value with the valid input
-        form.agency_code = input;
-        form.sum_insured = input;
-        form.gross_premium = input;
-        form.net_premium = input;
-        form.brokerage_amount = input;
-        form.tax = input;
-        form.percentage = input;
-    }
+const edit = (id) => {
+    modal.value = true;
+    edit_mode.value = true;
+
+    axios.get(`/policy/edit/${id}`)
+        .then(({ data }) => {
+
+            users.value = data.users;
+            clients.value = data.clients;
+            insurances.value = data.insurances;
+            agencies.value = data.agencies;
+            cobs.value = data.cobs;
+
+            form.policy_id = data.policy.id;
+            form.client_id = data.policy.client_id;
+            form.insurance_id = data.policy.insurance_id;
+            form.co_insurance = data.policy.co_insurance;
+            form.takeful_type = data.policy.takeful_type;
+            form.agency_id = data.policy.agency_id;
+            form.agency_code = data.policy.agency_code;
+            form.class_of_business_id = data.policy.class_of_business_id;
+            form.orignal_endorsment = data.policy.orignal_endorsment;
+            form.date_of_insurance = data.policy.date_of_insurance;
+            form.policy_start_period = data.policy.policy_start_period;
+            form.policy_end_period = data.policy.policy_end_period;
+            form.sum_insured = data.policy.sum_insured;
+            form.gross_premium = data.policy.gross_premium;
+            form.net_premium = data.policy.net_premium;
+            form.cover_note_no = data.policy.cover_note_no;
+            form.installment_plan = data.policy.installment_plan;
+            form.leader = data.policy.leader;
+            form.leader_policy_no = data.policy.leader_policy_no;
+            form.branch = data.policy.branch;
+            form.brokerage_amount = data.policy.brokerage_amount;
+            form.user_id = data.policy.user_id;
+            form.tax = data.policy.tax;
+            form.percentage = data.policy.percentage;
+        });
+};
+
+defineExpose({ edit: (id) => edit(id) });
+
+const update = () => {
+    form.post(route("policy.update"), {
+        preserveScroll: true,
+        onSuccess: () => close(),
+        onError: () => error(),
+        onFinish: () => { },
+    });
 };
 
 </script>
@@ -259,7 +309,9 @@ const validateInput = (event) => {
                                                 </div>
                                                 <div class="col-md-4">
                                                     <label for="input13" class="form-label">Agency Code</label>
-                                                    <input type="number" class="form-control" id="input13" placeholder="" v-model="form.agency_code" @input="validateInput">
+                                                    <input type="number" class="form-control" id="input13"
+                                                        placeholder="" v-model="form.agency_code"
+                                                        >
                                                     <InputError :message="form.errors.agency_code" />
                                                 </div>
                                                 <div class="col-md-4">
@@ -315,24 +367,24 @@ const validateInput = (event) => {
                                                 <div class="col-md-4">
                                                     <label for="input13" class="form-label">Sum insured</label>
 
-                                                    <input type="number" class="form-control" id="input13" placeholder=""
-                                                        v-model="form.sum_insured">
+                                                    <input type="number" class="form-control" id="input13"
+                                                        placeholder="" v-model="form.sum_insured">
 
                                                     <InputError :message="form.errors.sum_insured" />
                                                 </div>
                                                 <div class="col-md-4">
                                                     <label for="input13" class="form-label">Gross premium</label>
 
-                                                    <input type="number" class="form-control" id="input13" placeholder=""
-                                                        v-model="form.gross_premium">
+                                                    <input type="number" class="form-control" id="input13"
+                                                        placeholder="" v-model="form.gross_premium">
 
                                                     <InputError :message="form.errors.gross_premium" />
                                                 </div>
                                                 <div class="col-md-4">
                                                     <label for="input13" class="form-label">Net premium</label>
 
-                                                    <input type="number" class="form-control" id="input13" placeholder=""
-                                                        v-model="form.net_premium">
+                                                    <input type="number" class="form-control" id="input13"
+                                                        placeholder="" v-model="form.net_premium">
 
                                                     <InputError :message="form.errors.net_premium" />
                                                 </div>
@@ -379,8 +431,8 @@ const validateInput = (event) => {
                                                 <div class="col-md-4">
                                                     <label for="input13" class="form-label">Brokerage amount</label>
 
-                                                    <input type="number" class="form-control" id="input13" placeholder=""
-                                                        v-model="form.brokerage_amount">
+                                                    <input type="number" class="form-control" id="input13"
+                                                        placeholder="" v-model="form.brokerage_amount">
 
                                                     <InputError :message="form.errors.brokerage_amount" />
                                                 </div>
@@ -397,16 +449,16 @@ const validateInput = (event) => {
                                                 <div class="col-md-4">
                                                     <label for="input13" class="form-label">Tax</label>
 
-                                                    <input type="number" class="form-control" id="input13" placeholder=""
-                                                        v-model="form.tax">
+                                                    <input type="number" class="form-control" id="input13"
+                                                        placeholder="" v-model="form.tax">
 
                                                     <InputError :message="form.errors.tax" />
                                                 </div>
                                                 <div class="col-md-4">
                                                     <label for="input13" class="form-label">Percentage</label>
 
-                                                    <input type="number" class="form-control" id="input13" placeholder=""
-                                                        v-model="form.percentage">
+                                                    <input type="number" class="form-control" id="input13"
+                                                        placeholder="" v-model="form.percentage">
 
                                                     <InputError :message="form.errors.percentage" />
                                                 </div>

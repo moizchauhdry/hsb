@@ -3,12 +3,17 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
 import "@vuepic/vue-datepicker/dist/main.css";
 import CreateEdit from "./CreateEdit.vue";
+import { ref } from "vue";
 
 defineProps({
     policies: Array,
     policy: Object,
 });
 
+const create_edit_ref = ref(null);
+const edit = (id) => {
+    create_edit_ref.value.edit(id)
+};
 </script>
 
 <template>
@@ -43,7 +48,7 @@ defineProps({
                                         class="bx bx-search"></i></span>
                             </div>
                             <div class="ms-auto">
-                                <CreateEdit v-bind="$props"></CreateEdit>
+                                <CreateEdit v-bind="$props" ref="create_edit_ref"></CreateEdit>
                             </div>
                         </div>
                         <div class="table-responsive">
@@ -71,7 +76,7 @@ defineProps({
                                                 </Link>
                                             </td>
                                             <td>
-                                                <button type="button" @click="edit(policy)" title="Edit"
+                                                <button type="button" @click="edit(policy.id)" title="Edit"
                                                     class="btn btn-primary btn-sm radius-30"><i class="bx bx-edit"></i></button>
                                             </td>
                                         </tr>
