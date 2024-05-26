@@ -12,7 +12,6 @@ defineProps({
 
 const modal = ref(false);
 const edit_mode = ref(false);
-const policy = usePage().props.policy;
 
 const users = ref([]);
 const clients = ref([]);
@@ -20,6 +19,35 @@ const insurances = ref([]);
 const agencies = ref([]);
 const cobs = ref([]);
 
+const form = useForm({
+    current_step: 1,
+    total_step: 3,
+    policy_id: "",
+    client_id: "",
+    insurance_id: "",
+    co_insurance: "",
+    takeful_type: "",
+    policy_no: "",
+    agency_id: "",
+    agency_code: "",
+    class_of_business_id: "",
+    orignal_endorsment: "",
+    date_of_insurance: "",
+    policy_start_period: "",
+    policy_end_period: "",
+    sum_insured: "",
+    gross_premium: "",
+    net_premium: "",
+    cover_note_no: "",
+    installment_plan: "",
+    leader: "",
+    leader_policy_no: "",
+    branch: "",
+    brokerage_amount: "",
+    user_id: "",
+    tax: "",
+    percentage: "",
+});
 
 const create = () => {
     modal.value = true;
@@ -34,37 +62,6 @@ const create = () => {
             cobs.value = data.cobs;
         });
 };
-
-const form = useForm({
-    current_step: 1,
-    total_step: 3,
-    policy_id: policy?.id,
-    client_id: policy?.client_id,
-    insurance_id: policy?.insurance_id,
-    co_insurance: policy?.co_insurance,
-    takeful_type: policy?.takeful_type,
-    policy_no: policy?.policy_no,
-    agency_id: policy?.agency_id,
-    agency_code: policy?.agency_code,
-    class_of_business_id: policy?.class_of_business_id,
-    orignal_endorsment: policy?.orignal_endorsment,
-    date_of_insurance: policy?.date_of_insurance,
-    policy_start_period: policy?.policy_start_period,
-    policy_end_period: policy?.policy_end_period,
-    sum_insured: policy?.sum_insured,
-    gross_premium: policy?.gross_premium,
-    net_premium: policy?.net_premium,
-    cover_note_no: policy?.cover_note_no,
-    installment_plan: policy?.installment_plan,
-    leader: policy?.leader,
-    leader_policy_no: policy?.leader_policy_no,
-    branch: policy?.branch,
-    brokerage_amount: policy?.brokerage_amount,
-    user_id: policy?.user_id,
-    tax: policy?.tax,
-    percentage: policy?.percentage,
-});
-
 
 const submit = () => {
 
@@ -101,25 +98,51 @@ const error = () => {
     // alert('error');
 };
 
-const close = () => {
-    modal.value = false;
-    form.reset();
-};
-
 const previousStep = () => {
-    console.log('previous');
+    // console.log('previous');
     if (form.current_step > 1) {
         form.current_step--;
     }
 }
 
 const nextStep = () => {
-    console.log('next');
+    // console.log('next');
     if (form.current_step < form.total_step) {
         submit();
     }
 };
 
+const close = () => {
+    modal.value = false;
+    form.current_step = 1;
+    form.errors = {};
+    
+    form.policy_id = "";
+    form.client_id = "";
+    form.insurance_id = "";
+    form.co_insurance = "";
+    form.takeful_type = "";
+    form.policy_no = "";
+    form.agency_id = "";
+    form.agency_code = "";
+    form.class_of_business_id = "";
+    form.orignal_endorsment = "";
+    form.date_of_insurance = "";
+    form.policy_start_period = "";
+    form.policy_end_period = "";
+    form.sum_insured = "";
+    form.gross_premium = "";
+    form.net_premium = "";
+    form.cover_note_no = "";
+    form.installment_plan = "";
+    form.leader = "";
+    form.leader_policy_no = "";
+    form.branch = "";
+    form.brokerage_amount = "";
+    form.user_id = "";
+    form.tax = "";
+    form.percentage = "";
+};
 
 const edit = (id) => {
     modal.value = true;
@@ -139,6 +162,7 @@ const edit = (id) => {
             form.insurance_id = data.policy.insurance_id;
             form.co_insurance = data.policy.co_insurance;
             form.takeful_type = data.policy.takeful_type;
+            form.policy_no = data.policy.policy_no;
             form.agency_id = data.policy.agency_id;
             form.agency_code = data.policy.agency_code;
             form.class_of_business_id = data.policy.class_of_business_id;
@@ -161,17 +185,9 @@ const edit = (id) => {
         });
 };
 
+
+
 defineExpose({ edit: (id) => edit(id) });
-
-const update = () => {
-    form.post(route("policy.update"), {
-        preserveScroll: true,
-        onSuccess: () => close(),
-        onError: () => error(),
-        onFinish: () => { },
-    });
-};
-
 </script>
 
 <template>
@@ -190,7 +206,6 @@ const update = () => {
                                 @click="close"></button>
                         </div>
                         <div class="modal-body">
-
                             <div id="stepper1" class="bs-stepper">
                                 <div class="card">
 
@@ -310,8 +325,7 @@ const update = () => {
                                                 <div class="col-md-4">
                                                     <label for="input13" class="form-label">Agency Code</label>
                                                     <input type="number" class="form-control" id="input13"
-                                                        placeholder="" v-model="form.agency_code"
-                                                        >
+                                                        placeholder="" v-model="form.agency_code">
                                                     <InputError :message="form.errors.agency_code" />
                                                 </div>
                                                 <div class="col-md-4">
