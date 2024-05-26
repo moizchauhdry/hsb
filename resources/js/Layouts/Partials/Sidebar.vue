@@ -44,7 +44,7 @@ watch(
         else if (route().current('businessClass.index')) {
             isSubmenuVisible.value.businessClass = true;
         }
-        else if (route().current('policy.index')) {
+        else if (route().current('policy.index') || route().current('policy.detail')) {
             isSubmenuVisible.value.policy = true;
         }
     }
@@ -137,7 +137,7 @@ watch(
                 </ul>
             </li>
 
-            <li :class="{ 'mm-active': route().current('policy.index') }">
+            <li :class="{ 'mm-active': route().current('policy.index') || route().current('policy.detail') }">
                 <a href="#" class="has-arrow" @click="toggleList('policy')">
                     <div class="parent-icon"><i class="bx bx-category"></i>
                     </div>
