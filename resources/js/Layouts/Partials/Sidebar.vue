@@ -1,5 +1,20 @@
 <script setup>
 import { Link } from "@inertiajs/vue3";
+
+const props = defineProps({
+    closeable: {
+        type: Boolean,
+        default: true,
+    },
+});
+
+const emit = defineEmits(['toggle']);
+
+const toggle = () => {
+    if (props.closeable) {
+        emit('toggle');
+    }
+};
 </script>
 
 <template>
@@ -11,7 +26,8 @@ import { Link } from "@inertiajs/vue3";
             <div>
                 <h4 class="logo-text">HSB Portal</h4>
             </div>
-            <div class="toggle-icon ms-auto"><i class='bx bx-arrow-back'></i>
+            <div class="toggle-icon ms-auto" @click="toggle">
+                <i class='bx bx-arrow-back'></i>
             </div>
         </div>
         <!--navigation-->
@@ -70,7 +86,8 @@ import { Link } from "@inertiajs/vue3";
                 </a>
                 <ul>
                     <li>
-                        <Link :href="route('businessClass.index')"><i class='bx bx-radio-circle'></i>List Business Class</Link>
+                        <Link :href="route('businessClass.index')"><i class='bx bx-radio-circle'></i>List Business Class
+                        </Link>
                     </li>
                 </ul>
                 <a href="javascript:;" class="has-arrow">
@@ -89,3 +106,37 @@ import { Link } from "@inertiajs/vue3";
         <!--end navigation-->
     </div>
 </template>
+
+<style>
+.sidebar-wrapper {
+    overflow-y: hidden;
+    transition: overflow-y 0.3s ease;
+}
+
+.sidebar-wrapper:hover {
+    overflow-y: auto;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 4px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: transparent
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+    /* Add radius */
+
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(204, 201, 201);
+}
+</style>
