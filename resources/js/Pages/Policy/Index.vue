@@ -38,18 +38,18 @@ const edit = (id) => {
                             </ol>
                         </nav>
                     </div>
+                    <div class="ms-auto">
+                        <CreateEdit v-bind="$props" ref="create_edit_ref"></CreateEdit>
+                    </div>
                 </div>
 
                 <div class="card">
                     <div class="card-body">
                         <div class="d-lg-flex align-items-center mb-4 gap-3">
                             <div class="position-relative">
-                                <input type="text" class="form-control ps-5 radius-30" placeholder="Search Policy"> <span
-                                    class="position-absolute top-50 product-show translate-middle-y"><i
+                                <input type="text" class="form-control ps-5 radius-30" placeholder="Search Policy">
+                                <span class="position-absolute top-50 product-show translate-middle-y"><i
                                         class="bx bx-search"></i></span>
-                            </div>
-                            <div class="ms-auto">
-                                <CreateEdit v-bind="$props" ref="create_edit_ref"></CreateEdit>
                             </div>
                         </div>
                         <div class="table-responsive">
@@ -73,14 +73,16 @@ const edit = (id) => {
                                             <td>{{ policy.id }}</td>
                                             <td>{{ policy.policy_no }}</td>
                                             <td>{{ policy.client_name }}</td>
-                                            <td>{{ policy.insurer_name}}</td>
-                                            <td>{{ policy.insurance_date}}</td>
-                                            <td>{{ policy.policy_start}} - {{ policy.policy_end}}</td>
+                                            <td>{{ policy.insurer_name }}</td>
+                                            <td>{{ policy.insurance_date }}</td>
+                                            <td>{{ policy.policy_start }} - {{ policy.policy_end }}</td>
                                             <td>
-                                                <SecondaryButton @click="edit(policy.id)">Edit <i class="bx bx-edit"></i></SecondaryButton>
+                                                <SecondaryButton @click="edit(policy.id)">Edit <i
+                                                        class="bx bx-edit"></i></SecondaryButton>
 
                                                 <Link :href="route('policy.detail', policy.id)" class="mx-1">
-                                                    <SecondaryButton>Detail <i class="bx bxs-collection"></i></SecondaryButton>
+                                                <SecondaryButton>Detail <i class="bx bxs-collection"></i>
+                                                </SecondaryButton>
                                                 </Link>
 
                                             </td>

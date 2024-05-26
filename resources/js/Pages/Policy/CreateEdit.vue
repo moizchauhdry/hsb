@@ -5,6 +5,7 @@ import { ref } from "vue";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import axios from 'axios';
+import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 defineProps({
     policy: Object,
@@ -116,7 +117,7 @@ const close = () => {
     modal.value = false;
     form.current_step = 1;
     form.errors = {};
-    
+
     form.policy_id = "";
     form.client_id = "";
     form.insurance_id = "";
@@ -192,8 +193,8 @@ defineExpose({ edit: (id) => edit(id) });
 
 <template>
     <div class="col">
-        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleLargeModal"
-            @click="create"><i class="bx bx-plus"></i>Add</button>
+
+        <PrimaryButton @click="create">Add Policy</PrimaryButton>
 
         <div class="modal fade show" id="exampleLargeModal" tabindex="-1" aria-hidden="true" style="display: block;"
             v-if="modal">
