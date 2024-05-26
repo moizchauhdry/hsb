@@ -21,6 +21,11 @@ class Policy extends Model
         return $this->belongsTo(Insurance::class,'insurance_id','id');
     }
 
+    public function insurer()
+    {
+        return $this->belongsTo(Insurance::class,'insurance_id','id');
+    }
+
     public function agency()
     {
         return $this->belongsTo(Agency::class);

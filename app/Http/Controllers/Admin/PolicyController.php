@@ -31,9 +31,12 @@ class PolicyController extends Controller
             ->withQueryString()
             ->through(fn ($policy) => [
                 'id' => $policy->id,
-                'client_name' => $policy->client->name,
                 'policy_no' => $policy->policy_no,
-                'created_at' => $policy->created_at->format('d-m-Y h:i A'),
+                'client_name' => $policy->client->name,
+                'insurer_name' => $policy->insurer->name,
+                'insurance_date' => Carbon::parse($policy->date_of_insurance)->format('d-m-Y'),
+                'policy_start' => Carbon::parse($policy->policy_start_period)->format('d-m-Y'),
+                'policy_end' => Carbon::parse($policy->policy_end_period)->format('d-m-Y'),
             ]);
 
         return Inertia::render('Policy/Index', [

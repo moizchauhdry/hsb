@@ -4,6 +4,7 @@ import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
 import "@vuepic/vue-datepicker/dist/main.css";
 import CreateEdit from "./CreateEdit.vue";
 import { ref } from "vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
 
 defineProps({
     policies: Array,
@@ -52,32 +53,36 @@ const edit = (id) => {
                             </div>
                         </div>
                         <div class="table-responsive">
-                            <table class="table mb-0">
-                                <thead class="table-light">
+                            <table class="table table-striped table-hover mb-0">
+                                <thead class="table-light text-uppercase">
                                     <tr>
-                                        <th>ID</th>
-                                        <th>Policy No</th>
+                                        <th>SR #</th>
+                                        <th>Policy ID</th>
+                                        <th>Policy NO</th>
                                         <th>Client Name</th>
-                                        <th>Created Date</th>
-                                        <th>View Details</th>
+                                        <th>Insurer Name</th>
+                                        <th>Insurance Date</th>
+                                        <th>Policy Date</th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <template v-for="(policy, index) in policies.data">
                                         <tr>
+                                            <td>{{ ++index }}</td>
                                             <td>{{ policy.id }}</td>
                                             <td>{{ policy.policy_no }}</td>
                                             <td>{{ policy.client_name }}</td>
-                                            <td>{{ policy.created_at }}</td>
+                                            <td>{{ policy.insurer_name}}</td>
+                                            <td>{{ policy.insurance_date}}</td>
+                                            <td>{{ policy.policy_start}} - {{ policy.policy_end}}</td>
                                             <td>
-                                                <Link :href="route('policy.detail', policy.id)" class="btn btn-primary">
-                                                   View Detail
+                                                <SecondaryButton @click="edit(policy.id)">Edit <i class="bx bx-edit"></i></SecondaryButton>
+
+                                                <Link :href="route('policy.detail', policy.id)" class="mx-1">
+                                                    <SecondaryButton>Detail <i class="bx bxs-collection"></i></SecondaryButton>
                                                 </Link>
-                                            </td>
-                                            <td>
-                                                <button type="button" @click="edit(policy.id)" title="Edit"
-                                                    class="btn btn-primary btn-sm radius-30"><i class="bx bx-edit"></i></button>
+
                                             </td>
                                         </tr>
                                     </template>
