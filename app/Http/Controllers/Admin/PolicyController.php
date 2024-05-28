@@ -248,7 +248,6 @@ class PolicyController extends Controller
         }
     }
 
-
     public function uploads(Request $request)
     {
         $request->validate([
@@ -293,7 +292,7 @@ class PolicyController extends Controller
         }
     }
 
-    // Policy Claim function Start
+    // ******* POLICY CLAIMS *******
 
     public function getClaim($id)
     {
@@ -332,7 +331,6 @@ class PolicyController extends Controller
         }
     }
 
-
     public function updateClaim(Request $request)
     {
         $policyClaim = PolicyClaim::where('id', $request->claim_id)->first();
@@ -356,8 +354,6 @@ class PolicyController extends Controller
         ];
         $policyClaim->update($data);
     }
-
-
 
     public function getClaimUpload($id)
     {
@@ -446,7 +442,4 @@ class PolicyController extends Controller
             return response()->json(['error' => 'Policy not found'], 404);
         }
     }
-
-    // Policy Claim function End
-
 }
