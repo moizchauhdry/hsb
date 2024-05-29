@@ -88,7 +88,7 @@ const claimEdit = (id) => {
                         <div class="table-responsive" style="overflow-x: hidden;">
                             <div class="container-fluid">
                                 <div class="border mb-4" id="partner">
-                                    <div style="background-color: #FBCA25">
+                                    <div style="background-color: #037DE2">
                                         <h5  style="text-align: center" class="w-auto title">Policy Info</h5>
                                     </div>
                 
@@ -147,7 +147,7 @@ const claimEdit = (id) => {
                                 </div>
                            
                                 <div class="border mb-4" id="partner">
-                                    <div style="background-color: #FBCA25">
+                                    <div style="background-color: #037DE2">
                                         <h5  style="text-align: center" class="w-auto title">Policy Amount</h5>
                                     </div>
                                     <div class="row">
@@ -187,7 +187,7 @@ const claimEdit = (id) => {
                                 </div>
 
                                 <div class="border mb-4" id="partner">
-                                    <div style="background-color: #FBCA25">
+                                    <div style="background-color: #037DE2">
                                         <h5  style="text-align: center" class="w-auto title">Notes</h5>
                                     </div>
                                     <div class="row">
@@ -220,7 +220,7 @@ const claimEdit = (id) => {
                                 </div>
             
                                 <div class="border mb-4" id="partner">
-                                    <div style="background-color: #FBCA25">
+                                    <div style="background-color: #037DE2">
                                         <h5  style="text-align: center" class="w-auto title">Policy Claims</h5>
                                     </div>
                                     <div class="row">
@@ -279,7 +279,7 @@ const claimEdit = (id) => {
                                 </div>
                         
                                 <div class="border mb-4" id="partner">
-                                    <div style="background-color: #FBCA25">
+                                    <div style="background-color: #037DE2">
                                         <h5  style="text-align: center" class="w-auto title">Uploads</h5>
                                     </div>
                                     <div class="row">
