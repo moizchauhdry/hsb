@@ -275,7 +275,7 @@ defineExpose({ edit: (id) => edit(id) });
                                                     <InputError :message="form.errors.client_id" />
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <label for="input21" class="form-label">Insurance</label>
+                                                    <label for="input21" class="form-label">Insurer</label>
 
                                                     <select id="input21" class="form-select"
                                                         v-model="form.insurance_id">
@@ -287,24 +287,24 @@ defineExpose({ edit: (id) => edit(id) });
                                                     <InputError :message="form.errors.insurance_id" />
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <label for="input13" class="form-label">Co insurance</label>
+                                                    <label for="input21" class="form-label">Insurance type</label>
 
-                                                    <input type="text" class="form-control" id="input13" placeholder=""
-                                                        v-model="form.co_insurance">
-
-                                                    <InputError :message="form.errors.co_insurance" />
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <label for="input21" class="form-label">Takefull type</label>
-
-                                                    <select id="input21" class="form-select"
-                                                        v-model="form.takeful_type">
-
+                                                    <select id="input21" class="form-select" v-model="form.takeful_type">
                                                         <option value="1">Direct 100%</option>
                                                         <option value="0">Our lead</option>
                                                     </select>
                                                     <InputError :message="form.errors.insurance_name" />
                                                 </div>
+                                                <div class="col-md-4">
+                                                    <label for="input13" class="form-label">Co insurance</label>
+
+                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                        v-model="form.co_insurance" :disabled="form.takeful_type === '0'">
+
+                                                    <InputError :message="form.errors.co_insurance" />
+                                                </div>
+
+                                               
                                                 <div class="col-md-4">
                                                     <label for="input13" class="form-label">Policy No</label>
 
@@ -312,6 +312,14 @@ defineExpose({ edit: (id) => edit(id) });
                                                         v-model="form.policy_no">
 
                                                     <InputError :message="form.errors.policy_no" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="input13" class="form-label">Cover note no</label>
+
+                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                        v-model="form.cover_note_no">
+
+                                                    <InputError :message="form.errors.cover_note_no" />
                                                 </div>
                                                 <div class="col-md-4">
                                                     <label for="input21" class="form-label">Agency</label>
@@ -341,27 +349,28 @@ defineExpose({ edit: (id) => edit(id) });
                                                     <InputError :message="form.errors.class_of_business_id" />
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <label for="input21" class="form-label">Orignal/Endorsment</label>
+                                                    <label for="input21" class="form-label">New/Renewal/Endorsment</label>
 
                                                     <select id="input21" class="form-select"
                                                         v-model="form.orignal_endorsment">
 
                                                         <option value="new">New</option>
                                                         <option value="renewal">Renewal</option>
+                                                        <option value="endorsment">Endorsment</option>
                                                     </select>
                                                     <InputError :message="form.errors.orignal_endorsment" />
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <label for="" class="form-label">Date of insurance</label>
-                                                    <VueDatePicker v-model="form.date_of_insurance" :teleport="true">
+                                                    <label for="" class="form-label">Date of Insurer</label>
+                                                    <VueDatePicker v-model="form.date_of_insurance" :teleport="true" :show-time="false">
                                                     </VueDatePicker>
-
                                                     <InputError :message="form.errors.date_of_insurance" />
                                                 </div>
+
                                                 <div class="col-md-4">
                                                     <label for="input13" class="form-label">Policy start
                                                         period</label>
-                                                    <VueDatePicker v-model="form.policy_start_period" :teleport="true">
+                                                    <VueDatePicker v-model="form.policy_start_period" :teleport="true" :show-time="false">
                                                     </VueDatePicker>
 
                                                     <InputError :message="form.errors.policy_start_period" />
@@ -369,7 +378,7 @@ defineExpose({ edit: (id) => edit(id) });
                                                 <div class="col-md-4">
                                                     <label for="input13" class="form-label">Policy end
                                                         period</label>
-                                                    <VueDatePicker v-model="form.policy_end_period" :teleport="true">
+                                                    <VueDatePicker v-model="form.policy_end_period" :teleport="true" :show-time="false">
                                                     </VueDatePicker>
 
                                                     <InputError :message="form.errors.policy_end_period" />
@@ -379,79 +388,17 @@ defineExpose({ edit: (id) => edit(id) });
 
                                         <template v-if="form.current_step == 2">
                                             <div class="row g-2">
-                                                <div class="col-md-4">
-                                                    <label for="input13" class="form-label">Sum insured</label>
-
-                                                    <input type="number" class="form-control" id="input13"
-                                                        placeholder="" v-model="form.sum_insured">
-
-                                                    <InputError :message="form.errors.sum_insured" />
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <label for="input13" class="form-label">Gross premium</label>
-
-                                                    <input type="number" class="form-control" id="input13"
-                                                        placeholder="" v-model="form.gross_premium">
-
-                                                    <InputError :message="form.errors.gross_premium" />
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <label for="input13" class="form-label">Net premium</label>
-
-                                                    <input type="number" class="form-control" id="input13"
-                                                        placeholder="" v-model="form.net_premium">
-
-                                                    <InputError :message="form.errors.net_premium" />
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <label for="input13" class="form-label">Cover note no</label>
-
-                                                    <input type="text" class="form-control" id="input13" placeholder=""
-                                                        v-model="form.cover_note_no">
-
-                                                    <InputError :message="form.errors.cover_note_no" />
-                                                </div>
-                                                <div class="col-md-4">
+                                                <div class="col-md-6">
                                                     <label for="input13" class="form-label">Installment plan</label>
-
-                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                    <select id="input21" class="form-select"
                                                         v-model="form.installment_plan">
 
+                                                        <option value="2">2</option>
+                                                        <option value="4">4</option>
+                                                    </select>
                                                     <InputError :message="form.errors.installment_plan" />
                                                 </div>
-                                                <div class="col-md-4">
-                                                    <label for="input13" class="form-label">Leader</label>
-
-                                                    <input type="text" class="form-control" id="input13" placeholder=""
-                                                        v-model="form.leader">
-
-                                                    <InputError :message="form.errors.leader" />
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <label for="input13" class="form-label">Leader policy no</label>
-
-                                                    <input type="text" class="form-control" id="input13" placeholder=""
-                                                        v-model="form.leader_policy_no">
-
-                                                    <InputError :message="form.errors.leader_policy_no" />
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <label for="input13" class="form-label">Branch</label>
-
-                                                    <input type="text" class="form-control" id="input13" placeholder=""
-                                                        v-model="form.branch">
-
-                                                    <InputError :message="form.errors.branch" />
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <label for="input13" class="form-label">Brokerage amount</label>
-
-                                                    <input type="number" class="form-control" id="input13"
-                                                        placeholder="" v-model="form.brokerage_amount">
-
-                                                    <InputError :message="form.errors.brokerage_amount" />
-                                                </div>
-                                                <div class="col-md-4">
+                                                <div class="col-md-6">
                                                     <label for="input21" class="form-label">User</label>
 
                                                     <select id="input21" class="form-select" v-model="form.user_id">
@@ -461,28 +408,191 @@ defineExpose({ edit: (id) => edit(id) });
                                                     </select>
                                                     <InputError :message="form.errors.user_id" />
                                                 </div>
-                                                <div class="col-md-4">
-                                                    <label for="input13" class="form-label">Tax</label>
-
-                                                    <input type="number" class="form-control" id="input13"
-                                                        placeholder="" v-model="form.tax">
-
-                                                    <InputError :message="form.errors.tax" />
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <label for="input13" class="form-label">Percentage</label>
-
-                                                    <input type="number" class="form-control" id="input13"
-                                                        placeholder="" v-model="form.percentage">
-
-                                                    <InputError :message="form.errors.percentage" />
-                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <table class="table">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Label</th>
+                                                                    <th>Input</th>
+                                                                    <th>Error</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td><label for="sum_insured" class="form-label">Sum insured</label></td>
+                                                                    <td><input type="number" class="form-control" id="sum_insured" v-model="form.sum_insured"></td>
+                                                                    <td><InputError :message="form.errors.sum_insured" /></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><label for="gross_premium" class="form-label">Gross premium</label></td>
+                                                                    <td><input type="number" class="form-control" id="gross_premium" v-model="form.gross_premium"></td>
+                                                                    <td><InputError :message="form.errors.gross_premium" /></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><label for="net_premium" class="form-label">Net premium</label></td>
+                                                                    <td><input type="number" class="form-control" id="net_premium" v-model="form.net_premium"></td>
+                                                                    <td><InputError :message="form.errors.net_premium" /></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><label for="brokerage_amount" class="form-label">Brokerage amount</label></td>
+                                                                    <td><input type="number" class="form-control" id="brokerage_amount" v-model="form.brokerage_amount"></td>
+                                                                    <td><InputError :message="form.errors.brokerage_amount" /></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><label for="tax" class="form-label">Tax</label></td>
+                                                                    <td><input type="number" class="form-control" id="tax" v-model="form.tax"></td>
+                                                                    <td><InputError :message="form.errors.tax" /></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><label for="percentage" class="form-label">Percentage</label></td>
+                                                                    <td><input type="number" class="form-control" id="percentage" v-model="form.percentage"></td>
+                                                                    <td><InputError :message="form.errors.percentage" /></td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div> 
                                             </div>
                                         </template>
 
                                         <template v-if="form.current_step == 3">
                                             <h6>Please finalize data.</h6>
+                                            <div class="row g-2">
+                                                <div class="col-md-4">
+                                                <label for="input13" class="form-label">Client</label>
+                                                <div class="form-control">
+                                                    {{ form.client_id }}
+                                                </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                <label for="input21" class="form-label">Insurer</label>
+                                                <div class="form-control">
+                                                    {{ form.insurance_id }}
+                                                </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                <label for="input21" class="form-label">Insurance type</label>
+                                                <div class="form-control">
+                                                    {{ form.takeful_type }}
+                                                </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                <label for="input13" class="form-label">Co insurance</label>
+                                                <div class="form-control">
+                                                    {{ form.co_insurance }}
+                                                </div>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                <label for="input13" class="form-label">Policy No</label>
+                                                <div class="form-control">
+                                                    {{ form.policy_no }}
+                                                </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                <label for="input13" class="form-label">Cover note no</label>
+                                                <div class="form-control">
+                                                    {{ form.cover_note_no }}
+                                                </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                <label for="input21" class="form-label">Agency</label>
+                                                <div class="form-control">
+                                                    {{ form.agency_id }}
+                                                </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                <label for="input13" class="form-label">Agency Code</label>
+                                                <div class="form-control">
+                                                    {{ form.agency_code }}
+                                                </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                <label for="input21" class="form-label">Business Class</label>
+                                                <div class="form-control">
+                                                    {{ form.class_of_business_id }}
+                                                </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                <label for="input21" class="form-label">New/Renewal/Endorsment</label>
+                                                <div class="form-control">
+                                                    {{ form.orignal_endorsment }}
+                                                </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                <label for="" class="form-label">Date of Insurer</label>
+                                                <div class="form-control">
+                                                    {{ form.date_of_insurance }}
+                                                </div>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                <label for="input13" class="form-label">Policy start period</label>
+                                                <div class="form-control">
+                                                    {{ form.policy_start_period }}
+                                                </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                <label for="input13" class="form-label">Policy end period</label>
+                                                <div class="form-control">
+                                                    {{ form.policy_end_period }}
+                                                </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="input13" class="form-label">Installment plan</label>
+                                                    <div class="form-control">
+                                                        {{ form.installment_plan }}
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="input21" class="form-label">User</label>
+                                                    <div class="form-control">
+                                                        {{ form.user_id }}
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <table class="table">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Label</th>
+                                                                    <th>Input</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td><label for="sum_insured" class="form-label">Sum insured</label></td>
+                                                                    <td>{{ form.sum_insured }}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><label for="brokerage_amount" class="form-label">Brokerage amount</label></td>
+                                                                    <td>{{ form.brokerage_amount }}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><label for="tax" class="form-label">Tax</label></td>
+                                                                    <td>{{ form.tax }}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><label for="percentage" class="form-label">Percentage</label></td>
+                                                                    <td>{{ form.percentage }}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><label for="gross_premium" class="form-label">Gross premium</label></td>
+                                                                    <td>{{ form.gross_premium }}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><label for="net_premium" class="form-label">Net premium</label></td>
+                                                                    <td>{{ form.net_premium }}</td>
+                                                                   
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div> 
+                                            </div>
                                         </template>
+
                                     </div>
 
                                     <div class="card-footer">
