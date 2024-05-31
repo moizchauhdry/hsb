@@ -8,6 +8,7 @@ import Claim from "./Claim.vue";
 import ClaimNote from "./Claim/Notes.vue";
 import ClaimUpload from "./Claim/Upload.vue";
 import ClaimEdit from "./Claim/Edit.vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
 
 const { props } = usePage();
 
@@ -109,8 +110,8 @@ const claimEdit = (id) => {
                                             </tr>
                                             <tr>
                                                 <th>Insurance type</th>
-                                                <td v-if="policy.takeful_type == 0">Direct 100%</td>
-                                                <td v-if="policy.takeful_type == 1">Our lead</td>
+                                                <td v-if="policy.takeful_type == 1">Takaful</td>
+                                                <td v-if="policy.takeful_type == 2">Conventional</td>
                                                 <th>Policy No.</th>
                                                 <td>{{ policy.policy_no }}</td>
                                             </tr>
@@ -231,7 +232,7 @@ const claimEdit = (id) => {
                                                 <ClaimEdit v-bind="$props" ref="claim_edit_ref"></ClaimEdit>
                                             </div>
                                             <table class="table mb-0">
-                                                <thead class="table-light">
+                                                <thead class="table-light" style="text-align: center;">
                                                     <tr>
                                                         <th>Sr No.</th>
                                                         <th>ID</th>
@@ -239,10 +240,10 @@ const claimEdit = (id) => {
                                                         <th>Settled</th>
                                                         <th>Detail</th>
                                                         <th>Status</th>
-                                                        <th></th>
+                                                        <th>Action</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
+                                                <tbody style="text-align: center;">
                                                     <template v-for="(policyClaim, index) in JSON.parse(JSON.stringify(props.policyClaims))" :key="index">
                                                         <tr>
                                                             <td>{{ ++index }}</td>
@@ -252,23 +253,20 @@ const claimEdit = (id) => {
                                                             <td>{{ policyClaim.detail }}</td>
                                                             <td><span class="badge bg-primary">{{ policyClaim.status }}</span></td>
                                                             <td>
-                                                                <div class="d-lg-flex align-items-center mb-4 gap-3">
-                                                                    <div class="ms-auto d-flex">
-                                                                        <button type="button" @click="claimNote(policyClaim.id)" title="Note"
-                                                                            data-bs-toggle="modal" data-bs-target="#notesLargeModal"
-                                                                            class="btn btn-primary btn-sm" style="margin-inline: 5px; font-size: 10px; width:40px;"> <i class='bx bxs-note'></i></button>
-
-                                                                        <button type="button" @click="claimUpload(policyClaim.id)" title="Uploads"
-                                                                            data-bs-toggle="modal" data-bs-target="#notesUploadLargeModal"
-                                                                            class="btn btn-primary btn-sm" style="margin-inline: 5px; font-size: 10px; width:40px;">  <i class='bx bx-cloud-upload'></i></button>
-
-                                                                        <button type="button" @click="claimEdit(policyClaim.id)" title="Edit"
-                                                                            data-bs-toggle="modal" data-bs-target="#EditLargeModal"
-                                                                            class="btn btn-primary btn-sm" style="font-size: 10px; width:40px;">  <i class='bx bx-edit'></i></button>
-
-                                                                    </div>
-                                                                    
-                                                                </div>
+                                                                <SecondaryButton @click="claimEdit(policyClaim.id)"
+                                                                    title="Edit" data-bs-toggle="modal" style="margin-inline: 5px;" 
+                                                                    data-bs-target="#EditLargeModal"><i class='bx bx-edit'>Edit</i>
+                                                                </SecondaryButton>
+                                                                <SecondaryButton @click="claimNote(policyClaim.id)"
+                                                                    title="Note" data-bs-toggle="modal" style="margin-inline: 5px;"
+                                                                    data-bs-target="#notesLargeModal"><i class='bx bxs-note'>Note</i>
+                                                                </SecondaryButton>
+                                                                <SecondaryButton @click="claimUpload(policyClaim.id)"
+                                                                    title="Uploads" data-bs-toggle="modal" style="margin-inline: 5px;"
+                                                                    data-bs-target="#notesUploadLargeModal"><i class='bx bx-cloud-upload'>Upload</i>
+                                                                </SecondaryButton>
+                                                                
+                            
                                                             </td>
                                                         </tr> 
                                                     </template>
@@ -285,19 +283,23 @@ const claimEdit = (id) => {
                                     <div class="row">
                                         <div class="table-responsive">
                                             <table class="table mb-0">
-                                                <thead class="table-light">
+                                                <thead class="table-light" style="text-align: center;">
                                                     <tr>
                                                         <th>Sr No.</th>
                                                         <th>Type</th>
                                                         <th>File</th>
+                                                        <th>Action</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
+                                                <tbody style="text-align: center;">
                                                     <template v-for="(policyUpload, index) in JSON.parse(JSON.stringify(props.policyUploads))" :key="index">
                                                         <tr>
                                                             <td>{{ ++index }}</td>
                                                             <td>{{ policyUpload.type }}</td>
-                                                            <td><img :src="props.assetUrl + '/' + policyUpload.upload" alt="" style="height: 100px;width: 100px;"></td>
+                                                            <td><img :src="props.assetUrl + '/' + policyUpload.upload" alt="" style="width: 70px;"></td>
+                                                            <td>
+                                                                <a :href="props.assetUrl + '/' + policyUpload.upload"
+                                                                    class="inline-flex items-center px-2 py-1 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150" download><i class='bx bxs-down-arrow-square'>Download</i></a></td>
                                                         </tr>
                                                     </template>
                                                 </tbody>

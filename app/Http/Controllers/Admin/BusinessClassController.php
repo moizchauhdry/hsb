@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\BusinessClass;
 use App\Http\Controllers\Controller;
 use App\Models\BusinessClassInsurance;
+use App\Models\Department;
 
 class BusinessClassController extends Controller
 {
@@ -33,9 +34,11 @@ class BusinessClassController extends Controller
     public function create()
     {
         $insurances = Insurance::select('id', 'name')->get()->toArray();
+        $departments = Department::select('id', 'name')->get()->toArray();
         
         $data = [
             'insurances' => $insurances,
+            'departments' => $departments,
         ];
 
         return response()->json($data);
@@ -47,11 +50,13 @@ class BusinessClassController extends Controller
             'class_name' => ['required', 'string', 'min:5', 'max:50'],
             'percentage' => ['required'],
             'insurance_id*' => ['required'],
+            'department_id' => ['required'],
         ]);
 
         $data = [
             'class_name' => $request->class_name,
             'percentage' => $request->percentage,
+            'department_id' => $request->department_id,
         ];
 
         $businessClasses = BusinessClass::create($data);
@@ -76,9 +81,11 @@ class BusinessClassController extends Controller
     {        
         $business_cls = BusinessClass::with('businessInsurance')->where('id',$id)->first();
         $insurances = Insurance::select('id', 'name')->get()->toArray();
+        $departments = Department::select('id', 'name')->get()->toArray();
         
         $data = [
             'insurances' => $insurances,
+            'departments' => $departments,
             'business_cls' => $business_cls,
         ];
 
@@ -93,11 +100,13 @@ class BusinessClassController extends Controller
             'class_name' => ['required', 'string', 'min:5', 'max:50'],
             'percentage' => ['required'],
             'insurance_id*' => ['required'],
+            'department_id' => ['required'],
         ]);
 
         $data = [
             'class_name' => $request->class_name,
             'percentage' => $request->percentage,
+            'department_id' => $request->department_id,
         ];
 
         $business_cls->update($data);

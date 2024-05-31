@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             InsuranceSeeder::class,
             AgencySeeder::class,
+            DepartmentSeeder::class,
         ]);
     }
 }
