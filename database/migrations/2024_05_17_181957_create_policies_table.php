@@ -21,7 +21,7 @@ return new class extends Migration
             $table->foreignId('agency_id')->nullable();
             $table->string('agency_code')->nullable();
             $table->foreignId('class_of_business_id')->nullable();
-            $table->enum('orignal_endorsment', ['new', 'renewal'])->nullable()->default('new');
+            $table->enum('orignal_endorsment', ['new', 'renewal','endorsment'])->nullable()->default('new');
             $table->date('date_of_insurance')->nullable();
             $table->date('policy_start_period')->nullable();
             $table->date('policy_end_period')->nullable();

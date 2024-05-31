@@ -8,6 +8,7 @@ use App\Models\Agency;
 use App\Models\Policy;
 use App\Models\Insurance;
 use Illuminate\Http\File;
+use App\Models\Department;
 use App\Models\PolicyNote;
 use App\Models\PolicyClaim;
 use App\Models\PolicyUpload;
@@ -50,6 +51,7 @@ class PolicyController extends Controller
         $clients = User::select('id', 'name')->where('role_users_id', 2)->get()->toArray();
         $insurances = Insurance::select('id', 'name')->get()->toArray();
         $agencies = Agency::select('id', 'name')->get()->toArray();
+        $departments = Department::select('id', 'name')->get()->toArray();
         $cobs = BusinessClass::select('id', 'class_name')->get()->toArray();
 
         $data = [
@@ -57,6 +59,7 @@ class PolicyController extends Controller
             'clients' => $clients,
             'insurances' => $insurances,
             'agencies' => $agencies,
+            'departments' => $departments,
             'cobs' => $cobs
         ];
 
@@ -74,13 +77,14 @@ class PolicyController extends Controller
                 'co_insurance' => ['required'],
                 'takeful_type' => ['required'],
                 'policy_no' => ['required'],
+                'cover_note_no' => ['required'],
                 'agency_id' => ['required'],
-                'agency_code' => ['required'],
                 'class_of_business_id' => ['required'],
                 'orignal_endorsment' => ['required'],
                 'date_of_insurance' => ['required'],
                 'policy_start_period' => ['required'],
                 'policy_end_period' => ['required'],
+                'installment_plan' => ['required'],
             ]);
         }
 
@@ -89,13 +93,10 @@ class PolicyController extends Controller
                 'sum_insured' => ['required'],
                 'gross_premium' => ['required'],
                 'net_premium' => ['required'],
-                'cover_note_no' => ['required'],
-                'installment_plan' => ['required'],
-                'leader' => ['required'],
-                'leader_policy_no' => ['required'],
-                'branch' => ['required'],
+                // 'leader' => ['required'],
+                // 'leader_policy_no' => ['required'],
+                // 'branch' => ['required'],
                 'brokerage_amount' => ['required'],
-                'user_id' => ['required'],
                 'tax' => ['required'],
                 'percentage' => ['required'],
             ]);
@@ -115,6 +116,8 @@ class PolicyController extends Controller
                 'insurance_id' => $request->insurance_id,
                 'co_insurance' => $request->co_insurance,
                 'takeful_type' => $request->takeful_type,
+                'department_id' => $request->department_id,
+                'lead_type' => $request->lead_type,
                 'policy_no' => $request->policy_no,
                 'agency_id' => $request->agency_id,
                 'agency_code' => $request->agency_code,
@@ -132,7 +135,7 @@ class PolicyController extends Controller
                 'leader_policy_no' => $request->leader_policy_no,
                 'branch' => $request->branch,
                 'brokerage_amount' => $request->brokerage_amount,
-                'user_id' => $request->user_id,
+                'user_id' => auth()->user()->id,
                 'tax' => $request->tax,
                 'percentage' => $request->percentage,
             ];
@@ -189,6 +192,7 @@ class PolicyController extends Controller
                 'insurance_id' => $policy->insurance->name,
                 'co_insurance' => $policy->co_insurance,
                 'takeful_type' => $policy->takeful_type,
+                'lead_type' => $policy->lead_type,
                 'policy_no' => $policy->policy_no,
                 'agency_id' => $policy->agency->name,
                 'agency_code' => $policy->agency_code,
@@ -442,4 +446,18 @@ class PolicyController extends Controller
             return response()->json(['error' => 'Policy not found'], 404);
         }
     }
+
+    // Policy Claim function End
+
+    public function getDepartmentByBusinessClass($id)
+    {
+        $cobs = BusinessClass::where('department_id',$id)->get()->toArray();
+
+        $data = [
+            'cobs' => $cobs
+        ];
+
+        return response()->json($data);
+    }
+
 }

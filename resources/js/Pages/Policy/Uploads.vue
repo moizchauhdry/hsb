@@ -4,6 +4,7 @@ import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
 import InputError from "@/Components/InputError.vue";
 import { ref } from "vue";
 import axios from 'axios';
+import SecondaryButton from "@/Components/SecondaryButton.vue";
 
 const { props } = usePage();
 const uploads_modal = ref(false);
@@ -51,8 +52,9 @@ const closeModal = () => {
 <template>
     <AuthenticatedLayout>
         <div class="col">
-            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#uploadsLargeModal"
-                @click="create"><i class='bx bx-cloud-upload'></i>Uploads</button>
+            <SecondaryButton @click="create" data-bs-toggle="modal"
+                data-bs-target="#uploadsLargeModal"><i class='bx bx-cloud-upload'>Uploads</i>
+            </SecondaryButton>
                 <div class="modal fade show" id="uploadsLargeModal" tabindex="-1" aria-hidden="true" style="display: block;"
                 v-if="uploads_modal">
                 <div class="modal fade show" id="uploadsLargeModal" tabindex="-1" aria-hidden="true"
