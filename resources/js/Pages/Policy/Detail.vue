@@ -106,43 +106,57 @@ const claimEdit = (id) => {
                                                 <th>Insurance</th>
                                                 <td>{{ policy.insurance_id }}</td>
 
-                                                <th>Co Insurance</th>
-                                                <td>{{ policy.co_insurance }}</td>
-                                            </tr>
-                                            <tr>
                                                 <th>Insurance type</th>
                                                 <td v-if="policy.takeful_type == 1">Takaful</td>
                                                 <td v-if="policy.takeful_type == 2">Conventional</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Lead type</th>
+                                                <td v-if="policy.lead_type == 1">Direct 100%</td>
+                                                <td v-if="policy.lead_type == 2">Our lead</td>
+                                                <td v-if="policy.lead_type == 3">Other lead</td>
+                                                
+                                                <th v-if="policy.lead_type == 1 || policy.lead_type == 3">Co Insurance</th>
+                                                <td v-if="policy.lead_type == 1 || policy.lead_type == 3">{{ policy.co_insurance }}</td>
+                                            </tr>
+                                            <tr>
                                                 <th>Policy No.</th>
                                                 <td>{{ policy.policy_no }}</td>
-                                            </tr>
-                                            <tr>
+
                                                 <th>Agency</th>
                                                 <td>{{ policy.agency_id }}</td>
-                                            
+                                            </tr>
+                                            <tr>
                                                 <th>Agency code</th>
                                                 <td>{{ policy.agency_code }}</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Class business</th>
+                                           
+                                                <th>Business class</th>
                                                 <td>{{ policy.class_of_business_id }}</td>
-                                            
-                                                <th>Orignal Endorsment</th>
-                                                <td>{{ policy.orignal_endorsment }}</td>
                                             </tr>
                                             <tr>
+                                                <th>New/Renewal/Endorsment</th>
+                                                <td>{{ policy.orignal_endorsment }}</td>
+                                         
                                                 <th>Date of insurance</th>
                                                 <td>{{ policy.date_of_insurance }}</td>
-                                        
-                                                <th>Policy start period</th>
-                                                <td>{{ policy.policy_start_period }}</td>
                                             </tr>
                                             <tr>
+                                                <th>Policy start period</th>
+                                                <td>{{ policy.policy_start_period }}</td>
+                                            
                                                 <th>Policy end period</th>
                                                 <td>{{ policy.policy_end_period }}</td>
-
+                                            </tr>
+                                            <tr>
                                                 <th> Cover Note No </th>
                                                 <td> {{ policy.cover_note_no }} </td>
+                                           
+                                                <th>Installment Plan </th>
+                                                <td> {{ policy.installment_plan }} </td>
+                                            </tr>
+                                            <tr>
+                                                <th>User</th>
+                                                <td> {{ policy.user_id }} </td>
                                             </tr>
                                         </table>
                                     </div>
@@ -164,15 +178,7 @@ const claimEdit = (id) => {
                                             <tr>
                                                 <th>Net Premium </th>
                                                 <td> {{ policy.net_premium }} </td>
-                                              
-                                                <th>User </th>
-                                                <td> {{ policy.user_id }} </td>
-                                       
-                                            </tr>
-                                            <tr>
-                                                <th>Installment Plan </th>
-                                                <td> {{ policy.installment_plan }} </td>
-                                            
+                                                                                          
                                                 
                                                 <th>Brokerage Amount </th>
                                                 <td> {{ policy.brokerage_amount }} </td>
