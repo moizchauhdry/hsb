@@ -20,6 +20,7 @@ use App\Models\PolicyInsurance;
 use App\Models\PolicyClaimUpload;
 use Monolog\Handler\IFTTTHandler;
 use App\Http\Controllers\Controller;
+use App\Models\PolicyInstallmentPlan;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -177,6 +178,8 @@ class PolicyController extends Controller
         try {
             $policy = Policy::find($id);
 
+            $policyInstallment = $policy->policyInstallment;
+
             $policyResponse = [
                 'id' => $policy->id,
                 'client_name' => $policy->client->name,
@@ -213,6 +216,7 @@ class PolicyController extends Controller
             $policyUploads = PolicyUpload::where('policy_id', $policy->id)->get();
             return Inertia::render('Policy/Detail', [
                 'policy' => $policyResponse,
+                'policyInstallment' => $policyInstallment,
                 'policyNotes' => $policyNotes,
                 'policyClaims' => $policyClaims,
                 'policyUploads' => $policyUploads,
@@ -452,6 +456,65 @@ class PolicyController extends Controller
         ];
 
         return response()->json($data);
+    }
+
+    public function installmentPlan(Request $request)
+    {
+        $request->validate([
+            'policy_id' => ['required'],
+            'installmentPlan*' => ['required'],
+        ]);
+
+        try{
+
+            $policyInstallmentPlan =  PolicyInstallmentPlan::where('policy_id',$request->policy_id)->get();
+            if($policyInstallmentPlan->count() > 0)
+            {
+                PolicyInstallmentPlan::where('policy_id',$request->policy_id)->delete();
+
+                $installmentPlans = $request->installmentPlan;
+                foreach($installmentPlans as $installmentPlan){
+                    if(!empty($installmentPlan)){
+                        $dueDate = Carbon::parse($installmentPlan['due_date']);
+                        $due_date = $dueDate->format('Y-m-d');
+                
+                        $data = [
+                            'policy_id' => $request->policy_id,
+                            'due_date' => $due_date,
+                            'gross_premium' => $installmentPlan['gross_premium'],
+                            'net_premium' => $installmentPlan['net_premium'],
+                            'payment_status' => $installmentPlan['payment_status'],
+                        ];
+
+                        PolicyInstallmentPlan::create($data);
+                    }
+                }
+            } else {
+
+                $installmentPlans = $request->installmentPlan;
+                foreach($installmentPlans as $installmentPlan){
+                    if(!empty($installmentPlan)){
+                        $dueDate = Carbon::parse($installmentPlan['due_date']);
+                        $due_date = $dueDate->format('Y-m-d');
+                
+                        $data = [
+                            'policy_id' => $request->policy_id,
+                            'due_date' => $due_date,
+                            'gross_premium' => $installmentPlan['gross_premium'],
+                            'net_premium' => $installmentPlan['net_premium'],
+                            'payment_status' => $installmentPlan['payment_status'],
+                        ];
+
+                        PolicyInstallmentPlan::create($data);
+                    }
+                }
+
+            }
+
+        } catch (ModelNotFoundException $e) {
+            // Handle case when policy with the given ID doesn't exist
+            return response()->json(['error' => 'Policy not found'], 404);
+        }
     }
 
 }

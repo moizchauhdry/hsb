@@ -72,6 +72,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/get/claim/note/{id}', [PolicyController::class, 'getClaimNote'])->name('policy.getClaimNote');
         Route::get('/getDepartmentByBusinessClass/{id}',[PolicyController::class,'getDepartmentByBusinessClass'])->name('policy.getDepartmentByBusinessClass');
         Route::get('/getBusinessClassByPercent/{id}',[PolicyController::class,'getBusinessClassByPercent'])->name('policy.getBusinessClassByPercent');
+        Route::post('/installment-plan',[PolicyController::class,'installmentPlan'])->name('policy.installmentPlan');
     });
 
     Route::prefix('roles')->group(function () {
