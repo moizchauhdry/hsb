@@ -93,11 +93,6 @@ class PolicyController extends Controller
                 'sum_insured' => ['required'],
                 'gross_premium' => ['required'],
                 'net_premium' => ['required'],
-                // 'leader' => ['required'],
-                // 'leader_policy_no' => ['required'],
-                // 'branch' => ['required'],
-                'brokerage_amount' => ['required'],
-                'tax' => ['required'],
                 'percentage' => ['required'],
             ]);
         }
@@ -131,13 +126,9 @@ class PolicyController extends Controller
                 'net_premium' => $request->net_premium,
                 'cover_note_no' => $request->cover_note_no,
                 'installment_plan' => $request->installment_plan,
-                'leader' => $request->leader,
-                'leader_policy_no' => $request->leader_policy_no,
-                'branch' => $request->branch,
-                'brokerage_amount' => $request->brokerage_amount,
                 'user_id' => auth()->user()->id,
-                'tax' => $request->tax,
                 'percentage' => $request->percentage,
+                'hsb_profit' => $request->hsb_profit,
             ];
 
             if ($request->policy_id) {
@@ -213,6 +204,7 @@ class PolicyController extends Controller
                 'user_id' => $policy->user->name,
                 'tax' => $policy->tax,
                 'percentage' => $policy->percentage,
+                'hsb_profit' => $policy->hsb_profit,
                 'created_at' => $policy->created_at->format('d-m-Y h:i A'),
             ];
 
@@ -314,8 +306,6 @@ class PolicyController extends Controller
         $request->validate([
             'policy_id' => ['required'],
             'detail' => ['required'],
-            'progress' => ['required'],
-            'settled' => ['required'],
             'status' => ['required']
         ]);
 
@@ -323,8 +313,6 @@ class PolicyController extends Controller
             $data = [
                 'policy_id' => $request->policy_id,
                 'detail' => $request->detail,
-                'progress' => $request->progress,
-                'settled' => $request->settled,
                 'status' => $request->status,
             ];
 
@@ -342,8 +330,6 @@ class PolicyController extends Controller
         $request->validate([
             'policy_id' => ['required'],
             'detail' => ['required'],
-            'progress' => ['required'],
-            'settled' => ['required'],
             'status' => ['required']
         ]);
 
@@ -352,8 +338,6 @@ class PolicyController extends Controller
         $data = [
             'policy_id' => $request->policy_id,
             'detail' => $request->detail,
-            'progress' => $request->progress,
-            'settled' => $request->settled,
             'status' => $request->status
         ];
         $policyClaim->update($data);
@@ -455,6 +439,16 @@ class PolicyController extends Controller
 
         $data = [
             'cobs' => $cobs
+        ];
+
+        return response()->json($data);
+    }
+
+    public function getBusinessClassByPercent($id)
+    {
+        $cobPercentage = BusinessClass::find($id);
+        $data = [
+            'cobPercentage' => $cobPercentage->percentage
         ];
 
         return response()->json($data);

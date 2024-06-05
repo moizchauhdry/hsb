@@ -30,12 +30,8 @@ return new class extends Migration
             $table->decimal('net_premium',8,2)->nullable();
             $table->string('cover_note_no')->nullable();
             $table->string('installment_plan')->nullable();
-            $table->string('leader')->nullable();
-            $table->string('leader_policy_no')->nullable();
-            $table->string('branch')->nullable();
-            $table->decimal('brokerage_amount',8,2)->nullable();
+            $table->decimal('hsb_profit',8,2)->nullable();
             $table->foreignId('user_id')->nullable();
-            $table->decimal('tax',8,2)->nullable();
             $table->decimal('percentage',8,2)->nullable();
             $table->timestamps();
         });

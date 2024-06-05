@@ -12,8 +12,6 @@ const form = useForm({
     policy_id: JSON.parse(JSON.stringify((props.policy.id))) ?? "",
     claim_id: "",
     detail: "",
-    progress: "",
-    settled: "",
     status: "",
 });
 
@@ -46,8 +44,6 @@ const claimEdit = (id) => {
         form.policy_id = props.policy.id ?? "";
         form.claim_id = id;
         form.detail= data.policyClaim.detail;
-        form.progress= data.policyClaim.progress;
-        form.settled= data.policyClaim.settled;
         form.status= data.policyClaim.status;
     });
 };
@@ -83,20 +79,6 @@ const update = () => {
                                 <input type="hidden" v-model="form.policy_id">
                                 <input type="hidden" v-model="form.claim_id">
                                 <div class="row g-3">
-                                    <div class="col-md-4">
-                                        <label for="input13" class="form-label">Progress</label>
-                                        <input type="text" class="form-control" id="input13"
-                                            placeholder="" v-model="form.progress">
-                                        
-                                        <InputError :message="form.errors.progress" />
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label for="input13" class="form-label">Settled</label>
-                                        <input type="text" class="form-control" id="input13"
-                                            placeholder="" v-model="form.settled">
-                                       
-                                        <InputError :message="form.errors.settled" />
-                                    </div>
                                     <div class="col-md-4">
                                         <label for="input21" class="form-label">Status</label>
 

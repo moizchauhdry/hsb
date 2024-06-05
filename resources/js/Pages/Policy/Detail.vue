@@ -178,17 +178,41 @@ const claimEdit = (id) => {
                                             <tr>
                                                 <th>Net Premium </th>
                                                 <td> {{ policy.net_premium }} </td>
-                                                                                          
-                                                
-                                                <th>Brokerage Amount </th>
-                                                <td> {{ policy.brokerage_amount }} </td>
-                                            </tr>
-                                            <tr>
-                                                <th>Tax</th>
-                                                <td> {{ policy.tax }} </td>
-                                        
+                                          
                                                 <th>Percentage</th>
                                                 <td> {{ policy.percentage }} </td>
+                                            </tr>
+                                            <tr>
+                                                <th>HSB profit</th>
+                                                <td> {{ policy.hsb_profit }}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="border mb-4" id="partner">
+                                    <div style="background-color: #037DE2">
+                                        <h5  style="text-align: center" class="w-auto title">Installment Plan</h5>
+                                    </div>
+                                    <div class="row">
+                                        <table class="table table-bordered" style="margin-left: 18px;">
+                                            <tr>
+                                                <th>Sum insured </th>
+                                                <td> {{ policy.sum_insured }} </td>
+                                        
+                                                <th>Gross Premium </th>
+                                                <td> {{ policy.gross_premium }} </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Net Premium </th>
+                                                <td> {{ policy.net_premium }} </td>
+                                          
+                                                <th>Percentage</th>
+                                                <td> {{ policy.percentage }} </td>
+                                            </tr>
+                                            <tr>
+                                                <th>HSB profit</th>
+                                                <td> {{ policy.hsb_profit }}</td>
                                             </tr>
                                         </table>
                                     </div>
@@ -243,8 +267,6 @@ const claimEdit = (id) => {
                                                     <tr>
                                                         <th>Sr No.</th>
                                                         <th>ID</th>
-                                                        <th>Progress</th>
-                                                        <th>Settled</th>
                                                         <th>Detail</th>
                                                         <th>Status</th>
                                                         <th>Action</th>
@@ -255,8 +277,6 @@ const claimEdit = (id) => {
                                                         <tr>
                                                             <td>{{ ++index }}</td>
                                                             <td>{{ policyClaim.id }}</td>
-                                                            <td>{{ policyClaim.progress }}</td>
-                                                            <td>{{ policyClaim.settled }}</td>
                                                             <td>{{ policyClaim.detail }}</td>
                                                             <td><span class="badge bg-primary">{{ policyClaim.status }}</span></td>
                                                             <td>

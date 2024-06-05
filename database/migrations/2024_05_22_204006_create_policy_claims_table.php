@@ -15,9 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('policy_id')->nullable()->constrained('policies')->onDelete('cascade');
             $table->longText('detail')->nullable();
-            $table->string('progress')->nullable();
-            $table->longText('settled')->nullable();
-            $table->enum('status', ['open', 'close'])->nullable()->default('open');
+            $table->enum('status', ['open', 'close','progress','settled'])->default('open');
             $table->timestamps();
         });
     }

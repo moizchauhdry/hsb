@@ -1,7 +1,7 @@
 <script setup>
 import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
 import InputError from "@/Components/InputError.vue";
-import { ref } from "vue";
+import { ref,watch  } from "vue";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import axios from 'axios';
@@ -50,6 +50,7 @@ const form = useForm({
     brokerage_amount: "",
     tax: "",
     percentage: "",
+    hsb_profit: "",
 });
 
 const create = () => {
@@ -201,10 +202,57 @@ const edit = (id) => {
             form.brokerage_amount = data.policy.brokerage_amount;
             form.tax = data.policy.tax;
             form.percentage = data.policy.percentage;
+            form.hsb_profit = data.policy.hsb_profit;
         });
 };
 
 defineExpose({ edit: (id) => edit(id) });
+
+const calculatePercentage = () => {
+  if (form.department_id === 1) {
+    if (form.net_premium !== 0) {
+      return (form.sum_insured / form.net_premium);
+    } else {
+      return null; // or handle division by zero error
+    }
+  } else if (form.department_id !== null) {
+    if (form.gross_premium !== 0) {
+      return (form.sum_insured / form.gross_premium);
+    } else {
+      return null; // or handle division by zero error
+    }
+  } else {
+    return null;
+  }
+};
+
+watch(() => calculatePercentage(), (newVal) => {
+  form.percentage = newVal;
+});
+
+let cobPercentage = null;
+
+const selectBusinessClass = () => {
+    axios.get(`/policy/getBusinessClassByPercent/${form.class_of_business_id}`)
+    .then(({ data }) => {
+
+        cobPercentage = data.cobPercentage;
+        if (form.gross_premium) {
+            calculatePremium();
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching percentage:', error);
+    });
+};
+
+const calculatePremium = () => {
+    if (cobPercentage && form.gross_premium) {
+        form.hsb_profit = form.gross_premium * cobPercentage;
+    }
+};
+
+watch(() => form.gross_premium, calculatePremium);
 </script>
 
 <template>
@@ -368,15 +416,14 @@ defineExpose({ edit: (id) => edit(id) });
                                                 </div>
 
                                                 <div class="col-md-4">
-                                                    <label for="businessClassSelect" class="form-label">Business
-                                                        Class</label>
+                                                    <label for="businessClassSelect" class="form-label">Business Class</label>
                                                     <select id="businessClassSelect" class="form-select"
-                                                        v-model="form.class_of_business_id">
-                                                        <option v-for="cob in cobs" :value="cob.id">{{ cob.class_name }}
-                                                        </option>
+                                                        v-model="form.class_of_business_id" @change="selectBusinessClass">
+                                                        <option v-for="cob in cobs" :value="cob.id">{{ cob.class_name }}</option>
                                                     </select>
                                                     <InputError :message="form.errors.class_of_business_id" />
                                                 </div>
+
                                                 <div class="col-md-4">
                                                     <label for="input21"
                                                         class="form-label">New/Renewal/Endorsment</label>
@@ -392,7 +439,7 @@ defineExpose({ edit: (id) => edit(id) });
                                                 </div>
                                                 <div class="col-md-4">
                                                     <label for="" class="form-label">Date of Insurer</label>
-                                                    <VueDatePicker v-model="form.date_of_insurance" :teleport="true"
+                                                    <VueDatePicker v-model="form.date_of_insurance" :enable-time-picker="false"
                                                         :show-time="false">
                                                     </VueDatePicker>
                                                     <InputError :message="form.errors.date_of_insurance" />
@@ -401,7 +448,7 @@ defineExpose({ edit: (id) => edit(id) });
                                                 <div class="col-md-4">
                                                     <label for="input13" class="form-label">Policy start
                                                         period</label>
-                                                    <VueDatePicker v-model="form.policy_start_period" :teleport="true"
+                                                    <VueDatePicker v-model="form.policy_start_period" :enable-time-picker="false"
                                                         :show-time="false">
                                                     </VueDatePicker>
 
@@ -410,7 +457,7 @@ defineExpose({ edit: (id) => edit(id) });
                                                 <div class="col-md-4">
                                                     <label for="input13" class="form-label">Policy end
                                                         period</label>
-                                                    <VueDatePicker v-model="form.policy_end_period" :teleport="true"
+                                                    <VueDatePicker v-model="form.policy_end_period" :enable-time-picker="false"
                                                         :show-time="false">
                                                     </VueDatePicker>
 
@@ -447,8 +494,7 @@ defineExpose({ edit: (id) => edit(id) });
                                                             <tr style="text-align: center;">
                                                                 <th>Gross premium</th>
                                                                 <td>
-                                                                    <input type="number" class="form-control"
-                                                                        id="gross_premium" v-model="form.gross_premium">
+                                                                    <input type="number" class="form-control" id="gross_premium" v-model="form.gross_premium" @input="calculatePremium">
                                                                     <InputError :message="form.errors.gross_premium" />
                                                                 </td>
                                                             </tr>
@@ -461,31 +507,22 @@ defineExpose({ edit: (id) => edit(id) });
                                                                 </td>
                                                             </tr>
                                                             <tr style="text-align: center;">
-                                                                <th>Brokerage amount</th>
-                                                                <td>
-                                                                    <input type="number" class="form-control"
-                                                                        id="brokerage_amount"
-                                                                        v-model="form.brokerage_amount">
-                                                                    <InputError
-                                                                        :message="form.errors.brokerage_amount" />
-                                                                </td>
-                                                            </tr>
-                                                            <tr style="text-align: center;">
-                                                                <th>Tax</th>
-                                                                <td>
-                                                                    <input type="number" class="form-control" id="tax"
-                                                                        v-model="form.tax">
-                                                                    <InputError :message="form.errors.tax" />
-                                                                </td>
-                                                            </tr>
-                                                            <tr style="text-align: center;">
                                                                 <th>Percentage</th>
                                                                 <td>
                                                                     <input type="number" class="form-control"
-                                                                        id="percentage" v-model="form.percentage">
+                                                                        id="percentage" v-model="form.percentage" readonly>
                                                                     <InputError :message="form.errors.percentage" />
                                                                 </td>
+                                                            </tr> 
+                                                            
+                                                            <tr style="text-align: center;">
+                                                                <th>HSB Profit</th>
+                                                                <td>
+                                                                    <input type="number" class="form-control" id="hsb_profit" v-model="form.hsb_profit">
+                                                                    <InputError :message="form.errors.hsb_profit" />
+                                                                </td>
                                                             </tr>
+
                                                         </table>
                                                     </div>
                                                 </div>
@@ -575,15 +612,12 @@ defineExpose({ edit: (id) => edit(id) });
                                                                     <th>Net Premium </th>
                                                                     <td> {{ form.net_premium }} </td>
 
-                                                                    <th>Brokerage Amount </th>
-                                                                    <td> {{ form.brokerage_amount }} </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>Tax</th>
-                                                                    <td> {{ form.tax }} </td>
-
                                                                     <th>Percentage</th>
                                                                     <td> {{ form.percentage }} </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>HSB profit</th>
+                                                                    <td> {{ form.hsb_profit }}</td>
                                                                 </tr>
                                                             </table>
                                                         </div>
