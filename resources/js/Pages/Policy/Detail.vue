@@ -1,40 +1,74 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
+import InputError from "@/Components/InputError.vue";
 import { ref } from "vue";
+import VueDatePicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
 import Uploads from "./Uploads.vue";
 import AdditionalNotes from "./AdditionalNotes.vue";
 import Claim from "./Claim.vue";
 import ClaimNote from "./Claim/Notes.vue";
 import ClaimUpload from "./Claim/Upload.vue";
 import ClaimEdit from "./Claim/Edit.vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
 
 const { props } = usePage();
 
 const isOpen = ref(new Array(props.policyNotes.length).fill(false)); // Array to store isOpen states
 
 defineProps({
-  policy: Object,
-  policyNotes: Object,
-  policyClaims: Object,
-  assetUrl: Object,
-  // Add a new prop for single-open behavior
-  desiredSingleOpenBehavior: {
-    type: Boolean,
-    default: false, // Set default to false (optional)
-  },
+    policy: Object,
+    policyInstallment: Array(),
+    policyNotes: Object,
+    policyClaims: Object,
+    assetUrl: Object,
+    // Add a new prop for single-open behavior
+    desiredSingleOpenBehavior: {
+        type: Boolean,
+        default: false, // Set default to false (optional)
+    },
 });
 
 const toggleAccordion = (index) => {
-  // Toggle the isOpen state for the clicked item only
-  isOpen.value[index] = !isOpen.value[index];
+    // Toggle the isOpen state for the clicked item only
+    isOpen.value[index] = !isOpen.value[index];
 
-  // Optionally close other accordion items (if single-open behavior is desired)
-  if (props.desiredSingleOpenBehavior) {
-    isOpen.value.fill(false, 0, index); // Close previous items
-    isOpen.value.fill(false, index + 1); // Close subsequent items
-  }
+    // Optionally close other accordion items (if single-open behavior is desired)
+    if (props.desiredSingleOpenBehavior) {
+        isOpen.value.fill(false, 0, index); // Close previous items
+        isOpen.value.fill(false, index + 1); // Close subsequent items
+    }
 };
+
+const forms = [];
+
+if (props.policyInstallment && props.policyInstallment.length > 0) {
+    props.policyInstallment.forEach(installment => {
+        const formFields = {
+            due_date: installment.due_date || "",
+            gross_premium: installment.gross_premium || "",
+            net_premium: installment.net_premium || "",
+            payment_status: installment.payment_status || "",
+        };
+        const form = useForm(formFields);
+        forms.push(form);
+    });
+} else {
+    for (let i = 0; i < Number(props.policy.installment_plan); i++) {
+        const initialState = {
+            due_date: "",
+            gross_premium: "",
+            net_premium: "",
+            payment_status: "",
+        };
+        const form = useForm(initialState);
+        forms.push(form);
+    }
+}
+
+
+
 
 const claim_note_ref = ref(null);
 const claim_upload_ref = ref(null);
@@ -52,10 +86,24 @@ const claimEdit = (id) => {
     claim_edit_ref.value.claimEdit(id)
 };
 
+const submit = () => {
+    const form = useForm({
+        policy_id: JSON.parse(JSON.stringify((props.policy.id))) ?? "",
+        installmentPlan: [forms[0],forms[1],forms[2],forms[3]],
+    })
+
+    form.post(route("policy.installmentPlan"), {
+        preserveScroll: true,
+        onError: () => error(),
+        onFinish: () => { },
+    });
+};
+
 
 </script>
 
 <template>
+
     <Head title="Policies" />
     <AuthenticatedLayout>
         <!--start page wrapper -->
@@ -85,224 +133,479 @@ const claimEdit = (id) => {
                                 <Claim v-bind="$props"></Claim>
                             </div>
                         </div>
-                        <div class="table-responsive">
-                          
-                            <fieldset class="border p-4 mb-4" id="partner">
-                                <h5 class="w-auto title">Policy Info</h5>
-                                <div class="row">
-                                    <table class="table table-bordered">
-                                        <tr>
-                                            <th>ID</th>
-                                            <td>{{ policy.id }}</td>
-                                            <th>Client</th>
-                                            <td>{{ policy.client_name }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Insurance</th>
-                                            <td>{{ policy.insurance_id }}</td>
+                        <div class="table-responsive" style="overflow-x: hidden;">
+                            <div class="container-fluid">
+                                <div class="border mb-4" id="partner">
+                                    <div style="background-color: #037DE2">
+                                        <h5 style="text-align: center" class="w-auto title">Policy Info</h5>
+                                    </div>
 
-                                            <th>Co Insurance</th>
-                                            <td>{{ policy.co_insurance }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Takefull type</th>
-                                            <td v-if="policy.takeful_type == 0">Direct 100%</td>
-                                            <td v-if="policy.takeful_type == 1">Our lead</td>
-                                            <th>Policy No.</th>
-                                            <td>{{ policy.policy_no }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Agency</th>
-                                            <td>{{ policy.agency_id }}</td>
-                                        
-                                            <th>Agency code</th>
-                                            <td>{{ policy.agency_code }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Class business</th>
-                                            <td>{{ policy.class_of_business_id }}</td>
-                                        
-                                            <th>Orignal Endorsment</th>
-                                            <td>{{ policy.orignal_endorsment }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Date of insurance</th>
-                                            <td>{{ policy.date_of_insurance }}</td>
-                                    
-                                            <th>Policy start period</th>
-                                            <td>{{ policy.policy_start_period }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Policy end period</th>
-                                            <td>{{ policy.policy_end_period }}</td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </fieldset>
-                           
-                            <fieldset class="border p-4 mb-4" id="partner">
-                                <h5 class="w-auto">Policy Amount</h5>
-                                <div class="row">
-                                    <table class="table table-bordered">
-                                        <tr>
-                                            <th>Sum insured </th>
-                                            <td> {{ policy.sum_insured }} </td>
-                                       
-                                            <th>Gross Premium </th>
-                                            <td> {{ policy.gross_premium }} </td>
-                                        </tr>
-                                        <tr>
-                                            <th>Net Premium </th>
-                                            <td> {{ policy.net_premium }} </td>
-                                        
-                                            <th> Cover Note No </th>
-                                            <td> {{ policy.cover_note_no }} </td>
-                                        </tr>
-                                        <tr>
-                                            <th>Installment Plan </th>
-                                            <td> {{ policy.installment_plan }} </td>
-                                        
-                                            <th>Leader </th>
-                                            <td> {{ policy.leader }} </td>
-                                        </tr>
-                                        <tr>
-                                            <th>leader_policy_no </th>
-                                            <td> {{ policy.leader_policy_no }} </td>
-                                       
-                                            <th>branch </th>
-                                            <td> {{ policy.branch }} </td>
-                                        </tr>
-                                        <tr>
-                                            <th>Brokerage Amount </th>
-                                            <td> {{ policy.brokerage_amount }} </td>
-                                        
-                                            <th>User </th>
-                                            <td> {{ policy.user_id }} </td>
-                                        </tr>
-                                        <tr>
-                                            <th>Tax</th>
-                                            <td> {{ policy.tax }} </td>
-                                      
-                                            <th>Percentage</th>
-                                            <td> {{ policy.percentage }} </td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </fieldset>
+                                    <div class="row">
+                                        <table class="table table-bordered" style="margin-left: 18px;">
+                                            <tr>
+                                                <th>ID</th>
+                                                <td>{{ policy.id }}</td>
+                                                <th>Client</th>
+                                                <td>{{ policy.client_name }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Insurance</th>
+                                                <td>{{ policy.insurance_id }}</td>
 
-                            <fieldset class="border p-4 mb-4" id="partner">
-                                <h5 class="w-auto">Notes</h5>
-                                <div class="row">
-                                    <div class="table-responsive">
-                                        <table class="table mb-0">
-                                            <tbody>
-                                               
-                                                    
-                                                <div class="accordion accordion-flush" id="accordionExample">
-                                                    <template v-for="(policyNote, index) in policyNotes" :key="index">
-                                                    <div class="accordion-item">
-                                                        <h2 class="accordion-header" :id="'heading-' + policyNote.id">
-                                                        <button class="accordion-button" type="button" @click="toggleAccordion(index)" :aria-expanded="isOpen[index]" :aria-controls="'collapse-' + policyNote.id">
-                                                            {{ policyNote.additional_notes }}
-                                                        </button>
-                                                        </h2>
-                                                        <div :id="'collapse-' + policyNote.id" class="accordion-collapse" :class="{ 'show': isOpen[index] }" :aria-labelledby="'heading-' + policyNote.id" data-bs-parent="#accordionExample2">
-                                                        <div class="accordion-body">
-                                                            <p>{{ policyNote.additional_notes }}</p>
-                                                        </div>
-                                                        </div>
-                                                    </div>
-                                                    </template>
+                                                <th>Insurance type</th>
+                                                <td v-if="policy.takeful_type == 1">Takaful</td>
+                                                <td v-if="policy.takeful_type == 2">Conventional</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Lead type</th>
+                                                <td v-if="policy.lead_type == 1">Direct 100%</td>
+                                                <td v-if="policy.lead_type == 2">Our lead</td>
+                                                <td v-if="policy.lead_type == 3">Other lead</td>
+
+                                                <th v-if="policy.lead_type == 1 || policy.lead_type == 3">Co Insurance
+                                                </th>
+                                                <td v-if="policy.lead_type == 1 || policy.lead_type == 3">{{
+                                                    policy.co_insurance }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Policy No.</th>
+                                                <td>{{ policy.policy_no }}</td>
+
+                                                <th>Agency</th>
+                                                <td>{{ policy.agency_id }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Agency code</th>
+                                                <td>{{ policy.agency_code }}</td>
+
+                                                <th>Business class</th>
+                                                <td>{{ policy.class_of_business_id }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>New/Renewal/Endorsment</th>
+                                                <td>{{ policy.orignal_endorsment }}</td>
+
+                                                <th>Date of insurance</th>
+                                                <td>{{ policy.date_of_insurance }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Policy start period</th>
+                                                <td>{{ policy.policy_start_period }}</td>
+
+                                                <th>Policy end period</th>
+                                                <td>{{ policy.policy_end_period }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th> Cover Note No </th>
+                                                <td> {{ policy.cover_note_no }} </td>
+
+                                                <th>Installment Plan </th>
+                                                <td> {{ policy.installment_plan }} </td>
+                                            </tr>
+                                            <tr>
+                                                <th>User</th>
+                                                <td> {{ policy.user_id }} </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="border mb-4" id="partner">
+                                    <div style="background-color: #037DE2">
+                                        <h5 style="text-align: center" class="w-auto title">Policy Amount</h5>
+                                    </div>
+                                    <div class="row">
+                                        <table class="table table-bordered" style="margin-left: 18px;">
+                                            <tr>
+                                                <th>Sum insured </th>
+                                                <td> {{ policy.sum_insured }} </td>
+
+                                                <th>Gross Premium </th>
+                                                <td> {{ policy.gross_premium }} </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Net Premium </th>
+                                                <td> {{ policy.net_premium }} </td>
+
+                                                <th>Percentage</th>
+                                                <td> {{ policy.percentage }} </td>
+                                            </tr>
+                                            <tr>
+                                                <th>HSB profit</th>
+                                                <td> {{ policy.hsb_profit }}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="border mb-4" id="partner">
+                                    <div style="background-color: #037DE2">
+                                        <h5 style="text-align: center" class="w-auto title">Installment Plan</h5>
+                                    </div>
+                                    <div class="col-md-12" v-if="policy.installment_plan == 2">
+                                        <form @submit.prevent="edit_mode ? update() : submit()">
+                                            <div class="row"
+                                                style="margin-left: 0px;margin-right: 0px;margin-bottom: 20px;">
+                                                <!-- <input type="hidden" v-model="forms[0].policy_id"> -->
+                                                <div class="col-md-3">
+                                                    <label for="input13" class="form-label">Due date</label>
+                                                    <VueDatePicker v-model="forms[0].due_date"
+                                                        :enable-time-picker="false" :show-time="false">
+                                                    </VueDatePicker>
+                                                    <InputError :message="forms[0].errors.due_date" />
                                                 </div>
-                                                     
-                                            </tbody>
-                                        </table>
+                                                <div class="col-md-3">
+                                                    <label for="input13" class="form-label">Gross premium</label>
+                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                        v-model="forms[0].gross_premium">
+                                                    <InputError :message="forms[0].errors.gross_premium" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="input13" class="form-label">Net premium</label>
+                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                        v-model="forms[0].net_premium">
+                                                    <InputError :message="forms[0].errors.net_premium" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="input13" class="form-label">Payment status</label>
+                                                    <select id="input21" class="form-select"
+                                                        v-model="forms[0].payment_status">
+
+                                                        <option value="pending">Pending</option>
+                                                        <option value="paid">Paid</option>
+                                                        <option value="un-paid">Un-paid</option>
+                                                    </select>
+                                                    <InputError :message="forms[0].errors.payment_status" />
+                                                </div>
+                                            </div>
+                                            <div class="row"
+                                                style="margin-left: 0px;margin-right: 0px;margin-bottom: 20px;">
+                                                <!-- <input type="hidden" v-model="forms[1].policy_id"> -->
+                                                <div class="col-md-3">
+                                                    <label for="input13" class="form-label">Due date</label>
+                                                    <VueDatePicker v-model="forms[1].due_date"
+                                                        :enable-time-picker="false" :show-time="false">
+                                                    </VueDatePicker>
+                                                    <InputError :message="forms[1].errors.due_date" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="input13" class="form-label">Gross premium</label>
+                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                        v-model="forms[1].gross_premium">
+                                                    <InputError :message="forms[1].errors.gross_premium" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="input13" class="form-label">Net premium</label>
+                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                        v-model="forms[1].net_premium">
+                                                    <InputError :message="forms[1].errors.net_premium" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="input13" class="form-label">Payment status</label>
+                                                    <select id="input21" class="form-select"
+                                                        v-model="forms[1].payment_status">
+
+                                                        <option value="pending">Pending</option>
+                                                        <option value="paid">Paid</option>
+                                                        <option value="un-paid">Un-paid</option>
+                                                    </select>
+                                                    <InputError :message="forms[1].errors.payment_status" />
+                                                </div>
+                                            </div>
+
+                                            <div class="modal-footer"
+                                                style="margin-left: 0px;margin-right: 17px;margin-bottom: 20px;">
+
+                                                <button type="submit" class="btn btn-primary btn-sm">
+                                                    {{ edit_mode ? 'Save & Update' : 'Save' }}</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="col-md-12" v-if="policy.installment_plan == 4">
+                                        <form @submit.prevent="edit_mode ? update() : submit()">
+                                            <div class="row"
+                                                style="margin-left: 0px;margin-right: 0px;margin-bottom: 20px;">
+                                                <div class="col-md-3">
+                                                    <label for="input13" class="form-label">Due date</label>
+                                                    <VueDatePicker v-model="forms[0].due_date"
+                                                        :enable-time-picker="false" :show-time="false">
+                                                    </VueDatePicker>
+                                                    <InputError :message="forms[0].errors.due_date" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="input13" class="form-label">Gross premium</label>
+                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                        v-model="forms[0].gross_premium">
+                                                    <InputError :message="forms[0].errors.gross_premium" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="input13" class="form-label">Net premium</label>
+                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                        v-model="forms[0].net_premium">
+                                                    <InputError :message="forms[0].errors.net_premium" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="input13" class="form-label">Payment status</label>
+                                                    <select id="input21" class="form-select"
+                                                        v-model="forms[0].payment_status">
+
+                                                        <option value="pending">Pending</option>
+                                                        <option value="paid">Paid</option>
+                                                        <option value="un-paid">Un-paid</option>
+                                                    </select>
+                                                    <InputError :message="forms[0].errors.payment_status" />
+                                                </div>
+                                            </div>
+                                            <div class="row"
+                                                style="margin-left: 0px;margin-right: 0px;margin-bottom: 20px;">
+                                                <div class="col-md-3">
+                                                    <label for="input13" class="form-label">Due date</label>
+                                                    <VueDatePicker v-model="forms[1].due_date"
+                                                        :enable-time-picker="false" :show-time="false">
+                                                    </VueDatePicker>
+                                                    <InputError :message="forms[1].errors.due_date" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="input13" class="form-label">Gross premium</label>
+                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                        v-model="forms[1].gross_premium">
+                                                    <InputError :message="forms[1].errors.gross_premium" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="input13" class="form-label">Net premium</label>
+                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                        v-model="forms[1].net_premium">
+                                                    <InputError :message="forms[1].errors.net_premium" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="input13" class="form-label">Payment status</label>
+                                                    <select id="input21" class="form-select"
+                                                        v-model="forms[1].payment_status">
+
+                                                        <option value="pending">Pending</option>
+                                                        <option value="paid">Paid</option>
+                                                        <option value="un-paid">Un-paid</option>
+                                                    </select>
+                                                    <InputError :message="forms[1].errors.payment_status" />
+                                                </div>
+                                            </div>
+                                            <div class="row"
+                                                style="margin-left: 0px;margin-right: 0px;margin-bottom: 20px;">
+                                                <div class="col-md-3">
+                                                    <label for="input13" class="form-label">Due date</label>
+                                                    <VueDatePicker v-model="forms[2].due_date"
+                                                        :enable-time-picker="false" :show-time="false">
+                                                    </VueDatePicker>
+                                                    <InputError :message="forms[2].errors.due_date" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="input13" class="form-label">Gross premium</label>
+                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                        v-model="forms[2].gross_premium">
+                                                    <InputError :message="forms[2].errors.gross_premium" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="input13" class="form-label">Net premium</label>
+                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                        v-model="forms[2].net_premium">
+                                                    <InputError :message="forms[2].errors.net_premium" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="input13" class="form-label">Payment status</label>
+                                                    <select id="input21" class="form-select"
+                                                        v-model="forms[2].payment_status">
+
+                                                        <option value="pending">Pending</option>
+                                                        <option value="paid">Paid</option>
+                                                        <option value="un-paid">Un-paid</option>
+                                                    </select>
+                                                    <InputError :message="forms[2].errors.payment_status" />
+                                                </div>
+                                            </div>
+                                            <div class="row"
+                                                style="margin-left: 0px;margin-right: 0px;margin-bottom: 20px;">
+                                                <div class="col-md-3">
+                                                    <label for="input13" class="form-label">Due date</label>
+                                                    <VueDatePicker v-model="forms[3].due_date"
+                                                        :enable-time-picker="false" :show-time="false">
+                                                    </VueDatePicker>
+                                                    <InputError :message="forms[3].errors.due_date" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="input13" class="form-label">Gross premium</label>
+                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                        v-model="forms[3].gross_premium">
+                                                    <InputError :message="forms[3].errors.gross_premium" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="input13" class="form-label">Net premium</label>
+                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                        v-model="forms[3].net_premium">
+                                                    <InputError :message="forms[3].errors.net_premium" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="input13" class="form-label">Payment status</label>
+                                                    <select id="input21" class="form-select"
+                                                        v-model="forms[3].payment_status">
+
+                                                        <option value="pending">Pending</option>
+                                                        <option value="paid">Paid</option>
+                                                        <option value="un-paid">Un-paid</option>
+                                                    </select>
+                                                    <InputError :message="forms[3].errors.payment_status" />
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer"
+                                                style="margin-left: 0px;margin-right: 17px;margin-bottom: 20px;">
+
+                                                <button type="submit" class="btn btn-primary btn-sm">
+                                                    {{ edit_mode ? 'Save & Update' : 'Save' }}</button>
+                                            </div>
+                                        </form>
                                     </div>
                                 </div>
-                            </fieldset>
-        
-                            <fieldset class="border p-4 mb-4" id="partner">
-                                <h5 class="w-auto">Policy Claims</h5>
-                                <div class="row">
-                                    <div class="table-responsive">
-                                        <div class="ms-auto">
-                                            <ClaimNote v-bind="$props" ref="claim_note_ref"></ClaimNote>
-                                            <ClaimUpload v-bind="$props" ref="claim_upload_ref"></ClaimUpload>
-                                            <ClaimEdit v-bind="$props" ref="claim_edit_ref"></ClaimEdit>
-                                        </div>
-                                        <table class="table mb-0">
-                                            <thead class="table-light">
-                                                <tr>
-                                                    <th>Sr No.</th>
-                                                    <th>ID</th>
-                                                    <th>Progress</th>
-                                                    <th>Settled</th>
-                                                    <th>Detail</th>
-                                                    <th>Status</th>
-                                                    <th></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <template v-for="(policyClaim, index) in JSON.parse(JSON.stringify(props.policyClaims))" :key="index">
-                                                    <tr>
-                                                        <td>{{ ++index }}</td>
-                                                        <td>{{ policyClaim.id }}</td>
-                                                        <td>{{ policyClaim.progress }}</td>
-                                                        <td>{{ policyClaim.settled }}</td>
-                                                        <td>{{ policyClaim.detail }}</td>
-                                                        <td><span class="badge bg-primary">{{ policyClaim.status }}</span></td>
-                                                        <td>
-                                                            <div class="d-lg-flex align-items-center mb-4 gap-3">
-                                                                <div class="ms-auto d-flex">
-                                                                    <button type="button" @click="claimNote(policyClaim.id)" title="Note"
-                                                                        data-bs-toggle="modal" data-bs-target="#notesLargeModal"
-                                                                        class="btn btn-primary btn-sm" style="margin-inline: 5px; font-size: 10px; width:40px;"> <i class='bx bxs-note'></i></button>
 
-                                                                    <button type="button" @click="claimUpload(policyClaim.id)" title="Uploads"
-                                                                        data-bs-toggle="modal" data-bs-target="#notesUploadLargeModal"
-                                                                        class="btn btn-primary btn-sm" style="margin-inline: 5px; font-size: 10px; width:40px;">  <i class='bx bx-cloud-upload'></i></button>
+                                <div class="border mb-4" id="partner">
+                                    <div style="background-color: #037DE2">
+                                        <h5 style="text-align: center" class="w-auto title">Notes</h5>
+                                    </div>
+                                    <div class="row">
+                                        <div class="table-responsive">
+                                            <table class="table mb-0">
+                                                <tbody>
 
-                                                                    <button type="button" @click="claimEdit(policyClaim.id)" title="Edit"
-                                                                        data-bs-toggle="modal" data-bs-target="#EditLargeModal"
-                                                                        class="btn btn-primary btn-sm" style="font-size: 10px; width:40px;">  <i class='bx bx-edit'></i></button>
 
+                                                    <div class="accordion accordion-flush" id="accordionExample">
+                                                        <template v-for="(policyNote, index) in policyNotes"
+                                                            :key="index">
+                                                            <div class="accordion-item">
+                                                                <h2 class="accordion-header"
+                                                                    :id="'heading-' + policyNote.id">
+                                                                    <button class="accordion-button" type="button"
+                                                                        @click="toggleAccordion(index)"
+                                                                        :aria-expanded="isOpen[index]"
+                                                                        :aria-controls="'collapse-' + policyNote.id">
+                                                                        {{ policyNote.additional_notes }}
+                                                                    </button>
+                                                                </h2>
+                                                                <div :id="'collapse-' + policyNote.id"
+                                                                    class="accordion-collapse"
+                                                                    :class="{ 'show': isOpen[index] }"
+                                                                    :aria-labelledby="'heading-' + policyNote.id"
+                                                                    data-bs-parent="#accordionExample2">
+                                                                    <div class="accordion-body">
+                                                                        <p>{{ policyNote.additional_notes }}</p>
+                                                                    </div>
                                                                 </div>
-                                                                   
                                                             </div>
-                                                        </td>
-                                                    </tr> 
-                                                </template>
-                                            </tbody>
-                                        </table>
+                                                        </template>
+                                                    </div>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
-                            </fieldset>
-                    
-                            <fieldset class="border p-4 mb-4" id="partner">
-                                <h5 class="w-auto">Uploads</h5>
-                                <div class="row">
-                                    <div class="table-responsive">
-                                        <table class="table mb-0">
-                                            <thead class="table-light">
-                                                <tr>
-                                                    <th>Sr No.</th>
-                                                    <th>Type</th>
-                                                    <th>File</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <template v-for="(policyUpload, index) in JSON.parse(JSON.stringify(props.policyUploads))" :key="index">
+
+                                <div class="border mb-4" id="partner">
+                                    <div style="background-color: #037DE2">
+                                        <h5 style="text-align: center" class="w-auto title">Policy Claims</h5>
+                                    </div>
+                                    <div class="row">
+                                        <div class="table-responsive">
+                                            <div class="ms-auto">
+                                                <ClaimNote v-bind="$props" ref="claim_note_ref"></ClaimNote>
+                                                <ClaimUpload v-bind="$props" ref="claim_upload_ref"></ClaimUpload>
+                                                <ClaimEdit v-bind="$props" ref="claim_edit_ref"></ClaimEdit>
+                                            </div>
+                                            <table class="table mb-0">
+                                                <thead class="table-light" style="text-align: center;">
                                                     <tr>
-                                                        <td>{{ ++index }}</td>
-                                                        <td>{{ policyUpload.type }}</td>
-                                                        <td><img :src="props.assetUrl + '/' + policyUpload.upload" alt="" style="height: 100px;width: 100px;"></td>
+                                                        <th>Sr No.</th>
+                                                        <th>ID</th>
+                                                        <th>Detail</th>
+                                                        <th>Status</th>
+                                                        <th>Action</th>
                                                     </tr>
-                                                </template>
-                                            </tbody>
-                                        </table>
+                                                </thead>
+                                                <tbody style="text-align: center;">
+                                                    <template
+                                                        v-for="(policyClaim, index) in JSON.parse(JSON.stringify(props.policyClaims))"
+                                                        :key="index">
+                                                        <tr>
+                                                            <td>{{ ++index }}</td>
+                                                            <td>{{ policyClaim.id }}</td>
+                                                            <td>{{ policyClaim.detail }}</td>
+                                                            <td><span class="badge bg-primary">{{ policyClaim.status
+                                                                    }}</span></td>
+                                                            <td>
+                                                                <SecondaryButton @click="claimEdit(policyClaim.id)"
+                                                                    title="Edit" data-bs-toggle="modal"
+                                                                    style="margin-inline: 5px;"
+                                                                    data-bs-target="#EditLargeModal"><i
+                                                                        class='bx bx-edit'>Edit</i>
+                                                                </SecondaryButton>
+                                                                <SecondaryButton @click="claimNote(policyClaim.id)"
+                                                                    title="Note" data-bs-toggle="modal"
+                                                                    style="margin-inline: 5px;"
+                                                                    data-bs-target="#notesLargeModal"><i
+                                                                        class='bx bxs-note'>Note</i>
+                                                                </SecondaryButton>
+                                                                <SecondaryButton @click="claimUpload(policyClaim.id)"
+                                                                    title="Uploads" data-bs-toggle="modal"
+                                                                    style="margin-inline: 5px;"
+                                                                    data-bs-target="#notesUploadLargeModal"><i
+                                                                        class='bx bx-cloud-upload'>Upload</i>
+                                                                </SecondaryButton>
+
+
+                                                            </td>
+                                                        </tr>
+                                                    </template>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
-                            </fieldset>
+
+                                <div class="border mb-4" id="partner">
+                                    <div style="background-color: #037DE2">
+                                        <h5 style="text-align: center" class="w-auto title">Uploads</h5>
+                                    </div>
+                                    <div class="row">
+                                        <div class="table-responsive">
+                                            <table class="table mb-0">
+                                                <thead class="table-light" style="text-align: center;">
+                                                    <tr>
+                                                        <th>Sr No.</th>
+                                                        <th>Type</th>
+                                                        <th>File</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody style="text-align: center;">
+                                                    <template
+                                                        v-for="(policyUpload, index) in JSON.parse(JSON.stringify(props.policyUploads))"
+                                                        :key="index">
+                                                        <tr>
+                                                            <td>{{ ++index }}</td>
+                                                            <td>{{ policyUpload.type }}</td>
+                                                            <td><img :src="props.assetUrl + '/' + policyUpload.upload"
+                                                                    alt="" style="width: 70px;"></td>
+                                                            <td>
+                                                                <a :href="props.assetUrl + '/' + policyUpload.upload"
+                                                                    class="inline-flex items-center px-2 py-1 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150"
+                                                                    download><i
+                                                                        class='bx bxs-down-arrow-square'>Download</i></a>
+                                                            </td>
+                                                        </tr>
+                                                    </template>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -312,5 +615,63 @@ const claimEdit = (id) => {
     </AuthenticatedLayout>
 </template>
 
-<style> table, th, td { padding: 3px !important; font-size: 14px !important; } #lc-table td { border: 1px solid rgb(194, 189, 189) !important; text-align: left !important; } #lc-table th { border: 1px solid rgb(194, 189, 189) !important; text-align: left !important; } table { width: 100%; border-collapse: collapse; } fieldset legend { color: black; font-weight: 500; font-size: 18px; } fieldset.border { border: 2px solid #037DE2 !important; border-radius: 5px !important; }
-    fieldset.member-border { border: 2px solid blue !important; border-radius: 5px !important;} .mb-4 { margin-bottom: 20px } .custom-image-preview { width: 100px; height: 100px } </style>
+<style>
+ table,
+ th,
+ td {
+     padding: 3px !important;
+     font-size: 14px !important;
+ }
+
+ #lc-table td {
+     border: 1px solid rgb(194, 189, 189) !important;
+     text-align: left !important;
+ }
+
+ #lc-table th {
+     border: 1px solid rgb(194, 189, 189) !important;
+     text-align: left !important;
+ }
+
+ table {
+     width: 100%;
+     border-collapse: collapse;
+ }
+
+ fieldset legend {
+     color: black;
+     font-weight: 500;
+     font-size: 18px;
+ }
+
+ fieldset.border {
+     border: 2px solid #037DE2 !important;
+     border-radius: 5px !important;
+ }
+
+ fieldset.member-border {
+     border: 2px solid blue !important;
+     border-radius: 5px !important;
+ }
+
+ .mb-4 {
+     margin-bottom: 20px
+ }
+
+ .custom-image-preview {
+     width: 100px;
+     height: 100px
+ }
+
+ .table-bordered>:not(caption)>* {
+     border-width: 0;
+ }
+
+ h5.w-auto.title {
+     text-align: center;
+     color: #fff;
+     height: 34px;
+     padding: 5px;
+     font-size: 18px;
+ }
+</style>

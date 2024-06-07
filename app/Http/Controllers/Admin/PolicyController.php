@@ -8,6 +8,7 @@ use App\Models\Agency;
 use App\Models\Policy;
 use App\Models\Insurance;
 use Illuminate\Http\File;
+use App\Models\Department;
 use App\Models\PolicyNote;
 use App\Models\PolicyClaim;
 use App\Models\PolicyUpload;
@@ -19,6 +20,7 @@ use App\Models\PolicyInsurance;
 use App\Models\PolicyClaimUpload;
 use Monolog\Handler\IFTTTHandler;
 use App\Http\Controllers\Controller;
+use App\Models\PolicyInstallmentPlan;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -50,6 +52,7 @@ class PolicyController extends Controller
         $clients = User::select('id', 'name')->where('role_users_id', 2)->get()->toArray();
         $insurances = Insurance::select('id', 'name')->get()->toArray();
         $agencies = Agency::select('id', 'name')->get()->toArray();
+        $departments = Department::select('id', 'name')->get()->toArray();
         $cobs = BusinessClass::select('id', 'class_name')->get()->toArray();
 
         $data = [
@@ -57,6 +60,7 @@ class PolicyController extends Controller
             'clients' => $clients,
             'insurances' => $insurances,
             'agencies' => $agencies,
+            'departments' => $departments,
             'cobs' => $cobs
         ];
 
@@ -74,13 +78,14 @@ class PolicyController extends Controller
                 'co_insurance' => ['required'],
                 'takeful_type' => ['required'],
                 'policy_no' => ['required'],
+                'cover_note_no' => ['required'],
                 'agency_id' => ['required'],
-                'agency_code' => ['required'],
                 'class_of_business_id' => ['required'],
                 'orignal_endorsment' => ['required'],
                 'date_of_insurance' => ['required'],
                 'policy_start_period' => ['required'],
                 'policy_end_period' => ['required'],
+                'installment_plan' => ['required'],
             ]);
         }
 
@@ -89,14 +94,6 @@ class PolicyController extends Controller
                 'sum_insured' => ['required'],
                 'gross_premium' => ['required'],
                 'net_premium' => ['required'],
-                'cover_note_no' => ['required'],
-                'installment_plan' => ['required'],
-                'leader' => ['required'],
-                'leader_policy_no' => ['required'],
-                'branch' => ['required'],
-                'brokerage_amount' => ['required'],
-                'user_id' => ['required'],
-                'tax' => ['required'],
                 'percentage' => ['required'],
             ]);
         }
@@ -115,6 +112,8 @@ class PolicyController extends Controller
                 'insurance_id' => $request->insurance_id,
                 'co_insurance' => $request->co_insurance,
                 'takeful_type' => $request->takeful_type,
+                'department_id' => $request->department_id,
+                'lead_type' => $request->lead_type,
                 'policy_no' => $request->policy_no,
                 'agency_id' => $request->agency_id,
                 'agency_code' => $request->agency_code,
@@ -128,13 +127,9 @@ class PolicyController extends Controller
                 'net_premium' => $request->net_premium,
                 'cover_note_no' => $request->cover_note_no,
                 'installment_plan' => $request->installment_plan,
-                'leader' => $request->leader,
-                'leader_policy_no' => $request->leader_policy_no,
-                'branch' => $request->branch,
-                'brokerage_amount' => $request->brokerage_amount,
-                'user_id' => $request->user_id,
-                'tax' => $request->tax,
+                'user_id' => auth()->user()->id,
                 'percentage' => $request->percentage,
+                'hsb_profit' => $request->hsb_profit,
             ];
 
             if ($request->policy_id) {
@@ -183,15 +178,18 @@ class PolicyController extends Controller
         try {
             $policy = Policy::find($id);
 
+            $policyInstallment = $policy->policyInstallment;
+
             $policyResponse = [
                 'id' => $policy->id,
                 'client_name' => $policy->client->name,
                 'insurance_id' => $policy->insurance->name,
                 'co_insurance' => $policy->co_insurance,
                 'takeful_type' => $policy->takeful_type,
+                'lead_type' => $policy->lead_type,
                 'policy_no' => $policy->policy_no,
                 'agency_id' => $policy->agency->name,
-                'agency_code' => $policy->agency_code,
+                'agency_code' => $policy->agency->code,
                 'class_of_business_id' => $policy->businessClass->class_name,
                 'orignal_endorsment' => $policy->orignal_endorsment,
                 'date_of_insurance' => $policy->date_of_insurance,
@@ -209,6 +207,7 @@ class PolicyController extends Controller
                 'user_id' => $policy->user->name,
                 'tax' => $policy->tax,
                 'percentage' => $policy->percentage,
+                'hsb_profit' => $policy->hsb_profit,
                 'created_at' => $policy->created_at->format('d-m-Y h:i A'),
             ];
 
@@ -217,6 +216,7 @@ class PolicyController extends Controller
             $policyUploads = PolicyUpload::where('policy_id', $policy->id)->get();
             return Inertia::render('Policy/Detail', [
                 'policy' => $policyResponse,
+                'policyInstallment' => $policyInstallment,
                 'policyNotes' => $policyNotes,
                 'policyClaims' => $policyClaims,
                 'policyUploads' => $policyUploads,
@@ -247,7 +247,6 @@ class PolicyController extends Controller
             return response()->json(['error' => 'Policy not found'], 404);
         }
     }
-
 
     public function uploads(Request $request)
     {
@@ -293,7 +292,7 @@ class PolicyController extends Controller
         }
     }
 
-    // Policy Claim function Start
+    // ******* POLICY CLAIMS *******
 
     public function getClaim($id)
     {
@@ -311,8 +310,6 @@ class PolicyController extends Controller
         $request->validate([
             'policy_id' => ['required'],
             'detail' => ['required'],
-            'progress' => ['required'],
-            'settled' => ['required'],
             'status' => ['required']
         ]);
 
@@ -320,8 +317,6 @@ class PolicyController extends Controller
             $data = [
                 'policy_id' => $request->policy_id,
                 'detail' => $request->detail,
-                'progress' => $request->progress,
-                'settled' => $request->settled,
                 'status' => $request->status,
             ];
 
@@ -332,7 +327,6 @@ class PolicyController extends Controller
         }
     }
 
-
     public function updateClaim(Request $request)
     {
         $policyClaim = PolicyClaim::where('id', $request->claim_id)->first();
@@ -340,8 +334,6 @@ class PolicyController extends Controller
         $request->validate([
             'policy_id' => ['required'],
             'detail' => ['required'],
-            'progress' => ['required'],
-            'settled' => ['required'],
             'status' => ['required']
         ]);
 
@@ -350,14 +342,10 @@ class PolicyController extends Controller
         $data = [
             'policy_id' => $request->policy_id,
             'detail' => $request->detail,
-            'progress' => $request->progress,
-            'settled' => $request->settled,
             'status' => $request->status
         ];
         $policyClaim->update($data);
     }
-
-
 
     public function getClaimUpload($id)
     {
@@ -448,5 +436,85 @@ class PolicyController extends Controller
     }
 
     // Policy Claim function End
+
+    public function getDepartmentByBusinessClass($id)
+    {
+        $cobs = BusinessClass::where('department_id',$id)->get()->toArray();
+
+        $data = [
+            'cobs' => $cobs
+        ];
+
+        return response()->json($data);
+    }
+
+    public function getBusinessClassByPercent($id)
+    {
+        $cobPercentage = BusinessClass::find($id);
+        $data = [
+            'cobPercentage' => $cobPercentage->percentage
+        ];
+
+        return response()->json($data);
+    }
+
+    public function installmentPlan(Request $request)
+    {
+        $request->validate([
+            'policy_id' => ['required'],
+            'installmentPlan*' => ['required'],
+        ]);
+
+        try{
+
+            $policyInstallmentPlan =  PolicyInstallmentPlan::where('policy_id',$request->policy_id)->get();
+            if($policyInstallmentPlan->count() > 0)
+            {
+                PolicyInstallmentPlan::where('policy_id',$request->policy_id)->delete();
+
+                $installmentPlans = $request->installmentPlan;
+                foreach($installmentPlans as $installmentPlan){
+                    if(!empty($installmentPlan)){
+                        $dueDate = Carbon::parse($installmentPlan['due_date']);
+                        $due_date = $dueDate->format('Y-m-d');
+                
+                        $data = [
+                            'policy_id' => $request->policy_id,
+                            'due_date' => $due_date,
+                            'gross_premium' => $installmentPlan['gross_premium'],
+                            'net_premium' => $installmentPlan['net_premium'],
+                            'payment_status' => $installmentPlan['payment_status'],
+                        ];
+
+                        PolicyInstallmentPlan::create($data);
+                    }
+                }
+            } else {
+
+                $installmentPlans = $request->installmentPlan;
+                foreach($installmentPlans as $installmentPlan){
+                    if(!empty($installmentPlan)){
+                        $dueDate = Carbon::parse($installmentPlan['due_date']);
+                        $due_date = $dueDate->format('Y-m-d');
+                
+                        $data = [
+                            'policy_id' => $request->policy_id,
+                            'due_date' => $due_date,
+                            'gross_premium' => $installmentPlan['gross_premium'],
+                            'net_premium' => $installmentPlan['net_premium'],
+                            'payment_status' => $installmentPlan['payment_status'],
+                        ];
+
+                        PolicyInstallmentPlan::create($data);
+                    }
+                }
+
+            }
+
+        } catch (ModelNotFoundException $e) {
+            // Handle case when policy with the given ID doesn't exist
+            return response()->json(['error' => 'Policy not found'], 404);
+        }
+    }
 
 }

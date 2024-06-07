@@ -4,6 +4,7 @@ import { useForm, usePage } from "@inertiajs/vue3";
 import InputError from "@/Components/InputError.vue";
 import { ref } from "vue";
 import axios from 'axios';
+import SecondaryButton from "@/Components/SecondaryButton.vue";
 
 const { props } = usePage();
 const claim_modal = ref(false);
@@ -11,8 +12,6 @@ const edit_mode = ref(false);
 const form = useForm({
     policy_id: JSON.parse(JSON.stringify((props.policy.id))) ?? "",
     detail: "",
-    progress: "",
-    settled: "",
     status: "",
 });
 
@@ -45,8 +44,9 @@ const closeModal = () => {
 <template>
 <AuthenticatedLayout>
     <div class="col">
-        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#claimsLargeModal"
-            @click="create">Add Claims</button>
+        <SecondaryButton @click="create" data-bs-toggle="modal" style="width: 100px;"
+            data-bs-target="#claimsLargeModal"><i class='bx bxs-note'>Add claim</i>
+        </SecondaryButton>
             <div class="modal fade show" id="claimsLargeModal" tabindex="-1" aria-hidden="true" style="display: block;"
             v-if="claim_modal">
             <div class="modal fade show" id="claimsLargeModal" tabindex="-1" aria-hidden="true"
@@ -63,26 +63,14 @@ const closeModal = () => {
                                 <input type="hidden" v-model="form.policy_id">
                                 <div class="row g-3">
                                     <div class="col-md-4">
-                                        <label for="input13" class="form-label">Progress</label>
-                                        <input type="text" class="form-control" id="input13"
-                                            placeholder="" v-model="form.progress">
-                                        
-                                        <InputError :message="form.errors.progress" />
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label for="input13" class="form-label">Settled</label>
-                                        <input type="text" class="form-control" id="input13"
-                                            placeholder="" v-model="form.settled">
-                                       
-                                        <InputError :message="form.errors.settled" />
-                                    </div>
-                                    <div class="col-md-4">
                                         <label for="input21" class="form-label">Status</label>
 
                                         <select id="input21" class="form-select"
                                             v-model="form.status">
 
                                             <option value="open">Open</option>
+                                            <option value="progress">Progress</option>
+                                            <option value="settled">Settled</option>
                                             <option value="close">Close</option>
                                         </select>
                                         <InputError :message="form.errors.status" />

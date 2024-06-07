@@ -13,6 +13,7 @@ const edit_mode = ref(false);
 const businessClass = usePage().props.businessClass;
 
 const insurances = ref([]);
+const departments = ref([]);
 
 const create = () => {
   modal.value = true;
@@ -21,6 +22,7 @@ const create = () => {
   axios.get("/business-class/create")
     .then(({ data }) => {
       insurances.value = data.insurances;
+      departments.value = data.departments;
     });
 };
 
@@ -29,6 +31,7 @@ const form = useForm({
     class_name: businessClass?.class_name,
     percentage: businessClass?.percentage,
     insurance_id: businessClass?.insurance_id,
+    department_id: businessClass?.department_id,
 });
 
 const submit = () => {
@@ -72,6 +75,7 @@ const edit = (id) => {
       form.business_class_id = data.business_cls.id;
       form.class_name = data.business_cls.class_name;
       form.percentage = data.business_cls.percentage;
+      form.department_id = data.business_cls.department_id;
       insurances.value = data.insurances;
       form.insurance_id = data.business_cls.business_insurance.map(rel => rel.insurance_id);
     });
@@ -121,7 +125,18 @@ const update = () => {
 
                                     <InputError :message="form.errors.percentage" />
                                 </div>
-                                <div class="col-md-12">
+                                <div class="col-md-6">
+                                    <label for="input21" class="form-label">Department</label>
+
+                                    <select id="input21" class="form-select" v-model="form.department_id">
+                                        <template v-for="department in departments" :key="department.id">
+                                            <option :value="department.id">{{ department.name }}
+                                            </option>
+                                        </template>
+                                    </select>
+                                    <InputError :message="form.errors.department_id" />
+                                </div>
+                                <div class="col-md-6">
                                     <label for="input21" class="form-label">Insurance</label>
 
                                     <select id="input21" class="form-select" multiple v-model="form.insurance_id">

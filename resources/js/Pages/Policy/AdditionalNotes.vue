@@ -4,6 +4,7 @@ import { useForm, usePage } from "@inertiajs/vue3";
 import InputError from "@/Components/InputError.vue";
 import { ref } from "vue";
 import axios from 'axios';
+import SecondaryButton from "@/Components/SecondaryButton.vue";
 
 const { props } = usePage();
 const claim_modal = ref(false);
@@ -42,8 +43,9 @@ const closeModal = () => {
 <template>
 <AuthenticatedLayout>
     <div class="col">
-        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#claimsLargeModal"
-            @click="create">Policy Notes</button>
+        <SecondaryButton @click="create" data-bs-toggle="modal" style="width: 118px; margin-inline: 5px;"
+            data-bs-target="#claimsLargeModal"><i class='bx bxs-note'>Policy Notes</i>
+        </SecondaryButton>
             <div class="modal fade show" id="claimsLargeModal" tabindex="-1" aria-hidden="true" style="display: block;"
             v-if="claim_modal">
             <div class="modal fade show" id="claimsLargeModal" tabindex="-1" aria-hidden="true"

@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('policy_claims', function (Blueprint $table) {
+        Schema::create('departments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('policy_id')->nullable()->constrained('policies')->onDelete('cascade');
-            $table->longText('detail')->nullable();
-            $table->enum('status', ['open', 'close','progress','settled'])->default('open');
+            $table->string('name');
+            $table->boolean('status')->default(TRUE);
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('policy_claims');
+        Schema::dropIfExists('departments');
     }
 };
