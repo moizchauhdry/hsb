@@ -30,6 +30,8 @@ defineProps({
     },
 });
 
+const edit_mode = ref(false);
+
 const toggleAccordion = (index) => {
     // Toggle the isOpen state for the clicked item only
     isOpen.value[index] = !isOpen.value[index];
@@ -44,16 +46,23 @@ const toggleAccordion = (index) => {
 const forms = [];
 
 if (props.policyInstallment && props.policyInstallment.length > 0) {
-    props.policyInstallment.forEach(installment => {
-        const formFields = {
-            due_date: installment.due_date || "",
-            gross_premium: installment.gross_premium || "",
-            net_premium: installment.net_premium || "",
-            payment_status: installment.payment_status || "",
+    for (let i = 0; i < Number(props.policy.installment_plan); i++) {
+        const formFields = i < props.policyInstallment.length ? {
+            due_date: props.policyInstallment[i].due_date || "",
+            gross_premium: props.policyInstallment[i].gross_premium || "",
+            net_premium: props.policyInstallment[i].net_premium || "",
+            payment_status: props.policyInstallment[i].payment_status || "",
+            edit_mode: true,
+        } : {
+            due_date: "",
+            gross_premium: "",
+            net_premium: "",
+            payment_status: "",
+            edit_mode: false,
         };
         const form = useForm(formFields);
         forms.push(form);
-    });
+    }
 } else {
     for (let i = 0; i < Number(props.policy.installment_plan); i++) {
         const initialState = {
@@ -61,12 +70,12 @@ if (props.policyInstallment && props.policyInstallment.length > 0) {
             gross_premium: "",
             net_premium: "",
             payment_status: "",
+            edit_mode: false,
         };
         const form = useForm(initialState);
         forms.push(form);
     }
 }
-
 
 
 
@@ -86,17 +95,38 @@ const claimEdit = (id) => {
     claim_edit_ref.value.claimEdit(id)
 };
 
-const submit = () => {
-    const form = useForm({
-        policy_id: JSON.parse(JSON.stringify((props.policy.id))) ?? "",
-        installmentPlan: [forms[0],forms[1],forms[2],forms[3]],
-    })
 
-    form.post(route("policy.installmentPlan"), {
-        preserveScroll: true,
-        onError: () => error(),
-        onFinish: () => { },
-    });
+const submit = () => {
+    if (forms && forms.length > 0) {
+        forms.forEach(proxyData => {
+    
+            if (!proxyData) return;
+            const data = { ...proxyData };
+
+            if (data.due_date !== '' && data.gross_premium !== '' && data.net_premium !== '' && data.payment_status !== '') {
+                console.log(data.due_date);
+                const formFields = {
+                    policy_id: JSON.parse(JSON.stringify((props.policy.id))) ?? "",
+                    due_date: data.due_date || "",
+                    gross_premium: data.gross_premium || "",
+                    net_premium: data.net_premium || "",
+                    payment_status: data.payment_status || "",
+                };
+
+                const form = useForm(formFields);
+                form.post(route("policy.installmentPlan"), {
+                    preserveScroll: true,
+                    onError: () => error(),
+                    onFinish: () => { },
+                });
+            }
+        });
+    }
+};
+
+
+const error = () => {
+    // alert('error');
 };
 
 
@@ -218,21 +248,21 @@ const submit = () => {
                                         <table class="table table-bordered" style="margin-left: 18px;">
                                             <tr>
                                                 <th>Sum insured </th>
-                                                <td> {{ policy.sum_insured }} </td>
+                                                <td> PKR {{ policy.sum_insured }} </td>
 
                                                 <th>Gross Premium </th>
-                                                <td> {{ policy.gross_premium }} </td>
+                                                <td> PKR {{ policy.gross_premium }} </td>
                                             </tr>
                                             <tr>
                                                 <th>Net Premium </th>
-                                                <td> {{ policy.net_premium }} </td>
+                                                <td> PKR {{ policy.net_premium }} </td>
 
                                                 <th>Percentage</th>
-                                                <td> {{ policy.percentage }} </td>
+                                                <td> {{ policy.percentage }} % </td>
                                             </tr>
                                             <tr>
                                                 <th>HSB profit</th>
-                                                <td> {{ policy.hsb_profit }}</td>
+                                                <td> PKR {{ policy.hsb_profit }}</td>
                                             </tr>
                                         </table>
                                     </div>
@@ -246,7 +276,6 @@ const submit = () => {
                                         <form @submit.prevent="edit_mode ? update() : submit()">
                                             <div class="row"
                                                 style="margin-left: 0px;margin-right: 0px;margin-bottom: 20px;">
-                                                <!-- <input type="hidden" v-model="forms[0].policy_id"> -->
                                                 <div class="col-md-3">
                                                     <label for="input13" class="form-label">Due date</label>
                                                     <VueDatePicker v-model="forms[0].due_date"
@@ -278,9 +307,17 @@ const submit = () => {
                                                     <InputError :message="forms[0].errors.payment_status" />
                                                 </div>
                                             </div>
+                                            <div class="modal-footer"
+                                                style="margin-left: 0px;margin-right: 17px;margin-bottom: 20px;">
+
+                                                <button type="submit" class="btn btn-primary btn-sm">
+                                                    {{ edit_mode ? 'Save & Update' : 'Save' }}</button>
+                                            </div>
+                                        </form>
+                                        <form @submit.prevent="edit_mode ? update() : submit()">
+
                                             <div class="row"
                                                 style="margin-left: 0px;margin-right: 0px;margin-bottom: 20px;">
-                                                <!-- <input type="hidden" v-model="forms[1].policy_id"> -->
                                                 <div class="col-md-3">
                                                     <label for="input13" class="form-label">Due date</label>
                                                     <VueDatePicker v-model="forms[1].due_date"
@@ -322,7 +359,7 @@ const submit = () => {
                                         </form>
                                     </div>
                                     <div class="col-md-12" v-if="policy.installment_plan == 4">
-                                        <form @submit.prevent="edit_mode ? update() : submit()">
+                                        <form @submit.prevent="forms[0].edit_mode ? update() : submit()">
                                             <div class="row"
                                                 style="margin-left: 0px;margin-right: 0px;margin-bottom: 20px;">
                                                 <div class="col-md-3">
@@ -356,6 +393,15 @@ const submit = () => {
                                                     <InputError :message="forms[0].errors.payment_status" />
                                                 </div>
                                             </div>
+                                            <div class="modal-footer"
+                                                style="margin-left: 0px;margin-right: 17px;margin-bottom: 20px;">
+
+                                                <button type="submit" class="btn btn-primary btn-sm">
+                                                    {{ forms[0].edit_mode ? 'Save & Update' : 'Save' }}</button>
+                                            </div>
+                                        </form>
+                                        <form @submit.prevent="forms[1].edit_mode ? update() : submit()">
+
                                             <div class="row"
                                                 style="margin-left: 0px;margin-right: 0px;margin-bottom: 20px;">
                                                 <div class="col-md-3">
@@ -389,6 +435,14 @@ const submit = () => {
                                                     <InputError :message="forms[1].errors.payment_status" />
                                                 </div>
                                             </div>
+                                            <div class="modal-footer"
+                                                style="margin-left: 0px;margin-right: 17px;margin-bottom: 20px;">
+
+                                                <button type="submit" class="btn btn-primary btn-sm">
+                                                    {{ forms[1].edit_mode ? 'Save & Update' : 'Save' }}</button>
+                                            </div>
+                                        </form>
+                                        <form @submit.prevent="forms[2].edit_mode ? update() : submit()">
                                             <div class="row"
                                                 style="margin-left: 0px;margin-right: 0px;margin-bottom: 20px;">
                                                 <div class="col-md-3">
@@ -422,6 +476,14 @@ const submit = () => {
                                                     <InputError :message="forms[2].errors.payment_status" />
                                                 </div>
                                             </div>
+                                            <div class="modal-footer"
+                                                style="margin-left: 0px;margin-right: 17px;margin-bottom: 20px;">
+
+                                                <button type="submit" class="btn btn-primary btn-sm">
+                                                    {{ forms[2].edit_mode ? 'Save & Update' : 'Save' }}</button>
+                                            </div>
+                                        </form>
+                                        <form @submit.prevent="forms[3].edit_mode ? update() : submit()">
                                             <div class="row"
                                                 style="margin-left: 0px;margin-right: 0px;margin-bottom: 20px;">
                                                 <div class="col-md-3">
@@ -459,7 +521,7 @@ const submit = () => {
                                                 style="margin-left: 0px;margin-right: 17px;margin-bottom: 20px;">
 
                                                 <button type="submit" class="btn btn-primary btn-sm">
-                                                    {{ edit_mode ? 'Save & Update' : 'Save' }}</button>
+                                                    {{ forms[3].edit_mode ? 'Save & Update' : 'Save' }}</button>
                                             </div>
                                         </form>
                                     </div>
@@ -597,6 +659,10 @@ const submit = () => {
                                                                     class="inline-flex items-center px-2 py-1 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150"
                                                                     download><i
                                                                         class='bx bxs-down-arrow-square'>Download</i></a>
+
+                                                                <a  class="inline-flex items-center px-2 py-1 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150"
+                                                                    download><i
+                                                                        class='bx bxs-down-arrow-square'>Delete</i></a>
                                                             </td>
                                                         </tr>
                                                     </template>
@@ -674,4 +740,7 @@ const submit = () => {
      padding: 5px;
      font-size: 18px;
  }
+ a.inline-flex.items-center.px-2.py-1.bg-white.border.border-gray-300.rounded-md.font-semibold.text-xs.text-gray-700.tracking-widest.shadow-sm.hover\:bg-gray-50.focus\:outline-none.focus\:ring-2.focus\:ring-indigo-500.focus\:ring-offset-2.disabled\:opacity-25.transition.ease-in-out.duration-150 {
+    margin-inline: 3px;
+}
 </style>

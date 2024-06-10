@@ -86,6 +86,8 @@ const update = () => {
                                             v-model="form.status">
 
                                             <option value="open">Open</option>
+                                            <option value="progress">Progress</option>
+                                            <option value="settled">Settled</option>
                                             <option value="close">Close</option>
                                         </select>
                                         <InputError :message="form.errors.status" />

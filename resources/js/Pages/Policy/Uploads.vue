@@ -29,7 +29,6 @@ const create = () => {
 };
 
 const submit = () => {
-    alert('submit');
     form.post(route("policy.uploads"), {
         preserveScroll: true,
         onSuccess: () => closeModal(),

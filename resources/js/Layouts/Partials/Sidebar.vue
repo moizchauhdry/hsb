@@ -101,7 +101,7 @@ watch(
                 <a href="#" class="has-arrow" @click="toggleList('insurance')">
                     <div class="parent-icon"><i class="bx bx-category"></i>
                     </div>
-                    <div class="menu-title">Insurance</div>
+                    <div class="menu-title">Insurer</div>
                 </a>
                 <ul :class="{ 'hidden': !isSubmenuVisible.insurance }">
                     <li :class="{ 'mm-active': route().current('insurance.index') }">

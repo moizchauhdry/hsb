@@ -13,6 +13,7 @@ use App\Models\PolicyNote;
 use App\Models\PolicyClaim;
 use App\Models\PolicyUpload;
 use Illuminate\Http\Request;
+use App\Imports\PolicyImport;
 use App\Models\BusinessClass;
 use Illuminate\Support\Carbon;
 use App\Models\PolicyClaimNote;
@@ -20,9 +21,9 @@ use App\Models\PolicyInsurance;
 use App\Models\PolicyClaimUpload;
 use Monolog\Handler\IFTTTHandler;
 use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Models\PolicyInstallmentPlan;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class PolicyController extends Controller
@@ -34,11 +35,12 @@ class PolicyController extends Controller
             ->through(fn ($policy) => [
                 'id' => $policy->id,
                 'policy_no' => $policy->policy_no,
-                'client_name' => $policy->client->name,
-                'insurer_name' => $policy->insurer->name,
-                'insurance_date' => Carbon::parse($policy->date_of_insurance)->format('d-m-Y'),
-                'policy_start' => Carbon::parse($policy->policy_start_period)->format('d-m-Y'),
-                'policy_end' => Carbon::parse($policy->policy_end_period)->format('d-m-Y'),
+                'client_name' => $policy->client ? $policy->client->name : null,
+                'insurer_name' => $policy->insurer ? $policy->insurer->name : null,
+                'insurance_date' => $policy->date_of_insurance ? Carbon::parse($policy->date_of_insurance)->format('d-m-Y') : null,
+                'policy_start' => $policy->policy_start_period ? Carbon::parse($policy->policy_start_period)->format('d-m-Y') : null,
+                'policy_end' => $policy->policy_end_period ? Carbon::parse($policy->policy_end_period)->format('d-m-Y') : null,
+
             ]);
 
         return Inertia::render('Policy/Index', [
@@ -75,11 +77,13 @@ class PolicyController extends Controller
             $request->validate([
                 'client_id' => ['required'],
                 'insurance_id' => ['required'],
-                'co_insurance' => ['required'],
                 'takeful_type' => ['required'],
+                'lead_type' => ['required'],
+                'co_insurance' => ['required_if:lead_type,1,3'],
                 'policy_no' => ['required'],
                 'cover_note_no' => ['required'],
                 'agency_id' => ['required'],
+                'department_id' => ['required'],
                 'class_of_business_id' => ['required'],
                 'orignal_endorsment' => ['required'],
                 'date_of_insurance' => ['required'],
@@ -182,33 +186,33 @@ class PolicyController extends Controller
 
             $policyResponse = [
                 'id' => $policy->id,
-                'client_name' => $policy->client->name,
-                'insurance_id' => $policy->insurance->name,
+                'client_name' => $policy->client ? $policy->client->name : null,
+                'insurance_id' => $policy->insurance ? $policy->insurance->name : null,
                 'co_insurance' => $policy->co_insurance,
                 'takeful_type' => $policy->takeful_type,
                 'lead_type' => $policy->lead_type,
                 'policy_no' => $policy->policy_no,
-                'agency_id' => $policy->agency->name,
-                'agency_code' => $policy->agency->code,
-                'class_of_business_id' => $policy->businessClass->class_name,
+                'agency_id' => $policy->agency ? $policy->agency->name : null,
+                'agency_code' => $policy->agency ? $policy->agency->code : null,
+                'class_of_business_id' => $policy->businessClass ? $policy->businessClass->class_name : null,
                 'orignal_endorsment' => $policy->orignal_endorsment,
                 'date_of_insurance' => $policy->date_of_insurance,
                 'policy_start_period' => $policy->policy_start_period,
                 'policy_end_period' => $policy->policy_end_period,
-                'sum_insured' => $policy->sum_insured,
-                'gross_premium' => $policy->gross_premium,
-                'net_premium' => $policy->net_premium,
+                'sum_insured' => number_format($policy->sum_insured),
+                'gross_premium' => number_format($policy->gross_premium),
+                'net_premium' => number_format($policy->net_premium),
                 'cover_note_no' => $policy->cover_note_no,
                 'installment_plan' => $policy->installment_plan,
                 'leader' => $policy->leader,
                 'leader_policy_no' => $policy->leader_policy_no,
                 'branch' => $policy->branch,
                 'brokerage_amount' => $policy->brokerage_amount,
-                'user_id' => $policy->user->name,
+                'user_id' => $policy->user ? $policy->user->name : null,
                 'tax' => $policy->tax,
                 'percentage' => $policy->percentage,
-                'hsb_profit' => $policy->hsb_profit,
-                'created_at' => $policy->created_at->format('d-m-Y h:i A'),
+                'hsb_profit' => number_format($policy->hsb_profit),
+                'created_at' => $policy->created_at ? $policy->created_at->format('d-m-Y h:i A') : null,
             ];
 
             $policyNotes = PolicyNote::where('policy_id', $policy->id)->get();
@@ -461,60 +465,61 @@ class PolicyController extends Controller
     public function installmentPlan(Request $request)
     {
         $request->validate([
-            'policy_id' => ['required'],
-            'installmentPlan*' => ['required'],
+            'policy_id' => ['required', 'numeric'],
+            'due_date' => ['required', 'date_format:Y-m-d\TH:i:s.v\Z'],
+            'gross_premium' => ['required', 'numeric'],
+            'net_premium' => ['required', 'numeric'],
+            'payment_status' => ['required'],
         ]);
+    
+        // Get the policy ID from the request
+        $policy_id = $request->input('policy_id');
+    
+        // Extract installment plan data from the request
+        $installmentPlans = $request->only(['due_date', 'gross_premium', 'net_premium', 'payment_status']);
+        $due_date = Carbon::parse($installmentPlans['due_date']);
+        
 
-        try{
+        $dueDate = $due_date->format('Y-m-d');
+       
+        // Create data array for the installment plan
+        $data = [
+            'policy_id' => $policy_id,
+            'due_date' => $dueDate,
+            'gross_premium' => $installmentPlans['gross_premium'],
+            'net_premium' => $installmentPlans['net_premium'],
+            'payment_status' => $installmentPlans['payment_status'],
+        ];
 
-            $policyInstallmentPlan =  PolicyInstallmentPlan::where('policy_id',$request->policy_id)->get();
-            if($policyInstallmentPlan->count() > 0)
-            {
-                PolicyInstallmentPlan::where('policy_id',$request->policy_id)->delete();
+        // Create new PolicyInstallmentPlan entry
+        PolicyInstallmentPlan::create($data);
+       
+    }
+    
 
-                $installmentPlans = $request->installmentPlan;
-                foreach($installmentPlans as $installmentPlan){
-                    if(!empty($installmentPlan)){
-                        $dueDate = Carbon::parse($installmentPlan['due_date']);
-                        $due_date = $dueDate->format('Y-m-d');
-                
-                        $data = [
-                            'policy_id' => $request->policy_id,
-                            'due_date' => $due_date,
-                            'gross_premium' => $installmentPlan['gross_premium'],
-                            'net_premium' => $installmentPlan['net_premium'],
-                            'payment_status' => $installmentPlan['payment_status'],
-                        ];
-
-                        PolicyInstallmentPlan::create($data);
+    public function importData(Request $request)
+    {
+        try {
+            $files = $request->file('file');
+        
+            // Check if files were uploaded
+            if (!empty($files)) {
+                foreach ($files as $file) {
+                    // Ensure each file is uploaded successfully
+                    if ($file) {
+                        Excel::import(new PolicyImport, $file->getPathname()); // Import the Excel file by passing the file path
+                    } else {
+                        // Handle case when file is not uploaded or invalid
+                        return response()->json(['error' => 'File not uploaded or invalid'], 400);
                     }
                 }
             } else {
-
-                $installmentPlans = $request->installmentPlan;
-                foreach($installmentPlans as $installmentPlan){
-                    if(!empty($installmentPlan)){
-                        $dueDate = Carbon::parse($installmentPlan['due_date']);
-                        $due_date = $dueDate->format('Y-m-d');
-                
-                        $data = [
-                            'policy_id' => $request->policy_id,
-                            'due_date' => $due_date,
-                            'gross_premium' => $installmentPlan['gross_premium'],
-                            'net_premium' => $installmentPlan['net_premium'],
-                            'payment_status' => $installmentPlan['payment_status'],
-                        ];
-
-                        PolicyInstallmentPlan::create($data);
-                    }
-                }
-
+                // Handle case when no files were uploaded
+                return response()->json(['error' => 'No files uploaded'], 400);
             }
-
         } catch (ModelNotFoundException $e) {
             // Handle case when policy with the given ID doesn't exist
             return response()->json(['error' => 'Policy not found'], 404);
-        }
+        } 
     }
-
 }
