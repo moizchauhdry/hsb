@@ -3,6 +3,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
 import "@vuepic/vue-datepicker/dist/main.css";
 import CreateEdit from "./CreateEdit.vue";
+import Import from "./Import/Import.vue";
 import { ref } from "vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 
@@ -39,7 +40,13 @@ const edit = (id) => {
                         </nav>
                     </div>
                     <div class="ms-auto">
-                        <CreateEdit v-bind="$props" ref="create_edit_ref"></CreateEdit>
+                        <div class="d-lg-flex align-items-center mb-4 gap-3">
+                            <div class="ms-auto d-flex" style="width: 210px;">                
+                                <CreateEdit v-bind="$props" ref="create_edit_ref"></CreateEdit>
+                                <Import v-bind="$props"></Import>  
+                               
+                            </div>
+                        </div>
                     </div>
                 </div>
 

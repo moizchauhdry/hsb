@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('policies', function (Blueprint $table) {
-            $table->foreignId('department_id')->constrained('departments')->onDelete('cascade');
-            $table->integer('lead_type');
+            $table->foreignId('department_id')->nullable()->constrained('departments')->onDelete('cascade');
+            $table->integer('lead_type')->nullable();
         });
     }
 
