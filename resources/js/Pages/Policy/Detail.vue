@@ -104,7 +104,7 @@ const submit = () => {
             const data = { ...proxyData };
 
             if (data.due_date !== '' && data.gross_premium !== '' && data.net_premium !== '' && data.payment_status !== '') {
-                console.log(data.due_date);
+                
                 const formFields = {
                     policy_id: JSON.parse(JSON.stringify((props.policy.id))) ?? "",
                     due_date: data.due_date || "",

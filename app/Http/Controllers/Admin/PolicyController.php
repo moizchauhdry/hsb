@@ -6,6 +6,7 @@ use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Agency;
 use App\Models\Policy;
+use App\Rules\ExcelFile;
 use App\Models\Insurance;
 use Illuminate\Http\File;
 use App\Models\Department;
@@ -499,6 +500,10 @@ class PolicyController extends Controller
 
     public function importData(Request $request)
     {
+        $request->validate([
+            'file' => ['required', new ExcelFile],
+        ]);
+
         try {
             $files = $request->file('file');
         
