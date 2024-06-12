@@ -6,6 +6,7 @@ use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Agency;
 use App\Models\Policy;
+use App\Rules\ExcelFile;
 use App\Models\Insurance;
 use Illuminate\Http\File;
 use App\Models\Department;
@@ -86,10 +87,17 @@ class PolicyController extends Controller
                 'department_id' => ['required'],
                 'class_of_business_id' => ['required'],
                 'orignal_endorsment' => ['required'],
-                'date_of_insurance' => ['required'],
-                'policy_start_period' => ['required'],
-                'policy_end_period' => ['required'],
-                'installment_plan' => ['required'],
+                'date_of_insurance' => 'required|date',
+                'policy_start_period' => 'required|date',
+                'policy_end_period' => 'required|date',
+                'installment_plan' => 'required',
+            ], [
+                'date_of_insurance.required' => 'The insurance date is required.',
+                'date_of_insurance.date' => 'The insurance date must be a valid date.',
+                'policy_start_period.required' => 'The policy start period is required.',
+                'policy_start_period.date' => 'The policy start period must be a valid date.',
+                'policy_end_period.required' => 'The policy end period is required.',
+                'policy_end_period.date' => 'The policy end period must be a valid date.',
             ]);
         }
 
@@ -499,6 +507,10 @@ class PolicyController extends Controller
 
     public function importData(Request $request)
     {
+        $request->validate([
+            'file' => ['required', new ExcelFile],
+        ]);
+
         try {
             $files = $request->file('file');
         

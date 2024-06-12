@@ -67,7 +67,8 @@ const close = () => {
                             <div class="row g-3">
                                 <div class="col-md-12">
                                     <label for="input13" class="form-label">Import File</label>
-                                    <input type="file" class="form-control" id="input13" @change="handleFileChange">
+                                    <input type="file" class="form-control" id="input13" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" @change="handleFileChange">
+                                    <InputError :message="form.errors.file" />
                                 </div>
                             </div>
                         </div>
