@@ -24,10 +24,17 @@ class PolicyImport implements ToModel, WithHeadingRow
                 'policy_no' => 'required',
                 'client_name' => 'required',
                 'insurer_name' => 'required',
-                'insurance_date' => 'required',
-                'policy_start_period' => 'required',
-                'policy_end_period' => 'required',
+                'insurance_date' => 'required|date',
+                'policy_start_period' => 'required|date',
+                'policy_end_period' => 'required|date',
                 'installment_plan' => 'required',
+            ], [
+                'insurance_date.required' => 'The insurance date is required.',
+                'insurance_date.date' => 'The insurance date must be a valid date.',
+                'policy_start_period.required' => 'The policy start period is required.',
+                'policy_start_period.date' => 'The policy start period must be a valid date.',
+                'policy_end_period.required' => 'The policy end period is required.',
+                'policy_end_period.date' => 'The policy end period must be a valid date.',
             ]);
         
             $policy = Policy::updateOrCreate([
