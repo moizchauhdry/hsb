@@ -232,7 +232,7 @@ class PolicyController extends Controller
             
 
             $policyClaims = PolicyClaim::where('policy_id', $policy->id)
-            ->paginate(10)
+            ->paginate(5)
             ->withQueryString()
             ->through(fn ($policyClaim) => [
                 'id' => $policyClaim->id,
@@ -240,9 +240,15 @@ class PolicyController extends Controller
                 'status' => $policyClaim->status
             ]);
 
+            $policyUploads = PolicyUpload::where('policy_id', $policy->id)
+            ->paginate(5)
+            ->withQueryString()
+            ->through(fn ($policyUpload) => [
+                'id' => $policyUpload->id,
+                'upload' => $policyUpload->upload,
+                'type' => $policyUpload->type
+            ]);
 
-
-            $policyUploads = PolicyUpload::where('policy_id', $policy->id)->get();
             return Inertia::render('Policy/Detail', [
                 'policy' => $policyResponse,
                 'policyInstallment' => $policyInstallment,

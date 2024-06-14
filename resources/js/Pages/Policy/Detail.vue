@@ -23,6 +23,7 @@ defineProps({
     policyInstallment: Array(),
     policyNotes: Object,
     policyClaims: Array,
+    policyUploads: Array,
     assetUrl: Object,
     // Add a new prop for single-open behavior
     desiredSingleOpenBehavior: {
@@ -166,6 +167,7 @@ const error = () => {
                         </div>
                         <div class="table-responsive" style="overflow-x: hidden;">
                             <div class="container-fluid">
+                                <!-- POLICY INFO-->
                                 <div class="border mb-4" id="partner">
                                     <div style="background-color: #037DE2">
                                         <h5 style="text-align: center" class="w-auto title">Policy Info</h5>
@@ -240,7 +242,7 @@ const error = () => {
                                         </table>
                                     </div>
                                 </div>
-
+                                <!-- POLICY AMOUNT-->
                                 <div class="border mb-4" id="partner">
                                     <div style="background-color: #037DE2">
                                         <h5 style="text-align: center" class="w-auto title">Policy Amount</h5>
@@ -268,7 +270,7 @@ const error = () => {
                                         </table>
                                     </div>
                                 </div>
-
+                                <!-- POLICY INSTALLMENT PLAN-->
                                 <div class="border mb-4" id="partner">
                                     <div style="background-color: #037DE2">
                                         <h5 style="text-align: center" class="w-auto title">Installment Plan</h5>
@@ -527,7 +529,7 @@ const error = () => {
                                         </form>
                                     </div>
                                 </div>
-
+                                <!-- POLICY NOTES-->
                                 <div class="border mb-4" id="partner">
                                     <div style="background-color: #037DE2">
                                         <h5 style="text-align: center" class="w-auto title">Notes</h5>
@@ -569,7 +571,7 @@ const error = () => {
                                         </div>
                                     </div>
                                 </div>
-
+                                <!-- POLICY CLAIM-->
                                 <div class="border mb-4" id="partner">
                                     <div style="background-color: #037DE2">
                                         <h5 style="text-align: center" class="w-auto title">Policy Claims</h5>
@@ -632,7 +634,7 @@ const error = () => {
                                         </div>
                                     </div>
                                 </div>
-
+                                <!-- POLICY UPLOADS-->
                                 <div class="border mb-4" id="partner">
                                     <div style="background-color: #037DE2">
                                         <h5 style="text-align: center" class="w-auto title">Uploads</h5>
@@ -649,9 +651,8 @@ const error = () => {
                                                     </tr>
                                                 </thead>
                                                 <tbody style="text-align: center;">
-                                                    <template
-                                                        v-for="(policyUpload, index) in JSON.parse(JSON.stringify(props.policyUploads))"
-                                                        :key="index">
+                                                    <template 
+                                                    v-for="policyUpload, index in policyUploads.data" :key="policyUpload.id">
                                                         <tr>
                                                             <td>{{ ++index }}</td>
                                                             <td>{{ policyUpload.type }}</td>
@@ -663,14 +664,17 @@ const error = () => {
                                                                     download><i
                                                                         class='bx bxs-down-arrow-square'>Download</i></a>
 
-                                                                <a  class="inline-flex items-center px-2 py-1 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150"
+                                                                <!-- <a  class="inline-flex items-center px-2 py-1 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150"
                                                                     download><i
-                                                                        class='bx bxs-down-arrow-square'>Delete</i></a>
+                                                                        class='bx bxs-down-arrow-square'>Delete</i></a> -->
                                                             </td>
                                                         </tr>
                                                     </template>
                                                 </tbody>
                                             </table>
+                                            <div>
+                                                <Paginate :links="policyUploads.links" :scroll="true" />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
