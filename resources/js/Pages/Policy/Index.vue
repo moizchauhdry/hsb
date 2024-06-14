@@ -6,6 +6,7 @@ import CreateEdit from "./CreateEdit.vue";
 import Import from "./Import/Import.vue";
 import { ref } from "vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
+import Paginate from "@/Components/Paginate.vue";
 
 defineProps({
     policies: Array,
@@ -41,10 +42,10 @@ const edit = (id) => {
                     </div>
                     <div class="ms-auto">
                         <div class="d-lg-flex align-items-center mb-4 gap-3">
-                            <div class="ms-auto d-flex" style="width: 210px;">                
+                            <div class="ms-auto d-flex" style="width: 210px;">
                                 <CreateEdit v-bind="$props" ref="create_edit_ref"></CreateEdit>
-                                <Import v-bind="$props"></Import>  
-                               
+                                <Import v-bind="$props"></Import>
+
                             </div>
                         </div>
                     </div>
@@ -97,10 +98,12 @@ const edit = (id) => {
                                     </template>
                                 </tbody>
                             </table>
-                            <!-- Render pagination links -->
-                            <inertia-link v-if="policies.prev_page_url" :href="policies.prev_page_url">Previous</inertia-link>
-                            <span>{{ policies.current_page }} / {{ policies.last_page }}</span>
-                            <inertia-link v-if="policies.next_page_url" :href="policies.next_page_url">Next</inertia-link>
+
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="float-right">
+                            <Paginate :links="policies.links" />
                         </div>
                     </div>
                 </div>
