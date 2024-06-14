@@ -72,6 +72,7 @@ const closeModal = () => {
                                         <div class="col-md-12">
                                             <label for="input13" class="form-label">Uploads</label>
                                             <input type="file" class="form-control" id="input13" @change="handleFileChange">
+                                            <InputError :message="form.errors.uploads" />
                                         </div>
                                         <div class="col-md-12">
                                             <label for="input21" class="form-label">Type</label>
