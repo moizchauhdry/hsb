@@ -19,30 +19,27 @@ class PolicyImport implements ToModel, WithHeadingRow
      */
     public function model(array $row)
     {
-        // original_endorsement check start //
-            $original_endorsement_other_value = '';
+        $original_endorsement_other_value = '';
 
-            if($row['newrenewalendorsement'] == "RENEWAL"){
-                $original_endorsement = 'renewal';
-            } elseif($row['newrenewalendorsement'] == "NEW"){
-                $original_endorsement = 'new';
-            } elseif($row['newrenewalendorsement'] == "ENDORSEMENT"){
-                $original_endorsement = 'endorsment';
-            } else {
-                $original_endorsement = 'others';
-                $original_endorsement_other_value = $row['newrenewalendorsement'];
-            }
-        // original_endorsement check end //
+        if ($row['newrenewalendorsement'] == "RENEWAL") {
+            $original_endorsement = 'renewal';
+        } elseif ($row['newrenewalendorsement'] == "NEW") {
+            $original_endorsement = 'new';
+        } elseif ($row['newrenewalendorsement'] == "ENDORSEMENT") {
+            $original_endorsement = 'endorsment';
+        } else {
+            $original_endorsement = 'others';
+            $original_endorsement_other_value = $row['newrenewalendorsement'];
+        }
 
         // lead_type check start //
-            if($row['insu_type'] == "Direct ( 100%)"){
-                $insu_type = 1;
-            } elseif($row['insu_type'] == "Our Lead"){
-                $insu_type = 2;
-            } elseif($row['insu_type'] == "Other Lead"){
-                $insu_type = 3;
-            }
-        // lead_type check end //
+        if ($row['insu_type'] == "Direct ( 100%)") {
+            $insu_type = 1;
+        } elseif ($row['insu_type'] == "Our Lead") {
+            $insu_type = 2;
+        } elseif ($row['insu_type'] == "Other Lead") {
+            $insu_type = 3;
+        }
 
         $data = [
             'doc_ref' => $row['doc_ref'],
@@ -108,7 +105,7 @@ class PolicyImport implements ToModel, WithHeadingRow
                 'gross_premium' => $data['gross_preimmium'],
                 'net_premium' => $data['net_premimum'],
             ]);
-        
+
             return $policy;
         }
     }
