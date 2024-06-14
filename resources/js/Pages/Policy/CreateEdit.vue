@@ -175,6 +175,7 @@ const edit = (id) => {
             insurances.value = data.insurances;
             agencies.value = data.agencies;
             cobs.value = data.cobs;
+            departments.value = data.departments;
 
             form.policy_id = data.policy.id;
             form.client_id = data.policy.client_id;
@@ -248,7 +249,7 @@ const selectBusinessClass = () => {
 
 const calculatePremium = () => {
     if (cobPercentage && form.gross_premium) {
-        form.hsb_profit = (form.gross_premium * cobPercentage) / 100;
+        form.hsb_profit = form.gross_premium * cobPercentage / 100;
     }
 };
 
@@ -358,7 +359,7 @@ watch(() => form.gross_premium, calculatePremium);
                                                         <option value="1">Takaful</option>
                                                         <option value="2">Conventional</option>
                                                     </select>
-                                                    <InputError :message="form.errors.insurance_name" />
+                                                    <InputError :message="form.errors.takeful_type" />
                                                 </div>
                                                 <div class="col-md-4">
                                                     <label for="input21" class="form-label">Lead type</label>
@@ -368,7 +369,7 @@ watch(() => form.gross_premium, calculatePremium);
                                                         <option value="2">Our lead</option>
                                                         <option value="3">Other lead</option>
                                                     </select>
-                                                    <InputError :message="form.errors.insurance_name" />
+                                                    <InputError :message="form.errors.lead_type" />
                                                 </div>
                                                 <div class="col-md-4">
                                                     <label for="input13" class="form-label">Co insurance</label>
@@ -437,6 +438,7 @@ watch(() => form.gross_premium, calculatePremium);
                                                         <option value="new">New</option>
                                                         <option value="renewal">Renewal</option>
                                                         <option value="endorsment">Endorsment</option>
+                                                        <option value="others">Others</option>
                                                     </select>
                                                     <InputError :message="form.errors.orignal_endorsment" />
                                                 </div>
@@ -610,21 +612,21 @@ watch(() => form.gross_premium, calculatePremium);
                                                                 style="margin-left: 18px;">
                                                                 <tr>
                                                                     <th>Sum insured </th>
-                                                                    <td> {{ form.sum_insured }} </td>
+                                                                    <td> PKR {{ form.sum_insured.toLocaleString() }} </td>
 
                                                                     <th>Gross Premium </th>
-                                                                    <td> {{ form.gross_premium }} </td>
+                                                                    <td> PKR {{ form.gross_premium.toLocaleString() }} </td>
                                                                 </tr>
                                                                 <tr>
                                                                     <th>Net Premium </th>
-                                                                    <td> {{ form.net_premium }} </td>
+                                                                    <td> PKR {{ form.net_premium.toLocaleString() }} </td>
 
                                                                     <th>Percentage</th>
-                                                                    <td> {{ form.percentage }} </td>
+                                                                    <td> {{ form.percentage }} % </td>
                                                                 </tr>
                                                                 <tr>
                                                                     <th>HSB profit</th>
-                                                                    <td> {{ form.hsb_profit }}</td>
+                                                                    <td> PKR {{ form.hsb_profit.toLocaleString() }}</td>
                                                                 </tr>
                                                             </table>
                                                         </div>

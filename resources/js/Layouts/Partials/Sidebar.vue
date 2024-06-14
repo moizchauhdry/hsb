@@ -55,7 +55,7 @@ watch(
     <div class="sidebar-wrapper" data-simplebar="true">
         <div class="sidebar-header">
             <div>
-                <img src="../../../images/logo-icon.png" class="logo-icon" alt="logo icon">
+                <img src="../../../images/logo-icon.jpg" class="logo-icon" alt="logo icon">
             </div>
             <div>
                 <h4 class="logo-text">HSB Portal</h4>
@@ -101,7 +101,7 @@ watch(
                 <a href="#" class="has-arrow" @click="toggleList('insurance')">
                     <div class="parent-icon"><i class="bx bx-category"></i>
                     </div>
-                    <div class="menu-title">Insurance</div>
+                    <div class="menu-title">Insurer</div>
                 </a>
                 <ul :class="{ 'hidden': !isSubmenuVisible.insurance }">
                     <li :class="{ 'mm-active': route().current('insurance.index') }">

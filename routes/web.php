@@ -73,6 +73,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/getDepartmentByBusinessClass/{id}',[PolicyController::class,'getDepartmentByBusinessClass'])->name('policy.getDepartmentByBusinessClass');
         Route::get('/getBusinessClassByPercent/{id}',[PolicyController::class,'getBusinessClassByPercent'])->name('policy.getBusinessClassByPercent');
         Route::post('/installment-plan',[PolicyController::class,'installmentPlan'])->name('policy.installmentPlan');
+        Route::post('/import',[PolicyController::class,'importData'])->name('policy.import');
     });
 
     Route::prefix('roles')->group(function () {

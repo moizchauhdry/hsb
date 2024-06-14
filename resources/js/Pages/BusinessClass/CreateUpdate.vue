@@ -137,7 +137,7 @@ const update = () => {
                                     <InputError :message="form.errors.department_id" />
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="input21" class="form-label">Insurance</label>
+                                    <label for="input21" class="form-label">Insurer</label>
 
                                     <select id="input21" class="form-select" multiple v-model="form.insurance_id">
                                         <template v-if="insurances.length > 0">
