@@ -253,6 +253,7 @@ const calculatePremium = () => {
     }
 };
 
+
 watch(() => form.gross_premium, calculatePremium);
 </script>
 

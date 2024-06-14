@@ -86,7 +86,7 @@ class PolicyImport implements ToModel, WithHeadingRow
                 return null;
             }
 
-            $policy = Policy::updateOrCreate([
+            $policy = Policy::updateOrCreate(['policy_no' => $data['doc_ref'],'client_id' => $data['client']],[
                 'policy_no' => $data['doc_ref'],
                 'department_id' => $data['department'],
                 'client_id' => $data['client'],
