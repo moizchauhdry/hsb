@@ -18,6 +18,7 @@ const handleFileChange = (event) => {
 
 const form = useForm({
     file: null,
+    type: '',
 });
 
 const create = () => {
@@ -70,6 +71,16 @@ const close = () => {
                         </div>
                         <div class="modal-body">
                             <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label for="input21" class="form-label">Type</label>
+
+                                    <select id="input21" class="form-select"
+                                        v-model="form.type">
+                                        <option value="1">Policy Import</option>
+                                        <option value="2">Client Import</option>
+                                    </select>
+                                    <InputError :message="form.errors.type" />
+                                </div>
                                 <div class="col-md-12">
                                     <label for="input13" class="form-label">Import File</label>
                                     <input type="file" class="form-control" id="input13" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" @change="handleFileChange">
