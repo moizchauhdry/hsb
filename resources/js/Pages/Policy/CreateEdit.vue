@@ -1,7 +1,7 @@
 <script setup>
 import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
 import InputError from "@/Components/InputError.vue";
-import { ref,watch  } from "vue";
+import { ref, watch } from "vue";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import axios from 'axios';
@@ -210,41 +210,41 @@ const edit = (id) => {
 defineExpose({ edit: (id) => edit(id) });
 
 const calculatePercentage = () => {
-  if (form.department_id === 1) {
-    if (form.net_premium !== 0) {
-      return (form.sum_insured / form.net_premium);
+    if (form.department_id === 1) {
+        if (form.net_premium !== 0) {
+            return (form.sum_insured / form.net_premium);
+        } else {
+            return null; // or handle division by zero error
+        }
+    } else if (form.department_id !== null) {
+        if (form.gross_premium !== 0) {
+            return (form.sum_insured / form.gross_premium);
+        } else {
+            return null; // or handle division by zero error
+        }
     } else {
-      return null; // or handle division by zero error
+        return null;
     }
-  } else if (form.department_id !== null) {
-    if (form.gross_premium !== 0) {
-      return (form.sum_insured / form.gross_premium);
-    } else {
-      return null; // or handle division by zero error
-    }
-  } else {
-    return null;
-  }
 };
 
 watch(() => calculatePercentage(), (newVal) => {
-  form.percentage = newVal;
+    form.percentage = newVal;
 });
 
 let cobPercentage = null;
 
 const selectBusinessClass = () => {
     axios.get(`/policy/getBusinessClassByPercent/${form.class_of_business_id}`)
-    .then(({ data }) => {
+        .then(({ data }) => {
 
-        cobPercentage = data.cobPercentage;
-        if (form.gross_premium) {
-            calculatePremium();
-        }
-    })
-    .catch(error => {
-        console.error('Error fetching percentage:', error);
-    });
+            cobPercentage = data.cobPercentage;
+            if (form.gross_premium) {
+                calculatePremium();
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching percentage:', error);
+        });
 };
 
 const calculatePremium = () => {
@@ -252,6 +252,7 @@ const calculatePremium = () => {
         form.hsb_profit = form.gross_premium * cobPercentage / 100;
     }
 };
+
 
 watch(() => form.gross_premium, calculatePremium);
 </script>
@@ -417,10 +418,13 @@ watch(() => form.gross_premium, calculatePremium);
                                                 </div>
 
                                                 <div class="col-md-4">
-                                                    <label for="businessClassSelect" class="form-label">Business Class</label>
+                                                    <label for="businessClassSelect" class="form-label">Business
+                                                        Class</label>
                                                     <select id="businessClassSelect" class="form-select"
-                                                        v-model="form.class_of_business_id" @change="selectBusinessClass">
-                                                        <option v-for="cob in cobs" :value="cob.id">{{ cob.class_name }}</option>
+                                                        v-model="form.class_of_business_id"
+                                                        @change="selectBusinessClass">
+                                                        <option v-for="cob in cobs" :value="cob.id">{{ cob.class_name }}
+                                                        </option>
                                                     </select>
                                                     <InputError :message="form.errors.class_of_business_id" />
                                                 </div>
@@ -441,8 +445,8 @@ watch(() => form.gross_premium, calculatePremium);
                                                 </div>
                                                 <div class="col-md-4">
                                                     <label for="" class="form-label">Date of Insurer</label>
-                                                    <VueDatePicker v-model="form.date_of_insurance" :enable-time-picker="false"
-                                                        :show-time="false">
+                                                    <VueDatePicker v-model="form.date_of_insurance"
+                                                        :enable-time-picker="false" :show-time="false">
                                                     </VueDatePicker>
                                                     <InputError :message="form.errors.date_of_insurance" />
                                                 </div>
@@ -450,8 +454,8 @@ watch(() => form.gross_premium, calculatePremium);
                                                 <div class="col-md-4">
                                                     <label for="input13" class="form-label">Policy start
                                                         period</label>
-                                                    <VueDatePicker v-model="form.policy_start_period" :enable-time-picker="false"
-                                                        :show-time="false">
+                                                    <VueDatePicker v-model="form.policy_start_period"
+                                                        :enable-time-picker="false" :show-time="false">
                                                     </VueDatePicker>
 
                                                     <InputError :message="form.errors.policy_start_period" />
@@ -459,8 +463,8 @@ watch(() => form.gross_premium, calculatePremium);
                                                 <div class="col-md-4">
                                                     <label for="input13" class="form-label">Policy end
                                                         period</label>
-                                                    <VueDatePicker v-model="form.policy_end_period" :enable-time-picker="false"
-                                                        :show-time="false">
+                                                    <VueDatePicker v-model="form.policy_end_period"
+                                                        :enable-time-picker="false" :show-time="false">
                                                     </VueDatePicker>
 
                                                     <InputError :message="form.errors.policy_end_period" />
@@ -496,7 +500,9 @@ watch(() => form.gross_premium, calculatePremium);
                                                             <tr style="text-align: center;">
                                                                 <th>Gross premium</th>
                                                                 <td>
-                                                                    <input type="number" class="form-control" id="gross_premium" v-model="form.gross_premium" @input="calculatePremium">
+                                                                    <input type="number" class="form-control"
+                                                                        id="gross_premium" v-model="form.gross_premium"
+                                                                        @input="calculatePremium">
                                                                     <InputError :message="form.errors.gross_premium" />
                                                                 </td>
                                                             </tr>
@@ -512,15 +518,17 @@ watch(() => form.gross_premium, calculatePremium);
                                                                 <th>Percentage</th>
                                                                 <td>
                                                                     <input type="number" class="form-control"
-                                                                        id="percentage" v-model="form.percentage" readonly>
+                                                                        id="percentage" v-model="form.percentage"
+                                                                        readonly>
                                                                     <InputError :message="form.errors.percentage" />
                                                                 </td>
-                                                            </tr> 
-                                                            
+                                                            </tr>
+
                                                             <tr style="text-align: center;">
                                                                 <th>HSB Profit</th>
                                                                 <td>
-                                                                    <input type="number" class="form-control" id="hsb_profit" v-model="form.hsb_profit">
+                                                                    <input type="number" class="form-control"
+                                                                        id="hsb_profit" v-model="form.hsb_profit">
                                                                     <InputError :message="form.errors.hsb_profit" />
                                                                 </td>
                                                             </tr>
@@ -547,7 +555,7 @@ watch(() => form.gross_premium, calculatePremium);
                                                                 <tr>
                                                                     <th>Client</th>
                                                                     <td>{{ form.client_id }}</td>
-                                                               
+
                                                                     <th>Insurance</th>
                                                                     <td>{{ form.insurance_id }}</td>
                                                                 </tr>
@@ -589,7 +597,7 @@ watch(() => form.gross_premium, calculatePremium);
                                                                     <td> {{ form.installment_plan }} </td>
                                                                 </tr>
                                                                 <tr>
-                                                                    
+
                                                                 </tr>
                                                             </table>
                                                         </div>
@@ -676,10 +684,59 @@ watch(() => form.gross_premium, calculatePremium);
     background-color: #008cff;
     border-radius: 50%;
 }
-table, th, td { padding: 3px !important; font-size: 14px !important; } #lc-table td { border: 1px solid rgb(194, 189, 189) !important; text-align: left !important; } #lc-table th { border: 1px solid rgb(194, 189, 189) !important; text-align: left !important; } table { width: 100%; border-collapse: collapse; } fieldset legend { color: black; font-weight: 500; font-size: 18px; } fieldset.border { border: 2px solid #037DE2 !important; border-radius: 5px !important; }
-    fieldset.member-border { border: 2px solid blue !important; border-radius: 5px !important;} .mb-4 { margin-bottom: 20px } .custom-image-preview { width: 100px; height: 100px } .table-bordered>:not(caption)>* {
+
+table,
+th,
+td {
+    padding: 3px !important;
+    font-size: 14px !important;
+}
+
+#lc-table td {
+    border: 1px solid rgb(194, 189, 189) !important;
+    text-align: left !important;
+}
+
+#lc-table th {
+    border: 1px solid rgb(194, 189, 189) !important;
+    text-align: left !important;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+fieldset legend {
+    color: black;
+    font-weight: 500;
+    font-size: 18px;
+}
+
+fieldset.border {
+    border: 2px solid #037DE2 !important;
+    border-radius: 5px !important;
+}
+
+fieldset.member-border {
+    border: 2px solid blue !important;
+    border-radius: 5px !important;
+}
+
+.mb-4 {
+    margin-bottom: 20px
+}
+
+.custom-image-preview {
+    width: 100px;
+    height: 100px
+}
+
+.table-bordered>:not(caption)>* {
     border-width: 0;
-} h5.w-auto.title {
+}
+
+h5.w-auto.title {
     text-align: center;
     color: #fff;
     height: 34px;
