@@ -19,9 +19,7 @@ class PolicyImport implements ToModel, WithHeadingRow
      */
     public function model(array $row)
     {
-
         // original_endorsement check start //
-
             $original_endorsement_other_value = '';
 
             if($row['newrenewalendorsement'] == "RENEWAL"){
@@ -34,16 +32,17 @@ class PolicyImport implements ToModel, WithHeadingRow
                 $original_endorsement = 'others';
                 $original_endorsement_other_value = $row['newrenewalendorsement'];
             }
-        // original_endorsement check start //
+        // original_endorsement check end //
 
         // lead_type check start //
-        if($row['insu_type'] == "Direct ( 100%)"){
-            $insu_type = 1;
-        } elseif($row['insu_type'] == "Our Lead"){
-            $insu_type = 2;
-        } elseif($row['insu_type'] == "Other Lead"){
-            $insu_type = 3;
-        }
+            if($row['insu_type'] == "Direct ( 100%)"){
+                $insu_type = 1;
+            } elseif($row['insu_type'] == "Our Lead"){
+                $insu_type = 2;
+            } elseif($row['insu_type'] == "Other Lead"){
+                $insu_type = 3;
+            }
+        // lead_type check end //
 
         $data = [
             'doc_ref' => $row['doc_ref'],
@@ -90,9 +89,9 @@ class PolicyImport implements ToModel, WithHeadingRow
                 return null;
             }
 
-            $policy = Policy::updateOrCreate([
+            $policy = Policy::updateOrCreate(['policy_no' => $data['doc_ref'],'client_id' => $data['client']],[
                 'policy_no' => $data['doc_ref'],
-                'department_id ' => $data['department'],
+                'department_id' => $data['department'],
                 'client_id' => $data['client'],
                 // 'other_lead' => $data['other_lead'],
                 'agency_id' => $data['agency'],
@@ -112,6 +111,5 @@ class PolicyImport implements ToModel, WithHeadingRow
         
             return $policy;
         }
-        
     }
 }

@@ -97,6 +97,10 @@ const edit = (id) => {
                                     </template>
                                 </tbody>
                             </table>
+                            <!-- Render pagination links -->
+                            <inertia-link v-if="policies.prev_page_url" :href="policies.prev_page_url">Previous</inertia-link>
+                            <span>{{ policies.current_page }} / {{ policies.last_page }}</span>
+                            <inertia-link v-if="policies.next_page_url" :href="policies.next_page_url">Next</inertia-link>
                         </div>
                     </div>
                 </div>
