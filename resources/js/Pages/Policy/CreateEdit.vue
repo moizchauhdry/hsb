@@ -175,6 +175,7 @@ const edit = (id) => {
             insurances.value = data.insurances;
             agencies.value = data.agencies;
             cobs.value = data.cobs;
+            departments.value = data.departments;
 
             form.policy_id = data.policy.id;
             form.client_id = data.policy.client_id;
@@ -437,6 +438,7 @@ watch(() => form.gross_premium, calculatePremium);
                                                         <option value="new">New</option>
                                                         <option value="renewal">Renewal</option>
                                                         <option value="endorsment">Endorsment</option>
+                                                        <option value="others">Others</option>
                                                     </select>
                                                     <InputError :message="form.errors.orignal_endorsment" />
                                                 </div>

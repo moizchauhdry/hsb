@@ -25,13 +25,15 @@ use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\PolicyInstallmentPlan;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class PolicyController extends Controller
 {
     public function index()
     {
-        $policies = Policy::orderBy('id', 'desc')->paginate(10)
+        $policies = Policy::orderBy('id', 'desc')->paginate(209)
             ->withQueryString()
             ->through(fn ($policy) => [
                 'id' => $policy->id,
@@ -167,6 +169,7 @@ class PolicyController extends Controller
         $insurances = Insurance::select('id', 'name')->get()->toArray();
         $agencies = Agency::select('id', 'name')->get()->toArray();
         $cobs = BusinessClass::select('id', 'class_name')->get()->toArray();
+        $departments = Department::select('id', 'name')->get()->toArray();
 
         $data = [
             'policy' => $policy,
@@ -174,7 +177,8 @@ class PolicyController extends Controller
             'clients' => $clients,
             'insurances' => $insurances,
             'agencies' => $agencies,
-            'cobs' => $cobs
+            'cobs' => $cobs,
+            'departments' => $departments,
         ];
 
         return response()->json($data);
@@ -503,23 +507,30 @@ class PolicyController extends Controller
         PolicyInstallmentPlan::create($data);
        
     }
-    
 
     public function importData(Request $request)
     {
-        $request->validate([
-            'file' => ['required', new ExcelFile],
-        ]);
-
         try {
+            // Validate the incoming request data
+            // $request->validate([
+            //     'file' => 'required|file|mimes:csv,xlsx',
+            // ]);
+
             $files = $request->file('file');
-        
+
             // Check if files were uploaded
             if (!empty($files)) {
                 foreach ($files as $file) {
                     // Ensure each file is uploaded successfully
                     if ($file) {
-                        Excel::import(new PolicyImport, $file->getPathname()); // Import the Excel file by passing the file path
+                        $import = new PolicyImport();
+                        Excel::import($import, $file->getPathname());
+
+                        // Check if there were any validation errors during import
+                        if (!empty($import->errors)) {
+                            // Return errors back to the user
+                            return response()->json(['errors' => $import->errors], 422);
+                        }
                     } else {
                         // Handle case when file is not uploaded or invalid
                         return response()->json(['error' => 'File not uploaded or invalid'], 400);
@@ -529,9 +540,13 @@ class PolicyController extends Controller
                 // Handle case when no files were uploaded
                 return response()->json(['error' => 'No files uploaded'], 400);
             }
+        } catch (ValidationException $e) {
+            // If a ValidationException is thrown, return validation errors
+            return response()->json(['errors' => $e->errors()], 422);
         } catch (ModelNotFoundException $e) {
             // Handle case when policy with the given ID doesn't exist
             return response()->json(['error' => 'Policy not found'], 404);
-        } 
+        }
     }
+
 }

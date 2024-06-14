@@ -29,8 +29,13 @@ const submit = () => {
     form.post(route("policy.import"), {
         preserveScroll: true,
         onSuccess: () => close(),
-        onError: () => error(),
-        onFinish: () => { },
+        onError: (errors) => {
+            // Handle validation errors returned from the server
+            if (errors.hasOwnProperty('errors') && errors.errors.hasOwnProperty('file')) {
+                form.errors.file = errors.errors.file[0];
+            }
+        },
+        onFinish: () => {},
     });
 };
 
