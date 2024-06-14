@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::table('policies', function (Blueprint $table) {
             $table->foreignId('department_id')->nullable()->constrained('departments')->onDelete('cascade');
             $table->integer('lead_type')->nullable();
+            $table->string('leader_policy_number')->nullable();
         });
     }
 
@@ -25,6 +26,7 @@ return new class extends Migration
         Schema::table('policies', function (Blueprint $table) {
             $table->dropColumn('department_id');
             $table->dropColumn('lead_type');
+            $table->dropColumn('leader_policy_number');
         });
     }
 };

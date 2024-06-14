@@ -21,18 +21,19 @@ return new class extends Migration
             $table->foreignId('agency_id')->nullable();
             $table->string('agency_code')->nullable();
             $table->foreignId('class_of_business_id')->nullable();
-            $table->enum('orignal_endorsment', ['new', 'renewal','endorsment'])->nullable()->default('new');
+            $table->enum('orignal_endorsment', ['new', 'renewal','endorsment','others'])->nullable()->default('new');
+            $table->string('original_endorsement_other_value')->nullable();
             $table->date('date_of_insurance')->nullable();
             $table->date('policy_start_period')->nullable();
             $table->date('policy_end_period')->nullable();
-            $table->decimal('sum_insured',8,2)->nullable();
-            $table->decimal('gross_premium',8,2)->nullable();
-            $table->decimal('net_premium',8,2)->nullable();
+            $table->decimal('sum_insured',50,2)->nullable();
+            $table->decimal('gross_premium',50,2)->nullable();
+            $table->decimal('net_premium',50,2)->nullable();
             $table->string('cover_note_no')->nullable();
             $table->string('installment_plan')->nullable();
-            $table->decimal('hsb_profit',8,2)->nullable();
+            $table->decimal('hsb_profit',50,2)->nullable();
             $table->foreignId('user_id')->nullable();
-            $table->decimal('percentage',8,2)->nullable();
+            $table->decimal('percentage',50,2)->nullable();
             $table->timestamps();
         });
     }
