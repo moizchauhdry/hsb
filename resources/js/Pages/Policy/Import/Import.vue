@@ -11,7 +11,7 @@ const edit_mode = ref(false);
 
 const handleFileChange = (event) => {
     // Access the selected files from the event
-    const selectedFiles = event.target.files;
+    const selectedFiles = event.target.files[0];
     // Update the data property with the selected files
     form.file = selectedFiles;
 };
