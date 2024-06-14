@@ -229,8 +229,26 @@ class PolicyController extends Controller
             ];
 
             $policyNotes = PolicyNote::where('policy_id', $policy->id)->get();
-            $policyClaims = PolicyClaim::where('policy_id', $policy->id)->get();
-            $policyUploads = PolicyUpload::where('policy_id', $policy->id)->get();
+            
+
+            $policyClaims = PolicyClaim::where('policy_id', $policy->id)
+            ->paginate(5)
+            ->withQueryString()
+            ->through(fn ($policyClaim) => [
+                'id' => $policyClaim->id,
+                'detail' => $policyClaim->detail,
+                'status' => $policyClaim->status
+            ]);
+
+            $policyUploads = PolicyUpload::where('policy_id', $policy->id)
+            ->paginate(5)
+            ->withQueryString()
+            ->through(fn ($policyUpload) => [
+                'id' => $policyUpload->id,
+                'upload' => $policyUpload->upload,
+                'type' => $policyUpload->type
+            ]);
+
             return Inertia::render('Policy/Detail', [
                 'policy' => $policyResponse,
                 'policyInstallment' => $policyInstallment,
