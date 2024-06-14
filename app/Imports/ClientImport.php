@@ -32,14 +32,14 @@ class ClientImport implements ToModel, WithHeadingRow
             }
 
             $client = User::updateOrCreate([
-                'name' =>$row['name'],
-                'email' =>$row['email'],
+                'name' => $row['name'],
+                'email' => $row['email'],
                 'password' => Hash::make('12345678'),
-                'user_role_id' => 2,
+                'role_users_id' => 2,
             ]);
 
             $client->assignRole(2);
-        
+
             return $client;
         }
     }
