@@ -12,6 +12,7 @@ import ClaimNote from "./Claim/Notes.vue";
 import ClaimUpload from "./Claim/Upload.vue";
 import ClaimEdit from "./Claim/Edit.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
+import Paginate from "@/Components/Paginate.vue";
 
 const { props } = usePage();
 
@@ -21,7 +22,7 @@ defineProps({
     policy: Object,
     policyInstallment: Array(),
     policyNotes: Object,
-    policyClaims: Object,
+    policyClaims: Array,
     assetUrl: Object,
     // Add a new prop for single-open behavior
     desiredSingleOpenBehavior: {
@@ -591,9 +592,8 @@ const error = () => {
                                                     </tr>
                                                 </thead>
                                                 <tbody style="text-align: center;">
-                                                    <template
-                                                        v-for="(policyClaim, index) in JSON.parse(JSON.stringify(props.policyClaims))"
-                                                        :key="index">
+                                                    <template 
+                                                     v-for="policyClaim, index in policyClaims.data" :key="policyClaim.id">
                                                         <tr>
                                                             <td>{{ ++index }}</td>
                                                             <td>{{ policyClaim.id }}</td>
@@ -626,6 +626,9 @@ const error = () => {
                                                     </template>
                                                 </tbody>
                                             </table>
+                                            <div>
+                                                <Paginate :links="policyClaims.links" :scroll="true" />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
