@@ -14,6 +14,7 @@ use App\Models\PolicyNote;
 use App\Models\PolicyClaim;
 use App\Models\PolicyUpload;
 use Illuminate\Http\Request;
+use App\Imports\ClientImport;
 use App\Imports\PolicyImport;
 use App\Models\BusinessClass;
 use Illuminate\Support\Carbon;
@@ -517,29 +518,57 @@ class PolicyController extends Controller
             // ]);
 
             $files = $request->file('file');
+            $type = $request->type;
 
-            // Check if files were uploaded
-            if (!empty($files)) {
-                foreach ($files as $file) {
-                    // Ensure each file is uploaded successfully
-                    if ($file) {
-                        $import = new PolicyImport();
-                        Excel::import($import, $file->getPathname());
+            if($type == "1"){
+                // Check if files were uploaded
+                if (!empty($files)) {
+                    foreach ($files as $file) {
+                        // Ensure each file is uploaded successfully
+                        if ($file) {
+                            $import = new PolicyImport();
+                            Excel::import($import, $file->getPathname());
 
-                        // Check if there were any validation errors during import
-                        if (!empty($import->errors)) {
-                            // Return errors back to the user
-                            return response()->json(['errors' => $import->errors], 422);
+                            // Check if there were any validation errors during import
+                            if (!empty($import->errors)) {
+                                // Return errors back to the user
+                                return response()->json(['errors' => $import->errors], 422);
+                            }
+                        } else {
+                            // Handle case when file is not uploaded or invalid
+                            return response()->json(['error' => 'File not uploaded or invalid'], 400);
                         }
-                    } else {
-                        // Handle case when file is not uploaded or invalid
-                        return response()->json(['error' => 'File not uploaded or invalid'], 400);
                     }
+                } else {
+                    // Handle case when no files were uploaded
+                    return response()->json(['error' => 'No files uploaded'], 400);
                 }
-            } else {
-                // Handle case when no files were uploaded
-                return response()->json(['error' => 'No files uploaded'], 400);
+            } elseif($type == "2"){
+                // Check if files were uploaded
+                if (!empty($files)) {
+                    foreach ($files as $file) {
+                        // Ensure each file is uploaded successfully
+                        if ($file) {
+                            $import = new ClientImport();
+                            Excel::import($import, $file->getPathname());
+
+                            // Check if there were any validation errors during import
+                            if (!empty($import->errors)) {
+                                // Return errors back to the user
+                                return response()->json(['errors' => $import->errors], 422);
+                            }
+                        } else {
+                            // Handle case when file is not uploaded or invalid
+                            return response()->json(['error' => 'File not uploaded or invalid'], 400);
+                        }
+                    }
+                } else {
+                    // Handle case when no files were uploaded
+                    return response()->json(['error' => 'No files uploaded'], 400);
+                }
+
             }
+
         } catch (ValidationException $e) {
             // If a ValidationException is thrown, return validation errors
             return response()->json(['errors' => $e->errors()], 422);
