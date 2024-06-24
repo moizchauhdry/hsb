@@ -361,6 +361,132 @@ const error = () => {
                                             </div>
                                         </form>
                                     </div>
+                                    <div class="col-md-12" v-if="policy.installment_plan == 3">
+                                        <form @submit.prevent="forms[0].edit_mode ? update() : submit()">
+                                            <div class="row"
+                                                style="margin-left: 0px;margin-right: 0px;margin-bottom: 20px;">
+                                                <div class="col-md-3">
+                                                    <label for="input13" class="form-label">Due date</label>
+                                                    <VueDatePicker v-model="forms[0].due_date"
+                                                        :enable-time-picker="false" :show-time="false">
+                                                    </VueDatePicker>
+                                                    <InputError :message="forms[0].errors.due_date" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="input13" class="form-label">Gross premium</label>
+                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                        v-model="forms[0].gross_premium">
+                                                    <InputError :message="forms[0].errors.gross_premium" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="input13" class="form-label">Net premium</label>
+                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                        v-model="forms[0].net_premium">
+                                                    <InputError :message="forms[0].errors.net_premium" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="input13" class="form-label">Payment status</label>
+                                                    <select id="input21" class="form-select"
+                                                        v-model="forms[0].payment_status">
+
+                                                        <option value="pending">Pending</option>
+                                                        <option value="paid">Paid</option>
+                                                        <option value="un-paid">Un-paid</option>
+                                                    </select>
+                                                    <InputError :message="forms[0].errors.payment_status" />
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer"
+                                                style="margin-left: 0px;margin-right: 17px;margin-bottom: 20px;">
+
+                                                <button type="submit" class="btn btn-primary btn-sm">
+                                                    {{ forms[0].edit_mode ? 'Save & Update' : 'Save' }}</button>
+                                            </div>
+                                        </form>
+                                        <form @submit.prevent="forms[1].edit_mode ? update() : submit()">
+
+                                            <div class="row"
+                                                style="margin-left: 0px;margin-right: 0px;margin-bottom: 20px;">
+                                                <div class="col-md-3">
+                                                    <label for="input13" class="form-label">Due date</label>
+                                                    <VueDatePicker v-model="forms[1].due_date"
+                                                        :enable-time-picker="false" :show-time="false">
+                                                    </VueDatePicker>
+                                                    <InputError :message="forms[1].errors.due_date" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="input13" class="form-label">Gross premium</label>
+                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                        v-model="forms[1].gross_premium">
+                                                    <InputError :message="forms[1].errors.gross_premium" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="input13" class="form-label">Net premium</label>
+                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                        v-model="forms[1].net_premium">
+                                                    <InputError :message="forms[1].errors.net_premium" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="input13" class="form-label">Payment status</label>
+                                                    <select id="input21" class="form-select"
+                                                        v-model="forms[1].payment_status">
+
+                                                        <option value="pending">Pending</option>
+                                                        <option value="paid">Paid</option>
+                                                        <option value="un-paid">Un-paid</option>
+                                                    </select>
+                                                    <InputError :message="forms[1].errors.payment_status" />
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer"
+                                                style="margin-left: 0px;margin-right: 17px;margin-bottom: 20px;">
+
+                                                <button type="submit" class="btn btn-primary btn-sm">
+                                                    {{ forms[1].edit_mode ? 'Save & Update' : 'Save' }}</button>
+                                            </div>
+                                        </form>
+                                        <form @submit.prevent="forms[2].edit_mode ? update() : submit()">
+                                            <div class="row"
+                                                style="margin-left: 0px;margin-right: 0px;margin-bottom: 20px;">
+                                                <div class="col-md-3">
+                                                    <label for="input13" class="form-label">Due date</label>
+                                                    <VueDatePicker v-model="forms[2].due_date"
+                                                        :enable-time-picker="false" :show-time="false">
+                                                    </VueDatePicker>
+                                                    <InputError :message="forms[2].errors.due_date" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="input13" class="form-label">Gross premium</label>
+                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                        v-model="forms[2].gross_premium">
+                                                    <InputError :message="forms[2].errors.gross_premium" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="input13" class="form-label">Net premium</label>
+                                                    <input type="text" class="form-control" id="input13" placeholder=""
+                                                        v-model="forms[2].net_premium">
+                                                    <InputError :message="forms[2].errors.net_premium" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="input13" class="form-label">Payment status</label>
+                                                    <select id="input21" class="form-select"
+                                                        v-model="forms[2].payment_status">
+
+                                                        <option value="pending">Pending</option>
+                                                        <option value="paid">Paid</option>
+                                                        <option value="un-paid">Un-paid</option>
+                                                    </select>
+                                                    <InputError :message="forms[2].errors.payment_status" />
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer"
+                                                style="margin-left: 0px;margin-right: 17px;margin-bottom: 20px;">
+
+                                                <button type="submit" class="btn btn-primary btn-sm">
+                                                    {{ forms[2].edit_mode ? 'Save & Update' : 'Save' }}</button>
+                                            </div>
+                                        </form>
+                                    </div>
                                     <div class="col-md-12" v-if="policy.installment_plan == 4">
                                         <form @submit.prevent="forms[0].edit_mode ? update() : submit()">
                                             <div class="row"
@@ -536,40 +662,32 @@ const error = () => {
                                     </div>
                                     <div class="row">
                                         <div class="table-responsive">
+                                            <div class="ms-auto">
+                                                <ClaimNote v-bind="$props" ref="claim_note_ref"></ClaimNote>
+                                                <ClaimUpload v-bind="$props" ref="claim_upload_ref"></ClaimUpload>
+                                                <ClaimEdit v-bind="$props" ref="claim_edit_ref"></ClaimEdit>
+                                            </div>
                                             <table class="table mb-0">
-                                                <tbody>
-
-
-                                                    <div class="accordion accordion-flush" id="accordionExample">
-                                                        <template v-for="(policyNote, index) in policyNotes"
-                                                            :key="index">
-                                                            <div class="accordion-item">
-                                                                <h2 class="accordion-header"
-                                                                    :id="'heading-' + policyNote.id">
-                                                                    <button class="accordion-button" type="button"
-                                                                        @click="toggleAccordion(index)"
-                                                                        :aria-expanded="isOpen[index]"
-                                                                        :aria-controls="'collapse-' + policyNote.id">
-                                                                        {{ policyNote.additional_notes }}
-                                                                    </button>
-                                                                </h2>
-                                                                <div :id="'collapse-' + policyNote.id"
-                                                                    class="accordion-collapse"
-                                                                    :class="{ 'show': isOpen[index] }"
-                                                                    :aria-labelledby="'heading-' + policyNote.id"
-                                                                    data-bs-parent="#accordionExample2">
-                                                                    <div class="accordion-body">
-                                                                        <p>{{ policyNote.additional_notes }}</p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </template>
-                                                    </div>
-
+                                                <thead class="table-light" style="text-align: center;">
+                                                    <tr>
+                                                        <th>Sr No.</th>
+                                                        <th>Note</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody style="text-align: center;">
+                                                    <template 
+                                                     v-for="policyNote, index in policyNotes" :key="policyNote.id">
+                                                        <tr>
+                                                            <td>{{ ++index }}</td>
+                                                            <td>{{ policyNote.additional_notes }}</td>
+                                                        </tr>
+                                                    </template>
                                                 </tbody>
                                             </table>
+                                          
                                         </div>
                                     </div>
+                                    
                                 </div>
                                 <!-- POLICY CLAIM-->
                                 <div class="border mb-4" id="partner">

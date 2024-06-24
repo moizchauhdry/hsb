@@ -43,6 +43,5 @@ class Policy extends Model
     public function policyInstallment()
     {
         return $this->hasMany(PolicyInstallmentPlan::class,'policy_id','id');
-
     }
 }

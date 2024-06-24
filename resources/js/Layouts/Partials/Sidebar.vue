@@ -95,6 +95,18 @@ watch(
                     </li>
                 </ul>
             </li>
+            <li :class="{ 'mm-active': route().current('policy.index') || route().current('policy.detail') }">
+                <a href="#" class="has-arrow" @click="toggleList('policy')">
+                    <div class="parent-icon"><i class="bx bx-category"></i>
+                    </div>
+                    <div class="menu-title">Policies</div>
+                </a>
+                <ul :class="{ 'hidden': !isSubmenuVisible.policy }">
+                    <li :class="{ 'mm-active': route().current('policy.index') }">
+                        <Link :href="route('policy.index')"><i class='bx bx-radio-circle'></i>List</Link>
+                    </li>
+                </ul>
+            </li>
 
             <li class="menu-label">Policy</li>
             <li :class="{ 'mm-active': route().current('insurance.index') }">
@@ -136,20 +148,6 @@ watch(
                     </li>
                 </ul>
             </li>
-
-            <li :class="{ 'mm-active': route().current('policy.index') || route().current('policy.detail') }">
-                <a href="#" class="has-arrow" @click="toggleList('policy')">
-                    <div class="parent-icon"><i class="bx bx-category"></i>
-                    </div>
-                    <div class="menu-title">Policies</div>
-                </a>
-                <ul :class="{ 'hidden': !isSubmenuVisible.policy }">
-                    <li :class="{ 'mm-active': route().current('policy.index') }">
-                        <Link :href="route('policy.index')"><i class='bx bx-radio-circle'></i>List</Link>
-                    </li>
-                </ul>
-            </li>
-
         </ul>
         <!--end navigation-->
     </div>
