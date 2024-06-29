@@ -475,6 +475,7 @@ watch(() => form.gross_premium, calculatePremium);
                                                         v-model="form.installment_plan">
 
                                                         <option value="2">2</option>
+                                                        <option value="3">3</option>
                                                         <option value="4">4</option>
                                                     </select>
                                                     <InputError :message="form.errors.installment_plan" />

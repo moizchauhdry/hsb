@@ -1,5 +1,6 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import { Inertia } from '@inertiajs/inertia'
 import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
 import "@vuepic/vue-datepicker/dist/main.css";
 import CreateEdit from "./CreateEdit.vue";
@@ -7,6 +8,7 @@ import Import from "./Import/Import.vue";
 import { ref } from "vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import Paginate from "@/Components/Paginate.vue";
+import Swal from 'sweetalert2';
 
 defineProps({
     policies: Array,
@@ -16,6 +18,41 @@ defineProps({
 const create_edit_ref = ref(null);
 const edit = (id) => {
     create_edit_ref.value.edit(id)
+};
+
+const confirmDelete = (policyId) => {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'You will not be able to recover this policy!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            deletePolicy(policyId)
+        }
+    })
+}
+
+const deletePolicy = async (policyId) => {
+    try {
+        const response = await Inertia.delete(`/policy/delete/${policyId}`)
+        Swal.fire(
+        'Deleted!',
+        'Your policy has been deleted.',
+        'success'
+        )
+            
+    } catch (error) {
+        Swal.fire(
+            'Error!',
+            'Failed to delete the policy.',
+            'error'
+        )
+        console.error('Error deleting policy:', error)
+    }
 };
 </script>
 
@@ -93,6 +130,9 @@ const edit = (id) => {
                                                 </SecondaryButton>
                                                 </Link>
 
+                                                <SecondaryButton @click="confirmDelete(policy.id)">
+                                                    Delete <i class='bx bxs-folder-minus'></i>
+                                                </SecondaryButton>
                                             </td>
                                         </tr>
                                     </template>

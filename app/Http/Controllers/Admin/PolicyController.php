@@ -81,11 +81,8 @@ class PolicyController extends Controller
             $request->validate([
                 'client_id' => ['required'],
                 'insurance_id' => ['required'],
-                'takeful_type' => ['required'],
                 'lead_type' => ['required'],
-                'co_insurance' => ['required_if:lead_type,1,3'],
                 'policy_no' => ['required'],
-                'cover_note_no' => ['required'],
                 'agency_id' => ['required'],
                 'department_id' => ['required'],
                 'class_of_business_id' => ['required'],
@@ -260,6 +257,57 @@ class PolicyController extends Controller
         } catch (ModelNotFoundException $e) {
             // Handle case when policy with the given ID doesn't exist
             return response()->json(['error' => 'Policy not found'], 404);
+        }
+    }
+
+    public function delete($id)
+    {
+        $policy = Policy::find($id);
+        if(!empty($policy))
+        {
+            $policyClaims = PolicyClaim::where('policy_id', $policy->id)->get();
+            if ($policyClaims->isNotEmpty()) {
+                foreach($policyClaims as $policyClaim){
+                    $policyClaim->delete();
+                }
+            }
+
+            $policyInstallment = PolicyInstallmentPlan::where('policy_id', $policy->id)->get();
+            if ($policyInstallment->isNotEmpty()) {
+                foreach($policyInstallment as $policyInstallmentPlan){
+                    $policyInstallmentPlan->delete();
+                }
+            }
+
+            $policyClaimNote = PolicyClaimNote::where('policy_id', $policy->id)->get();
+            if ($policyClaimNote->isNotEmpty()) {
+                foreach($policyClaimNote as $policyClaimNot){
+                    $policyClaimNot->delete();
+                }
+            }
+
+            $policyClaimUpload = PolicyClaimUpload::where('policy_id', $policy->id)->get();
+            if ($policyClaimUpload->isNotEmpty()) {
+                foreach($policyClaimUpload as $policyClaimUploads){
+                    $policyClaimUploads->delete();
+                }
+            }
+
+            $policyNote = PolicyNote::where('policy_id', $policy->id)->get();
+            if ($policyNote->isNotEmpty()) {
+                foreach($policyNote as $policyNotes){
+                    $policyNotes->delete();
+                }
+            }
+
+            $policyUpload = PolicyUpload::where('policy_id', $policy->id)->get();
+            if ($policyUpload->isNotEmpty()) {
+                foreach($policyUpload as $policyUploads){
+                    $policyUploads->delete();
+                }
+            }
+
+            $policy->delete();
         }
     }
 
