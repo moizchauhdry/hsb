@@ -40,11 +40,11 @@ const deletePolicy = async (policyId) => {
     try {
         const response = await Inertia.delete(`/policy/delete/${policyId}`)
         Swal.fire(
-        'Deleted!',
-        'Your policy has been deleted.',
-        'success'
+            'Deleted!',
+            'Your policy has been deleted.',
+            'success'
         )
-            
+
     } catch (error) {
         Swal.fire(
             'Error!',
