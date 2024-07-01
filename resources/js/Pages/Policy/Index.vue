@@ -15,12 +15,18 @@ defineProps({
     policy: Object,
 });
 
+
+
 const create_edit_ref = ref(null);
 const edit = (id) => {
     create_edit_ref.value.edit(id)
 };
 
 const confirmDelete = (policyId) => {
+    const form = useForm({
+        id:  policyId
+    });
+
     Swal.fire({
         title: 'Are you sure?',
         text: 'You will not be able to recover this policy!',
@@ -29,31 +35,22 @@ const confirmDelete = (policyId) => {
         confirmButtonColor: '#d33',
         cancelButtonColor: '#3085d6',
         confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
+    }).then(async (result) => {
         if (result.isConfirmed) {
-            deletePolicy(policyId)
+                form.delete(route("policy.delete"), {
+                    preserveScroll: true,
+                    onSuccess: () => { Swal.fire(
+                    'Deleted!',
+                    'Your policy has been deleted.',
+                    'success'
+                    )},
+                    onError: () => { },
+                    onFinish: () => form.reset(),
+            });
         }
-    })
-}
-
-const deletePolicy = async (policyId) => {
-    try {
-        const response = await Inertia.delete(`/policy/delete/${policyId}`)
-        Swal.fire(
-            'Deleted!',
-            'Your policy has been deleted.',
-            'success'
-        )
-
-    } catch (error) {
-        Swal.fire(
-            'Error!',
-            'Failed to delete the policy.',
-            'error'
-        )
-        console.error('Error deleting policy:', error)
-    }
+    });
 };
+
 </script>
 
 <template>

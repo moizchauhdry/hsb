@@ -61,7 +61,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/edit/{id}', [PolicyController::class, 'edit'])->name('policy.edit');
         Route::post('/update', [PolicyController::class, 'update'])->name('policy.update');
         Route::get('/detail/{id}', [PolicyController::class, 'detail'])->name('policy.detail');
-        Route::delete('/delete/{id}', [PolicyController::class, 'delete'])->name('policy.delete');
+        Route::delete('/delete', [PolicyController::class, 'delete'])->name('policy.delete');
         Route::post('/additional-notes', [PolicyController::class, 'additionalNotes'])->name('policy.additionalNotes');
         Route::post('/uploads', [PolicyController::class, 'uploads'])->name('policy.uploads');
         Route::get('/get/claim/{id}', [PolicyController::class, 'getClaim'])->name('policy.getClaim');

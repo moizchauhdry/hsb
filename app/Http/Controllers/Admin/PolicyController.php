@@ -260,9 +260,9 @@ class PolicyController extends Controller
         }
     }
 
-    public function delete($id)
+    public function delete(Request $request)
     {
-        $policy = Policy::find($id);
+        $policy = Policy::find($request->id);
         if(!empty($policy))
         {
             $policyClaims = PolicyClaim::where('policy_id', $policy->id)->get();
