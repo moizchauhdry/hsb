@@ -11,9 +11,18 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::orderBy('id', 'desc')->paginate(10)
+        $filter = [
+            'search' => $request->search,
+        ];
+
+        $users = User::orderBy('id', 'desc')
+            ->when($filter['search'], function ($q) use ($filter) {
+                $q->where('id', $filter['search']);
+                $q->orWhere('name', 'LIKE', '%' . $filter['search'] . '%');
+            })
+            ->paginate(10)
             ->withQueryString()
             ->through(fn ($user) => [
                 'id' => $user->id,
@@ -45,17 +54,25 @@ class UserController extends Controller
 
     public function create(Request $request)
     {
-        $validate = $request->validate([
-            'name' => ['required', 'string', 'min:5', 'max:50'],
-            'email' => ['required', 'string', 'email', 'max:50', 'unique:users'],
-            'phone' => ['required', 'unique:users', 'max:50'],
-            'address' => ['required', 'string', 'min:5', 'max:100'],
-            'cnic_no' => ['required'],
-            'designation' => ['required'],
-            'qualification' => ['required'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        $rules = [
+            'name' => ['required', 'string', 'min:3', 'max:50'],
+            'email' => ['nullable', 'string', 'email', 'max:50', 'unique:users'],
+            'phone' => ['nullable', 'unique:users', 'max:50'],
+            'address' => ['nullable', 'string', 'min:3', 'max:100'],
+            'cnic_no' => ['nullable'],
+            'designation' => ['nullable'],
+            'qualification' => ['nullable'],
             'role' => ['required'],
-        ]);
+        ];
+
+        if ($request->role == 1) {
+            $rules += [
+                'password' => ['required', 'string', 'min:8', 'confirmed'],
+                'email' => ['required'],
+            ];
+        }
+
+        $validate = $request->validate($rules);
 
         $data = [
             'name' => $request->name,
@@ -72,26 +89,35 @@ class UserController extends Controller
             'designation'  =>  $request->designation,
             'role_users_id'  =>  $validate['role'],
             'qualification'   => $request->qualification,
-            'password' => Hash::make($request->password),
         ];
+
+        if ($request->role == 1) {
+            $data += [
+                'password' => Hash::make($request->password),
+            ];
+        } else {
+            $data += [
+                'password' => Hash::make(1234),
+            ];
+        }
 
         $user = User::create($data);
         $user->assignRole($validate['role']);
     }
 
     public function update(Request $request)
-    {        
+    {
         $user = User::findOrFail($request->user_id);
 
         $validate = $request->validate([
             'user_id' => ['required'],
-            'name' => ['required', 'string', 'min:5', 'max:50'],
-            'email' => ['required', 'string', 'email', 'max:50'],
-            'address' => ['required', 'string', 'min:5', 'max:100'],
-            'phone' => ['required'],
-            'cnic_no' => ['required'],
-            'designation' => ['required'],
-            'qualification' => ['required'],
+            'name' => ['required', 'string', 'min:3', 'max:50'],
+            'email' => ['nullable', 'string', 'email', 'max:50'],
+            'address' => ['nullable', 'string', 'min:3', 'max:100'],
+            'phone' => ['nullable'],
+            'cnic_no' => ['nullable'],
+            'designation' => ['nullable'],
+            'qualification' => ['nullable'],
             'role' => ['required'],
         ]);
 
