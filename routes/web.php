@@ -33,7 +33,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::prefix('users')->group(function () {
-        Route::get('/', [UserController::class, 'index'])->name('user.index')->middleware('permission:user-list');
+        Route::any('/', [UserController::class, 'index'])->name('user.index')->middleware('permission:user-list');
         Route::post('/create', [UserController::class, 'create'])->name('user.create')->middleware('permission:user-create');
         Route::post('/update', [UserController::class, 'update'])->name('user.update')->middleware('permission:user-update');
     });
