@@ -20,11 +20,8 @@ defineProps({
                             <div class="card-body">
                                 <div class="d-flex align-items-center">
                                     <div>
-                                        <p class="mb-0 text-secondary">Revenue</p>
-                                        <h4 class="my-1">$4805</h4>
-                                        <p class="mb-0 font-13 text-success"><i
-                                                class="bx bxs-up-arrow align-middle"></i>$34
-                                            from last week</p>
+                                        <p class="mb-0 text-secondary">Total Users</p>
+                                        <h4 class="my-1">{{ data.users }}</h4>
                                     </div>
                                     <div class="widgets-icons bg-light-success text-success ms-auto"><i
                                             class='bx bx-dollar'></i>
@@ -38,10 +35,8 @@ defineProps({
                             <div class="card-body">
                                 <div class="d-flex align-items-center">
                                     <div>
-                                        <p class="mb-0 text-secondary">Total Customers</p>
-                                        <h4 class="my-1">58K</h4>
-                                        <p class="mb-0 font-13 text-danger"><i
-                                                class="bx bxs-down-arrow align-middle"></i>2.6% from last week</p>
+                                        <p class="mb-0 text-secondary">Total Clients</p>
+                                        <h4 class="my-1">{{ data.clients }}</h4>
                                     </div>
                                     <div class="widgets-icons bg-light-info text-info ms-auto"><i
                                             class="bx bxs-group"></i>
@@ -55,10 +50,8 @@ defineProps({
                             <div class="card-body">
                                 <div class="d-flex align-items-center">
                                     <div>
-                                        <p class="mb-0 text-secondary">Total Visitors</p>
-                                        <h4 class="my-1">8.6K</h4>
-                                        <p class="mb-0 font-13 text-success"><i
-                                                class="bx bxs-up-arrow align-middle"></i>3.2% from last week</p>
+                                        <p class="mb-0 text-secondary">Total Policies</p>
+                                        <h4 class="my-1">{{ data.policies }}</h4>
                                     </div>
                                     <div class="widgets-icons bg-light-danger text-danger ms-auto"><i
                                             class="bx bxs-binoculars"></i>
@@ -72,10 +65,8 @@ defineProps({
                             <div class="card-body">
                                 <div class="d-flex align-items-center">
                                     <div>
-                                        <p class="mb-0 text-secondary">Bounce Rate</p>
-                                        <h4 class="my-1">24.6%</h4>
-                                        <p class="mb-0 font-13 text-danger"><i
-                                                class="bx bxs-down-arrow align-middle"></i>12.2% from last week</p>
+                                        <p class="mb-0 text-secondary">Business Classes</p>
+                                        <h4 class="my-1">{{data.cob}}</h4>
                                     </div>
                                     <div class="widgets-icons bg-light-warning text-warning ms-auto"><i
                                             class="bx bx-line-chart-down"></i>

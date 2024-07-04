@@ -199,85 +199,91 @@ const search = () => {
                                                     </div>
 
                                                     <div class="col-md-6">
-                                                        <label for="input16" class="form-label">CNIC Name</label>
-                                                        <div class="position-relative input-icon">
-                                                            <input type="text" class="form-control" id="input16"
-                                                                v-model="form.cnic_name">
-                                                            <span class="position-absolute top-50 translate-middle-y"><i
-                                                                    class='bx bx-id-card'></i></span>
-                                                        </div>
-                                                        <InputError :message="form.errors.cnic_name" />
+                                                        <label for="input16" class="form-label">Type</label>
+                                                        <select id="input21" class="form-select" v-model="form.type">
+                                                            <option :value="1">Individual</option>
+                                                            <option :value="2">Business</option>
+                                                        </select>
+                                                        <InputError :message="form.errors.type" />
                                                     </div>
+
                                                     <div class="col-md-6">
-                                                        <label for="input16" class="form-label">CNIC No.</label>
+                                                        <label for="input16" class="form-label">{{ form.type == 1 ?
+                                                            'CNIC': "NTN"}} #</label>
                                                         <div class="position-relative input-icon">
                                                             <input type="text" class="form-control" id="input16"
-                                                                placeholder="xxxxx-xxxxxxx-x" v-model="form.cnic_no">
+                                                                :placeholder="form.type == 1 ? 'xxxxx-xxxxxxx-x' : ''"
+                                                                v-model="form.cnic_no">
                                                             <span class="position-absolute top-50 translate-middle-y"><i
                                                                     class='bx bx-id-card'></i></span>
                                                         </div>
                                                         <InputError :message="form.errors.cnic_no" />
                                                     </div>
-                                                    <div class="col-md-6">
-                                                        <label for="input16" class="form-label">CNIC Expiry Date</label>
-                                                        <div class="position-relative input-icon">
-                                                            <input type="date" class="form-control" id="input16"
-                                                                placeholder="" v-model="form.cnic_expiry_date">
-                                                            <span class="position-absolute top-50 translate-middle-y"><i
-                                                                    class='bx bx-id-card'></i></span>
-                                                        </div>
-                                                        <InputError :message="form.errors.cnic_expiry_date" />
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <label for="input16" class="form-label">Gender</label>
-                                                        <select id="input21" class="form-select" v-model="form.gender">
-                                                            <option selected disabled>Choose Gender</option>
-                                                            <option value="male">Male</option>
-                                                            <option value="female">Female</option>
-                                                            <option value="others">Others</option>
-                                                        </select>
-                                                        <InputError :message="form.errors.gender" />
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <label for="input16" class="form-label">Date Of Birth</label>
-                                                        <div class="position-relative input-icon">
-                                                            <input type="date" class="form-control" id="input16"
-                                                                placeholder="" v-model="form.dob">
-                                                            <span class="position-absolute top-50 translate-middle-y"><i
-                                                                    class='bx bx-id-card'></i></span>
-                                                        </div>
-                                                        <InputError :message="form.errors.dob" />
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <label for="input16" class="form-label">Type</label>
-                                                        <select id="input21" class="form-select" v-model="form.type">
-                                                            <option selected disabled>Choose Type</option>
-                                                            <option value="individual">Individual</option>
-                                                            <option value="business">Business</option>
-                                                        </select>
-                                                        <InputError :message="form.errors.type" />
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <label for="input16" class="form-label">Designation</label>
-                                                        <div class="position-relative input-icon">
-                                                            <input type="text" class="form-control" id="input16"
-                                                                placeholder="" v-model="form.designation">
-                                                            <span class="position-absolute top-50 translate-middle-y"><i
-                                                                    class='bx bx-chair'></i></span>
-                                                        </div>
-                                                        <InputError :message="form.errors.designation" />
-                                                    </div>
 
-                                                    <div class="col-md-4">
-                                                        <label for="input16" class="form-label">Qualification</label>
-                                                        <div class="position-relative input-icon">
-                                                            <input type="text" class="form-control" id="input16"
-                                                                placeholder="" v-model="form.qualification">
-                                                            <span class="position-absolute top-50 translate-middle-y"><i
-                                                                    class='bx bx-book-reader'></i></span>
+                                                    <template v-if="form.type == 1">
+
+
+                                                        <div class="col-md-6">
+                                                            <label for="input16" class="form-label">CNIC Expiry
+                                                                Date</label>
+                                                            <div class="position-relative input-icon">
+                                                                <input type="date" class="form-control" id="input16"
+                                                                    placeholder="" v-model="form.cnic_expiry_date">
+                                                                <span
+                                                                    class="position-absolute top-50 translate-middle-y"><i
+                                                                        class='bx bx-id-card'></i></span>
+                                                            </div>
+                                                            <InputError :message="form.errors.cnic_expiry_date" />
                                                         </div>
-                                                        <InputError :message="form.errors.qualification" />
-                                                    </div>
+                                                        <div class="col-md-6">
+                                                            <label for="input16" class="form-label">Gender</label>
+                                                            <select id="input21" class="form-select"
+                                                                v-model="form.gender">
+                                                                <option selected disabled>Choose Gender</option>
+                                                                <option value="male">Male</option>
+                                                                <option value="female">Female</option>
+                                                                <option value="others">Others</option>
+                                                            </select>
+                                                            <InputError :message="form.errors.gender" />
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label for="input16" class="form-label">Date Of
+                                                                Birth</label>
+                                                            <div class="position-relative input-icon">
+                                                                <input type="date" class="form-control" id="input16"
+                                                                    placeholder="" v-model="form.dob">
+                                                                <span
+                                                                    class="position-absolute top-50 translate-middle-y"><i
+                                                                        class='bx bx-id-card'></i></span>
+                                                            </div>
+                                                            <InputError :message="form.errors.dob" />
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <label for="input16" class="form-label">Designation</label>
+                                                            <div class="position-relative input-icon">
+                                                                <input type="text" class="form-control" id="input16"
+                                                                    placeholder="" v-model="form.designation">
+                                                                <span
+                                                                    class="position-absolute top-50 translate-middle-y"><i
+                                                                        class='bx bx-chair'></i></span>
+                                                            </div>
+                                                            <InputError :message="form.errors.designation" />
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <label for="input16"
+                                                                class="form-label">Qualification</label>
+                                                            <div class="position-relative input-icon">
+                                                                <input type="text" class="form-control" id="input16"
+                                                                    placeholder="" v-model="form.qualification">
+                                                                <span
+                                                                    class="position-absolute top-50 translate-middle-y"><i
+                                                                        class='bx bx-book-reader'></i></span>
+                                                            </div>
+                                                            <InputError :message="form.errors.qualification" />
+                                                        </div>
+                                                    </template>
 
                                                     <div class="col-md-12">
                                                         <label for="input16" class="form-label">Address</label>
@@ -286,7 +292,7 @@ const search = () => {
                                                         <InputError :message="form.errors.address" />
                                                     </div>
 
-                                                    <template v-if="!edit_mode && form.role == 1">
+                                                    <template v-if="!edit_mode && form.role != 2">
                                                         <div class="col-md-6">
                                                             <label for="input17" class="form-label">Password</label>
                                                             <div class="position-relative input-icon">
@@ -367,11 +373,11 @@ const search = () => {
                                             <td>
                                                 00{{ user.id }}
                                             </td>
-                                            <td>{{ user.name }}</td>
+                                            <td class="text-capitalize">{{ user.name }}</td>
                                             <td>
                                                 {{ user.email }}
                                             </td>
-                                            <td>{{ user.role }}</td>
+                                            <td class="text-capitalize">{{ user.role }}</td>
                                             <td>{{ user.created_at }}</td>
                                             <td>
                                                 <button type="button" @click="edit(user)" title="Edit"

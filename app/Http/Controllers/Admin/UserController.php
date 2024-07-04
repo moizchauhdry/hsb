@@ -91,13 +91,13 @@ class UserController extends Controller
             'qualification'   => $request->qualification,
         ];
 
-        if ($request->role == 1) {
+        if ($request->role != 2) {
             $data += [
                 'password' => Hash::make($request->password),
             ];
         } else {
             $data += [
-                'password' => Hash::make(1234),
+                'password' => Hash::make(0),
             ];
         }
 
@@ -140,6 +140,6 @@ class UserController extends Controller
         ];
 
         $user->update($data);
-        $user->assignRole($validate['role']);
+        $user->syncRoles($validate['role']);
     }
 }

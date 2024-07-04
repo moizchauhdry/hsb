@@ -44,9 +44,9 @@ const toggle = () => {
                     <i class='bx bx-menu text-xl'></i>
                 </div>
 
-                <div class="search-bar d-lg-block d-none" data-bs-toggle="modal" data-bs-target="#SearchModal">
+                <!-- <div class="search-bar d-lg-block d-none" data-bs-toggle="modal" data-bs-target="#SearchModal">
                     <a href="avascript:;" class="btn d-flex align-items-center"><i class='bx bx-search'></i>Search</a>
-                </div>
+                </div> -->
 
                 <div class="top-menu ms-auto">
                     <ul class="navbar-nav align-items-center gap-1">
@@ -56,7 +56,7 @@ const toggle = () => {
                             </a>
                         </li> -->
 
-                        <li class="nav-item dropdown dropdown-large">
+                        <!-- <li class="nav-item dropdown dropdown-large">
                             <a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" href="#"
                                 data-bs-toggle="dropdown"><span class="alert-count">7</span>
                                 <i class='bx bx-bell'></i>
@@ -193,7 +193,7 @@ const toggle = () => {
                                     </div>
                                 </a>
                             </div>
-                        </li>
+                        </li> -->
 
                     </ul>
                 </div>

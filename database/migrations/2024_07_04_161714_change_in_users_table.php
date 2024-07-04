@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('business_classes', function (Blueprint $table) {
-            $table->foreignId('department_id');
-           
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('type', 25)->nullable()->change();
         });
     }
 
@@ -22,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('business_classes', function (Blueprint $table) {
-            $table->dropColumn('department_id');
+        Schema::table('users', function (Blueprint $table) {
+            //
         });
     }
 };

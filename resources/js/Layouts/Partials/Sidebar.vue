@@ -166,6 +166,7 @@ watch(
 /* width */
 ::-webkit-scrollbar {
     width: 4px;
+    height: 4px;
 }
 
 /* Track */

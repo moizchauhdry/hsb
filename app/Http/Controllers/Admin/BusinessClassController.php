@@ -19,6 +19,7 @@ class BusinessClassController extends Controller
             ->through(fn ($businessClass) => [
                 'id' => $businessClass->id,
                 'class_name' => $businessClass->class_name,
+                'department_name' => $businessClass->department->name,
                 'percentage' => $businessClass->percentage,
                 'created_at' => $businessClass->created_at->format('d-m-Y h:i A'),
             ]);
