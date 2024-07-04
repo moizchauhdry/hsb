@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('policies', function (Blueprint $table) {
-            $table->foreignId('department_id')->nullable()->constrained('departments')->onDelete('cascade');
+            $table->foreignId('department_id')->nullable();
             $table->integer('lead_type')->nullable();
             $table->string('leader_policy_number')->nullable();
         });

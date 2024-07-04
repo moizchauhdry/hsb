@@ -57,8 +57,9 @@ const edit = (id) => {
                             <table class="table mb-0">
                                 <thead class="table-light">
                                     <tr>
-                                        <th>ID</th>
+                                        <th>Sr.No.</th>
                                         <th>Class Name</th>
+                                        <th>Department</th>
                                         <th>Percentage</th>
                                         <th>Created Date</th>
                                         <th></th>
@@ -69,6 +70,7 @@ const edit = (id) => {
                                         <tr>
                                             <td>{{ cls.id }}</td>
                                             <td>{{ cls.class_name }}</td>
+                                            <td>{{ cls.department_name }}</td>
                                             <td>{{ cls.percentage }}</td>
                                             <td>{{ cls.created_at }}</td>
                                             <td>

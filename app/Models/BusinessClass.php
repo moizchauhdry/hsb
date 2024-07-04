@@ -13,6 +13,11 @@ class BusinessClass extends Model
 
     public function businessInsurance()
     {
-        return $this->hasMany(BusinessClassInsurance::class,'business_class_id','id');
+        return $this->hasMany(BusinessClassInsurance::class, 'business_class_id', 'id');
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'department_id', 'id');
     }
 }
