@@ -55,6 +55,7 @@ class PolicyImport implements ToModel, WithHeadingRow
                     'name' => $row['client_name'],
                     'role_users_id' => 2,
                 ]);
+                $client->syncRoles('client');
 
                 $client_id = $client->id;
             }
@@ -125,7 +126,7 @@ class PolicyImport implements ToModel, WithHeadingRow
                 //     // return null;
                 // }
 
-                $policy = Policy::create([
+                $policy = Policy::updateOrCreate(['policy_no' => $data['policy_no']], [
                     'policy_no' => $data['policy_no'],
                     'department_id' => $department_id,
                     'client_id' => $client_id,

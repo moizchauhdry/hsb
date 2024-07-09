@@ -55,7 +55,7 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::prefix('policy')->group(function () {
-        Route::get('/', [PolicyController::class, 'index'])->name('policy.index')->middleware('permission:user-list');
+        Route::any('/', [PolicyController::class, 'index'])->name('policy.index')->middleware('permission:user-list');
         Route::get('/create', [PolicyController::class, 'create'])->name('policy.create');
         Route::post('/store', [PolicyController::class, 'store'])->name('policy.store');
         Route::get('/edit/{id}', [PolicyController::class, 'edit'])->name('policy.edit');

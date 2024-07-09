@@ -1,5 +1,6 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import Paginate from "@/Components/Paginate.vue";
 
 defineProps({
     insurances: Object
@@ -35,8 +36,9 @@ defineProps({
                         <div class="table-responsive">
                             <table id="example" class="table table-striped table-bordered" style="width:100%">
                                 <thead>
-                                    <tr>
-                                        <th>ID</th>
+                                    <tr class="text-uppercase">
+                                        <th>Sr.No.</th>
+                                        <th>Insurer ID</th>
                                         <th>Name</th>
                                         <th>Created Date</th>
                                     </tr>
@@ -44,13 +46,21 @@ defineProps({
                                 <tbody>
                                     <template v-for="(insurance, index) in insurances.data">
                                         <tr>
-                                            <td>{{ insurance.id }}</td>
+                                            <td>{{ (insurances.current_page - 1) * insurances.per_page + index + 1 }}</td>
+                                            <td>
+                                                00{{ insurance.id }}
+                                            </td>
                                             <td>{{ insurance.name }}</td>
                                             <td>{{ insurance.created_at }}</td>
                                         </tr>
                                     </template>
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="float-right">
+                            <Paginate :links="insurances.links" :scroll="true" />
                         </div>
                     </div>
                 </div>
