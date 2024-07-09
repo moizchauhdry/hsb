@@ -55,6 +55,7 @@ class PolicyImport implements ToModel, WithHeadingRow
                     'name' => $row['client_name'],
                     'role_users_id' => 2,
                 ]);
+                $client->syncRoles('client');
 
                 $client_id = $client->id;
             }
