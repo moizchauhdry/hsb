@@ -1,9 +1,11 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Head } from "@inertiajs/vue3";
+import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
 import "@vuepic/vue-datepicker/dist/main.css";
 import CreateEdit from "./CreateUpdate.vue";
 import { ref } from "vue";
+import Paginate from "@/Components/Paginate.vue";
+import SuccessButton from "@/Components/SuccessButton.vue";
 
 defineProps({
     businessClasses: Array,
@@ -14,6 +16,26 @@ const create_edit_ref = ref(null);
 const edit = (id) => {
     create_edit_ref.value.edit(id)
 };
+
+
+
+const search_form = useForm({
+    search: ""
+});
+
+const search = () => {
+    search_form.post(route("businessClass.index"), {
+        preserveScroll: true,
+        onSuccess: (response) => {
+            // 
+        },
+        onError: (errors) => {
+            console.log(errors)
+        },
+        onFinish: () => { },
+    });
+};
+
 
 </script>
 
@@ -42,22 +64,33 @@ const edit = (id) => {
 
                 <div class="card">
                     <div class="card-body">
-                        <div class="d-lg-flex align-items-center mb-4 gap-3">
-                            <div class="position-relative">
-                                <input type="text" class="form-control ps-5 radius-30"
-                                    placeholder="Search Business Class"> <span
-                                    class="position-absolute top-50 product-show translate-middle-y"><i
-                                        class="bx bx-search"></i></span>
+                        <form @submit.prevent="search">
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <input type="text" v-model="search_form.search" class="form-control"
+                                        placeholder="Search">
+                                </div>
+                                <div class="col-md-3">
+                                    <SuccessButton class="px-4 py-1" :class="{ 'opacity-25': search_form.processing }"
+                                        :disabled="search_form.processing">
+                                        Search
+                                    </SuccessButton>
+                                </div>
                             </div>
+                        </form>
+
+                        <div class="d-lg-flex align-items-center mb-4 gap-3">
                             <div class="ms-auto">
                                 <CreateEdit v-bind="$props" ref="create_edit_ref"></CreateEdit>
                             </div>
                         </div>
+
                         <div class="table-responsive">
                             <table class="table mb-0">
                                 <thead class="table-light">
-                                    <tr>
+                                    <tr class="text-uppercase">
                                         <th>Sr.No.</th>
+                                        <th>COB ID</th>
                                         <th>Class Name</th>
                                         <th>Department</th>
                                         <th>Percentage</th>
@@ -68,7 +101,11 @@ const edit = (id) => {
                                 <tbody>
                                     <template v-for="(cls, index) in businessClasses.data" :key="cls.id">
                                         <tr>
-                                            <td>{{ cls.id }}</td>
+                                            <td>{{ (businessClasses.current_page - 1) * businessClasses.per_page + index
+                                                + 1 }}</td>
+                                            <td>
+                                                00{{ cls.id }}
+                                            </td>
                                             <td>{{ cls.class_name }}</td>
                                             <td>{{ cls.department_name }}</td>
                                             <td>{{ cls.percentage }}</td>
@@ -83,6 +120,11 @@ const edit = (id) => {
                                     </template>
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="float-right">
+                            <Paginate :links="businessClasses.links" :scroll="true" />
                         </div>
                     </div>
                 </div>

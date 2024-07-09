@@ -39,7 +39,7 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::prefix('business-class')->group(function () {
-        Route::get('/', [BusinessClassController::class, 'index'])->name('businessClass.index')->middleware('permission:user-list');
+        Route::any('/', [BusinessClassController::class, 'index'])->name('businessClass.index')->middleware('permission:user-list');
         Route::get('/create', [BusinessClassController::class, 'create'])->name('businessClass.create');
         Route::post('/store', [BusinessClassController::class, 'store'])->name('businessClass.store');
         Route::get('/edit/{id}', [BusinessClassController::class, 'edit'])->name('businessClass.edit');
