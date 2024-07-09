@@ -9,13 +9,14 @@ import { ref } from "vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import Paginate from "@/Components/Paginate.vue";
 import Swal from 'sweetalert2';
+import SuccessButton from "@/Components/SuccessButton.vue";
+import Multiselect from "@vueform/multiselect";
+import InputLabel from "@/Components/InputLabel.vue";
 
 defineProps({
     policies: Array,
     policy: Object,
 });
-
-
 
 const create_edit_ref = ref(null);
 const edit = (id) => {
@@ -24,7 +25,7 @@ const edit = (id) => {
 
 const confirmDelete = (policyId) => {
     const form = useForm({
-        id:  policyId
+        id: policyId
     });
 
     Swal.fire({
@@ -37,17 +38,42 @@ const confirmDelete = (policyId) => {
         confirmButtonText: 'Yes, delete it!'
     }).then(async (result) => {
         if (result.isConfirmed) {
-                form.delete(route("policy.delete"), {
-                    preserveScroll: true,
-                    onSuccess: () => { Swal.fire(
-                    'Deleted!',
-                    'Your policy has been deleted.',
-                    'success'
-                    )},
-                    onError: () => { },
-                    onFinish: () => form.reset(),
+            form.delete(route("policy.delete"), {
+                preserveScroll: true,
+                onSuccess: () => {
+                    Swal.fire(
+                        'Deleted!',
+                        'Your policy has been deleted.',
+                        'success'
+                    )
+                },
+                onError: () => { },
+                onFinish: () => form.reset(),
             });
         }
+    });
+};
+
+var search_types = [
+    { value: 1, label: "Policy ID" },
+    { value: 2, label: "Policy NO" },
+];
+
+const search_form = useForm({
+    search_type: 1,
+    search_value: ""
+});
+
+const search = () => {
+    search_form.post(route("policy.index"), {
+        preserveScroll: true,
+        onSuccess: (response) => {
+            // 
+        },
+        onError: (errors) => {
+            console.log(errors)
+        },
+        onFinish: () => { },
     });
 };
 
@@ -87,18 +113,33 @@ const confirmDelete = (policyId) => {
 
                 <div class="card">
                     <div class="card-body">
-                        <div class="d-lg-flex align-items-center mb-4 gap-3">
-                            <div class="position-relative">
-                                <input type="text" class="form-control ps-5 radius-30" placeholder="Search Policy">
-                                <span class="position-absolute top-50 product-show translate-middle-y"><i
-                                        class="bx bx-search"></i></span>
+                        <form @submit.prevent="search">
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <!-- <InputLabel for="search_type" value="Search Type" /> -->
+                                    <Multiselect :searchable="false" v-model="search_form.search_type"
+                                        :options="search_types">
+                                    </Multiselect>
+                                </div>
+                                <div class="col-md-3">
+                                    <!-- <InputLabel for="search_value" value="Search Value" /> -->
+                                    <input type="text" v-model="search_form.search_value" style="padding: 8px;"
+                                        class="form-control" placeholder="Search">
+                                </div>
+                                <div class="col-md-3">
+                                    <SuccessButton style="margin-top: 3.5px;" class="px-4 py-1" :class="{ 'opacity-25': search_form.processing }"
+                                        :disabled="search_form.processing">
+                                        Search
+                                    </SuccessButton>
+                                </div>
                             </div>
-                        </div>
+                        </form>
+
                         <div class="table-responsive">
                             <table class="table table-striped table-hover mb-0">
                                 <thead class="table-light text-uppercase">
-                                    <tr>
-                                        <th>SR #</th>
+                                    <tr class="text-uppercase">
+                                        <th>Sr.No.</th>
                                         <th>Policy ID</th>
                                         <th>Policy NO</th>
                                         <th>Client Name</th>
@@ -111,8 +152,10 @@ const confirmDelete = (policyId) => {
                                 <tbody>
                                     <template v-for="(policy, index) in policies.data">
                                         <tr>
-                                            <td>{{ ++index }}</td>
-                                            <td>{{ policy.id }}</td>
+                                            <td>{{ (policies.current_page - 1) * policies.per_page + index + 1 }}</td>
+                                            <td>
+                                                00{{ policy.id }}
+                                            </td>
                                             <td>{{ policy.policy_no }}</td>
                                             <td>{{ policy.client_name }}</td>
                                             <td>{{ policy.insurer_name }}</td>
@@ -151,3 +194,5 @@ const confirmDelete = (policyId) => {
     </AuthenticatedLayout>
 
 </template>
+
+<style src="@vueform/multiselect/themes/default.css"></style>

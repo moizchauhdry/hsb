@@ -32,9 +32,22 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class PolicyController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $policies = Policy::orderBy('id', 'desc')->paginate(10)
+        $filter = [
+            'search_type' => $request->search_type,
+            'search_value' => $request->search_value,
+        ];
+
+        $policies = Policy::query()
+            ->when($filter['search_type'] == 1 && $filter['search_value'], function ($q) use ($filter) {
+                $q->where('id', $filter['search_value']);
+            })
+            ->when($filter['search_type'] == 2 && $filter['search_value'], function ($q) use ($filter) {
+                $q->where('policy_no', 'LIKE', '%' . $filter['search_value'] . '%');
+            })
+            ->orderBy('id', 'desc')
+            ->paginate(10)
             ->withQueryString()
             ->through(fn ($policy) => [
                 'id' => $policy->id,
@@ -226,25 +239,25 @@ class PolicyController extends Controller
             ];
 
             $policyNotes = PolicyNote::where('policy_id', $policy->id)->get();
-            
+
 
             $policyClaims = PolicyClaim::where('policy_id', $policy->id)
-            ->paginate(5)
-            ->withQueryString()
-            ->through(fn ($policyClaim) => [
-                'id' => $policyClaim->id,
-                'detail' => $policyClaim->detail,
-                'status' => $policyClaim->status
-            ]);
+                ->paginate(5)
+                ->withQueryString()
+                ->through(fn ($policyClaim) => [
+                    'id' => $policyClaim->id,
+                    'detail' => $policyClaim->detail,
+                    'status' => $policyClaim->status
+                ]);
 
             $policyUploads = PolicyUpload::where('policy_id', $policy->id)
-            ->paginate(5)
-            ->withQueryString()
-            ->through(fn ($policyUpload) => [
-                'id' => $policyUpload->id,
-                'upload' => $policyUpload->upload,
-                'type' => $policyUpload->type
-            ]);
+                ->paginate(5)
+                ->withQueryString()
+                ->through(fn ($policyUpload) => [
+                    'id' => $policyUpload->id,
+                    'upload' => $policyUpload->upload,
+                    'type' => $policyUpload->type
+                ]);
 
             return Inertia::render('Policy/Detail', [
                 'policy' => $policyResponse,
@@ -263,46 +276,45 @@ class PolicyController extends Controller
     public function delete(Request $request)
     {
         $policy = Policy::find($request->id);
-        if(!empty($policy))
-        {
+        if (!empty($policy)) {
             $policyClaims = PolicyClaim::where('policy_id', $policy->id)->get();
             if ($policyClaims->isNotEmpty()) {
-                foreach($policyClaims as $policyClaim){
+                foreach ($policyClaims as $policyClaim) {
                     $policyClaim->delete();
                 }
             }
 
             $policyInstallment = PolicyInstallmentPlan::where('policy_id', $policy->id)->get();
             if ($policyInstallment->isNotEmpty()) {
-                foreach($policyInstallment as $policyInstallmentPlan){
+                foreach ($policyInstallment as $policyInstallmentPlan) {
                     $policyInstallmentPlan->delete();
                 }
             }
 
             $policyClaimNote = PolicyClaimNote::where('policy_id', $policy->id)->get();
             if ($policyClaimNote->isNotEmpty()) {
-                foreach($policyClaimNote as $policyClaimNot){
+                foreach ($policyClaimNote as $policyClaimNot) {
                     $policyClaimNot->delete();
                 }
             }
 
             $policyClaimUpload = PolicyClaimUpload::where('policy_id', $policy->id)->get();
             if ($policyClaimUpload->isNotEmpty()) {
-                foreach($policyClaimUpload as $policyClaimUploads){
+                foreach ($policyClaimUpload as $policyClaimUploads) {
                     $policyClaimUploads->delete();
                 }
             }
 
             $policyNote = PolicyNote::where('policy_id', $policy->id)->get();
             if ($policyNote->isNotEmpty()) {
-                foreach($policyNote as $policyNotes){
+                foreach ($policyNote as $policyNotes) {
                     $policyNotes->delete();
                 }
             }
 
             $policyUpload = PolicyUpload::where('policy_id', $policy->id)->get();
             if ($policyUpload->isNotEmpty()) {
-                foreach($policyUpload as $policyUploads){
+                foreach ($policyUpload as $policyUploads) {
                     $policyUploads->delete();
                 }
             }
@@ -522,7 +534,7 @@ class PolicyController extends Controller
 
     public function getDepartmentByBusinessClass($id)
     {
-        $cobs = BusinessClass::where('department_id',$id)->get()->toArray();
+        $cobs = BusinessClass::where('department_id', $id)->get()->toArray();
 
         $data = [
             'cobs' => $cobs
@@ -550,17 +562,17 @@ class PolicyController extends Controller
             'net_premium' => ['required', 'numeric'],
             'payment_status' => ['required'],
         ]);
-    
+
         // Get the policy ID from the request
         $policy_id = $request->input('policy_id');
-    
+
         // Extract installment plan data from the request
         $installmentPlans = $request->only(['due_date', 'gross_premium', 'net_premium', 'payment_status']);
         $due_date = Carbon::parse($installmentPlans['due_date']);
-        
+
 
         $dueDate = $due_date->format('Y-m-d');
-       
+
         // Create data array for the installment plan
         $data = [
             'policy_id' => $policy_id,
@@ -572,7 +584,6 @@ class PolicyController extends Controller
 
         // Create new PolicyInstallmentPlan entry
         PolicyInstallmentPlan::create($data);
-       
     }
 
     public function importData(Request $request)
@@ -586,7 +597,7 @@ class PolicyController extends Controller
             $file = $request->file('file');
             $type = $request->type;
 
-            if($type == "1"){
+            if ($type == "1") {
                 // Check if files were uploaded
                 if (!empty($file)) {
                     // Ensure each file is uploaded successfully
@@ -603,12 +614,11 @@ class PolicyController extends Controller
                         // Handle case when file is not uploaded or invalid
                         return response()->json(['error' => 'File not uploaded or invalid'], 400);
                     }
-                  
                 } else {
                     // Handle case when no files were uploaded
                     return response()->json(['error' => 'No files uploaded'], 400);
                 }
-            } elseif($type == "2"){
+            } elseif ($type == "2") {
                 // Check if files were uploaded
                 if (!empty($file)) {
                     // Ensure each file is uploaded successfully
@@ -630,7 +640,6 @@ class PolicyController extends Controller
                     return response()->json(['error' => 'No files uploaded'], 400);
                 }
             }
-
         } catch (ValidationException $e) {
             // If a ValidationException is thrown, return validation errors
             return response()->json(['errors' => $e->errors()], 422);
