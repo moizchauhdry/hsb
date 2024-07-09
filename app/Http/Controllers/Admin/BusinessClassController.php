@@ -12,19 +12,26 @@ use App\Models\Department;
 
 class BusinessClassController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $businessClasses = BusinessClass::orderBy('id', 'desc')->paginate(10)
+        $filter = [
+            'search' => $request->search,
+        ];
+
+        $businessClasses = BusinessClass::orderBy('id', 'desc')
+            ->when($filter['search'], function ($q) use ($filter) {
+                $q->where('id', $filter['search']);
+                $q->orWhere('class_name', 'LIKE', '%' . $filter['search'] . '%');
+            })
+            ->paginate(10)
             ->withQueryString()
             ->through(fn ($businessClass) => [
                 'id' => $businessClass->id,
                 'class_name' => $businessClass->class_name,
-                'department_name' => $businessClass->department->name,
+                'department_name' => $businessClass->department->name ?? NULL,
                 'percentage' => $businessClass->percentage,
                 'created_at' => $businessClass->created_at->format('d-m-Y h:i A'),
             ]);
-
-
 
         return Inertia::render('BusinessClass/Index', [
             'businessClasses' => $businessClasses,

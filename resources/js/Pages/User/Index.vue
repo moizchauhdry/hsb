@@ -390,7 +390,7 @@ const search = () => {
                         </div>
                     </div>
 
-                    <div class="card-body">
+                    <div class="card-footer">
                         <div class="float-right">
                             <Paginate :links="users.links" :scroll="true" />
                         </div>
