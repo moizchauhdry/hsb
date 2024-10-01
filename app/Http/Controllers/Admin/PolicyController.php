@@ -49,7 +49,7 @@ class PolicyController extends Controller
             ->orderBy('id', 'desc')
             ->paginate(10)
             ->withQueryString()
-            ->through(fn ($policy) => [
+            ->through(fn($policy) => [
                 'id' => $policy->id,
                 'policy_no' => $policy->policy_no,
                 'client_name' => $policy->client ? $policy->client->name : null,
@@ -217,7 +217,8 @@ class PolicyController extends Controller
                 'policy_no' => $policy->policy_no,
                 'agency_id' => $policy->agency ? $policy->agency->name : null,
                 'agency_code' => $policy->agency ? $policy->agency->code : null,
-                'class_of_business_id' => $policy->businessClass ? $policy->businessClass->class_name : null,
+                'class_of_business_id' => $policy->businessClass ? $policy->businessClass->id : null,
+                'class_of_business_name' => $policy->businessClass ? $policy->businessClass->class_name : null,
                 'orignal_endorsment' => $policy->orignal_endorsment,
                 'date_of_insurance' => $policy->date_of_insurance,
                 'policy_start_period' => $policy->policy_start_period,
@@ -235,7 +236,10 @@ class PolicyController extends Controller
                 'tax' => $policy->tax,
                 'percentage' => $policy->percentage,
                 'hsb_profit' => number_format($policy->hsb_profit),
-                'created_at' => $policy->created_at ? $policy->created_at->format('d-m-Y h:i A') : null,
+                'created_at' => $policy->created_at,
+                
+                'excel_import' => $policy->excel_import ? "YES" : "NO",
+                'excel_import_at' => $policy->excel_import_at,
             ];
 
             $policyNotes = PolicyNote::where('policy_id', $policy->id)->get();
@@ -244,7 +248,7 @@ class PolicyController extends Controller
             $policyClaims = PolicyClaim::where('policy_id', $policy->id)
                 ->paginate(5)
                 ->withQueryString()
-                ->through(fn ($policyClaim) => [
+                ->through(fn($policyClaim) => [
                     'id' => $policyClaim->id,
                     'detail' => $policyClaim->detail,
                     'status' => $policyClaim->status
@@ -253,7 +257,7 @@ class PolicyController extends Controller
             $policyUploads = PolicyUpload::where('policy_id', $policy->id)
                 ->paginate(5)
                 ->withQueryString()
-                ->through(fn ($policyUpload) => [
+                ->through(fn($policyUpload) => [
                     'id' => $policyUpload->id,
                     'upload' => $policyUpload->upload,
                     'type' => $policyUpload->type
@@ -588,64 +592,38 @@ class PolicyController extends Controller
 
     public function importData(Request $request)
     {
-        try {
-            // Validate the incoming request data
-            $request->validate([
-                'file' => 'required|file|mimes:csv,xlsx',
-            ]);
+        $request->validate([
+            'file' => 'required|file|mimes:csv,xlsx',
+            'type' => 'required',
+        ]);
 
+        try {
             $file = $request->file('file');
             $type = $request->type;
 
             if ($type == "1") {
-                // Check if files were uploaded
-                if (!empty($file)) {
-                    // Ensure each file is uploaded successfully
-                    if ($file) {
-                        $import = new PolicyImport();
-                        Excel::import($import, $file);
-
-                        // Check if there were any validation errors during import
-                        if (!empty($import->errors)) {
-                            // Return errors back to the user
-                            return response()->json(['errors' => $import->errors], 422);
-                        }
-                    } else {
-                        // Handle case when file is not uploaded or invalid
-                        return response()->json(['error' => 'File not uploaded or invalid'], 400);
-                    }
-                } else {
-                    // Handle case when no files were uploaded
-                    return response()->json(['error' => 'No files uploaded'], 400);
-                }
-            } elseif ($type == "2") {
-                // Check if files were uploaded
-                if (!empty($file)) {
-                    // Ensure each file is uploaded successfully
-                    if ($file) {
-                        $import = new ClientImport();
-                        Excel::import($import, $file);
-
-                        // Check if there were any validation errors during import
-                        if (!empty($import->errors)) {
-                            // Return errors back to the user
-                            return response()->json(['errors' => $import->errors], 422);
-                        }
-                    } else {
-                        // Handle case when file is not uploaded or invalid
-                        return response()->json(['error' => 'File not uploaded or invalid'], 400);
-                    }
-                } else {
-                    // Handle case when no files were uploaded
-                    return response()->json(['error' => 'No files uploaded'], 400);
-                }
+                $import = new PolicyImport();
+                Excel::import($import, $file);
             }
-        } catch (ValidationException $e) {
-            // If a ValidationException is thrown, return validation errors
-            return response()->json(['errors' => $e->errors()], 422);
-        } catch (ModelNotFoundException $e) {
-            // Handle case when policy with the given ID doesn't exist
-            return response()->json(['error' => 'Policy not found'], 404);
+        } catch (\Throwable $th) {
+            throw $th;
+            // abort(403, $th->getMessage());
         }
+
+        // if ($type == "2") {
+        //     if (!empty($file)) {
+        //         if ($file) {
+        //             $import = new ClientImport();
+        //             Excel::import($import, $file);
+        //             if (!empty($import->errors)) {
+        //                 return response()->json(['errors' => $import->errors], 422);
+        //             }
+        //         } else {
+        //             return response()->json(['error' => 'File not uploaded or invalid'], 400);
+        //         }
+        //     } else {
+        //         return response()->json(['error' => 'No files uploaded'], 400);
+        //     }
+        // }
     }
 }

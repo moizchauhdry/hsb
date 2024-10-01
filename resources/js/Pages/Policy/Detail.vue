@@ -13,6 +13,7 @@ import ClaimUpload from "./Claim/Upload.vue";
 import ClaimEdit from "./Claim/Edit.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import Paginate from "@/Components/Paginate.vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 const { props } = usePage();
 
@@ -101,12 +102,12 @@ const claimEdit = (id) => {
 const submit = () => {
     if (forms && forms.length > 0) {
         forms.forEach(proxyData => {
-    
+
             if (!proxyData) return;
             const data = { ...proxyData };
 
             if (data.due_date !== '' && data.gross_premium !== '' && data.net_premium !== '' && data.payment_status !== '') {
-                
+
                 const formFields = {
                     policy_id: JSON.parse(JSON.stringify((props.policy.id))) ?? "",
                     due_date: data.due_date || "",
@@ -154,123 +155,240 @@ const error = () => {
                             </ol>
                         </nav>
                     </div>
+                    <div class="ms-auto">
+                        <Uploads v-bind="$props"></Uploads>
+                        <AdditionalNotes v-bind="$props"></AdditionalNotes>
+                        <Claim v-bind="$props"></Claim>
+
+                        <ClaimNote v-bind="$props" ref="claim_note_ref"></ClaimNote>
+                        <ClaimUpload v-bind="$props" ref="claim_upload_ref"></ClaimUpload>
+                        <ClaimEdit v-bind="$props" ref="claim_edit_ref"></ClaimEdit>
+                    </div>
                 </div>
 
                 <div class="card">
                     <div class="card-body">
-                        <div class="d-lg-flex align-items-center mb-4 gap-3">
-                            <div class="ms-auto d-flex" style="width: 310px;">
-                                <Uploads v-bind="$props"></Uploads>
-                                <AdditionalNotes v-bind="$props"></AdditionalNotes>
-                                <Claim v-bind="$props"></Claim>
-                            </div>
-                        </div>
-                        <div class="table-responsive" style="overflow-x: hidden;">
+
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th colspan="4" class="text-center bg-primary text-white text-lg">
+                                        Policy Detail
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th>ID</th>
+                                    <td>{{ policy.id }}</td>
+                                    <th>Client</th>
+                                    <td>{{ policy.client_name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Insurance</th>
+                                    <td>{{ policy.insurance_id }}</td>
+
+                                    <th>Insurance type</th>
+                                    <td v-if="policy.takeful_type == 1">Takaful</td>
+                                    <td v-if="policy.takeful_type == 2">Conventional</td>
+                                </tr>
+                                <tr>
+                                    <th>Lead type</th>
+                                    <td v-if="policy.lead_type == 1">Direct 100%</td>
+                                    <td v-if="policy.lead_type == 2">Our lead</td>
+                                    <td v-if="policy.lead_type == 3">Other lead</td>
+
+                                    <th v-if="policy.lead_type == 1 || policy.lead_type == 3">Co Insurance
+                                    </th>
+
+                                    <td v-if="policy.lead_type == 1 || policy.lead_type == 3">{{
+                                        policy.co_insurance }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Policy No.</th>
+                                    <td>{{ policy.policy_no }}</td>
+
+                                    <th>Agency / Code</th>
+                                    <td>{{ policy.agency_id }} / {{ policy.agency_code }}</td>
+                                </tr>
+                                <tr>
+
+                                    <th>Date of insurance</th>
+                                    <td>{{ policy.date_of_insurance }}</td>
+
+                                    <th>Business class / ID</th>
+                                    <td>{{ policy.class_of_business_name }} / {{ policy.class_of_business_id }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Policy start period</th>
+                                    <td>{{ policy.policy_start_period }}</td>
+
+                                    <th>Policy end period</th>
+                                    <td>{{ policy.policy_end_period }}</td>
+                                </tr>
+                                <tr>
+                                    <th>New/Renewal/Endorsment</th>
+                                    <td>{{ policy.orignal_endorsment }}</td>
+                                    <th>Installment Plan </th>
+                                    <td> {{ policy.installment_plan }} </td>
+
+                                </tr>
+
+                                <tr>
+                                    <th> Cover Note No </th>
+                                    <td> {{ policy.cover_note_no }} </td>
+
+                                    <th>User</th>
+                                    <td> {{ policy.user_id }} </td>
+                                </tr>
+
+                                <tr>
+                                    <th> Excel Import </th>
+                                    <td> {{ policy.excel_import }} </td>
+
+                                    <template v-if="policy.excel_import">
+                                        <th>Excel Import Date</th>
+                                        <td> {{ policy.excel_import_at }} </td>
+                                    </template>
+                                </tr>
+
+                            </tbody>
+                        </table>
+
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th colspan="4" class="text-center bg-primary text-white text-lg">
+                                        Policy Amount
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th>Sum insured </th>
+                                    <td> PKR {{ policy.sum_insured }} </td>
+
+                                    <th>Gross Premium </th>
+                                    <td> PKR {{ policy.gross_premium }} </td>
+                                </tr>
+                                <tr>
+                                    <th>Net Premium </th>
+                                    <td> PKR {{ policy.net_premium }} </td>
+
+                                    <th>Percentage</th>
+                                    <td> {{ policy.percentage }} % </td>
+                                </tr>
+                                <tr>
+                                    <th>HSB profit</th>
+                                    <td> PKR {{ policy.hsb_profit }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th colspan="4" class="text-center bg-primary text-white text-lg">
+                                        Policy Notes
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th>Sr No.</th>
+                                    <th>Note</th>
+                                </tr>
+                                <template v-for="policyNote, index in policyNotes" :key="policyNote.id">
+                                    <tr>
+                                        <td>{{ ++index }}</td>
+                                        <td>{{ policyNote.additional_notes }}</td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th colspan="5" class="text-center bg-primary text-white text-lg">
+                                        Policy Claims
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th>Sr No.</th>
+                                    <th>ID</th>
+                                    <th>Detail</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                                <template v-for="policyClaim, index in policyClaims.data" :key="policyClaim.id">
+                                    <tr>
+                                        <td>{{ ++index }}</td>
+                                        <td>{{ policyClaim.id }}</td>
+                                        <td>{{ policyClaim.detail }}</td>
+                                        <td><span class="badge bg-primary">{{ policyClaim.status
+                                                }}</span></td>
+                                        <td>
+                                            <PrimaryButton @click="claimEdit(policyClaim.id)" title="Edit"
+                                                data-bs-toggle="modal" data-bs-target="#EditLargeModal"><i
+                                                    class='bx bx-edit mr-1'></i> Edit
+                                            </PrimaryButton>
+                                            <PrimaryButton @click="claimNote(policyClaim.id)" title="Note"
+                                                data-bs-toggle="modal" data-bs-target="#notesLargeModal"><i
+                                                    class='bx bxs-note mr-1'></i> Add Note
+                                            </PrimaryButton>
+                                            <PrimaryButton @click="claimUpload(policyClaim.id)" title="Uploads"
+                                                data-bs-toggle="modal" data-bs-target="#notesUploadLargeModal"><i
+                                                    class='bx bx-cloud-upload mr-1'></i> Upload File
+                                            </PrimaryButton>
+                                        </td>
+                                    </tr>
+                                </template>
+
+                                <tr>
+                                    <td>
+                                        <Paginate :links="policyClaims.links" :scroll="true" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th colspan="5" class="text-center bg-primary text-white text-lg">
+                                        Policy Uploads
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th>Sr No.</th>
+                                    <th>Type</th>
+                                    <th>File</th>
+                                    <th>Action</th>
+                                </tr>
+                                <template v-for="policyUpload, index in policyUploads.data" :key="policyUpload.id">
+                                    <tr>
+                                        <td>{{ ++index }}</td>
+                                        <td>{{ policyUpload.type }}</td>
+                                        <td>
+                                            <img :src="props.assetUrl + '/' + policyUpload.upload" alt=""
+                                                style="width: 70px;">
+                                        </td>
+                                        <td>
+                                            <a :href="props.assetUrl + '/' + policyUpload.upload" download>
+                                                <PrimaryButton>
+                                                    <i class='bx bxs-down-arrow-square mr-1'></i> Download
+                                                </PrimaryButton>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </template>
+
+                                <tr>
+                                    <td>
+                                        <Paginate :links="policyUploads.links" :scroll="true" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- INSTALLMENT PLAN-->
+                        <div class="table-responsive" style="display: none">
                             <div class="container-fluid">
-                                <!-- POLICY INFO-->
-                                <div class="border mb-4" id="partner">
-                                    <div style="background-color: #037DE2">
-                                        <h5 style="text-align: center" class="w-auto title">Policy Info</h5>
-                                    </div>
-
-                                    <div class="row">
-                                        <table class="table table-bordered" style="margin-left: 18px;">
-                                            <tr>
-                                                <th>ID</th>
-                                                <td>{{ policy.id }}</td>
-                                                <th>Client</th>
-                                                <td>{{ policy.client_name }}</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Insurance</th>
-                                                <td>{{ policy.insurance_id }}</td>
-
-                                                <th>Insurance type</th>
-                                                <td v-if="policy.takeful_type == 1">Takaful</td>
-                                                <td v-if="policy.takeful_type == 2">Conventional</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Lead type</th>
-                                                <td v-if="policy.lead_type == 1">Direct 100%</td>
-                                                <td v-if="policy.lead_type == 2">Our lead</td>
-                                                <td v-if="policy.lead_type == 3">Other lead</td>
-
-                                                <th v-if="policy.lead_type == 1 || policy.lead_type == 3">Co Insurance
-                                                </th>
-                                                <td v-if="policy.lead_type == 1 || policy.lead_type == 3">{{
-                                                    policy.co_insurance }}</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Policy No.</th>
-                                                <td>{{ policy.policy_no }}</td>
-
-                                                <th>Agency</th>
-                                                <td>{{ policy.agency_id }}</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Agency code</th>
-                                                <td>{{ policy.agency_code }}</td>
-
-                                                <th>Business class</th>
-                                                <td>{{ policy.class_of_business_id }}</td>
-                                            </tr>
-                                            <tr>
-                                                <th>New/Renewal/Endorsment</th>
-                                                <td>{{ policy.orignal_endorsment }}</td>
-
-                                                <th>Date of insurance</th>
-                                                <td>{{ policy.date_of_insurance }}</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Policy start period</th>
-                                                <td>{{ policy.policy_start_period }}</td>
-
-                                                <th>Policy end period</th>
-                                                <td>{{ policy.policy_end_period }}</td>
-                                            </tr>
-                                            <tr>
-                                                <th> Cover Note No </th>
-                                                <td> {{ policy.cover_note_no }} </td>
-
-                                                <th>Installment Plan </th>
-                                                <td> {{ policy.installment_plan }} </td>
-                                            </tr>
-                                            <tr>
-                                                <th>User</th>
-                                                <td> {{ policy.user_id }} </td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
-                                <!-- POLICY AMOUNT-->
-                                <div class="border mb-4" id="partner">
-                                    <div style="background-color: #037DE2">
-                                        <h5 style="text-align: center" class="w-auto title">Policy Amount</h5>
-                                    </div>
-                                    <div class="row">
-                                        <table class="table table-bordered" style="margin-left: 18px;">
-                                            <tr>
-                                                <th>Sum insured </th>
-                                                <td> PKR {{ policy.sum_insured }} </td>
-
-                                                <th>Gross Premium </th>
-                                                <td> PKR {{ policy.gross_premium }} </td>
-                                            </tr>
-                                            <tr>
-                                                <th>Net Premium </th>
-                                                <td> PKR {{ policy.net_premium }} </td>
-
-                                                <th>Percentage</th>
-                                                <td> {{ policy.percentage }} % </td>
-                                            </tr>
-                                            <tr>
-                                                <th>HSB profit</th>
-                                                <td> PKR {{ policy.hsb_profit }}</td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
-                                <!-- POLICY INSTALLMENT PLAN-->
                                 <div class="border mb-4" id="partner">
                                     <div style="background-color: #037DE2">
                                         <h5 style="text-align: center" class="w-auto title">Installment Plan</h5>
@@ -655,147 +773,6 @@ const error = () => {
                                         </form>
                                     </div>
                                 </div>
-                                <!-- POLICY NOTES-->
-                                <div class="border mb-4" id="partner">
-                                    <div style="background-color: #037DE2">
-                                        <h5 style="text-align: center" class="w-auto title">Notes</h5>
-                                    </div>
-                                    <div class="row">
-                                        <div class="table-responsive">
-                                            <div class="ms-auto">
-                                                <ClaimNote v-bind="$props" ref="claim_note_ref"></ClaimNote>
-                                                <ClaimUpload v-bind="$props" ref="claim_upload_ref"></ClaimUpload>
-                                                <ClaimEdit v-bind="$props" ref="claim_edit_ref"></ClaimEdit>
-                                            </div>
-                                            <table class="table mb-0">
-                                                <thead class="table-light" style="text-align: center;">
-                                                    <tr>
-                                                        <th>Sr No.</th>
-                                                        <th>Note</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody style="text-align: center;">
-                                                    <template 
-                                                     v-for="policyNote, index in policyNotes" :key="policyNote.id">
-                                                        <tr>
-                                                            <td>{{ ++index }}</td>
-                                                            <td>{{ policyNote.additional_notes }}</td>
-                                                        </tr>
-                                                    </template>
-                                                </tbody>
-                                            </table>
-                                          
-                                        </div>
-                                    </div>
-                                    
-                                </div>
-                                <!-- POLICY CLAIM-->
-                                <div class="border mb-4" id="partner">
-                                    <div style="background-color: #037DE2">
-                                        <h5 style="text-align: center" class="w-auto title">Policy Claims</h5>
-                                    </div>
-                                    <div class="row">
-                                        <div class="table-responsive">
-                                            <div class="ms-auto">
-                                                <ClaimNote v-bind="$props" ref="claim_note_ref"></ClaimNote>
-                                                <ClaimUpload v-bind="$props" ref="claim_upload_ref"></ClaimUpload>
-                                                <ClaimEdit v-bind="$props" ref="claim_edit_ref"></ClaimEdit>
-                                            </div>
-                                            <table class="table mb-0">
-                                                <thead class="table-light" style="text-align: center;">
-                                                    <tr>
-                                                        <th>Sr No.</th>
-                                                        <th>ID</th>
-                                                        <th>Detail</th>
-                                                        <th>Status</th>
-                                                        <th>Action</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody style="text-align: center;">
-                                                    <template 
-                                                     v-for="policyClaim, index in policyClaims.data" :key="policyClaim.id">
-                                                        <tr>
-                                                            <td>{{ ++index }}</td>
-                                                            <td>{{ policyClaim.id }}</td>
-                                                            <td>{{ policyClaim.detail }}</td>
-                                                            <td><span class="badge bg-primary">{{ policyClaim.status
-                                                                    }}</span></td>
-                                                            <td>
-                                                                <SecondaryButton @click="claimEdit(policyClaim.id)"
-                                                                    title="Edit" data-bs-toggle="modal"
-                                                                    style="margin-inline: 5px;"
-                                                                    data-bs-target="#EditLargeModal"><i
-                                                                        class='bx bx-edit'>Edit</i>
-                                                                </SecondaryButton>
-                                                                <SecondaryButton @click="claimNote(policyClaim.id)"
-                                                                    title="Note" data-bs-toggle="modal"
-                                                                    style="margin-inline: 5px;"
-                                                                    data-bs-target="#notesLargeModal"><i
-                                                                        class='bx bxs-note'>Note</i>
-                                                                </SecondaryButton>
-                                                                <SecondaryButton @click="claimUpload(policyClaim.id)"
-                                                                    title="Uploads" data-bs-toggle="modal"
-                                                                    style="margin-inline: 5px;"
-                                                                    data-bs-target="#notesUploadLargeModal"><i
-                                                                        class='bx bx-cloud-upload'>Upload</i>
-                                                                </SecondaryButton>
-
-
-                                                            </td>
-                                                        </tr>
-                                                    </template>
-                                                </tbody>
-                                            </table>
-                                            <div>
-                                                <Paginate :links="policyClaims.links" :scroll="true" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- POLICY UPLOADS-->
-                                <div class="border mb-4" id="partner">
-                                    <div style="background-color: #037DE2">
-                                        <h5 style="text-align: center" class="w-auto title">Uploads</h5>
-                                    </div>
-                                    <div class="row">
-                                        <div class="table-responsive">
-                                            <table class="table mb-0">
-                                                <thead class="table-light" style="text-align: center;">
-                                                    <tr>
-                                                        <th>Sr No.</th>
-                                                        <th>Type</th>
-                                                        <th>File</th>
-                                                        <th>Action</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody style="text-align: center;">
-                                                    <template 
-                                                    v-for="policyUpload, index in policyUploads.data" :key="policyUpload.id">
-                                                        <tr>
-                                                            <td>{{ ++index }}</td>
-                                                            <td>{{ policyUpload.type }}</td>
-                                                            <td><img :src="props.assetUrl + '/' + policyUpload.upload"
-                                                                    alt="" style="width: 70px;"></td>
-                                                            <td>
-                                                                <a :href="props.assetUrl + '/' + policyUpload.upload"
-                                                                    class="inline-flex items-center px-2 py-1 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150"
-                                                                    download><i
-                                                                        class='bx bxs-down-arrow-square'>Download</i></a>
-
-                                                                <!-- <a  class="inline-flex items-center px-2 py-1 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150"
-                                                                    download><i
-                                                                        class='bx bxs-down-arrow-square'>Delete</i></a> -->
-                                                            </td>
-                                                        </tr>
-                                                    </template>
-                                                </tbody>
-                                            </table>
-                                            <div>
-                                                <Paginate :links="policyUploads.links" :scroll="true" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -805,67 +782,3 @@ const error = () => {
         <!--end page wrapper -->
     </AuthenticatedLayout>
 </template>
-
-<style>
- table,
- th,
- td {
-     padding: 3px !important;
-     font-size: 14px !important;
- }
-
- #lc-table td {
-     border: 1px solid rgb(194, 189, 189) !important;
-     text-align: left !important;
- }
-
- #lc-table th {
-     border: 1px solid rgb(194, 189, 189) !important;
-     text-align: left !important;
- }
-
- table {
-     width: 100%;
-     border-collapse: collapse;
- }
-
- fieldset legend {
-     color: black;
-     font-weight: 500;
-     font-size: 18px;
- }
-
- fieldset.border {
-     border: 2px solid #037DE2 !important;
-     border-radius: 5px !important;
- }
-
- fieldset.member-border {
-     border: 2px solid blue !important;
-     border-radius: 5px !important;
- }
-
- .mb-4 {
-     margin-bottom: 20px
- }
-
- .custom-image-preview {
-     width: 100px;
-     height: 100px
- }
-
- .table-bordered>:not(caption)>* {
-     border-width: 0;
- }
-
- h5.w-auto.title {
-     text-align: center;
-     color: #fff;
-     height: 34px;
-     padding: 5px;
-     font-size: 18px;
- }
- a.inline-flex.items-center.px-2.py-1.bg-white.border.border-gray-300.rounded-md.font-semibold.text-xs.text-gray-700.tracking-widest.shadow-sm.hover\:bg-gray-50.focus\:outline-none.focus\:ring-2.focus\:ring-indigo-500.focus\:ring-offset-2.disabled\:opacity-25.transition.ease-in-out.duration-150 {
-    margin-inline: 3px;
-}
-</style>

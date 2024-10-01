@@ -136,16 +136,17 @@ const search = () => {
                         </form>
 
                         <div class="table-responsive">
-                            <table class="table table-striped table-hover mb-0">
-                                <thead class="table-light text-uppercase">
-                                    <tr class="text-uppercase">
-                                        <th>Sr.No.</th>
+                            <table class="table table-striped table-hover mb-0 text-uppercase">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Sr #</th>
                                         <th>Policy ID</th>
                                         <th>Policy NO</th>
                                         <th>Client Name</th>
                                         <th>Insurer Name</th>
                                         <th>Insurance Date</th>
-                                        <th>Policy Date</th>
+                                        <th>Policy Start</th>
+                                        <th>Policy End</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -160,7 +161,8 @@ const search = () => {
                                             <td>{{ policy.client_name }}</td>
                                             <td>{{ policy.insurer_name }}</td>
                                             <td>{{ policy.insurance_date }}</td>
-                                            <td>{{ policy.policy_start }} - {{ policy.policy_end }}</td>
+                                            <td>{{ policy.policy_start }}</td>
+                                            <td>{{ policy.policy_end }}</td>
                                             <td>
                                                 <SecondaryButton @click="edit(policy.id)">Edit <i
                                                         class="bx bx-edit"></i></SecondaryButton>

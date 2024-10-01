@@ -4,27 +4,27 @@ namespace App\Imports;
 
 use App\Models\Agency;
 use App\Models\BusinessClass;
+use App\Models\Insurance;
 use App\Models\Policy;
 use App\Models\User;
-use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Validators\Failure;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 class PolicyImport implements ToModel, WithHeadingRow
 {
     public $errors = [];
+    private $currentRow = 0; // Variable to track the current row number
 
-    /**
-     * @param array $row
-     *
-     * @return \Illuminate\Database\Eloquent\Model|null
-     */
     public function model(array $row)
     {
+        dd($row);
+        
         try {
-
-            // dd($row);
+            $this->currentRow++; // Increment the row number each time
 
             $original_endorsement_other_value = '';
 
@@ -39,34 +39,37 @@ class PolicyImport implements ToModel, WithHeadingRow
                 $original_endorsement_other_value = $row['originalendormsent'];
             }
 
-            // // lead_type check start //
-            // if ($row['insu_type'] == "Direct ( 100%)") {
-            //     $insu_type = 1;
-            // } elseif ($row['insu_type'] == "Our Lead") {
-            //     $insu_type = 2;
-            // } elseif ($row['insu_type'] == "Other Lead") {
-            //     $insu_type = 3;
-            // }
-
-
             $client_id = NULL;
             if ($row['client_name']) {
                 $client = User::updateOrCreate(['name' => $row['client_name']], [
                     'name' => $row['client_name'],
                     'role_users_id' => 2,
+                    'password' => Hash::make(0),
                 ]);
                 $client->syncRoles('client');
 
                 $client_id = $client->id;
             }
 
-            $agency_id = NULL;
-            if ($row['agency']) {
-                $agency = Agency::updateOrCreate(['name' => $row['agency']], [
-                    'name' => $row['agency'],
-                ]);
+            $agency_id = $agency_code =  NULL;
+            if ($row['agency_code']) {
+                $agency = Agency::where('code', $row['agency_code'])->first();
+                if ($agency) {
+                    $agency_id = $agency->id;
+                    $agency_code = $agency->code;
+                } else {
+                    abort(403, 'Agency');
+                }
+            }
 
-                $agency_id = $agency->id;
+            $insurer_id = NULL;
+            if ($row['insurer_name']) {
+                $insurer = Insurance::where('name', $row['insurer_name'])->first();
+                if ($insurer) {
+                    $insurer_id = $insurer->id;
+                } else {
+                    abort(403, 'Insurer');
+                }
             }
 
             $cob_id = NULL;
@@ -74,6 +77,7 @@ class PolicyImport implements ToModel, WithHeadingRow
             if ($row['class_of_business']) {
                 $cob = BusinessClass::updateOrCreate(['class_name' => $row['class_of_business']], [
                     'class_name' => $row['class_of_business'],
+                    'department_id' => 0,
                 ]);
 
                 $cob_id = $cob->id;
@@ -83,80 +87,53 @@ class PolicyImport implements ToModel, WithHeadingRow
 
             $data = [
                 'policy_no' => $row['policy'],
-                // 'department' => $row['department'],
-                // 'other_lead' => $row['other_lead'],
-                'date_of_issuance' => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['date_of_issuance'])->format('Y-m-d'),
-                'policy_period_start' => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['policy_period_start'])->format('Y-m-d'),
-                'policy_period_end' => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['policy_period_end'])->format('Y-m-d'),
+                'date_of_issuance' => !empty($row['date_of_issuance']) ? Date::excelToDateTimeObject($row['date_of_issuance'])->format('Y-m-d') : null,
+                'policy_period_start' => !empty($row['policy_period_start']) ? Date::excelToDateTimeObject($row['policy_period_start'])->format('Y-m-d') : null,
+                'policy_period_end' => !empty($row['policy_period_end']) ? Date::excelToDateTimeObject($row['policy_period_end'])->format('Y-m-d') : null,
                 'original_endormsent' => $original_endorsement,
                 'original_endorsement_other_value' => $original_endorsement_other_value,
-                // 'insu_type' => $insu_type,
                 'leader_policy_no' => $row['leader_policy_no'],
                 'sum_insured' => $row['sum_insured'],
                 'gross_premium' => $row['gross_premium'],
                 'net_premium' => $row['net_premium'],
                 'rate' => $row['rate'],
+                'agency' => $row['agency'],
             ];
 
             if (count($data) > 0 && !empty($data['policy_no'])) {
-                // $validator = Validator::make($data, [
-                //     'policy' => 'required',
-                //     // 'department' => 'required',
-                //     'client' => 'required',
-                //     'agency' => 'required',
-
-                //     'date_of_issuance' => 'required|date',
-                //     'policy_period_start' => 'required|date',
-                //     'policy_period_end' => 'required|date',
-
-                //     'originalendormsent' => 'required',
-                //     // 'insu_type' => 'required',
-                //     'leader_policy_no' => 'required',
-                //     'class_of_business' => 'required',
-
-                //     'sum_insured' => 'required',
-                //     'gross_premium' => 'required',
-                //     'net_premium' => 'required',
-                //     'rate' => 'required',
-                // ]);
-
-                // if ($validator->fails()) {
-                //     $this->errors[] = $validator->errors()->all();
-                //     dd($this->errors);
-                //     // return null;
-                // }
 
                 $policy = Policy::updateOrCreate(['policy_no' => $data['policy_no']], [
                     'policy_no' => $data['policy_no'],
                     'department_id' => $department_id,
                     'client_id' => $client_id,
-                    'agency_id' => $agency_id,
-                    'class_of_business_id' => $cob_id,
+                    'insurance_id' => $insurer_id,
 
+                    'agency_id' => $agency_id,
+                    'agency_code' => $agency_code,
+                    'child_agency_name' => $data['agency'],
+
+                    'class_of_business_id' => $cob_id,
                     'date_of_insurance' => $data['date_of_issuance'],
                     'policy_start_period' => $data['policy_period_start'],
                     'policy_end_period' => $data['policy_period_end'],
-
                     'orignal_endorsment' => $data['original_endormsent'],
                     'original_endorsement_other_value' => $data['original_endorsement_other_value'],
-
                     'leader_policy_number' => $data['leader_policy_no'],
-
                     'sum_insured' => $data['sum_insured'],
                     'gross_premium' => $data['gross_premium'],
                     'net_premium' => $data['net_premium'],
                     'percentage' => $data['rate'],
 
-                    // 'other_lead' => $data['other_lead'],
-                    // 'lead_type' => $data['insu_type'],
-
+                    'user_id' => auth()->id(),
+                    'excel_import' => true,
+                    'excel_import_at' => Carbon::now(),
                 ]);
 
                 return $policy;
             }
         } catch (\Throwable $th) {
             //throw $th;
-            abort(403, $th->getMessage());
+            abort(403, $th->getMessage() . " ERROR on EXCEL ROW #" . $this->currentRow + 1);
         }
     }
 }
