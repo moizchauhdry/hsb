@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
+use App\Traits\FormatDatesTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Policy extends Model
 {
-    use HasFactory;
+    use HasFactory, FormatDatesTrait;
 
     protected $guarded = [];
+    protected $dates = ['date_of_insurance', 'policy_start_period', 'policy_end_period','excel_import_at'];
 
     public function client()
     {
@@ -18,12 +20,12 @@ class Policy extends Model
 
     public function insurance()
     {
-        return $this->belongsTo(Insurance::class,'insurance_id','id');
+        return $this->belongsTo(Insurance::class, 'insurance_id', 'id');
     }
 
     public function insurer()
     {
-        return $this->belongsTo(Insurance::class,'insurance_id','id');
+        return $this->belongsTo(Insurance::class, 'insurance_id', 'id');
     }
 
     public function agency()
@@ -33,7 +35,7 @@ class Policy extends Model
 
     public function businessClass()
     {
-        return $this->belongsTo(BusinessClass::class,'class_of_business_id','id');
+        return $this->belongsTo(BusinessClass::class, 'class_of_business_id', 'id');
     }
     public function user()
     {
@@ -42,6 +44,6 @@ class Policy extends Model
 
     public function policyInstallment()
     {
-        return $this->hasMany(PolicyInstallmentPlan::class,'policy_id','id');
+        return $this->hasMany(PolicyInstallmentPlan::class, 'policy_id', 'id');
     }
 }

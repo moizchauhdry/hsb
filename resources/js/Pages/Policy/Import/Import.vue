@@ -1,7 +1,7 @@
 <script setup>
 import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
 import InputError from "@/Components/InputError.vue";
-import { ref,watch  } from "vue";
+import { ref, watch } from "vue";
 import axios from 'axios';
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 
@@ -18,7 +18,7 @@ const handleFileChange = (event) => {
 
 const form = useForm({
     file: null,
-    type: '',
+    type: 1,
 });
 
 const create = () => {
@@ -36,7 +36,7 @@ const submit = () => {
                 form.errors.file = errors.errors.file[0];
             }
         },
-        onFinish: () => {},
+        onFinish: () => { },
     });
 };
 
@@ -63,19 +63,19 @@ const close = () => {
             v-if="modal">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
+                    
                     <form @submit.prevent="edit_mode ? update() : submit()" enctype="multipart/form-data">
                         <div class="modal-header">
                             <h5 class="modal-title">Import</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close" @click="close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                                @click="close"></button>
                         </div>
                         <div class="modal-body">
                             <div class="row g-3">
                                 <div class="col-md-4">
                                     <label for="input21" class="form-label">Type</label>
 
-                                    <select id="input21" class="form-select"
-                                        v-model="form.type">
+                                    <select id="input21" class="form-select" v-model="form.type">
                                         <option value="1">Policy Import</option>
                                         <option value="2">Client Import</option>
                                     </select>
@@ -83,17 +83,20 @@ const close = () => {
                                 </div>
                                 <div class="col-md-12">
                                     <label for="input13" class="form-label">Import File</label>
-                                    <input type="file" class="form-control" id="input13" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" @change="handleFileChange">
+                                    <input type="file" class="form-control" id="input13"
+                                        accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                                        @change="handleFileChange">
                                     <InputError :message="form.errors.file" />
                                 </div>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary btn-sm"
-                                data-bs-dismiss="modal" @click="close">Close</button>
+                            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal"
+                                @click="close">Close</button>
 
-                            <button type="submit" class="btn btn-primary btn-sm">
-                                {{ edit_mode ? 'Save & Update' : 'Import' }}</button>
+                            <button type="submit" class="btn btn-primary btn-sm" :disabled="form.processing">
+                                {{ form.processing ? 'Please wait .. importing data' : 'Import' }}
+                            </button>
                         </div>
                     </form>
                 </div>
