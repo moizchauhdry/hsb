@@ -215,8 +215,11 @@ class PolicyController extends Controller
                 'takeful_type' => $policy->takeful_type,
                 'lead_type' => $policy->lead_type,
                 'policy_no' => $policy->policy_no,
+                
                 'agency_id' => $policy->agency ? $policy->agency->name : null,
                 'agency_code' => $policy->agency ? $policy->agency->code : null,
+                'child_agency_name' => $policy->child_agency_name,
+
                 'class_of_business_id' => $policy->businessClass ? $policy->businessClass->id : null,
                 'class_of_business_name' => $policy->businessClass ? $policy->businessClass->class_name : null,
                 'orignal_endorsment' => $policy->orignal_endorsment,

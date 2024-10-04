@@ -204,10 +204,14 @@ const error = () => {
                                 </tr>
                                 <tr>
                                     <th>Policy No.</th>
-                                    <td>{{ policy.policy_no }}</td>
-
-                                    <th>Agency / Code</th>
+                                    <td colspan="3">{{ policy.policy_no }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Main Agency / Code</th>
                                     <td>{{ policy.agency_id }} / {{ policy.agency_code }}</td>
+
+                                    <th>Child Agency</th>
+                                    <td>{{ policy.child_agency_name }}</td>
                                 </tr>
                                 <tr>
 
