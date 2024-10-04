@@ -90,7 +90,7 @@
   },
   "public/images/logo-icon.png": {
     "file": "assets/logo-icon-beda6a32.png",
-    "src": "resources/images/logo-icon.png"
+    "src": "public/images/logo-icon.png"
   },
   "resources/flags/1x1/ad.svg": {
     "file": "assets/ad-bce88c6d.svg",
@@ -2226,7 +2226,7 @@
   },
   "resources/images/logo-icon.png": {
     "file": "assets/logo-icon-beda6a32.png",
-    "src": "resources/images/logo-icon.png"
+    "src": "public/images/logo-icon.png"
   },
   "resources/js/Pages/Agency/Index.vue": {
     "css": [
