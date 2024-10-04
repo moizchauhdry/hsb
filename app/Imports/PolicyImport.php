@@ -77,7 +77,7 @@ class PolicyImport implements ToModel, WithHeadingRow
             if ($row['class_of_business']) {
                 $cob = BusinessClass::updateOrCreate(['class_name' => $row['class_of_business']], [
                     'class_name' => $row['class_of_business'],
-                    // 'department_id' => 0,
+                    'department_id' => 0,
                 ]);
 
                 $cob_id = $cob->id;
