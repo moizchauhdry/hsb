@@ -13,7 +13,7 @@ class PermissionSeeder extends Seeder
      * Run the database seeds.
      */
     public function run(): void
-    {        
+    {
         $permissions = [
 
             // Basic
@@ -33,6 +33,10 @@ class PermissionSeeder extends Seeder
             'policy-list',
             'policy-create',
             'policy-update',
+
+            // Report
+            ['name' => 'report', 'level' => 1],
+            ['name' => 'report_sale', 'level' => 2],
 
         ];
 

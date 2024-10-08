@@ -23,6 +23,7 @@
         "@tiptap/vue-3": "^2.2.4",
         "@vueform/multiselect": "^2.6.1",
         "@vuepic/vue-datepicker": "^4.2.2",
+        "moment": "^2.30.1",
         "sweetalert2": "^11.12.0"
     }
 }

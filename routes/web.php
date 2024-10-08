@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\AgencyController;
 use App\Http\Controllers\Admin\PolicyController;
 use App\Http\Controllers\Admin\InsuranceController;
 use App\Http\Controllers\Admin\BusinessClassController;
+use App\Http\Controllers\ReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -82,6 +83,13 @@ Route::middleware('auth')->group(function () {
         Route::post('/create', [RoleController::class, 'create'])->name('role.create')->middleware('permission:role-create');
         Route::post('/update', [RoleController::class, 'update'])->name('role.update')->middleware('permission:role-update');
     });
+
+    Route::prefix('reports')->group(function () {
+        Route::any('/sale/index', [ReportController::class, 'saleReport'])->name('report.sale.index');
+        Route::post('/sale/update', [ReportController::class, 'updateSaleReport'])->name('report.sale.update');
+        Route::get('/sale/export', [ReportController::class, 'exportSaleReport'])->name('report.sale.export');
+    });
 });
+
 
 require __DIR__ . '/auth.php';
