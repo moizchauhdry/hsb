@@ -3,7 +3,7 @@
  * Copyright 2018 - {year} Johann-S <johann.servoire@gmail.com>
  * Licensed under MIT (https://github.com/Johann-S/bs-stepper/blob/master/LICENSE)
  */
-
+/* 
 .bs-stepper .step-trigger {
   display: flex;
   flex-wrap: nowrap;
@@ -20,7 +20,7 @@
   border: none;
   border-radius: .25rem;
   transition: background-color .15s ease-out, color .15s ease-out;
-}
+} */
 
 .bs-stepper .step-trigger:not(:disabled):not(.disabled) {
   cursor: pointer;

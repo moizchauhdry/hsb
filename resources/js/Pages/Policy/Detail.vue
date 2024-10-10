@@ -160,9 +160,15 @@ const error = () => {
                         <AdditionalNotes v-bind="$props"></AdditionalNotes>
                         <Claim v-bind="$props"></Claim>
 
+                        <Link :href="route('policy.index',)" class="ml-5">
+                        <SecondaryButton>Back</SecondaryButton>
+                        </Link>
+
+
                         <ClaimNote v-bind="$props" ref="claim_note_ref"></ClaimNote>
                         <ClaimUpload v-bind="$props" ref="claim_upload_ref"></ClaimUpload>
                         <ClaimEdit v-bind="$props" ref="claim_edit_ref"></ClaimEdit>
+
                     </div>
                 </div>
 
@@ -172,7 +178,7 @@ const error = () => {
                         <table class="table table-bordered">
                             <tbody>
                                 <tr>
-                                    <th colspan="4" class="text-center bg-primary text-white text-lg">
+                                    <th colspan="4" class="bg-primary text-white text-lg">
                                         Policy Detail
                                     </th>
                                 </tr>
@@ -260,7 +266,7 @@ const error = () => {
                         <table class="table table-bordered">
                             <tbody>
                                 <tr>
-                                    <th colspan="4" class="text-center bg-primary text-white text-lg">
+                                    <th colspan="4" class="bg-primary text-white text-lg">
                                         Policy Amount
                                     </th>
                                 </tr>
@@ -275,12 +281,15 @@ const error = () => {
                                     <th>Net Premium </th>
                                     <td> PKR {{ policy.net_premium }} </td>
 
-                                    <th>Percentage</th>
+                                    <th>Rate Percentage</th>
                                     <td> {{ policy.percentage }} % </td>
                                 </tr>
                                 <tr>
-                                    <th>HSB profit</th>
-                                    <td> PKR {{ policy.hsb_profit }}</td>
+                                    <th>Gross Premium Received</th>
+                                    <td> PKR {{ policy.gross_premium_received }} </td>
+
+                                    <th>Gross Premium Outstanding</th>
+                                    <td> PKR {{ policy.gross_premium_outstanding }} </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -288,7 +297,35 @@ const error = () => {
                         <table class="table table-bordered">
                             <tbody>
                                 <tr>
-                                    <th colspan="4" class="text-center bg-primary text-white text-lg">
+                                    <th colspan="4" class="bg-primary text-white text-lg">
+                                        Brokerage Amount
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th>Brokerage/Commissioned Amount</th>
+                                    <td>PKR {{ policy.brokerage_amount }} </td>
+
+                                    <th>Brokerage Percentage </th>
+                                    <td>PKR {{ policy.brokerage_percentage }} % </td>
+                                </tr>
+                                <tr>
+                                    <th>Brokerage Received Amount</th>
+                                    <td>PKR {{ policy.brokerage_received_amount }} </td>
+
+                                    <th>Brokerage Paid Date</th>
+                                    <td>{{ policy.brokerage_paid_date }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Brokerage Status</th>
+                                    <td>{{ policy.brokerage_status }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th colspan="4" class="bg-primary text-white text-lg">
                                         Policy Notes
                                     </th>
                                 </tr>
@@ -308,7 +345,7 @@ const error = () => {
                         <table class="table table-bordered">
                             <tbody>
                                 <tr>
-                                    <th colspan="5" class="text-center bg-primary text-white text-lg">
+                                    <th colspan="5" class="bg-primary text-white text-lg">
                                         Policy Claims
                                     </th>
                                 </tr>
@@ -354,7 +391,7 @@ const error = () => {
                         <table class="table table-bordered">
                             <tbody>
                                 <tr>
-                                    <th colspan="5" class="text-center bg-primary text-white text-lg">
+                                    <th colspan="5" class="bg-primary text-white text-lg">
                                         Policy Uploads
                                     </th>
                                 </tr>

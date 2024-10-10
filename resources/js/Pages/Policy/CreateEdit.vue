@@ -673,7 +673,7 @@ watch(() => form.gross_premium, calculatePremium);
     </div>
 </template>
 
-<style>
+<!-- <style>
 .bs-stepper-circle-active {
     width: 2.7rem;
     height: 2.7rem;
@@ -744,4 +744,4 @@ h5.w-auto.title {
     padding: 5px;
     font-size: 18px;
 }
-</style>
+</style> -->
