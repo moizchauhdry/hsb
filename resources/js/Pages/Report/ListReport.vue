@@ -2,11 +2,12 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, Link, usePage, useForm } from "@inertiajs/vue3";
 import { ref } from "vue";
-import SaleReportFilter from "@/Pages/Report/SaleReportFilter.vue";
+import ReportFilter from "@/Pages/Report/ReportFilter.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 // const role = usePage().props.auth.user.roles[0];
 // const permission = usePage().props.can;
+const slug = usePage().props.slug;
 
 defineProps({
     policies: Array,
@@ -40,7 +41,7 @@ const format_number = (number) => {
                                 <li class="breadcrumb-item"><a href="javascript:;">
                                         <i class="bx bx-home-alt"></i></a>
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Sales Report</li>
+                                <li class="breadcrumb-item active text-capitalize" aria-current="page">{{slug}} Report</li>
                             </ol>
                         </nav>
                     </div>
@@ -49,7 +50,7 @@ const format_number = (number) => {
                     </div>
 
                     <div class="ms-auto">
-                        <SaleReportFilter v-bind="$props"></SaleReportFilter>
+                        <ReportFilter v-bind="$props"></ReportFilter>
                     </div>
                 </div>
 
@@ -122,12 +123,12 @@ const format_number = (number) => {
                                         <th class="px-2">Insurer Name</th>
                                         <th class="px-2">Agency</th>
                                         <th class="px-2">Class of Business</th>
-                                        <th class="px-2">Sum Insured</th>
-                                        <th class="px-2">Gross Premium</th>
-                                        <th class="px-2">Net Premium</th>
                                         <th class="px-2">Policy Start</th>
                                         <th class="px-2">Policy End</th>
                                         <th class="px-2">Insurance Date</th>
+                                        <th class="px-2">Sum Insured</th>
+                                        <th class="px-2">Gross Premium</th>
+                                        <th class="px-2">Net Premium</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -141,12 +142,12 @@ const format_number = (number) => {
                                             <td class="px-2">{{ policy?.data?.insurance?.name }}</td>
                                             <td class="px-2">{{ policy?.data?.agency?.name }}</td>
                                             <td class="px-2">{{ policy?.data?.business_class?.class_name }}</td>
+                                            <td :class="{ 'bg-info': filter['date_type'] === 'policy_start_period' }" class="px-2">{{ policy?.data?.policy_start_period }}</td>
+                                            <td :class="{ 'bg-info': filter['date_type'] === 'policy_end_period' }" class="px-2">{{ policy?.data?.policy_end_period }}</td>
+                                            <td :class="{ 'bg-info': filter['date_type'] === 'date_of_insurance' }" class="px-2">{{ policy?.data?.date_of_insurance }}</td>
                                             <td class="px-2">{{ policy?.data?.sum_insured }}</td>
                                             <td class="px-2">{{ policy?.data?.gross_premium }}</td>
                                             <td class="px-2">{{ policy?.data?.net_premium }}</td>
-                                            <td :class="{'bg-info': filter['date_type'] === 'policy_start_period'}" class="px-2">{{ policy?.data?.policy_start_period }}</td>
-                                            <td :class="{'bg-info': filter['date_type'] === 'policy_end_period'}" class="px-2">{{ policy?.data?.policy_end_period }}</td>
-                                            <td :class="{'bg-info': filter['date_type'] === 'date_of_insurance'}" class="px-2">{{ policy?.data?.date_of_insurance }}</td>
                                         </tr>
                                     </template>
 
@@ -155,7 +156,7 @@ const format_number = (number) => {
                                     </tr>
 
                                     <tr>
-                                        <th colspan="7" class="text-right">Grand Total</th>
+                                        <th colspan="10" class="text-right">Grand Total</th>
                                         <th>{{ format_number(grand_total.sum_insured) }}</th>
                                         <th>{{ format_number(grand_total.gross_premium) }}</th>
                                         <th>{{ format_number(grand_total.net_premium) }}</th>

@@ -47,6 +47,9 @@ watch(
         else if (route().current('policy.index') || route().current('policy.detail')) {
             isSubmenuVisible.value.policy = true;
         }
+        else if (route().current('report.index')) {
+            isSubmenuVisible.value.report = true;
+        }
     }
 );
 </script>
@@ -149,15 +152,18 @@ watch(
                 </ul>
             </li>
 
-            <li :class="{ 'mm-active': route().current('report.sale.index') }">
-                <a href="javascript:;" class="has-arrow" @click="toggleList('reports')">
+            <li :class="{ 'mm-active': route().current('report.index') }">
+                <a href="javascript:;" class="has-arrow" @click="toggleList('report')">
                     <div class="parent-icon"><i class="bx bx-box"></i>
                     </div>
                     <div class="menu-title">Manage Reports</div>
                 </a>
-                <ul :class="{ 'hidden': !isSubmenuVisible.reports }">
-                    <li :class="{ 'mm-active': route().current('report.sale.index') }">
-                        <Link :href="route('report.sale.index')"><i class='bx bx-radio-circle'></i>Sale Report</Link>
+                <ul :class="{ 'hidden': !isSubmenuVisible.report }">
+                    <li :class="{ 'mm-active': route().current('report.index','sales') }">
+                        <Link :href="route('report.index','sales')"><i class='bx bx-radio-circle'></i>Sales Report</Link>
+                    </li>
+                    <li :class="{ 'mm-active': route().current('report.index','renewal') }">
+                        <Link :href="route('report.index','renewal')"><i class='bx bx-radio-circle'></i>Renewal Report</Link>
                     </li>
                 </ul>
             </li>

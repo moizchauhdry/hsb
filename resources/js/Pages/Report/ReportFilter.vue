@@ -12,6 +12,7 @@ import "@vuepic/vue-datepicker/dist/main.css";
 import { onMounted } from "vue";
 import moment from 'moment';
 
+
 defineProps({
     data: Array
 });
@@ -19,6 +20,8 @@ defineProps({
 const modal = ref(false);
 const edit = ref(false);
 const data = usePage().props.data;
+const slug = usePage().props.slug;
+const filter = usePage().props.filter;
 
 var months = [
     { id: 1, name: "January" },
@@ -63,14 +66,19 @@ const form = useForm({
 const create = () => {
     modal.value = true;
     edit.value = false;
+
+    form.month = filter.month;
+    form.year = filter.year;
+    form.date_type = "date_of_insurance";
+
     saved_filters = localStorage.getItem('filters');
+
     if (saved_filters) {
         saved_filters = JSON.parse(saved_filters);
         form.date_type = saved_filters.date_type
         form.month = saved_filters.month
         form.year = saved_filters.year
         form.policy_type = saved_filters.policy_type
-
         form.client = saved_filters.client
         form.agency = saved_filters.agency
         form.cob = saved_filters.cob
@@ -92,7 +100,7 @@ const submit = () => {
     };
 
     const queryParams = new URLSearchParams(filters).toString();
-    const urlWithFilters = `${route("report.sale.index")}?${queryParams}`;
+    const urlWithFilters = `${route("report.index", slug)}?${queryParams}`;
 
     form.post(urlWithFilters, {
         preserveScroll: true,
@@ -177,7 +185,7 @@ const format_date = (date) => {
                             </select>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-6" v-if="slug == 'sales'">
                             <InputLabel for="" value="Policy Type" class="mb-1" />
                             <select v-model="form.policy_type" class="form-control">
                                 <option value="">All Types</option>

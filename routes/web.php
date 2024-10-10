@@ -85,9 +85,10 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::prefix('reports')->group(function () {
-        Route::any('/sale/index', [ReportController::class, 'saleReport'])->name('report.sale.index');
-        Route::post('/sale/update', [ReportController::class, 'updateSaleReport'])->name('report.sale.update');
-        Route::get('/sale/export', [ReportController::class, 'exportSaleReport'])->name('report.sale.export');
+        Route::any('/list/{slug}', [ReportController::class, 'index'])->name('report.index');
+        
+        // Route::post('/sale/update', [ReportController::class, 'updateSaleReport'])->name('report.sale.update');
+        // Route::get('/sale/export', [ReportController::class, 'exportSaleReport'])->name('report.sale.export');
     });
 });
 

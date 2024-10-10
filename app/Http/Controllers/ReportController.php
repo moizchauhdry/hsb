@@ -13,7 +13,7 @@ use Inertia\Inertia;
 
 class ReportController extends Controller
 {
-    public function saleReport(Request $request)
+    public function index(Request $request, $slug)
     {
         $current_month = $request->month ?? Carbon::now()->format('m');
         $current_year = $request->year ?? Carbon::now()->format('Y');
@@ -34,7 +34,7 @@ class ReportController extends Controller
         session(['filter' => $filter]);
 
         $query = Policy::with(['client', 'insurance', 'agency', 'businessClass']);
-        
+
         $query->when($filter['date_type'] == 'date_of_insurance', function ($q) use ($filter) {
             $q->whereYear('date_of_insurance', $filter['year']);
             $q->whereMonth('date_of_insurance', $filter['month']);
@@ -55,9 +55,13 @@ class ReportController extends Controller
             $q->whereMonth('created_at', $filter['month']);
         });
 
-        $query->when($filter['policy_type'], function ($q) use ($filter) {
-            $q->where('orignal_endorsment', $filter['policy_type']);
-        });
+        if ($slug == 'sales') {
+            $query->when($filter['policy_type'], function ($q) use ($filter) {
+                $q->where('orignal_endorsment', $filter['policy_type']);
+            });
+        } else if ($slug == 'renewal') {
+            $query->where('orignal_endorsment', 'renewal');
+        }
 
         $query->when($filter['client'], function ($q) use ($filter) {
             $q->where('client_id', $filter['client']);
@@ -101,11 +105,12 @@ class ReportController extends Controller
             'cobs' => $cobs,
         ];
 
-        return Inertia::render('Report/SaleReport', [
+        return Inertia::render('Report/ListReport', [
             'policies' => $policies,
             'data' => $data,
             'filter' => $filter,
             'grand_total' => $grand_total,
+            'slug' => $slug,
         ]);
     }
 }
