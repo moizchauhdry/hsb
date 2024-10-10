@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ReportExport;
 use App\Models\Agency;
 use App\Models\BusinessClass;
 use App\Models\Insurance;
@@ -10,6 +11,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
 {
@@ -33,54 +35,10 @@ class ReportController extends Controller
 
         session(['filter' => $filter]);
 
-        $query = Policy::with(['client', 'insurance', 'agency', 'businessClass']);
-
-        $query->when($filter['date_type'] == 'date_of_insurance', function ($q) use ($filter) {
-            $q->whereYear('date_of_insurance', $filter['year']);
-            $q->whereMonth('date_of_insurance', $filter['month']);
-        });
-
-        $query->when($filter['date_type'] == 'policy_start_period', function ($q) use ($filter) {
-            $q->whereYear('policy_start_period', $filter['year']);
-            $q->whereMonth('policy_start_period', $filter['month']);
-        });
-
-        $query->when($filter['date_type'] == 'policy_end_period', function ($q) use ($filter) {
-            $q->whereYear('policy_end_period', $filter['year']);
-            $q->whereMonth('policy_end_period', $filter['month']);
-        });
-
-        $query->when($filter['date_type'] == 'created_at', function ($q) use ($filter) {
-            $q->whereYear('created_at', $filter['year']);
-            $q->whereMonth('created_at', $filter['month']);
-        });
-
-        if ($slug == 'sales') {
-            $query->when($filter['policy_type'], function ($q) use ($filter) {
-                $q->where('orignal_endorsment', $filter['policy_type']);
-            });
-        } else if ($slug == 'renewal') {
-            $query->where('orignal_endorsment', 'renewal');
-        }
-
-        $query->when($filter['client'], function ($q) use ($filter) {
-            $q->where('client_id', $filter['client']);
-        });
-
-        $query->when($filter['agency'], function ($q) use ($filter) {
-            $q->where('agency_id', $filter['agency']);
-        });
-
-        $query->when($filter['insurer'], function ($q) use ($filter) {
-            $q->where('insurance_id', $filter['insurer']);
-        });
-
-        $query->when($filter['cob'], function ($q) use ($filter) {
-            $q->where('class_of_business_id', $filter['cob']);
-        });
+        $query = Policy::policiesList($filter, $slug);
 
         $policies = $query
-            ->orderBy('id', 'desc')
+            
             ->paginate(10000)
             ->withQueryString()
             ->through(fn($policy) => [
@@ -112,5 +70,11 @@ class ReportController extends Controller
             'grand_total' => $grand_total,
             'slug' => $slug,
         ]);
+    }
+
+    public function export($slug)
+    {
+        $filter = session('filter', []);
+        return Excel::download(new ReportExport($filter, $slug), 'data.xlsx');
     }
 }

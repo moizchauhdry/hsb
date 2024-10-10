@@ -4,6 +4,7 @@ import { Head, Link, usePage, useForm } from "@inertiajs/vue3";
 import { ref } from "vue";
 import ReportFilter from "@/Pages/Report/ReportFilter.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import SuccessButton from "@/Components/SuccessButton.vue";
 
 // const role = usePage().props.auth.user.roles[0];
 // const permission = usePage().props.can;
@@ -21,6 +22,10 @@ const format_number = (number) => {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
     }).format(number);
+};
+
+const exportExcel = () => {
+    window.location.href = route('report.export',slug);
 };
 </script>
 
@@ -51,6 +56,7 @@ const format_number = (number) => {
 
                     <div class="ms-auto">
                         <ReportFilter v-bind="$props"></ReportFilter>
+                        <SuccessButton @click="exportExcel">Excel Export</SuccessButton>
                     </div>
                 </div>
 

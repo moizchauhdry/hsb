@@ -72,10 +72,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/claim/upload', [PolicyController::class, 'claimUpload'])->name('policy.claimUpload');
         Route::post('/claim/note', [PolicyController::class, 'claimNote'])->name('policy.claimNote');
         Route::get('/get/claim/note/{id}', [PolicyController::class, 'getClaimNote'])->name('policy.getClaimNote');
-        Route::get('/getDepartmentByBusinessClass/{id}',[PolicyController::class,'getDepartmentByBusinessClass'])->name('policy.getDepartmentByBusinessClass');
-        Route::get('/getBusinessClassByPercent/{id}',[PolicyController::class,'getBusinessClassByPercent'])->name('policy.getBusinessClassByPercent');
-        Route::post('/installment-plan',[PolicyController::class,'installmentPlan'])->name('policy.installmentPlan');
-        Route::post('/import',[PolicyController::class,'importData'])->name('policy.import');
+        Route::get('/getDepartmentByBusinessClass/{id}', [PolicyController::class, 'getDepartmentByBusinessClass'])->name('policy.getDepartmentByBusinessClass');
+        Route::get('/getBusinessClassByPercent/{id}', [PolicyController::class, 'getBusinessClassByPercent'])->name('policy.getBusinessClassByPercent');
+        Route::post('/installment-plan', [PolicyController::class, 'installmentPlan'])->name('policy.installmentPlan');
+        Route::post('/import', [PolicyController::class, 'importData'])->name('policy.import');
     });
 
     Route::prefix('roles')->group(function () {
@@ -86,9 +86,7 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('reports')->group(function () {
         Route::any('/list/{slug}', [ReportController::class, 'index'])->name('report.index');
-        
-        // Route::post('/sale/update', [ReportController::class, 'updateSaleReport'])->name('report.sale.update');
-        // Route::get('/sale/export', [ReportController::class, 'exportSaleReport'])->name('report.sale.export');
+        Route::any('/export/{slug}', [ReportController::class, 'export'])->name('report.export');
     });
 });
 
