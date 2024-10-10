@@ -21,22 +21,22 @@ class PolicyImport implements ToModel, WithHeadingRow
 
     public function model(array $row)
     {
-        // dd($row);
-        
         try {
             $this->currentRow++; // Increment the row number each time
 
-            $original_endorsement_other_value = '';
+            $original_endorsement_other_value = $original_endorsement = NULL;
 
-            if ($row['originalendormsent'] == "RENEWAL") {
-                $original_endorsement = 'renewal';
-            } elseif ($row['originalendormsent'] == "NEW") {
-                $original_endorsement = 'new';
-            } elseif ($row['originalendormsent'] == "ENDORSEMENT") {
-                $original_endorsement = 'endorsment';
-            } else {
-                $original_endorsement = 'others';
-                $original_endorsement_other_value = $row['originalendormsent'];
+            if (isset($row['originalendormsent'])) {
+                if ($row['originalendormsent'] == "RENEWAL") {
+                    $original_endorsement = 'renewal';
+                } elseif ($row['originalendormsent'] == "NEW") {
+                    $original_endorsement = 'new';
+                } elseif ($row['originalendormsent'] == "ENDORSEMENT") {
+                    $original_endorsement = 'endorsment';
+                } else {
+                    $original_endorsement = 'others';
+                    $original_endorsement_other_value = $row['originalendormsent'];
+                }
             }
 
             $client_id = NULL;
@@ -58,7 +58,7 @@ class PolicyImport implements ToModel, WithHeadingRow
                     $agency_id = $agency->id;
                     $agency_code = $agency->code;
                 } else {
-                    abort(403, 'Agency');
+                    // abort(403, 'Agency');
                 }
             }
 
@@ -68,7 +68,7 @@ class PolicyImport implements ToModel, WithHeadingRow
                 if ($insurer) {
                     $insurer_id = $insurer->id;
                 } else {
-                    abort(403, 'Insurer');
+                    // abort(403, 'Insurer');
                 }
             }
 
@@ -84,45 +84,80 @@ class PolicyImport implements ToModel, WithHeadingRow
                 $department_id = $cob->department_id;
             }
 
+            $gross_premium = 0;
+            $gross_premium_received = 0;
+            $gross_premium_outstanding = 0;
 
-            $data = [
-                'policy_no' => $row['policy'],
-                'date_of_issuance' => !empty($row['date_of_issuance']) ? Date::excelToDateTimeObject($row['date_of_issuance'])->format('Y-m-d') : null,
-                'policy_period_start' => !empty($row['policy_period_start']) ? Date::excelToDateTimeObject($row['policy_period_start'])->format('Y-m-d') : null,
-                'policy_period_end' => !empty($row['policy_period_end']) ? Date::excelToDateTimeObject($row['policy_period_end'])->format('Y-m-d') : null,
-                'original_endormsent' => $original_endorsement,
-                'original_endorsement_other_value' => $original_endorsement_other_value,
-                'leader_policy_no' => $row['leader_policy_no'],
-                'sum_insured' => $row['sum_insured'],
-                'gross_premium' => $row['gross_premium'],
-                'net_premium' => $row['net_premium'],
-                'rate' => $row['rate'],
-                'agency' => $row['agency'],
-            ];
+            if (isset($row['gross_premium']) && is_numeric($row['gross_premium'])) {
+                $gross_premium = $row['gross_premium'];
+            }
 
-            if (count($data) > 0 && !empty($data['policy_no'])) {
+            if (isset($row['gross_premium_received']) && is_numeric($row['gross_premium_received'])) {
+                $gross_premium_received = $row['gross_premium_received'];
+            }
 
-                $policy = Policy::updateOrCreate(['policy_no' => $data['policy_no']], [
-                    'policy_no' => $data['policy_no'],
+            $gross_premium_outstanding = $gross_premium - $gross_premium_received;
+
+            $brokerage_amount = 0;
+            $brokerage_percentage = 0;
+            $brokerage_received_amount = 0;
+            $brokerage_status = 0;
+            $balance_amount = 0;
+            $brokerage_paid_date = NULL;
+
+            if (isset($row['brokerage_amount']) && is_numeric($row['brokerage_amount'])) {
+                $brokerage_amount = $row['brokerage_amount'];
+            }
+
+            if (isset($row['brokerage_percentage']) && is_numeric($row['brokerage_percentage'])) {
+                $brokerage_percentage = $row['brokerage_percentage'];
+            }
+
+            if (isset($row['brokerage_received_amount']) && is_numeric($row['brokerage_received_amount'])) {
+                $brokerage_received_amount = $row['brokerage_received_amount'];
+            }
+
+            if (isset($row['brokerage_paid_date'])) {
+                $brokerage_paid_date = !empty($row['brokerage_paid_date']) ? Date::excelToDateTimeObject($row['brokerage_paid_date'])->format('Y-m-d') : null;
+            }
+
+            if (isset($row['brokerage_status'])) {
+                $brokerage_status = $row['brokerage_status'];
+            }
+
+            $balance_amount = $brokerage_amount - $brokerage_received_amount;
+
+            if (!empty($data['policy_no'])) {
+                $policy = Policy::updateOrCreate(['policy_no' => $row['policy_no']], [
+                    'policy_no' => $row['policy_no'],
                     'department_id' => $department_id,
                     'client_id' => $client_id,
                     'insurance_id' => $insurer_id,
-
                     'agency_id' => $agency_id,
                     'agency_code' => $agency_code,
-                    'child_agency_name' => $data['agency'],
-
+                    'child_agency_name' => $row['agency'],
                     'class_of_business_id' => $cob_id,
-                    'date_of_insurance' => $data['date_of_issuance'],
-                    'policy_start_period' => $data['policy_period_start'],
-                    'policy_end_period' => $data['policy_period_end'],
-                    'orignal_endorsment' => $data['original_endormsent'],
-                    'original_endorsement_other_value' => $data['original_endorsement_other_value'],
-                    'leader_policy_number' => $data['leader_policy_no'],
-                    'sum_insured' => $data['sum_insured'],
-                    'gross_premium' => $data['gross_premium'],
-                    'net_premium' => $data['net_premium'],
-                    'percentage' => $data['rate'],
+                    'date_of_insurance' => !empty($row['date_of_issuance']) ? Date::excelToDateTimeObject($row['date_of_issuance'])->format('Y-m-d') : null,
+                    'policy_start_period' => !empty($row['policy_period_start']) ? Date::excelToDateTimeObject($row['policy_period_start'])->format('Y-m-d') : null,
+                    'policy_end_period' => !empty($row['policy_period_end']) ? Date::excelToDateTimeObject($row['policy_period_end'])->format('Y-m-d') : null,
+                    'orignal_endorsment' => $original_endorsement,
+                    'original_endorsement_other_value' => $original_endorsement_other_value,
+                    'leader_policy_number' => $row['leader_policy_no'],
+
+                    'gross_premium' => $gross_premium,
+                    'gross_premium_received' => $gross_premium_received,
+                    'gross_premium_outstanding' => $gross_premium_outstanding,
+
+                    'brokerage_amount' => $brokerage_amount,
+                    'brokerage_percentage' => $brokerage_percentage,
+                    'brokerage_received_amount' => $brokerage_received_amount,
+                    'brokerage_paid_date' => $brokerage_paid_date,
+                    'brokerage_status' => $brokerage_status,
+                    'balance_amount' => $balance_amount,
+
+                    'sum_insured' => $row['sum_insured'] ?? 0,
+                    'net_premium' => $row['net_premium'] ?? 0,
+                    'percentage' =>  $row['rate_percentage'] ?? 0,
 
                     'user_id' => auth()->id(),
                     'excel_import' => true,
@@ -131,6 +166,7 @@ class PolicyImport implements ToModel, WithHeadingRow
 
                 return $policy;
             }
+            
         } catch (\Throwable $th) {
             //throw $th;
             abort(403, $th->getMessage() . " ERROR on EXCEL ROW #" . $this->currentRow + 1);

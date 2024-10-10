@@ -38,8 +38,7 @@ class ReportController extends Controller
         $query = Policy::policiesList($filter, $slug);
 
         $policies = $query
-            
-            ->paginate(10000)
+            ->paginate(25)
             ->withQueryString()
             ->through(fn($policy) => [
                 'data' => $policy,

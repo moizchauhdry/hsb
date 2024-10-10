@@ -165,6 +165,18 @@ watch(
                     <li :class="{ 'mm-active': route().current('report.index','renewal') }">
                         <Link :href="route('report.index','renewal')"><i class='bx bx-radio-circle'></i>Renewal Report</Link>
                     </li>
+                    <!-- <li :class="{ 'mm-active': route().current('report.index','claims') }">
+                        <Link :href="route('report.index','claims')"><i class='bx bx-radio-circle'></i>Claims Report</Link>
+                    </li> -->
+                    <li :class="{ 'mm-active': route().current('report.index','outstanding') }">
+                        <Link :href="route('report.index','outstanding')"><i class='bx bx-radio-circle'></i>Outstanding Report</Link>
+                    </li>
+                    <li :class="{ 'mm-active': route().current('report.index','commission-recovery') }">
+                        <Link :href="route('report.index','commission-recovery')"><i class='bx bx-radio-circle'></i>Commission Recovery Report</Link>
+                    </li>
+                    <li :class="{ 'mm-active': route().current('report.index','commission-outstanding-recovery') }">
+                        <Link :href="route('report.index','commission-outstanding-recovery')"><i class='bx bx-radio-circle'></i>Commission Outstanding Recovery</Link>
+                    </li>
                 </ul>
             </li>
         </ul>
