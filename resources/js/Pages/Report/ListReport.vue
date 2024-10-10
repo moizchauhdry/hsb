@@ -138,11 +138,6 @@ const exportExcel = () => {
                                             <th class="px-2">Insurance Date</th>
                                         </template>
 
-                                        <template v-if="slug == 'outstanding'">
-                                            <th class="px-2">Gross Premium Received</th>
-                                            <th class="px-2">Gross Premium OutStanding</th>
-                                        </template>
-
                                         <template
                                             v-if="slug == 'commission-recovery' || slug == 'commission-outstanding-recovery'">
                                             <th class="px-2">Brokerage amount</th>
@@ -161,6 +156,12 @@ const exportExcel = () => {
 
                                         <th class="px-2">Sum Insured</th>
                                         <th class="px-2">Gross Premium</th>
+
+                                        <template v-if="slug == 'outstanding'">
+                                            <th class="px-2">Gross Premium Received</th>
+                                            <th class="px-2">Gross Premium OutStanding</th>
+                                        </template>
+
                                         <th class="px-2">Net Premium</th>
                                     </tr>
                                 </thead>
@@ -181,29 +182,30 @@ const exportExcel = () => {
                                                 <td :class="{ 'bg-info': filter['date_type'] === 'date_of_insurance' }" class="px-2">{{ policy?.data?.date_of_insurance }}</td>
                                             </template>
 
-                                            <template v-if="slug == 'outstanding'">
-                                                <td class="px-2">-</td>
-                                                <td class="px-2">-</td>
-                                            </template>
-
                                             <template
                                                 v-if="slug == 'commission-recovery' || slug == 'commission-outstanding-recovery'">
-                                                <td class="px-2">-</td>
-                                                <td class="px-2">-</td>
+                                                <td class="px-2">{{ policy?.data?.brokerage_amount }}</td>
+                                                <td class="px-2">{{ policy?.data?.brokerage_paid_date }}</td>
                                             </template>
 
                                             <template v-if="slug == 'commission-recovery'">
-                                                <td class="px-2">-</td>
-                                                <td class="px-2">-</td>
-                                                <td class="px-2">-</td>
+                                                <td class="px-2">{{ policy?.data?.brokerage_percentage }}</td>
+                                                <td class="px-2">{{ policy?.data?.brokerage_received_amount }}</td>
+                                                <td class="px-2">{{ policy?.data?.brokerage_status }}</td>
                                             </template>
 
                                             <template v-if="slug == 'commission-outstanding-recovery'">
-                                                <td class="px-2">-</td>
+                                                <td class="px-2">{{ policy?.data?.balance_amount }}</td>
                                             </template>
 
                                             <td class="px-2">{{ policy?.data?.sum_insured }}</td>
                                             <td class="px-2">{{ policy?.data?.gross_premium }}</td>
+                                            
+                                            <template v-if="slug == 'outstanding'">
+                                                <td class="px-2">{{ policy?.data?.gross_premium_received }}</td>
+                                                <td class="px-2">{{ policy?.data?.gross_premium_outstanding }}</td>
+                                            </template>
+                                            
                                             <td class="px-2">{{ policy?.data?.net_premium }}</td>
                                         </tr>
                                     </template>
