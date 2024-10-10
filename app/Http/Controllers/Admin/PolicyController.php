@@ -207,46 +207,7 @@ class PolicyController extends Controller
 
             $policyInstallment = $policy->policyInstallment;
 
-            $policyResponse = [
-                'id' => $policy->id,
-                'client_name' => $policy->client ? $policy->client->name : null,
-                'insurance_id' => $policy->insurance ? $policy->insurance->name : null,
-                'co_insurance' => $policy->co_insurance,
-                'takeful_type' => $policy->takeful_type,
-                'lead_type' => $policy->lead_type,
-                'policy_no' => $policy->policy_no,
-                
-                'agency_id' => $policy->agency ? $policy->agency->name : null,
-                'agency_code' => $policy->agency ? $policy->agency->code : null,
-                'child_agency_name' => $policy->child_agency_name,
-
-                'class_of_business_id' => $policy->businessClass ? $policy->businessClass->id : null,
-                'class_of_business_name' => $policy->businessClass ? $policy->businessClass->class_name : null,
-                'orignal_endorsment' => $policy->orignal_endorsment,
-                'date_of_insurance' => $policy->date_of_insurance,
-                'policy_start_period' => $policy->policy_start_period,
-                'policy_end_period' => $policy->policy_end_period,
-                'sum_insured' => number_format($policy->sum_insured),
-                'gross_premium' => number_format($policy->gross_premium),
-                'net_premium' => number_format($policy->net_premium),
-                'cover_note_no' => $policy->cover_note_no,
-                'installment_plan' => $policy->installment_plan,
-                'leader' => $policy->leader,
-                'leader_policy_no' => $policy->leader_policy_no,
-                'branch' => $policy->branch,
-                'brokerage_amount' => $policy->brokerage_amount,
-                'user_id' => $policy->user ? $policy->user->name : null,
-                'tax' => $policy->tax,
-                'percentage' => $policy->percentage,
-                'hsb_profit' => number_format($policy->hsb_profit),
-                'created_at' => $policy->created_at,
-                
-                'excel_import' => $policy->excel_import ? "YES" : "NO",
-                'excel_import_at' => $policy->excel_import_at,
-            ];
-
             $policyNotes = PolicyNote::where('policy_id', $policy->id)->get();
-
 
             $policyClaims = PolicyClaim::where('policy_id', $policy->id)
                 ->paginate(5)
@@ -267,7 +228,7 @@ class PolicyController extends Controller
                 ]);
 
             return Inertia::render('Policy/Detail', [
-                'policy' => $policyResponse,
+                'policy' => $policy,
                 'policyInstallment' => $policyInstallment,
                 'policyNotes' => $policyNotes,
                 'policyClaims' => $policyClaims,
