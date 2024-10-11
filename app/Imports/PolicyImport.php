@@ -21,6 +21,8 @@ class PolicyImport implements ToModel, WithHeadingRow
 
     public function model(array $row)
     {
+        // dd($row);
+
         try {
             $this->currentRow++; // Increment the row number each time
 
@@ -126,8 +128,8 @@ class PolicyImport implements ToModel, WithHeadingRow
             }
 
             $balance_amount = $brokerage_amount - $brokerage_received_amount;
-
-            if (!empty($data['policy_no'])) {
+            
+            if ($row['policy_no']) {
                 $policy = Policy::updateOrCreate(['policy_no' => $row['policy_no']], [
                     'policy_no' => $row['policy_no'],
                     'department_id' => $department_id,
