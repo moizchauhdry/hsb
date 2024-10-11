@@ -46,7 +46,7 @@ class PolicyImport implements ToModel, WithHeadingRow
                 $client = User::updateOrCreate(['name' => $row['client_name']], [
                     'name' => $row['client_name'],
                     'role_users_id' => 2,
-                    'password' => Hash::make(0),
+                    'password' => 0,
                 ]);
                 $client->syncRoles('client');
 
