@@ -30,11 +30,13 @@ class DatabaseHandler extends AbstractProcessingHandler
     {
         $user_id = auth()->check() ? auth()->id() : 0;
         $type = $record->context['type'] ?? 'default';
+        $import_completed = $record->context['import_completed'] ?? false;
 
         DB::table('error_logs')->insert([
             'user_id' => $user_id,
             'channel' => $record->channel,
             'type' => $type,
+            'import_completed' => $import_completed,
             'message' => $record->message,
             'level' => $record->level->value, // Numeric level of logging (e.g. 100 for DEBUG, 200 for INFO)
             'level_name' => $record->level->name, // Log level as a string (e.g. 'INFO', 'DEBUG')

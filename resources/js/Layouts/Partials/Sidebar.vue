@@ -179,6 +179,11 @@ watch(
                     </li>
                 </ul>
             </li>
+
+
+            <li :class="{ 'mm-active': route().current('error-logs.index') }">
+                        <Link :href="route('error-logs.index')"><i class='bx bx-radio-circle'></i>Excel Import</Link>
+                    </li>
         </ul>
         <!--end navigation-->
     </div>

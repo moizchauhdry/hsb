@@ -15,6 +15,7 @@ use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Events\AfterImport;
@@ -138,10 +139,10 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
     {
         return [
             AfterImport::class => function (AfterImport $event) {
-                Log::channel('database')->info('Excel import completed successfully.', ['type' => 'excel_import']);
+                Log::channel('database')->info('Excel import completed successfully.', ['type' => 'excel_import','import_completed' => true]);
             },
             ImportFailed::class => function (ImportFailed $event) {
-                Log::channel('database')->error('failed excel import.', ['type' => 'excel_import']);
+                Log::channel('database')->error('failed excel import.', ['type' => 'excel_import','import_completed' => true]);
                 // $this->importedBy->notify(new ImportHasFailedNotification);
             },
         ];

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->integer('user_id')->unsigned()->nullable();
             $table->string('channel')->nullable();
             $table->string('type')->nullable();
+            $table->boolean('import_completed')->default(0);
             $table->text('message')->nullable();
             $table->string('level')->nullable();
             $table->string('level_name')->nullable();
