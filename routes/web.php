@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\AgencyController;
 use App\Http\Controllers\Admin\PolicyController;
 use App\Http\Controllers\Admin\InsuranceController;
 use App\Http\Controllers\Admin\BusinessClassController;
+use App\Http\Controllers\ExcelImportController;
 use App\Http\Controllers\ReportController;
 
 /*
@@ -87,6 +88,10 @@ Route::middleware('auth')->group(function () {
     Route::prefix('reports')->group(function () {
         Route::any('/list/{slug}', [ReportController::class, 'index'])->name('report.index');
         Route::any('/export/{slug}', [ReportController::class, 'export'])->name('report.export');
+    });
+
+    Route::prefix('error-logs')->group(function () {
+        Route::any('/list', [ExcelImportController::class, 'index'])->name('error-logs.index');
     });
 });
 

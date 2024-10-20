@@ -25,13 +25,17 @@ use Monolog\Handler\IFTTTHandler;
 use App\Http\Controllers\Controller;
 use App\Imports\ExcelImport;
 use App\Imports\SpecificSheetImport;
+use App\Models\ErrorLog;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\PolicyInstallmentPlan;
+use Error;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 
 class PolicyController extends Controller
 {
@@ -562,6 +566,8 @@ class PolicyController extends Controller
 
     public function importData(Request $request)
     {
+        Session::forget('excel_import');
+
         $request->validate([
             'file' => 'required|file|mimes:csv,xlsx',
             'type' => 'required',
@@ -571,34 +577,18 @@ class PolicyController extends Controller
             $file = $request->file('file');
             $type = $request->type;
 
-            if ($type == "1") {
-                // $import = new PolicyImport();
-                // Excel::import($import, $file)->onlySheets('report');
+            $error_logs = ErrorLog::where('type', 'excel_import')->delete();
 
-                // DB::table('policies')->truncate();
+            if ($type == "1") {
                 Excel::queueImport(new ExcelImport, $file);
             }
 
-            return redirect()->route('policy.index');
+            // Session::put('excel_import', true);
+            Log::channel('database')->info('Start Importing .. Please Wait', ['type' => 'excel_import']);
+
+            return redirect()->route('error-logs.index');
         } catch (\Throwable $th) {
             throw $th;
-            // abort(403, $th->getMessage());
         }
-
-        // if ($type == "2") {
-        //     if (!empty($file)) {
-        //         if ($file) {
-        //             $import = new ClientImport();
-        //             Excel::import($import, $file);
-        //             if (!empty($import->errors)) {
-        //                 return response()->json(['errors' => $import->errors], 422);
-        //             }
-        //         } else {
-        //             return response()->json(['error' => 'File not uploaded or invalid'], 400);
-        //         }
-        //     } else {
-        //         return response()->json(['error' => 'No files uploaded'], 400);
-        //     }
-        // }
     }
 }

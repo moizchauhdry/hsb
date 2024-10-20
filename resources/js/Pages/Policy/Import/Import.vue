@@ -49,9 +49,6 @@ const close = () => {
     form.reset();
 };
 
-
-
-
 </script>
 
 <template>
