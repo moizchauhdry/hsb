@@ -1,7 +1,9 @@
 <?php
 
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 function format_number($number)
 {
@@ -21,11 +23,30 @@ function getRoleID($user)
 
 function dateFormat($date)
 {
-    return Carbon::parse($date)->format('d-m-Y');
+    if ($date) {
+        return Carbon::parse($date)->format('d-m-Y');
+    } else {
+        return NULL;
+    }
+}
+
+function excelDateFormat($date)
+{
+    if ($date) {
+        return Date::excelToDateTimeObject($date)->format('Y-m-d');
+    } else {
+        return NULL;
+    }
 }
 
 function getMonthName($month_number)
 {
     $date = Carbon::createFromDate(null, $month_number, 1);
     return $date->format('F');
+}
+
+function getClientName($id)
+{
+    $client = User::find($id);
+    return $client->name;
 }
