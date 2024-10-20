@@ -32,6 +32,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 class PolicyController extends Controller
 {
@@ -576,8 +577,12 @@ class PolicyController extends Controller
                 // Excel::import($import, $file)->onlySheets('report');
 
                 // DB::table('policies')->truncate();
+                Session::forget('excel_import');
+
                 Excel::queueImport(new ExcelImport, $file);
             }
+
+            $session_value = Session::get('excel_import', 'default value');
 
             return redirect()->route('policy.index');
         } catch (\Throwable $th) {
