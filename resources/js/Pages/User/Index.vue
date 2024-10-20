@@ -358,7 +358,7 @@ const search = () => {
                                 <thead>
                                     <tr class="text-uppercase">
                                         <th>Sr.No.</th>
-                                        <th>User ID</th>
+                                        <th>Code</th>
                                         <th>Name</th>
                                         <th>Email</th>
                                         <th>Role</th>
@@ -371,7 +371,7 @@ const search = () => {
                                         <tr>
                                             <td>{{ (users.current_page - 1) * users.per_page + index + 1 }}</td>
                                             <td>
-                                                00{{ user.id }}
+                                                {{ user.code }}
                                             </td>
                                             <td class="text-capitalize">{{ user.name }}</td>
                                             <td>
