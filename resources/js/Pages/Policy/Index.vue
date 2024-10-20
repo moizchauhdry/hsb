@@ -127,7 +127,8 @@ const search = () => {
                                         class="form-control" placeholder="Search">
                                 </div>
                                 <div class="col-md-3">
-                                    <SuccessButton style="margin-top: 3.5px;" class="px-4 py-1" :class="{ 'opacity-25': search_form.processing }"
+                                    <SuccessButton style="margin-top: 3.5px;" class="px-4 py-1"
+                                        :class="{ 'opacity-25': search_form.processing }"
                                         :disabled="search_form.processing">
                                         Search
                                     </SuccessButton>
@@ -136,35 +137,65 @@ const search = () => {
                         </form>
 
                         <div class="table-responsive">
-                            <table class="table table-striped table-hover mb-0 text-uppercase">
+                            <table class="table table-bordered table-sm text-uppercase" style="font-size:12px">
                                 <thead class="table-light">
                                     <tr>
-                                        <th>Sr #</th>
-                                        <th>Policy ID</th>
-                                        <th>Policy NO</th>
-                                        <th>Client Name</th>
-                                        <th>Insurer Name</th>
-                                        <th>Insurance Date</th>
-                                        <th>Policy Start</th>
-                                        <th>Policy End</th>
-                                        <th></th>
+                                        <th class="px-2">Sr #</th>
+                                        <th class="px-2">Policy ID</th>
+                                        <th class="px-2">Insurer Name</th>
+                                        <th class="px-2">Client Name</th>
+                                        <th class="px-2">Policy No</th>
+                                        <th class="px-2">Leader</th>
+                                        <th class="px-2">Leader Policy No</th>
+                                        <th class="px-2">Lead Type</th>
+                                        <th class="px-2">Agency Name</th>
+                                        <th class="px-2">Agency Code</th>
+                                        <th class="px-2">Child Agency</th>
+                                        <th class="px-2">Department Name</th>
+                                        <th class="px-2">COB Name</th>
+                                        <th class="px-2">Date of Issuance</th>
+                                        <th class="px-2">Policy Period Start</th>
+                                        <th class="px-2">Policy Period End</th>
+                                        <th class="px-2">Sum Insured</th>
+                                        <th class="px-2">Gross Premium (100%)</th>
+                                        <th class="px-2">Gross Premium</th>
+                                        <th class="px-2">Net Premium (100%)</th>
+                                        <th class="px-2">Net Premium</th>
+                                        <th class="px-2">Rate %</th>
+                                        <th class="px-2">Brokerage %</th>
+                                        <th class="px-2">Brokerage Amount</th>
+                                        <th class="px-2"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <template v-for="(policy, index) in policies.data">
                                         <tr>
-                                            <td>{{ (policies.current_page - 1) * policies.per_page + index + 1 }}</td>
-                                            <td>
-                                                00{{ policy.id }}
-                                            </td>
-                                            <td>{{ policy.policy_no }}</td>
-                                            <td>{{ policy.client_name }}</td>
-                                            <td>{{ policy.insurer_name }}</td>
-                                            <td>{{ policy.insurance_date }}</td>
-                                            <td>{{ policy.policy_start }}</td>
-                                            <td>{{ policy.policy_end }}</td>
-                                            <td>
-                                                <SecondaryButton @click="edit(policy.id)">Edit <i
+                                            <td class="px-2">{{ (policies.current_page - 1) * policies.per_page + index + 1 }}</td>
+                                            <td class="px-2">{{ policy.id }}</td>
+                                            <td class="px-2">{{ policy.insurer_name }}</td>
+                                            <td class="px-2">{{ policy.client_name }}</td>
+                                            <td class="px-2">{{ policy.data.policy_no }}</td>
+                                            <td class="px-2">{{ policy.data.leader_name }}</td>
+                                            <td class="px-2">{{ policy.data.leader_policy_number }}</td>
+                                            <td class="px-2">{{ policy.lead_type }}</td>
+                                            <td class="px-2">{{ policy.agency_name }}</td>
+                                            <td class="px-2">{{ policy.data.agency_code }}</td>
+                                            <td class="px-2">{{ policy.data.child_agency_name }}</td>
+                                            <td class="px-2">{{ policy.department_name }}</td>
+                                            <td class="px-2">{{ policy.cob_name }}</td>
+                                            <td class="px-2">{{ policy.data.insurance_date }}</td>
+                                            <td class="px-2">{{ policy.policy_start }}</td>
+                                            <td class="px-2">{{ policy.policy_end }}</td>
+                                            <td class="px-2">{{ policy.data.sum_insured }}</td>
+                                            <td class="px-2">{{ policy.data.gross_premium_100 }}</td>
+                                            <td class="px-2">{{ policy.data.gross_premium }}</td>
+                                            <td class="px-2">{{ policy.data.net_premium_100 }}</td>
+                                            <td class="px-2">{{ policy.data.net_premium }}</td>
+                                            <td class="px-2">{{ policy.data.rate }}</td>
+                                            <td class="px-2">{{ policy.data.brokerage_percentage }}</td>
+                                            <td class="px-2">{{ policy.data.brokerage_amount }}</td>
+                                            <td class="px-2">
+                                                <!-- <SecondaryButton @click="edit(policy.id)">Edit <i
                                                         class="bx bx-edit"></i></SecondaryButton>
 
                                                 <Link :href="route('policy.detail', policy.id)" class="mx-1">
@@ -174,7 +205,7 @@ const search = () => {
 
                                                 <SecondaryButton @click="confirmDelete(policy.id)">
                                                     Delete <i class='bx bxs-folder-minus'></i>
-                                                </SecondaryButton>
+                                                </SecondaryButton> -->
                                             </td>
                                         </tr>
                                     </template>

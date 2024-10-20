@@ -50,16 +50,19 @@ class PolicyController extends Controller
                 $q->where('policy_no', 'LIKE', '%' . $filter['search_value'] . '%');
             })
             ->orderBy('id', 'desc')
-            ->paginate(10)
+            ->paginate(25)
             ->withQueryString()
             ->through(fn($policy) => [
                 'id' => $policy->id,
-                'policy_no' => $policy->policy_no,
-                'client_name' => $policy->client ? $policy->client->name : null,
-                'insurer_name' => $policy->insurer ? $policy->insurer->name : null,
-                'insurance_date' => $policy->date_of_insurance ? Carbon::parse($policy->date_of_insurance)->format('d-m-Y') : null,
-                'policy_start' => $policy->policy_start_period ? Carbon::parse($policy->policy_start_period)->format('d-m-Y') : null,
-                'policy_end' => $policy->policy_end_period ? Carbon::parse($policy->policy_end_period)->format('d-m-Y') : null,
+                'data' => $policy,
+                'client_name' => getClientName($policy->client_id),
+                'insurer_name' => $policy->insurer->name ?? null,
+                'agency_name' => $policy->agency->name ?? null,
+                'department_name' => $policy->department->name ?? null,
+                'cob_name' => $policy->cob->class_name ?? null,
+                'date_of_insurance' => dateFormat($policy->date_of_insurance),
+                'policy_start_period' => dateFormat($policy->policy_start_period),
+                'policy_end_period' => dateFormat($policy->policy_end_period),
 
             ]);
 
