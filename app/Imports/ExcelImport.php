@@ -15,7 +15,6 @@ use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Events\AfterImport;
@@ -30,27 +29,7 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
     public function collection(Collection $rows)
     {
         // dd($rows[0]);
-        Log::info('Processing chunk with ' . $rows->count() . ' rows.');
-        
-        Session::put('excel_import', 'Processing chunk with ' . $rows->count() . ' rows.');
-
-
-        // $data = $rows->map(function ($row) {
-        //     return [
-        //         'policy_no' => $row['policy_no'],
-        //         'insurer_name' => $row['insurer_name'],
-        //         'insurer_code' => $row['insurer_code'],
-        //         'client_name' => $row['client_name'],
-        //         'client_code' => $row['client_code'],
-        //         'agency_code' => $row['agency_code'],
-        //         'department_name' => $row['department_name'],
-        //         'department_code' => $row['department_code'],
-        //         'cob_name' => $row['cob_name'],
-        //         'cob_code' => $row['cob_code'],
-        //     ];
-        // });
-
-        // PolicyExcel::insert($data->toArray()); // Bulk insert
+        Log::channel('database')->info('Processing chunk with ' . $rows->count() . ' rows.', ['type' => 'excel_import']);
 
         $agency_id = $insurer_id = $cob_id = $department_id = $client_id = NULL;
 
@@ -138,21 +117,7 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
             } else {
                 Policy::create($policy_data);
             }
-
-            // $policy = Policy::updateOrCreate(['policy_no' => $row['policy_no']],['agency_code' => $row['agency_code']], $policy_data);
         }
-
-        // // Bulk insert policies
-        // if (!empty($data)) {
-        // Policy::insert($policy_data);
-        // }
-
-        // Perform upsert (update or insert)
-        // Policy::upsert(
-        //     $policy_data, // The data array
-        //     ['policy_no'], // Columns to check for duplicates
-        //     ['agency_code', 'client_id','insurance_id','class_of_business_id'] // Columns to update if a match is found
-        // );
     }
 
     public function chunkSize(): int
@@ -173,12 +138,10 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
     {
         return [
             AfterImport::class => function (AfterImport $event) {
-                Log::info('success import');
-                Session::put('excel_import', 'success import');
+                Log::channel('database')->info('Excel import completed successfully.', ['type' => 'excel_import']);
             },
             ImportFailed::class => function (ImportFailed $event) {
-                Log::info("failed excel import");
-                Session::put('excel_import', 'failed excel import');
+                Log::channel('database')->error('failed excel import.', ['type' => 'excel_import']);
                 // $this->importedBy->notify(new ImportHasFailedNotification);
             },
         ];
