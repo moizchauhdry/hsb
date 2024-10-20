@@ -23,12 +23,15 @@ use App\Models\PolicyInsurance;
 use App\Models\PolicyClaimUpload;
 use Monolog\Handler\IFTTTHandler;
 use App\Http\Controllers\Controller;
+use App\Imports\ExcelImport;
+use App\Imports\SpecificSheetImport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\PolicyInstallmentPlan;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\DB;
 
 class PolicyController extends Controller
 {
@@ -566,9 +569,14 @@ class PolicyController extends Controller
             $type = $request->type;
 
             if ($type == "1") {
-                $import = new PolicyImport();
-                Excel::import($import, $file);
+                // $import = new PolicyImport();
+                // Excel::import($import, $file)->onlySheets('report');
+
+                // DB::table('policies')->truncate();
+                Excel::queueImport(new ExcelImport, $file);
             }
+
+            return redirect()->route('policy.index');
         } catch (\Throwable $th) {
             throw $th;
             // abort(403, $th->getMessage());
