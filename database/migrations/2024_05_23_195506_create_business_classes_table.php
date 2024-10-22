@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('class_name');
             $table->string('percentage')->nullable();
+            $table->integer('department_id')->nullable();
             $table->timestamps();
         });
     }

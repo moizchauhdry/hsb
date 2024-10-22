@@ -34,9 +34,9 @@ class PermissionSeeder extends Seeder
             'policy-create',
             'policy-update',
 
-            // Report
-            ['name' => 'report', 'level' => 1],
-            ['name' => 'report_sale', 'level' => 2],
+            // // Report
+            // ['name' => 'report', 'level' => 1],
+            // ['name' => 'report_sale', 'level' => 2],
 
         ];
 

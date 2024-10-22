@@ -16,8 +16,8 @@ return new class extends Migration
             $table->index('client_id');
             $table->index('agency_id');
             $table->index('agency_code');
-            $table->index('insurance_id');
-            $table->index('class_of_business_id');
+            $table->index('insurer_id');
+            $table->index('cob_id');
             $table->index('user_id');
             $table->index('department_id');
         });
@@ -33,8 +33,8 @@ return new class extends Migration
             $table->dropIndex(['client_id']);
             $table->dropIndex(['agency_id']);
             $table->dropIndex(['agency_code']);
-            $table->dropIndex(['insurance_id']);
-            $table->dropIndex(['class_of_business_id']);
+            $table->dropIndex(['insurer_id']);
+            $table->dropIndex(['cob_id']);
             $table->dropIndex(['user_id']);
             $table->dropIndex(['department_id']);
         });
