@@ -29,7 +29,8 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
      */
     public function collection(Collection $rows)
     {
-        // dd($rows[0]);
+        dd($rows[0]);
+        
         Log::channel('database')->info('Processing chunk with ' . $rows->count() . ' rows.', ['type' => 'excel_import']);
 
         $agency_id = $insurer_id = $cob_id = $department_id = $client_id = NULL;

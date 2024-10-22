@@ -23,7 +23,9 @@ return new class extends Migration
             $table->enum('type', ['individual', 'business'])->after('dob')->nullable()->default('individual');
             $table->string('designation')->nullable()->after('type');
             $table->string('qualification')->nullable()->after('designation');
-            $table->bigInteger('role_users_id')->unsigned()->index('users_role_users_id');
+
+            $table->integer('code')->unsigned()->unique()->nullable()->after('name');
+            $table->index('code');
         });
     }
 
@@ -44,7 +46,9 @@ return new class extends Migration
             $table->dropColumn('type');
             $table->dropColumn('designation');
             $table->dropColumn('qualification');
-            $table->dropColumn('user_role_id');
+
+            $table->dropIndex(['code']);
+            $table->dropColumn('code');
         });
     }
 };
