@@ -92,8 +92,9 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
                 'agency_code' => $agency_code,
                 
                 'child_agency_name' => $row['child_agency_name'],
-                'leader_name' => $row['leader'],
+                'leader_name' => $row['leader_name'],
                 'leader_policy_no' => $row['leader_policy_no'],
+
                 'lead_type' => $row['lead_type'],
                
                 // 'date_of_issuance' => !empty($row['date_of_issuance']) ? Date::excelToDateTimeObject($row['date_of_issuance'])->format('Y-m-d') : null,
@@ -110,7 +111,7 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
 
                 'brokerage_percentage' => (int) str_replace(',', '', $row['brokerage_percentage']),
                 'brokerage_amount' => (int) str_replace(',', '', $row['brokerage_amount']),
-                'brokerage_amount_received' => (int) str_replace(',', '', $row['brokerage_amount_received']),
+                'brokerage_received_amount' => (int) str_replace(',', '', $row['brokerage_received_amount']),
 
                 'base_doc_no' => $row['base_doc_no'],
                 'policy_type' => $row['policy_type'],
@@ -118,7 +119,7 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
                 'branch' => $row['branch'],
 
                 'receipt_no' => $row['receipt_no'],
-                'receipt_date' => $row['receipt_date'],
+                // 'receipt_date' => $row['receipt_date'],
                 'receipt_amount' => $row['receipt_amount'],
             ];
 

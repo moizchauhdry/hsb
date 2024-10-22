@@ -13,19 +13,9 @@ class Policy extends Model
     protected $guarded = [];
     protected $dates = ['date_of_insurance', 'policy_start_period', 'policy_end_period', 'excel_import_at'];
 
-    // public function client()
-    // {
-    //     return $this->belongsTo(User::class)->where('role_users_id', 2);
-    // }
-
-    // public function insurance()
-    // {
-    //     return $this->belongsTo(Insurance::class, 'insurance_id', 'id');
-    // }
-
     public function insurer()
     {
-        return $this->belongsTo(Insurance::class, 'insurance_id', 'id');
+        return $this->belongsTo(Insurance::class, 'insurer_id', 'id');
     }
 
     public function agency()
@@ -35,7 +25,7 @@ class Policy extends Model
 
     public function cob()
     {
-        return $this->belongsTo(BusinessClass::class, 'class_of_business_id', 'id');
+        return $this->belongsTo(BusinessClass::class, 'cob_id', 'id');
     }
 
     public function department()
@@ -79,10 +69,10 @@ class Policy extends Model
 
         if ($slug == 'sales') {
             $query->when($filter['policy_type'], function ($q) use ($filter) {
-                $q->where('orignal_endorsment', $filter['policy_type']);
+                $q->where('policy_type', $filter['policy_type']);
             });
         } elseif ($slug == 'renewal') {
-            $query->where('orignal_endorsment', 'renewal');
+            $query->where('policy_type', 'renewal');
         }
 
         $query->when($filter['client'], function ($q) use ($filter) {
