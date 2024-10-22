@@ -36,8 +36,8 @@ return new class extends Migration
             $table->string('branch', 100)->nullable();
 
             $table->date('date_of_issuance')->nullable();
-            $table->date('policy_start_period')->nullable();
-            $table->date('policy_end_period')->nullable();
+            $table->date('policy_period_start')->nullable();
+            $table->date('policy_period_end')->nullable();
 
             $table->double('sum_insured')->nullable();
             $table->double('gross_premium_100')->nullable();

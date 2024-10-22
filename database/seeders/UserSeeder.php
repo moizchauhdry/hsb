@@ -27,18 +27,17 @@ class UserSeeder extends Seeder
             'name' => 'Moiz Chauhdry',
             'email' => 'moizchauhdry@gmail.com',
             'password' => Hash::make('12345678'),
-            'role_users_id' => 1,
         ]);
 
         $admin->assignRole(1);
 
-        $client = User::updateOrCreate(['email' => 'client@gmail.com'], [
-            'name' => 'Client',
-            'email' => 'client@gmail.com',
-            'password' => Hash::make('12345678'),
-            'role_users_id' => 2,
-        ]);
+        // $client = User::updateOrCreate(['email' => 'client@gmail.com'], [
+        //     'name' => 'Client',
+        //     'email' => 'client@gmail.com',
+        //     'password' => Hash::make('12345678'),
+        //     'role_users_id' => 2,
+        // ]);
 
-        $client->assignRole(2);
+        // $client->assignRole(2);
     }
 }
