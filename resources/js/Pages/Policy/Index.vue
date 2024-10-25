@@ -195,7 +195,7 @@ const search = () => {
                                             <td class="px-2">{{ policy.data.brokerage_percentage }}</td>
                                             <td class="px-2">{{ policy.data.brokerage_amount }}</td>
                                             <td class="px-2">
-                                                <!-- <SecondaryButton @click="edit(policy.id)">Edit <i
+                                                <SecondaryButton @click="edit(policy.id)">Edit <i
                                                         class="bx bx-edit"></i></SecondaryButton>
 
                                                 <Link :href="route('policy.detail', policy.id)" class="mx-1">
@@ -205,7 +205,7 @@ const search = () => {
 
                                                 <SecondaryButton @click="confirmDelete(policy.id)">
                                                     Delete <i class='bx bxs-folder-minus'></i>
-                                                </SecondaryButton> -->
+                                                </SecondaryButton>
                                             </td>
                                         </tr>
                                     </template>
