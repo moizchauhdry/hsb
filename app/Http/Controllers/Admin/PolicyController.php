@@ -213,7 +213,7 @@ class PolicyController extends Controller
     public function detail($id)
     {
         try {
-            $policy = Policy::with(['agency'])->find($id);
+            $policy = Policy::with(['agency', 'insurer', 'client', 'cob', 'department'])->find($id);
 
             $policyInstallment = $policy->policyInstallment;
 

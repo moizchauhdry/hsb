@@ -175,63 +175,76 @@ const error = () => {
                 <div class="card">
                     <div class="card-body">
 
-                        <table class="table table-bordered">
+                        <table class="table table-bordered text-uppercase">
                             <tbody>
                                 <tr>
-                                    <th colspan="4" class="bg-primary text-white text-lg">
+                                    <th colspan="4" class="bg-primary text-white">
                                         Policy Detail
                                     </th>
                                 </tr>
                                 <tr>
-                                    <th>ID</th>
+                                    <th>POLICY ID</th>
                                     <td>{{ policy.id }}</td>
-                                    <th>Client</th>
-                                    <td>{{ policy.client_name }}</td>
+                                    <th>USER ID</th>
+                                    <td>{{ policy.user_id }}</td>
                                 </tr>
                                 <tr>
-                                    <th>Insurance</th>
-                                    <td>{{ policy.insurance_id }}</td>
-
+                                    <th>Policy No</th>
+                                    <td>{{ policy.policy_no }}</td>
+                                    <th>Base Document No</th>
+                                    <td>{{ policy.base_doc_no }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Insurer Name</th>
+                                    <td>{{ policy.insurer.name }}</td>
                                     <th>Insurance type</th>
-                                    <td v-if="policy.insurance_type == 'takaful'">Takaful</td>
-                                    <td v-if="policy.insurance_type == 'conventional'">Conventional</td>
+                                    <td>
+                                        <span v-if="policy.insurance_type == 'takaful'">Takaful</span>
+                                        <span v-if="policy.insurance_type == 'conventional'">Conventional</span>
+                                    </td>
                                 </tr>
                                 <tr>
+                                    <th>Client Name</th>
+                                    <td>{{ policy.client.name }}</td>
                                     <th>Lead type</th>
-                                    <td v-if="policy.lead_type == 'direct'">Direct 100%</td>
-                                    <td v-if="policy.lead_type == 'our'">Our lead</td>
-                                    <td v-if="policy.lead_type == 'other'">Other lead</td>
+                                    <td>
+                                        <span v-if="policy.lead_type == 'direct'">Direct 100%</span>
+                                        <span v-if="policy.lead_type == 'our'">Our lead</span>
+                                        <span v-if="policy.lead_type == 'other'">Other lead</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    
+                                    <th>Leader Name</th>
+                                    <td>{{ policy.leader_name }}</td>
+                                    <th>Leader Policy No</th>
+                                    <td>{{ policy.leader_policy_no }}</td>
 
                                     <!-- <th v-if="policy.lead_type == 1 || policy.lead_type == 3">Co Insurance</th>
-
                                     <td v-if="policy.lead_type == 1 || policy.lead_type == 3">{{
                                         policy.co_insurance }}</td> -->
                                 </tr>
+
                                 <tr>
-                                    <th>Policy No.</th>
-                                    <td colspan="3">{{ policy.policy_no }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Main Agency / Code</th>
+                                    <th>Agency Name / Agency Code</th>
                                     <td>{{ policy.agency.name }} / {{ policy.agency_code }}</td>
 
-                                    <th>Child Agency</th>
+                                    <th>Child Agency Name</th>
                                     <td>{{ policy.child_agency_name }}</td>
                                 </tr>
                                 <tr>
+                                    <th>Class of Business</th>
+                                    <td>{{ policy.cob.class_name }}</td>
 
-                                    <th>Date of insurance</th>
-                                    <td>{{ policy.date_of_insurance }}</td>
-
-                                    <th>Business class / ID</th>
-                                    <td>{{ policy.class_of_business_name }} / {{ policy.class_of_business_id }}</td>
+                                    <th>Department Name</th>
+                                    <td>{{ policy.department.name }}</td>
                                 </tr>
                                 <tr>
-                                    <th>Policy start period</th>
-                                    <td>{{ policy.policy_start_period }}</td>
+                                    <th>Policy Period Start</th>
+                                    <td>{{ policy.policy_period_start }}</td>
 
-                                    <th>Policy end period</th>
-                                    <td>{{ policy.policy_end_period }}</td>
+                                    <th>Policy Period Start</th>
+                                    <td>{{ policy.policy_period_end }}</td>
                                 </tr>
                                 <tr>
                                     <th>Policy Type</th>
@@ -241,11 +254,10 @@ const error = () => {
                                 </tr>
 
                                 <tr>
+                                    <th>Date of Issuance</th>
+                                    <td>{{ policy.date_of_issuance }}</td>
                                     <th> Cover Note No </th>
                                     <td> {{ policy.cover_note_no }} </td>
-
-                                    <th>User</th>
-                                    <td> {{ policy.user_id }} </td>
                                 </tr>
 
                                 <tr>
@@ -261,10 +273,10 @@ const error = () => {
                             </tbody>
                         </table>
 
-                        <table class="table table-bordered">
+                        <table class="table table-bordered text-uppercase">
                             <tbody>
                                 <tr>
-                                    <th colspan="4" class="bg-primary text-white text-lg">
+                                    <th colspan="4" class="bg-primary text-white">
                                         Policy Amount
                                     </th>
                                 </tr>
@@ -272,15 +284,22 @@ const error = () => {
                                     <th>Sum insured </th>
                                     <td> PKR {{ policy.sum_insured }} </td>
 
-                                    <th>Gross Premium </th>
-                                    <td> PKR {{ policy.gross_premium }} </td>
+                                    <th>Rate Percentage</th>
+                                    <td> {{ policy.rate_percentage }} % </td>
                                 </tr>
                                 <tr>
+                                    <th>Gross Premium </th>
+                                    <td> PKR {{ policy.gross_premium }} </td>
+
+                                    <th>Gross Premium 100%</th>
+                                    <td> PKR {{ policy.gross_premium_100 }} </td>
+                                </tr>
+                                <tr>
+                                    <th>Net Premium 100%</th>
+                                    <td> PKR {{ policy.net_premium_100 }} </td>
+
                                     <th>Net Premium </th>
                                     <td> PKR {{ policy.net_premium }} </td>
-
-                                    <th>Rate Percentage</th>
-                                    <td> {{ policy.percentage }} % </td>
                                 </tr>
                                 <tr>
                                     <th>Gross Premium Received</th>
@@ -289,13 +308,17 @@ const error = () => {
                                     <th>Gross Premium Outstanding</th>
                                     <td> PKR {{ policy.gross_premium_outstanding }} </td>
                                 </tr>
+                                <tr>
+                                    <th>Outstanding 100%</th>
+                                    <td> PKR {{ policy.outstanding_100 }} </td>
+                                </tr>
                             </tbody>
                         </table>
 
-                        <table class="table table-bordered">
+                        <table class="table table-bordered text-uppercase">
                             <tbody>
                                 <tr>
-                                    <th colspan="4" class="bg-primary text-white text-lg">
+                                    <th colspan="4" class="bg-primary text-white">
                                         Brokerage Amount
                                     </th>
                                 </tr>
@@ -320,10 +343,10 @@ const error = () => {
                             </tbody>
                         </table>
 
-                        <table class="table table-bordered">
+                        <table class="table table-bordered text-uppercase">
                             <tbody>
                                 <tr>
-                                    <th colspan="4" class="bg-primary text-white text-lg">
+                                    <th colspan="4" class="bg-primary text-white">
                                         Policy Notes
                                     </th>
                                 </tr>
@@ -340,10 +363,10 @@ const error = () => {
                             </tbody>
                         </table>
 
-                        <table class="table table-bordered">
+                        <table class="table table-bordered text-uppercase">
                             <tbody>
                                 <tr>
-                                    <th colspan="5" class="bg-primary text-white text-lg">
+                                    <th colspan="5" class="bg-primary text-white">
                                         Policy Claims
                                     </th>
                                 </tr>
@@ -386,10 +409,10 @@ const error = () => {
                             </tbody>
                         </table>
 
-                        <table class="table table-bordered">
+                        <table class="table table-bordered text-uppercase">
                             <tbody>
                                 <tr>
-                                    <th colspan="5" class="bg-primary text-white text-lg">
+                                    <th colspan="5" class="bg-primary text-white">
                                         Policy Uploads
                                     </th>
                                 </tr>
