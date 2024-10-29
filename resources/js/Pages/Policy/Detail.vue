@@ -193,20 +193,19 @@ const error = () => {
                                     <td>{{ policy.insurance_id }}</td>
 
                                     <th>Insurance type</th>
-                                    <td v-if="policy.takeful_type == 1">Takaful</td>
-                                    <td v-if="policy.takeful_type == 2">Conventional</td>
+                                    <td v-if="policy.insurance_type == 'takaful'">Takaful</td>
+                                    <td v-if="policy.insurance_type == 'conventional'">Conventional</td>
                                 </tr>
                                 <tr>
                                     <th>Lead type</th>
-                                    <td v-if="policy.lead_type == 1">Direct 100%</td>
-                                    <td v-if="policy.lead_type == 2">Our lead</td>
-                                    <td v-if="policy.lead_type == 3">Other lead</td>
+                                    <td v-if="policy.lead_type == 'direct'">Direct 100%</td>
+                                    <td v-if="policy.lead_type == 'our'">Our lead</td>
+                                    <td v-if="policy.lead_type == 'other'">Other lead</td>
 
-                                    <th v-if="policy.lead_type == 1 || policy.lead_type == 3">Co Insurance
-                                    </th>
+                                    <!-- <th v-if="policy.lead_type == 1 || policy.lead_type == 3">Co Insurance</th>
 
                                     <td v-if="policy.lead_type == 1 || policy.lead_type == 3">{{
-                                        policy.co_insurance }}</td>
+                                        policy.co_insurance }}</td> -->
                                 </tr>
                                 <tr>
                                     <th>Policy No.</th>
@@ -214,7 +213,7 @@ const error = () => {
                                 </tr>
                                 <tr>
                                     <th>Main Agency / Code</th>
-                                    <td>{{ policy.agency_id }} / {{ policy.agency_code }}</td>
+                                    <td>{{ policy.agency.name }} / {{ policy.agency_code }}</td>
 
                                     <th>Child Agency</th>
                                     <td>{{ policy.child_agency_name }}</td>
@@ -235,11 +234,10 @@ const error = () => {
                                     <td>{{ policy.policy_end_period }}</td>
                                 </tr>
                                 <tr>
-                                    <th>New/Renewal/Endorsment</th>
-                                    <td>{{ policy.orignal_endorsment }}</td>
+                                    <th>Policy Type</th>
+                                    <td>{{ policy.policy_type }}</td>
                                     <th>Installment Plan </th>
                                     <td> {{ policy.installment_plan }} </td>
-
                                 </tr>
 
                                 <tr>

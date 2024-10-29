@@ -9,6 +9,7 @@ use App\Models\Insurance;
 use App\Models\Policy;
 use App\Models\PolicyExcel;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
@@ -30,7 +31,7 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
     public function collection(Collection $rows)
     {
         // dd($rows[0]);
-        
+
         Log::channel('database')->info('Processing chunk with ' . $rows->count() . ' rows.', ['type' => 'excel_import']);
 
         $agency_id = $insurer_id = $cob_id = $department_id = $client_id = NULL;
@@ -90,13 +91,13 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
                 'department_id' => $department_id,
                 'agency_id' => $agency_id,
                 'agency_code' => $agency_code,
-                
+
                 'child_agency_name' => $row['child_agency_name'],
                 'leader_name' => $row['leader_name'],
                 'leader_policy_no' => $row['leader_policy_no'],
 
-                'lead_type' => $row['lead_type'],
-               
+                'lead_type' => $this->getLeadType($row),
+
                 'date_of_issuance' => !empty($row['date_of_issuance']) ? Date::excelToDateTimeObject($row['date_of_issuance'])->format('Y-m-d') : null,
                 'policy_period_start' => !empty($row['policy_period_start']) ? Date::excelToDateTimeObject($row['policy_period_start'])->format('Y-m-d') : null,
                 'policy_period_end' => !empty($row['policy_period_end']) ? Date::excelToDateTimeObject($row['policy_period_end'])->format('Y-m-d') : null,
@@ -114,13 +115,18 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
                 'brokerage_received_amount' => (int) str_replace(',', '', $row['brokerage_received_amount']),
 
                 'base_doc_no' => $row['base_doc_no'],
-                'policy_type' => $row['policy_type'],
+                'policy_type' => $this->getPolicyType($row)['policy_type'],
+                'policy_type_other' => $this->getPolicyType($row)['policy_type_other'],
                 'insurance_type' => $row['insurance_type'],
-                'branch' => $row['branch'],
+                'branch' => $row['branch'] ?? NULL,
 
-                'receipt_no' => $row['receipt_no'],
+                'receipt_no' => $row['receipt_no'] ?? NULL,
                 // 'receipt_date' => $row['receipt_date'],
-                'receipt_amount' => $row['receipt_amount'],
+                'receipt_amount' => $row['receipt_amount'] ?? NULL,
+
+                'excel_import' => true,
+                'excel_import_at' => Carbon::now(),
+                'user_id' => auth()->id(),
             ];
 
             $policy = Policy::where('policy_no', $row['policy_no'])->first();
@@ -150,12 +156,51 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
     {
         return [
             AfterImport::class => function (AfterImport $event) {
-                Log::channel('database')->info('Excel import completed successfully.', ['type' => 'excel_import','import_completed' => true]);
+                Log::channel('database')->info('Excel import completed successfully.', ['type' => 'excel_import', 'import_completed' => true]);
             },
             ImportFailed::class => function (ImportFailed $event) {
-                Log::channel('database')->error('failed excel import.', ['type' => 'excel_import','import_completed' => true]);
+                Log::channel('database')->error('failed excel import.', ['type' => 'excel_import', 'import_completed' => true]);
                 // $this->importedBy->notify(new ImportHasFailedNotification);
             },
+        ];
+    }
+
+    public function getLeadType($row)
+    {
+        $lead_type = $row['lead_type'];
+
+        if ($lead_type == "Direct ( 100%)") {
+            $res = 'direct';
+        } else if ($lead_type == "Other Lead") {
+            $res = 'other';
+        } else if ($lead_type == "Our Lead") {
+            $res = 'our';
+        } else {
+            $res = NULL;
+        }
+
+        return $res;
+    }
+
+    public function getPolicyType($row)
+    {
+        $policy_type_row = $row['policy_type'];
+        $policy_type = $policy_type_other = NULL;
+
+        if ($policy_type_row) {
+            if ($policy_type_row == "NEW") {
+                $policy_type = 'new';
+            } else if ($policy_type_row == "RENEWAL") {
+                $policy_type = 'renewal';
+            } else {
+                $policy_type = "other";
+                $policy_type_other = $policy_type_row;
+            }
+        }
+
+        return [
+            'policy_type' => $policy_type,
+            'policy_type_other' => $policy_type_other
         ];
     }
 }
