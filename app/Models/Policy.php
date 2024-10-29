@@ -38,6 +38,11 @@ class Policy extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function client()
+    {
+        return $this->belongsTo(User::class, 'client_id', 'id');
+    }
+
     public function policyInstallment()
     {
         return $this->hasMany(PolicyInstallmentPlan::class, 'policy_id', 'id');
@@ -45,11 +50,11 @@ class Policy extends Model
 
     public function scopePoliciesList($query, $filter, $slug)
     {
-        $query->with(['client', 'insurance', 'agency', 'businessClass']);
+        $query->with(['client', 'insurer', 'agency', 'cob']);
 
-        $query->when($filter['date_type'] == 'date_of_insurance', function ($q) use ($filter) {
-            $q->whereYear('date_of_insurance', $filter['year']);
-            $q->whereMonth('date_of_insurance', $filter['month']);
+        $query->when($filter['date_type'] == 'date_of_issuance', function ($q) use ($filter) {
+            $q->whereYear('date_of_issuance', $filter['year']);
+            $q->whereMonth('date_of_issuance', $filter['month']);
         });
 
         $query->when($filter['date_type'] == 'policy_start_period', function ($q) use ($filter) {

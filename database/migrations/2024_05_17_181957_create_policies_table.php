@@ -23,9 +23,11 @@ return new class extends Migration
             $table->integer('user_id')->nullable();
 
             $table->enum('insurance_type', ['takaful', 'conventional'])->nullable();
-            $table->enum('policy_type', ['new', 'renewal', 'endorsement', 'other'])->nullable();
             $table->enum('lead_type', ['direct', 'other', 'our'])->nullable();
 
+            $table->enum('policy_type', ['new', 'renewal', 'endorsement', 'other'])->nullable();
+            $table->string('policy_type_other', 250)->nullable();
+            
             $table->integer('agency_code')->nullable();
             $table->string('child_agency_name', 100)->nullable();
 
