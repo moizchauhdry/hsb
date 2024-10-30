@@ -90,7 +90,7 @@ const search = () => {
                                 <thead class="table-light">
                                     <tr class="text-uppercase">
                                         <th>Sr.No.</th>
-                                        <th>COB ID</th>
+                                        <th>COB Code</th>
                                         <th>Class Name</th>
                                         <th>Department</th>
                                         <th>Percentage</th>
@@ -104,7 +104,7 @@ const search = () => {
                                             <td>{{ (businessClasses.current_page - 1) * businessClasses.per_page + index
                                                 + 1 }}</td>
                                             <td>
-                                                00{{ cls.id }}
+                                                {{ cls.code }}
                                             </td>
                                             <td>{{ cls.class_name }}</td>
                                             <td>{{ cls.department_name }}</td>

@@ -48,5 +48,9 @@ function getMonthName($month_number)
 function getClientName($id)
 {
     $client = User::find($id);
-    return $client->name;
+    if ($client) {
+        return $client->name;
+    } else {
+        return NULL;
+    }
 }

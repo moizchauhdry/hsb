@@ -62,8 +62,8 @@ class Policy extends Model
             $q->whereMonth('policy_period_start', $filter['month']);
         });
 
-        $query->when($filter['date_type'] == 'policy_period_start', function ($q) use ($filter) {
-            $q->whereYear('policy_period_start', $filter['year']);
+        $query->when($filter['date_type'] == 'policy_period_end', function ($q) use ($filter) {
+            $q->whereYear('policy_period_end', $filter['year']);
             $q->whereMonth('policy_period_end', $filter['month']);
         });
 

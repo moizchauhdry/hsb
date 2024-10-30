@@ -196,7 +196,7 @@ const error = () => {
                                 </tr>
                                 <tr>
                                     <th>Insurer Name</th>
-                                    <td>{{ policy.insurer.name }}</td>
+                                    <td>{{ policy?.insurer?.name }}</td>
                                     <th>Insurance type</th>
                                     <td>
                                         <span v-if="policy.insurance_type == 'takaful'">Takaful</span>
@@ -205,7 +205,7 @@ const error = () => {
                                 </tr>
                                 <tr>
                                     <th>Client Name</th>
-                                    <td>{{ policy.client.name }}</td>
+                                    <td>{{ policy?.client?.name }}</td>
                                     <th>Lead type</th>
                                     <td>
                                         <span v-if="policy.lead_type == 'direct'">Direct 100%</span>
@@ -227,17 +227,17 @@ const error = () => {
 
                                 <tr>
                                     <th>Agency Name / Agency Code</th>
-                                    <td>{{ policy.agency.name }} / {{ policy.agency_code }}</td>
+                                    <td>{{ policy?.agency?.name }} / {{ policy.agency_code }}</td>
 
                                     <th>Child Agency Name</th>
                                     <td>{{ policy.child_agency_name }}</td>
                                 </tr>
                                 <tr>
                                     <th>Class of Business</th>
-                                    <td>{{ policy.cob.class_name }}</td>
+                                    <td>{{ policy?.cob?.class_name }}</td>
 
                                     <th>Department Name</th>
-                                    <td>{{ policy.department.name }}</td>
+                                    <td>{{ policy?.department?.name }}</td>
                                 </tr>
                                 <tr>
                                     <th>Policy Period Start</th>

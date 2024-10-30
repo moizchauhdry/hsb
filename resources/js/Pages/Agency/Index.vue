@@ -38,8 +38,8 @@ defineProps({
                                 <thead>
                                     <tr class="text-uppercase">
                                         <th>Sr.No.</th>
-                                        <th>Agency ID</th>
-                                        <th>Name</th>
+                                        <th>Agency Code</th>
+                                        <th>Agency Name</th>
                                         <th>Created Date</th>
                                     </tr>
                                 </thead>
@@ -47,9 +47,7 @@ defineProps({
                                     <template v-for="(agency, index) in agencies.data">
                                         <tr>
                                             <td>{{ (agencies.current_page - 1) * agencies.per_page + index + 1 }}</td>
-                                            <td>
-                                                00{{ agency.id }}
-                                            </td>
+                                            <td>{{ agency.code }}</td>
                                             <td>{{ agency.name }}</td>
                                             <td>{{ agency.created_at }}</td>
                                         </tr>

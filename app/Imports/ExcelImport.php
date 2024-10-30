@@ -76,8 +76,17 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
                     'code' => $row['client_code'],
                     'name' => $row['client_name']
                 ];
-                $client = User::updateOrCreate(['code' => $row['client_code']], $client_data);
-                $client->syncRoles('client');
+
+                $client = User::where('code', $row['client_code'])->role('client')->first();
+
+                if ($client) {
+                    $client->update($client_data);
+                    $client->syncRoles('client');
+                } else {
+                    $client = User::create($client_data);
+                    $client->assignRole('client');
+                }
+
                 if ($client) {
                     $client_id = $client->id;
                 }
