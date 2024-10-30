@@ -65,8 +65,8 @@ class PolicyController extends Controller
                 'department_name' => $policy->department->name ?? null,
                 'cob_name' => $policy->cob->class_name ?? null,
                 'date_of_insurance' => dateFormat($policy->date_of_insurance),
-                'policy_start_period' => dateFormat($policy->policy_start_period),
-                'policy_end_period' => dateFormat($policy->policy_end_period),
+                'policy_period_start' => dateFormat($policy->policy_period_start),
+                'policy_period_end' => dateFormat($policy->policy_period_end),
 
             ]);
 
@@ -109,18 +109,17 @@ class PolicyController extends Controller
                 'agency_id' => ['required'],
                 'department_id' => ['required'],
                 'class_of_business_id' => ['required'],
-                'orignal_endorsment' => ['required'],
                 'date_of_insurance' => 'required|date',
-                'policy_start_period' => 'required|date',
-                'policy_end_period' => 'required|date',
+                'policy_period_start' => 'required|date',
+                'policy_period_end' => 'required|date',
                 'installment_plan' => 'required',
             ], [
                 'date_of_insurance.required' => 'The insurance date is required.',
                 'date_of_insurance.date' => 'The insurance date must be a valid date.',
-                'policy_start_period.required' => 'The policy start period is required.',
-                'policy_start_period.date' => 'The policy start period must be a valid date.',
-                'policy_end_period.required' => 'The policy end period is required.',
-                'policy_end_period.date' => 'The policy end period must be a valid date.',
+                'policy_period_start.required' => 'The policy start period is required.',
+                'policy_period_start.date' => 'The policy start period must be a valid date.',
+                'policy_period_end.required' => 'The policy end period is required.',
+                'policy_period_end.date' => 'The policy end period must be a valid date.',
             ]);
         }
 
@@ -135,12 +134,12 @@ class PolicyController extends Controller
 
         if ($current_step == 3) {
             $date_of_insurance = Carbon::parse($request->date_of_insurance);
-            $policy_start_period = Carbon::parse($request->policy_start_period);
-            $policy_end_period = Carbon::parse($request->policy_end_period);
+            $policy_period_start = Carbon::parse($request->policy_period_start);
+            $policy_period_end = Carbon::parse($request->policy_period_end);
 
             $dateOfInsurance = $date_of_insurance->format('Y-m-d');
-            $policyStartPeriod = $policy_start_period->format('Y-m-d');
-            $policyEndPeriod = $policy_end_period->format('Y-m-d');
+            $policyStartPeriod = $policy_period_start->format('Y-m-d');
+            $policyEndPeriod = $policy_period_end->format('Y-m-d');
 
             $data = [
                 'client_id' => $request->client_id,
@@ -155,8 +154,8 @@ class PolicyController extends Controller
                 'class_of_business_id' => $request->class_of_business_id,
                 'orignal_endorsment' => $request->orignal_endorsment,
                 'date_of_insurance' => $dateOfInsurance,
-                'policy_start_period' => $policyStartPeriod,
-                'policy_end_period' => $policyEndPeriod,
+                'policy_period_start' => $policyStartPeriod,
+                'policy_period_end' => $policyEndPeriod,
                 'sum_insured' => $request->sum_insured,
                 'gross_premium' => $request->gross_premium,
                 'net_premium' => $request->net_premium,

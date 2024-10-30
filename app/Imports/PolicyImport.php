@@ -34,20 +34,6 @@ class PolicyImport implements ToModel, WithCalculatedFormulas, WithHeadingRow, W
 
             // $original_endorsement_other_value = $original_endorsement = NULL;
 
-            // if (isset($row['originalendormsent'])) {
-            //     if ($row['originalendormsent'] == "RENEWAL") {
-            //         $original_endorsement = 'renewal';
-            //     } elseif ($row['originalendormsent'] == "NEW") {
-            //         $original_endorsement = 'new';
-            //     } elseif ($row['originalendormsent'] == "ENDORSEMENT") {
-            //         $original_endorsement = 'endorsment';
-            //     } else {
-            //         $original_endorsement = 'others';
-            //         $original_endorsement_other_value = $row['originalendormsent'];
-            //     }
-            // }
-
-
             // $agency_id = $insurer_id = $client_id = $cob_id = $department_id = NULL;
             // // $insurer_id = $this->getInsurer($row);
             
@@ -138,9 +124,6 @@ class PolicyImport implements ToModel, WithCalculatedFormulas, WithHeadingRow, W
                     // // 'agency_code' => $agency_code,
                     // 'child_agency_name' => $row['child_agency'],
                     // 'date_of_insurance' => !empty($row['date_of_issuance']) ? Date::excelToDateTimeObject($row['date_of_issuance'])->format('Y-m-d') : null,
-                    // 'policy_start_period' => !empty($row['policy_period_start']) ? Date::excelToDateTimeObject($row['policy_period_start'])->format('Y-m-d') : null,
-                    // 'policy_end_period' => !empty($row['policy_period_end']) ? Date::excelToDateTimeObject($row['policy_period_end'])->format('Y-m-d') : null,
-                    // // 'orignal_endorsment' => $original_endorsement,
                     // 'original_endorsement_other_value' => $original_endorsement_other_value,
                     // 'leader_policy_number' => $row['leader_policy_no'],
 

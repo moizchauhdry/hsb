@@ -174,11 +174,11 @@ const exportExcel = () => {
                                             <td class="px-2">{{ policy?.data?.insurance?.name }}</td>
                                             <td class="px-2">{{ policy?.data?.agency?.name }}</td>
                                             <td class="px-2">{{ policy?.data?.business_class?.class_name }}</td>
-                                            <td class="px-2">{{ policy?.data?.orignal_endorsment }}</td>
+                                            <td class="px-2">{{ policy?.data?.policy_type }}</td>
 
                                             <template v-if="slug == 'renewal' || slug == 'outstanding'">
-                                                <td :class="{ 'bg-info': filter['date_type'] === 'policy_start_period' }" class="px-2">{{ policy?.data?.policy_start_period }}</td>
-                                                <td :class="{ 'bg-info': filter['date_type'] === 'policy_end_period' }" class="px-2">{{ policy?.data?.policy_end_period }}</td>
+                                                <td :class="{ 'bg-info': filter['date_type'] === 'policy_period_start' }" class="px-2">{{ policy?.data?.policy_period_start }}</td>
+                                                <td :class="{ 'bg-info': filter['date_type'] === 'policy_period_end' }" class="px-2">{{ policy?.data?.policy_period_end }}</td>
                                                 <td :class="{ 'bg-info': filter['date_type'] === 'date_of_insurance' }" class="px-2">{{ policy?.data?.date_of_insurance }}</td>
                                             </template>
 

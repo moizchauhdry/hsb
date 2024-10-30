@@ -37,8 +37,8 @@ const form = useForm({
     class_of_business_id: "",
     orignal_endorsment: "",
     date_of_insurance: "",
-    policy_start_period: "",
-    policy_end_period: "",
+    policy_period_start: "",
+    policy_period_end: "",
     sum_insured: "",
     gross_premium: "",
     net_premium: "",
@@ -147,8 +147,8 @@ const close = () => {
     form.class_of_business_id = "";
     form.orignal_endorsment = "";
     form.date_of_insurance = "";
-    form.policy_start_period = "";
-    form.policy_end_period = "";
+    form.policy_period_start = "";
+    form.policy_period_end = "";
     form.sum_insured = "";
     form.gross_premium = "";
     form.net_premium = "";
@@ -190,8 +190,8 @@ const edit = (id) => {
             form.class_of_business_id = data.policy.class_of_business_id;
             form.orignal_endorsment = data.policy.orignal_endorsment;
             form.date_of_insurance = data.policy.date_of_insurance;
-            form.policy_start_period = data.policy.policy_start_period;
-            form.policy_end_period = data.policy.policy_end_period;
+            form.policy_period_start = data.policy.policy_period_start;
+            form.policy_period_end = data.policy.policy_period_end;
             form.sum_insured = data.policy.sum_insured;
             form.gross_premium = data.policy.gross_premium;
             form.net_premium = data.policy.net_premium;
@@ -454,20 +454,20 @@ watch(() => form.gross_premium, calculatePremium);
                                                 <div class="col-md-4">
                                                     <label for="input13" class="form-label">Policy start
                                                         period</label>
-                                                    <VueDatePicker v-model="form.policy_start_period"
+                                                    <VueDatePicker v-model="form.policy_period_start"
                                                         :enable-time-picker="false" :show-time="false">
                                                     </VueDatePicker>
 
-                                                    <InputError :message="form.errors.policy_start_period" />
+                                                    <InputError :message="form.errors.policy_period_start" />
                                                 </div>
                                                 <div class="col-md-4">
                                                     <label for="input13" class="form-label">Policy end
                                                         period</label>
-                                                    <VueDatePicker v-model="form.policy_end_period"
+                                                    <VueDatePicker v-model="form.policy_period_end"
                                                         :enable-time-picker="false" :show-time="false">
                                                     </VueDatePicker>
 
-                                                    <InputError :message="form.errors.policy_end_period" />
+                                                    <InputError :message="form.errors.policy_period_end" />
                                                 </div>
                                                 <div class="col-md-4">
                                                     <label for="input13" class="form-label">Installment plan</label>
