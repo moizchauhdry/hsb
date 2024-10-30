@@ -38,48 +38,58 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
 
         foreach ($rows as $row) {
 
-            $insurer_date = [
-                'code' => $row['insurer_code'],
-                'name' => $row['insurer_name']
-            ];
-            $insurer = Insurance::updateOrCreate(['code' => $row['insurer_code']], $insurer_date);
-            if ($insurer) {
-                $insurer_id = $insurer->id;
+            if ($row['insurer_code'] && $row['insurer_name']) {
+                $insurer_date = [
+                    'code' => $row['insurer_code'],
+                    'name' => $row['insurer_name']
+                ];
+                $insurer = Insurance::updateOrCreate(['code' => $row['insurer_code']], $insurer_date);
+                if ($insurer) {
+                    $insurer_id = $insurer->id;
+                }
             }
 
-            $cob_data = [
-                'code' => $row['cob_code'],
-                'class_name' => $row['cob_name']
-            ];
-            $cob = BusinessClass::updateOrCreate(['code' => $row['cob_code']], $cob_data);
-            if ($cob) {
-                $cob_id = $cob->id;
+            if ($row['cob_code'] && $row['cob_name']) {
+                $cob_data = [
+                    'code' => $row['cob_code'],
+                    'class_name' => $row['cob_name']
+                ];
+                $cob = BusinessClass::updateOrCreate(['code' => $row['cob_code']], $cob_data);
+                if ($cob) {
+                    $cob_id = $cob->id;
+                }
             }
 
-            $department_data = [
-                'code' => $row['department_code'],
-                'name' => $row['department_name']
-            ];
-            $department = Department::updateOrCreate(['code' => $row['department_code']], $department_data);
-            if ($department) {
-                $department_id = $department->id;
+            if ($row['department_code'] && $row['department_name']) {
+                $department_data = [
+                    'code' => $row['department_code'],
+                    'name' => $row['department_name']
+                ];
+                $department = Department::updateOrCreate(['code' => $row['department_code']], $department_data);
+                if ($department) {
+                    $department_id = $department->id;
+                }
             }
 
-            $client_data = [
-                'code' => $row['client_code'],
-                'name' => $row['client_name']
-            ];
-            $client = User::updateOrCreate(['code' => $row['client_code']], $client_data);
-            $client->syncRoles('client');
-            if ($client) {
-                $client_id = $client->id;
+            if ($row['client_code'] && $row['client_name']) {
+                $client_data = [
+                    'code' => $row['client_code'],
+                    'name' => $row['client_name']
+                ];
+                $client = User::updateOrCreate(['code' => $row['client_code']], $client_data);
+                $client->syncRoles('client');
+                if ($client) {
+                    $client_id = $client->id;
+                }
             }
 
             $agency_code = NULL;
-            $agency = Agency::where('code', $row['agency_code'])->first();
-            if ($agency) {
-                $agency_id = $agency->id;
-                $agency_code = $agency->code;
+            if ($row['agency_code']) {
+                $agency = Agency::where('code', $row['agency_code'])->first();
+                if ($agency) {
+                    $agency_id = $agency->id;
+                    $agency_code = $agency->code;
+                }
             }
 
             $policy_data = [
