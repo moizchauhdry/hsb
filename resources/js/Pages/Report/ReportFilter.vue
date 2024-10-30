@@ -160,10 +160,10 @@ const format_date = (date) => {
                         <div class="col-md-6">
                             <InputLabel for="" value="Date Type" class="mb-1" />
                             <select v-model="form.date_type" class="form-control">
-                                <option value="date_of_insurance">Insurance Date</option>
-                                <option value="policy_period_start">Policy Start Date</option>
-                                <option value="policy_period_end">Policy End Date</option>
-                                <option value="created_at">Created Date</option>
+                                <option value="date_of_issuance">Date of Issuance</option>
+                                <option value="policy_period_start">Policy Period Start</option>
+                                <option value="policy_period_end">Policy Period End</option>
+                                <option value="created_at">Created At</option>
                             </select>
                         </div>
 
@@ -191,7 +191,7 @@ const format_date = (date) => {
                                 <option value="">All Types</option>
                                 <option value="new">New</option>
                                 <option value="renewal">Renewal</option>
-                                <option value="endorsment">Endorsment</option>
+                                <option value="endorsement">Endorsement</option>
                                 <option value="others">Others</option>
                             </select>
                         </div>

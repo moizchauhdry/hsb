@@ -3,16 +3,19 @@
 namespace App\Models;
 
 use App\Traits\FormatDatesTrait;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Policy extends Model
 {
-    use HasFactory, FormatDatesTrait;
+    use HasFactory;
 
     protected $guarded = [];
-    protected $dates = ['date_of_insurance', 'policy_period_start', 'policy_period_end', 'excel_import_at'];
 
+    // *************************** ***** ***********************
+    // *********************** RELATIONS ***********************
+    // *************************** ***** ***********************
     public function insurer()
     {
         return $this->belongsTo(Insurance::class, 'insurer_id', 'id');
@@ -48,6 +51,9 @@ class Policy extends Model
         return $this->hasMany(PolicyInstallmentPlan::class, 'policy_id', 'id');
     }
 
+    // *************************** ****** ***********************
+    // *************************** SCOPES ***********************
+    // *************************** ****** ***********************
     public function scopePoliciesList($query, $filter, $slug)
     {
         $query->with(['client', 'insurer', 'agency', 'cob']);
@@ -62,8 +68,8 @@ class Policy extends Model
             $q->whereMonth('policy_period_start', $filter['month']);
         });
 
-        $query->when($filter['date_type'] == 'policy_period_start', function ($q) use ($filter) {
-            $q->whereYear('policy_period_start', $filter['year']);
+        $query->when($filter['date_type'] == 'policy_period_end', function ($q) use ($filter) {
+            $q->whereYear('policy_period_end', $filter['year']);
             $q->whereMonth('policy_period_end', $filter['month']);
         });
 
@@ -99,5 +105,40 @@ class Policy extends Model
         $query->orderBy('id', 'desc');
 
         return $query;
+    }
+
+    // *************************** ***** ***********************
+    // *************************** CASTS ***********************
+    // *************************** ***** ***********************
+    protected $casts = [
+        'date_of_issuance' => 'datetime',
+        'policy_period_start' => 'datetime',
+        'policy_period_end' => 'datetime',
+        'excel_import_at' => 'datetime',
+    ];
+
+    public function getDateOfIssuanceAttribute($value)
+    {
+        return $this->formatDate($value);
+    }
+
+    public function getPolicyPeriodStartAttribute($value)
+    {
+        return $this->formatDate($value);
+    }
+
+    public function getPolicyPeriodEndAttribute($value)
+    {
+        return $this->formatDate($value);
+    }
+
+    public function getExcelImportAtAttribute($value)
+    {
+        return $this->formatDate($value);
+    }
+
+    protected function formatDate($value)
+    {
+        return $value ? Carbon::parse($value)->format('d-m-Y') : null;
     }
 }

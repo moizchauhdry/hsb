@@ -27,6 +27,7 @@ class BusinessClassController extends Controller
             ->withQueryString()
             ->through(fn ($businessClass) => [
                 'id' => $businessClass->id,
+                'code' => $businessClass->code,
                 'class_name' => $businessClass->class_name,
                 'department_name' => $businessClass->department->name ?? NULL,
                 'percentage' => $businessClass->percentage,

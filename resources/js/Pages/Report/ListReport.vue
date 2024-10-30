@@ -128,14 +128,14 @@ const exportExcel = () => {
                                         <th class="px-2">Policy Number</th>
                                         <th class="px-2">Client Name</th>
                                         <th class="px-2">Insurer Name</th>
-                                        <th class="px-2">Agency</th>
+                                        <th class="px-2">Agency Name</th>
                                         <th class="px-2">Class of Business</th>
                                         <th class="px-2">Policy Type</th>
 
                                         <template v-if="slug == 'renewal' || slug == 'outstanding'">
-                                            <th class="px-2">Policy Start</th>
-                                            <th class="px-2">Policy End</th>
-                                            <th class="px-2">Issuance Date</th>
+                                            <th class="px-2">Policy Period Start</th>
+                                            <th class="px-2">Policy Period End</th>
+                                            <th class="px-2">Date of Issuance</th>
                                         </template>
 
                                         <template
