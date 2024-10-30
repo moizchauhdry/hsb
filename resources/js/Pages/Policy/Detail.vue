@@ -80,8 +80,6 @@ if (props.policyInstallment && props.policyInstallment.length > 0) {
     }
 }
 
-
-
 const claim_note_ref = ref(null);
 const claim_upload_ref = ref(null);
 const claim_edit_ref = ref(null);
@@ -97,7 +95,6 @@ const claimUpload = (id) => {
 const claimEdit = (id) => {
     claim_edit_ref.value.claimEdit(id)
 };
-
 
 const submit = () => {
     if (forms && forms.length > 0) {
@@ -127,12 +124,16 @@ const submit = () => {
     }
 };
 
-
 const error = () => {
     // alert('error');
 };
 
-
+const format_number = (number) => {
+    return new Intl.NumberFormat('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }).format(number);
+};
 </script>
 
 <template>
@@ -282,35 +283,35 @@ const error = () => {
                                 </tr>
                                 <tr>
                                     <th>Sum insured </th>
-                                    <td> PKR {{ policy.sum_insured }} </td>
+                                    <td> PKR {{ format_number(policy.sum_insured) }} </td>
 
                                     <th>Rate Percentage</th>
                                     <td> {{ policy.rate_percentage }} % </td>
                                 </tr>
                                 <tr>
                                     <th>Gross Premium </th>
-                                    <td> PKR {{ policy.gross_premium }} </td>
+                                    <td> PKR {{ format_number(policy.gross_premium) }} </td>
 
                                     <th>Gross Premium 100%</th>
-                                    <td> PKR {{ policy.gross_premium_100 }} </td>
+                                    <td> PKR {{ format_number(policy.gross_premium_100) }} </td>
                                 </tr>
                                 <tr>
                                     <th>Net Premium 100%</th>
-                                    <td> PKR {{ policy.net_premium_100 }} </td>
+                                    <td> PKR {{ format_number(policy.net_premium_100) }} </td>
 
                                     <th>Net Premium </th>
-                                    <td> PKR {{ policy.net_premium }} </td>
+                                    <td> PKR {{ format_number(policy.net_premium) }} </td>
                                 </tr>
                                 <tr>
                                     <th>Gross Premium Received</th>
-                                    <td> PKR {{ policy.gross_premium_received }} </td>
+                                    <td> PKR {{ format_number(policy.gross_premium_received) }} </td>
 
                                     <th>Gross Premium Outstanding</th>
-                                    <td> PKR {{ policy.gross_premium_outstanding }} </td>
+                                    <td> PKR {{ format_number(policy.gross_premium_outstanding) }} </td>
                                 </tr>
                                 <tr>
                                     <th>Outstanding 100%</th>
-                                    <td> PKR {{ policy.outstanding_100 }} </td>
+                                    <td> PKR {{ format_number(policy.outstanding_100) }} </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -324,14 +325,14 @@ const error = () => {
                                 </tr>
                                 <tr>
                                     <th>Brokerage/Commissioned Amount</th>
-                                    <td>PKR {{ policy.brokerage_amount }} </td>
+                                    <td>PKR {{ format_number(policy.brokerage_amount) }} </td>
 
                                     <th>Brokerage Percentage </th>
                                     <td>PKR {{ policy.brokerage_percentage }} % </td>
                                 </tr>
                                 <tr>
                                     <th>Brokerage Received Amount</th>
-                                    <td>PKR {{ policy.brokerage_received_amount }} </td>
+                                    <td>PKR {{ format_number(policy.brokerage_received_amount) }} </td>
 
                                     <th>Brokerage Paid Date</th>
                                     <td>{{ policy.brokerage_paid_date }}</td>
