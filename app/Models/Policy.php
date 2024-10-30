@@ -11,7 +11,7 @@ class Policy extends Model
     use HasFactory, FormatDatesTrait;
 
     protected $guarded = [];
-    protected $dates = ['date_of_insurance', 'policy_start_period', 'policy_end_period', 'excel_import_at'];
+    protected $dates = ['date_of_insurance', 'policy_period_start', 'policy_period_end', 'excel_import_at'];
 
     public function insurer()
     {
@@ -57,14 +57,14 @@ class Policy extends Model
             $q->whereMonth('date_of_issuance', $filter['month']);
         });
 
-        $query->when($filter['date_type'] == 'policy_start_period', function ($q) use ($filter) {
-            $q->whereYear('policy_start_period', $filter['year']);
-            $q->whereMonth('policy_start_period', $filter['month']);
+        $query->when($filter['date_type'] == 'policy_period_start', function ($q) use ($filter) {
+            $q->whereYear('policy_period_start', $filter['year']);
+            $q->whereMonth('policy_period_start', $filter['month']);
         });
 
-        $query->when($filter['date_type'] == 'policy_end_period', function ($q) use ($filter) {
-            $q->whereYear('policy_end_period', $filter['year']);
-            $q->whereMonth('policy_end_period', $filter['month']);
+        $query->when($filter['date_type'] == 'policy_period_start', function ($q) use ($filter) {
+            $q->whereYear('policy_period_start', $filter['year']);
+            $q->whereMonth('policy_period_end', $filter['month']);
         });
 
         $query->when($filter['date_type'] == 'created_at', function ($q) use ($filter) {
