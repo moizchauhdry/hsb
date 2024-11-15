@@ -255,7 +255,7 @@ const format_number = (number) => {
                                 </tr>
 
                                 <tr>
-                                    <th>Date of Issuance</th>
+                                    <th>Issuance Date</th>
                                     <td>{{ policy.date_of_issuance }}</td>
                                     <th> Cover Note No </th>
                                     <td> {{ policy.cover_note_no }} </td>

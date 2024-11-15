@@ -135,7 +135,7 @@ const exportExcel = () => {
                                         <template v-if="slug == 'renewal' || slug == 'outstanding'">
                                             <th class="px-2">Inception Date</th>
                                             <th class="px-2">Expiry Date</th>
-                                            <th class="px-2">Date of Issuance</th>
+                                            <th class="px-2">Issuance Date</th>
                                         </template>
 
                                         <template
