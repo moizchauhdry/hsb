@@ -82,27 +82,28 @@ watch(
                 </ul>
             </li>
 
-            <li class="menu-label">Application</li>
-            <li :class="{ 'mm-active': route().current('user.index') || route().current('role.index') }">
+            <li class="menu-label">Policies</li>
+            <li :class="{ 'mm-active': route().current('user.index', 'users') || route().current('role.index') }">
                 <a href="#" class="has-arrow" @click="toggleList('user')">
-                    <div class="parent-icon"><i class="bx bx-category"></i>
+                    <div class="parent-icon"><i class="bx bx-user"></i>
                     </div>
-                    <div class="menu-title">User Management</div>
+                    <div class="menu-title">Manage Users</div>
                 </a>
                 <ul :class="{ 'hidden': !isSubmenuVisible.user }">
-                    <li :class="{ 'mm-active': route().current('user.index') }">
-                        <Link :href="route('user.index')"><i class='bx bx-radio-circle'></i>List Users</Link>
+                    <li :class="{ 'mm-active': route().current('user.index', 'users') }">
+                        <Link :href="route('user.index', 'users')"><i class='bx bx-radio-circle'></i>List Users</Link>
                     </li>
-                    <li :class="{ 'mm-active': route().current('role.index') }">
-                        <Link :href="route('role.index')"><i class='bx bx-radio-circle'></i>Role & Permissions</Link>
+                    <li :class="{ 'mm-active': route().current('user.index', 'clients') }">
+                        <Link :href="route('user.index', 'clients')"><i class='bx bx-radio-circle'></i>List Clients
+                        </Link>
                     </li>
                 </ul>
             </li>
             <li :class="{ 'mm-active': route().current('policy.index') || route().current('policy.detail') }">
                 <a href="#" class="has-arrow" @click="toggleList('policy')">
-                    <div class="parent-icon"><i class="bx bx-category"></i>
+                    <div class="parent-icon"><i class="bx bx-poll"></i>
                     </div>
-                    <div class="menu-title">Policies</div>
+                    <div class="menu-title">Manage Policies</div>
                 </a>
                 <ul :class="{ 'hidden': !isSubmenuVisible.policy }">
                     <li :class="{ 'mm-active': route().current('policy.index') }">
@@ -111,12 +112,12 @@ watch(
                 </ul>
             </li>
 
-            <li class="menu-label">Policy</li>
+            <!-- <li class="menu-label">Policy</li> -->
             <li :class="{ 'mm-active': route().current('insurance.index') }">
                 <a href="#" class="has-arrow" @click="toggleList('insurance')">
                     <div class="parent-icon"><i class="bx bx-category"></i>
                     </div>
-                    <div class="menu-title">Insurer</div>
+                    <div class="menu-title">Manage Insurers</div>
                 </a>
                 <ul :class="{ 'hidden': !isSubmenuVisible.insurance }">
                     <li :class="{ 'mm-active': route().current('insurance.index') }">
@@ -127,9 +128,9 @@ watch(
 
             <li :class="{ 'mm-active': route().current('agency.index') }">
                 <a href="#" class="has-arrow" @click="toggleList('agency')">
-                    <div class="parent-icon"><i class="bx bx-category"></i>
+                    <div class="parent-icon"><i class="bx bx-list-ul"></i>
                     </div>
-                    <div class="menu-title">Agency</div>
+                    <div class="menu-title">Manage Agencies</div>
                 </a>
                 <ul :class="{ 'hidden': !isSubmenuVisible.agency }">
                     <li :class="{ 'mm-active': route().current('agency.index') }">
@@ -140,9 +141,9 @@ watch(
 
             <li :class="{ 'mm-active': route().current('businessClass.index') }">
                 <a href="#" class="has-arrow" @click="toggleList('businessClass')">
-                    <div class="parent-icon"><i class="bx bx-category"></i>
+                    <div class="parent-icon"><i class="bx bx-layer"></i>
                     </div>
-                    <div class="menu-title">Business Class</div>
+                    <div class="menu-title">Class of Business</div>
                 </a>
                 <ul :class="{ 'hidden': !isSubmenuVisible.businessClass }">
                     <li :class="{ 'mm-active': route().current('businessClass.index') }">
@@ -152,38 +153,57 @@ watch(
                 </ul>
             </li>
 
+            <li class="menu-label">Reports</li>
             <li :class="{ 'mm-active': route().current('report.index') }">
                 <a href="javascript:;" class="has-arrow" @click="toggleList('report')">
-                    <div class="parent-icon"><i class="bx bx-box"></i>
+                    <div class="parent-icon"><i class="bx bx-line-chart"></i>
                     </div>
                     <div class="menu-title">Manage Reports</div>
                 </a>
                 <ul :class="{ 'hidden': !isSubmenuVisible.report }">
-                    <li :class="{ 'mm-active': route().current('report.index','sales') }">
-                        <Link :href="route('report.index','sales')"><i class='bx bx-radio-circle'></i>Sales Report</Link>
+                    <li :class="{ 'mm-active': route().current('report.index', 'sales') }">
+                        <Link :href="route('report.index', 'sales')"><i class='bx bx-radio-circle'></i>Sales Report
+                        </Link>
                     </li>
-                    <li :class="{ 'mm-active': route().current('report.index','renewal') }">
-                        <Link :href="route('report.index','renewal')"><i class='bx bx-radio-circle'></i>Renewal Report</Link>
+                    <li :class="{ 'mm-active': route().current('report.index', 'renewal') }">
+                        <Link :href="route('report.index', 'renewal')"><i class='bx bx-radio-circle'></i>Renewal Report
+                        </Link>
                     </li>
                     <!-- <li :class="{ 'mm-active': route().current('report.index','claims') }">
                         <Link :href="route('report.index','claims')"><i class='bx bx-radio-circle'></i>Claims Report</Link>
                     </li> -->
-                    <li :class="{ 'mm-active': route().current('report.index','outstanding') }">
-                        <Link :href="route('report.index','outstanding')"><i class='bx bx-radio-circle'></i>Outstanding Report</Link>
+                    <li :class="{ 'mm-active': route().current('report.index', 'outstanding') }">
+                        <Link :href="route('report.index', 'outstanding')"><i class='bx bx-radio-circle'></i>Outstanding
+                        Report</Link>
                     </li>
-                    <li :class="{ 'mm-active': route().current('report.index','commission-recovery') }">
-                        <Link :href="route('report.index','commission-recovery')"><i class='bx bx-radio-circle'></i>Commission Recovery Report</Link>
+                    <li :class="{ 'mm-active': route().current('report.index', 'commission-recovery') }">
+                        <Link :href="route('report.index', 'commission-recovery')"><i
+                            class='bx bx-radio-circle'></i>Commission Recovery Report</Link>
                     </li>
-                    <li :class="{ 'mm-active': route().current('report.index','commission-outstanding-recovery') }">
-                        <Link :href="route('report.index','commission-outstanding-recovery')"><i class='bx bx-radio-circle'></i>Commission Outstanding Recovery</Link>
+                    <li :class="{ 'mm-active': route().current('report.index', 'commission-outstanding-recovery') }">
+                        <Link :href="route('report.index', 'commission-outstanding-recovery')"><i
+                            class='bx bx-radio-circle'></i>Commission Outstanding Recovery</Link>
                     </li>
                 </ul>
             </li>
 
-
+            <li class="menu-label">Settings</li>
+            <li :class="{ 'mm-active': route().current('role.index') }">
+                <a :href="route('role.index')" class="">
+                    <div class="parent-icon">
+                        <i class="bx bx-category"></i>
+                    </div>
+                    <div class="menu-title">Roles & Permissions</div>
+                </a>
+            </li>
             <li :class="{ 'mm-active': route().current('error-logs.index') }">
-                        <Link :href="route('error-logs.index')"><i class='bx bx-radio-circle'></i>Excel Import</Link>
-                    </li>
+                <a :href="route('error-logs.index')" class="">
+                    <div class="parent-icon">
+                        <i class="bx bx-import"></i>
+                    </div>
+                    <div class="menu-title">Excel Import</div>
+                </a>
+            </li>
         </ul>
         <!--end navigation-->
     </div>

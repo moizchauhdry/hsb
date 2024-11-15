@@ -22,7 +22,7 @@ class DashboardController extends Controller
 
         $policies = Policy::count();
         $clients = User::role('client')->count();
-        $users = User::count();
+        $users = User::withoutRole('client')->count();
         $cob = BusinessClass::count();
 
         $data = [

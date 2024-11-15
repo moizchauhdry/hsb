@@ -5,7 +5,7 @@ import { ref, watch } from "vue";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import axios from 'axios';
-import PrimaryButton from "@/Components/PrimaryButton.vue";
+import SuccessButton from "@/Components/SuccessButton.vue";
 
 defineProps({
     policy: Object,
@@ -260,7 +260,7 @@ watch(() => form.gross_premium, calculatePremium);
 <template>
     <div class="col">
 
-        <PrimaryButton @click="create">Add Policy</PrimaryButton>
+        <SuccessButton @click="create" class="mr-1"> <i class="bx bx-plus text-lg"></i> Add Policy</SuccessButton>
 
         <div class="modal fade show" id="exampleLargeModal" tabindex="-1" aria-hidden="true" style="display: block;"
             v-if="modal">
@@ -431,14 +431,14 @@ watch(() => form.gross_premium, calculatePremium);
 
                                                 <div class="col-md-4">
                                                     <label for="input21"
-                                                        class="form-label">New/Renewal/Endorsment</label>
+                                                        class="form-label">New/Renewal/Endorsement</label>
 
                                                     <select id="input21" class="form-select"
                                                         v-model="form.orignal_endorsment">
 
                                                         <option value="new">New</option>
                                                         <option value="renewal">Renewal</option>
-                                                        <option value="endorsment">Endorsment</option>
+                                                        <option value="endorsment">Endorsement</option>
                                                         <option value="others">Others</option>
                                                     </select>
                                                     <InputError :message="form.errors.orignal_endorsment" />
@@ -452,8 +452,7 @@ watch(() => form.gross_premium, calculatePremium);
                                                 </div>
 
                                                 <div class="col-md-4">
-                                                    <label for="input13" class="form-label">Policy start
-                                                        period</label>
+                                                    <label for="input13" class="form-label">Inception Date</label>
                                                     <VueDatePicker v-model="form.policy_period_start"
                                                         :enable-time-picker="false" :show-time="false">
                                                     </VueDatePicker>
@@ -461,8 +460,7 @@ watch(() => form.gross_premium, calculatePremium);
                                                     <InputError :message="form.errors.policy_period_start" />
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <label for="input13" class="form-label">Policy end
-                                                        period</label>
+                                                    <label for="input13" class="form-label">Expiry Date</label>
                                                     <VueDatePicker v-model="form.policy_period_end"
                                                         :enable-time-picker="false" :show-time="false">
                                                     </VueDatePicker>

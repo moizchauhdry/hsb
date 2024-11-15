@@ -6,14 +6,17 @@ import { ref } from "vue";
 import Paginate from "@/Components/Paginate.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SuccessButton from "@/Components/SuccessButton.vue";
+import DangerButton from "@/Components/DangerButton.vue";
 
 defineProps({
     users: Object,
     roles: Object,
+    slug: Object,
 });
 
 const user_modal = ref(false);
 const edit_mode = ref(false);
+const slug = usePage().props.slug;
 
 const form = useForm({
     user_id: "",
@@ -94,7 +97,7 @@ const search_form = useForm({
 });
 
 const search = () => {
-    search_form.post(route("user.index"), {
+    search_form.post(route("user.index", slug), {
         preserveScroll: true,
         onSuccess: (response) => {
             // 
@@ -105,6 +108,12 @@ const search = () => {
         onFinish: () => { },
     });
 };
+
+const reset = () => {
+    search_form.search = "";
+    search();
+};
+
 </script>
 
 
@@ -132,9 +141,9 @@ const search = () => {
                     <div class="ms-auto">
                         <!-- CREATE & UPDATE MODAL -->
                         <div class="col">
-                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                data-bs-target="#exampleLargeModal" @click="create"><i
-                                    class="bx bx-plus"></i>Add</button>
+
+                            <PrimaryButton @click="create"><i class="bx bx-plus text-lg mr-1"></i>Add</PrimaryButton>
+
                             <div class="modal fade show" id="exampleLargeModal" tabindex="-1" aria-hidden="true"
                                 style="display: block;" v-if="user_modal">
                                 <div class="modal-dialog modal-md">
@@ -147,9 +156,10 @@ const search = () => {
                                             </div>
                                             <div class="modal-body">
                                                 <div class="row g-3">
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-6">
                                                         <label for="input21" class="form-label">Role</label>
-                                                        <select id="input21" class="form-select" v-model="form.role">
+                                                        <select id="input21" class="form-select text-capitalize"
+                                                            v-model="form.role">
                                                             <option value="">Choose...</option>
                                                             <template v-for="role in roles" :key="role.id">
                                                                 <option :value="role.id">{{ role.name }}</option>
@@ -157,7 +167,15 @@ const search = () => {
                                                         </select>
                                                         <InputError :message="form.errors.role" />
                                                     </div>
-                                                    <div class="col-md-8">
+                                                    <div class="col-md-6">
+                                                        <label for="input16" class="form-label">Type</label>
+                                                        <select id="input21" class="form-select" v-model="form.type">
+                                                            <option :value="1">Individual</option>
+                                                            <option :value="2">Business</option>
+                                                        </select>
+                                                        <InputError :message="form.errors.type" />
+                                                    </div>
+                                                    <div class="col-md-12">
                                                         <label for="input13" class="form-label">Name</label>
                                                         <div class="position-relative input-icon">
                                                             <input type="text" class="form-control" id="input13"
@@ -167,7 +185,7 @@ const search = () => {
                                                         </div>
                                                         <InputError :message="form.errors.name" />
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-12">
                                                         <label for="input13" class="form-label">Father Name</label>
                                                         <div class="position-relative input-icon">
                                                             <input type="text" class="form-control" id="input13"
@@ -177,7 +195,7 @@ const search = () => {
                                                         </div>
                                                         <InputError :message="form.errors.father_name" />
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-12">
                                                         <label for="input16" class="form-label">Email</label>
                                                         <div class="position-relative input-icon">
                                                             <input type="text" class="form-control" id="input16"
@@ -198,18 +216,11 @@ const search = () => {
                                                         <InputError :message="form.errors.phone" />
                                                     </div>
 
-                                                    <div class="col-md-6">
-                                                        <label for="input16" class="form-label">Type</label>
-                                                        <select id="input21" class="form-select" v-model="form.type">
-                                                            <option :value="1">Individual</option>
-                                                            <option :value="2">Business</option>
-                                                        </select>
-                                                        <InputError :message="form.errors.type" />
-                                                    </div>
+
 
                                                     <div class="col-md-6">
                                                         <label for="input16" class="form-label">{{ form.type == 1 ?
-                                                            'CNIC': "NTN"}} #</label>
+                                                            'CNIC' : "NTN" }} #</label>
                                                         <div class="position-relative input-icon">
                                                             <input type="text" class="form-control" id="input16"
                                                                 :placeholder="form.type == 1 ? 'xxxxx-xxxxxxx-x' : ''"
@@ -339,16 +350,17 @@ const search = () => {
                     <div class="card-body">
 
                         <form @submit.prevent="search">
-                            <div class="row mb-3">
+                            <div class="row mb-3 d-flex align-items-center">
                                 <div class="col-md-3">
                                     <input type="text" v-model="search_form.search" class="form-control"
                                         placeholder="Search">
                                 </div>
                                 <div class="col-md-3">
-                                    <SuccessButton class="px-4 py-1" :class="{ 'opacity-25': form.processing }"
+                                    <SuccessButton class="px-4 py-1 mr-1" :class="{ 'opacity-25': form.processing }"
                                         :disabled="form.processing">
                                         Search
                                     </SuccessButton>
+                                    <DangerButton class="px-4 py-1 mr-1" @click="reset()">Cancel</DangerButton>
                                 </div>
                             </div>
                         </form>
@@ -358,9 +370,9 @@ const search = () => {
                                 <thead>
                                     <tr class="text-uppercase">
                                         <th>Sr.No.</th>
-                                        <th>Code</th>
+                                        <th v-if="slug == 'clients'">Code</th>
                                         <th>Name</th>
-                                        <th>Email</th>
+                                        <th v-if="slug == 'users'">Email</th>
                                         <th>Role</th>
                                         <th>Register Date</th>
                                         <th></th>
@@ -370,18 +382,14 @@ const search = () => {
                                     <template v-for="(user, index) in users.data">
                                         <tr>
                                             <td>{{ (users.current_page - 1) * users.per_page + index + 1 }}</td>
-                                            <td>
-                                                {{ user.code }}
-                                            </td>
+                                            <td v-if="slug == 'clients'">{{ user.code }}</td>
                                             <td class="text-capitalize">{{ user.name }}</td>
-                                            <td>
-                                                {{ user.email }}
-                                            </td>
+                                            <td v-if="slug == 'users'">{{ user.email }}</td>
                                             <td class="text-capitalize">{{ user.role }}</td>
                                             <td>{{ user.created_at }}</td>
                                             <td>
-                                                <button type="button" @click="edit(user)" title="Edit"
-                                                    clas="btn btn-primary"><i class="bx bx-edit"></i></button>
+                                                <PrimaryButton @click="edit(user)" title="Edit"><i
+                                                        class="bx bx-edit mr-1"></i> Edit</PrimaryButton>
                                             </td>
                                         </tr>
                                     </template>
