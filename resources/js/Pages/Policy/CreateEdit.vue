@@ -5,7 +5,7 @@ import { ref, watch } from "vue";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import axios from 'axios';
-import PrimaryButton from "@/Components/PrimaryButton.vue";
+import SuccessButton from "@/Components/SuccessButton.vue";
 
 defineProps({
     policy: Object,
@@ -260,7 +260,7 @@ watch(() => form.gross_premium, calculatePremium);
 <template>
     <div class="col">
 
-        <PrimaryButton @click="create">Add Policy</PrimaryButton>
+        <SuccessButton @click="create" class="mr-1"> <i class="bx bx-plus text-lg"></i> Add Policy</SuccessButton>
 
         <div class="modal fade show" id="exampleLargeModal" tabindex="-1" aria-hidden="true" style="display: block;"
             v-if="modal">

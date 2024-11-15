@@ -54,7 +54,7 @@ const close = () => {
 </script>
 
 <template>
-    <PrimaryButton @click="create">Import</PrimaryButton>
+    <PrimaryButton @click="create"><i class="bx bx-import mr-1"></i> Excel Import</PrimaryButton>
 
     <Modal :show="modal" @close="closeModal">
         <form @submit.prevent="edit_mode ? update() : submit()" enctype="multipart/form-data">

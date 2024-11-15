@@ -112,14 +112,12 @@ const reset = () => {
                         <!-- ref -->
                     </div>
 
-                    <div class="ms-auto">
+                    <div class="ms-auto" style="display: flex; justify-content: space-between; align-items: center;">
                         <CreateEdit v-bind="$props" ref="create_edit_ref"></CreateEdit>
                         <Import v-bind="$props"></Import>
                         <ReportFilter v-bind="$props" :filter_route="'policy'"></ReportFilter>
                     </div>
                 </div>
-
-
 
                 <div class="card">
                     <div class="card-body">
