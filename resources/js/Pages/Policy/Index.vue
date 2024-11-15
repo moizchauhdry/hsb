@@ -142,9 +142,9 @@ const reset = () => {
                                     <tr>
                                         <th class="px-2">Sr #</th>
                                         <th class="px-2">Policy ID</th>
+                                        <th class="px-2">Policy No</th>
                                         <!-- <th class="px-2">Insurer Name</th> -->
                                         <th class="px-2">Client Name</th>
-                                        <th class="px-2">Policy No</th>
                                         <!-- <th class="px-2">Leader</th> -->
                                         <!-- <th class="px-2">Leader Policy No</th> -->
                                         <!-- <th class="px-2">Lead Type</th> -->
@@ -173,9 +173,9 @@ const reset = () => {
                                             <td class="px-2">{{ (policies.current_page - 1) * policies.per_page + index
                                                 + 1 }}</td>
                                             <td class="px-2">{{ policy.id }}</td>
+                                            <td class="px-2">{{ policy.data.policy_no }}</td>
                                             <!-- <td class="px-2">{{ policy.insurer_name }}</td> -->
                                             <td class="px-2">{{ policy.client_name }}</td>
-                                            <td class="px-2">{{ policy.data.policy_no }}</td>
                                             <!-- <td class="px-2">{{ policy.data.leader_name }}</td> -->
                                             <!-- <td class="px-2">{{ policy.data.leader_policy_no }}</td> -->
                                             <!-- <td class="px-2">{{ policy.data.lead_type }}</td> -->

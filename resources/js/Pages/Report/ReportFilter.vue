@@ -100,7 +100,8 @@ const submit = () => {
     };
 
     const queryParams = new URLSearchParams(filters).toString();
-    const urlWithFilters = `${route("report.index", slug)}?${queryParams}`;
+    // const urlWithFilters = `${route("report.index", slug)}?${queryParams}`;
+    const urlWithFilters = `${route("policy.index")}?${queryParams}`;
 
     form.post(urlWithFilters, {
         preserveScroll: true,
