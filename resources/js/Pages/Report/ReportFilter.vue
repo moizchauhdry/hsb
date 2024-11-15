@@ -12,9 +12,12 @@ import "@vuepic/vue-datepicker/dist/main.css";
 import { onMounted } from "vue";
 import moment from 'moment';
 
-
-defineProps({
-    data: Array
+const props = defineProps({
+    data: Array,
+    filter_route: {
+        type: String,
+        required: true
+    }
 });
 
 const modal = ref(false);
@@ -22,6 +25,8 @@ const edit = ref(false);
 const data = usePage().props.data;
 const slug = usePage().props.slug;
 const filter = usePage().props.filter;
+const filter_route = usePage().props.filter_route;
+console.log(usePage().props)
 
 var months = [
     { id: 1, name: "January" },
@@ -100,8 +105,16 @@ const submit = () => {
     };
 
     const queryParams = new URLSearchParams(filters).toString();
-    // const urlWithFilters = `${route("report.index", slug)}?${queryParams}`;
-    const urlWithFilters = `${route("policy.index")}?${queryParams}`;
+
+    var urlWithFilters;
+    
+    if (props.filter_route === 'report') {
+        urlWithFilters = `${route("report.index", slug)}?${queryParams}`;
+    }
+
+    if (props.filter_route === 'policy') {
+        urlWithFilters = `${route("policy.index")}?${queryParams}`;
+    }
 
     form.post(urlWithFilters, {
         preserveScroll: true,

@@ -115,7 +115,7 @@ const reset = () => {
                     <div class="ms-auto">
                         <CreateEdit v-bind="$props" ref="create_edit_ref"></CreateEdit>
                         <Import v-bind="$props"></Import>
-                        <ReportFilter v-bind="$props"></ReportFilter>
+                        <ReportFilter v-bind="$props" :filter_route="'policy'"></ReportFilter>
                     </div>
                 </div>
 
