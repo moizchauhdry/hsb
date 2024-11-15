@@ -431,14 +431,14 @@ watch(() => form.gross_premium, calculatePremium);
 
                                                 <div class="col-md-4">
                                                     <label for="input21"
-                                                        class="form-label">New/Renewal/Endorsment</label>
+                                                        class="form-label">New/Renewal/Endorsement</label>
 
                                                     <select id="input21" class="form-select"
                                                         v-model="form.orignal_endorsment">
 
                                                         <option value="new">New</option>
                                                         <option value="renewal">Renewal</option>
-                                                        <option value="endorsment">Endorsment</option>
+                                                        <option value="endorsment">Endorsement</option>
                                                         <option value="others">Others</option>
                                                     </select>
                                                     <InputError :message="form.errors.orignal_endorsment" />
@@ -452,8 +452,7 @@ watch(() => form.gross_premium, calculatePremium);
                                                 </div>
 
                                                 <div class="col-md-4">
-                                                    <label for="input13" class="form-label">Policy start
-                                                        period</label>
+                                                    <label for="input13" class="form-label">Inception Date</label>
                                                     <VueDatePicker v-model="form.policy_period_start"
                                                         :enable-time-picker="false" :show-time="false">
                                                     </VueDatePicker>
@@ -461,8 +460,7 @@ watch(() => form.gross_premium, calculatePremium);
                                                     <InputError :message="form.errors.policy_period_start" />
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <label for="input13" class="form-label">Policy end
-                                                        period</label>
+                                                    <label for="input13" class="form-label">Expiry Date</label>
                                                     <VueDatePicker v-model="form.policy_period_end"
                                                         :enable-time-picker="false" :show-time="false">
                                                     </VueDatePicker>

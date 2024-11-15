@@ -154,8 +154,8 @@ const search = () => {
                                         <th class="px-2">Department Name</th>
                                         <th class="px-2">COB Name</th>
                                         <th class="px-2">Date of Issuance</th>
-                                        <th class="px-2">Policy Period Start</th>
-                                        <th class="px-2">Policy Period End</th>
+                                        <th class="px-2">Inception Date</th>
+                                        <th class="px-2">Expiry Date</th>
                                         <th class="px-2">Sum Insured</th>
                                         <th class="px-2">Gross Premium (100%)</th>
                                         <th class="px-2">Gross Premium</th>

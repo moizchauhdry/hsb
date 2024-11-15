@@ -161,8 +161,8 @@ const format_date = (date) => {
                             <InputLabel for="" value="Date Type" class="mb-1" />
                             <select v-model="form.date_type" class="form-control">
                                 <option value="date_of_issuance">Date of Issuance</option>
-                                <option value="policy_period_start">Policy Period Start</option>
-                                <option value="policy_period_end">Policy Period End</option>
+                                <option value="policy_period_start">Inception Date</option>
+                                <option value="policy_period_end">Expiry Date</option>
                                 <option value="created_at">Created At</option>
                             </select>
                         </div>

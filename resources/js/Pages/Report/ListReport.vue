@@ -133,8 +133,8 @@ const exportExcel = () => {
                                         <th class="px-2">Policy Type</th>
 
                                         <template v-if="slug == 'renewal' || slug == 'outstanding'">
-                                            <th class="px-2">Policy Period Start</th>
-                                            <th class="px-2">Policy Period End</th>
+                                            <th class="px-2">Inception Date</th>
+                                            <th class="px-2">Expiry Date</th>
                                             <th class="px-2">Date of Issuance</th>
                                         </template>
 

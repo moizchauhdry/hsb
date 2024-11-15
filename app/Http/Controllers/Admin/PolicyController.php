@@ -116,10 +116,10 @@ class PolicyController extends Controller
             ], [
                 'date_of_insurance.required' => 'The insurance date is required.',
                 'date_of_insurance.date' => 'The insurance date must be a valid date.',
-                'policy_period_start.required' => 'The policy start period is required.',
-                'policy_period_start.date' => 'The policy start period must be a valid date.',
-                'policy_period_end.required' => 'The policy end period is required.',
-                'policy_period_end.date' => 'The policy end period must be a valid date.',
+                'policy_period_start.required' => 'The Inception Date is required.',
+                'policy_period_start.date' => 'The Inception Date must be a valid date.',
+                'policy_period_end.required' => 'The Expiry Date is required.',
+                'policy_period_end.date' => 'The Expiry Date must be a valid date.',
             ]);
         }
 

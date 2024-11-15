@@ -241,10 +241,10 @@ const format_number = (number) => {
                                     <td>{{ policy?.department?.name }}</td>
                                 </tr>
                                 <tr>
-                                    <th>Policy Period Start</th>
+                                    <th>Inception Date</th>
                                     <td>{{ policy.policy_period_start }}</td>
 
-                                    <th>Policy Period Start</th>
+                                    <th>Expiry Date</th>
                                     <td>{{ policy.policy_period_end }}</td>
                                 </tr>
                                 <tr>
