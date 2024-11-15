@@ -41,17 +41,28 @@ class PolicyController extends Controller
 {
     public function index(Request $request)
     {
+        $current_month = $request->month ?? Carbon::now()->format('m');
+        $current_year = $request->year ?? Carbon::now()->format('Y');
+
         $filter = [
-            'search_type' => $request->search_type,
-            'search_value' => $request->search_value,
+            'search' => $request->search,
+
+            'date_type' => $request->date_type,
+            'month' => $current_month,
+            'month_name' => getMonthName($current_month),
+            'year' => $current_year,
+            'policy_type' => $request->policy_type,
+
+            'client' => $request->client,
+            'agency' => $request->agency,
+            'insurer' => $request->insurer,
+            'cob' => $request->cob,
         ];
 
-        $policies = Policy::query()
-            ->when($filter['search_type'] == 1 && $filter['search_value'], function ($q) use ($filter) {
-                $q->where('id', $filter['search_value']);
-            })
-            ->when($filter['search_type'] == 2 && $filter['search_value'], function ($q) use ($filter) {
-                $q->where('policy_no', 'LIKE', '%' . $filter['search_value'] . '%');
+        $policies = Policy::policiesList($filter)
+            ->when($filter['search'], function ($q) use ($filter) {
+                $q->where('id', $filter['search']);
+                $q->orWhere('policy_no', $filter['search']);
             })
             ->orderBy('id', 'desc')
             ->paginate(25)
@@ -70,8 +81,23 @@ class PolicyController extends Controller
 
             ]);
 
+
+            $clients = User::role('client')->get();
+            $insurers = Insurance::get();
+            $agencies = Agency::get();
+            $cobs = BusinessClass::get();
+    
+            $data = [
+                'clients' => $clients,
+                'insurers' => $insurers,
+                'agencies' => $agencies,
+                'cobs' => $cobs,
+            ];
+
         return Inertia::render('Policy/Index', [
-            'policies' => $policies
+            'policies' => $policies,
+            'filter' => $filter,
+            'data' => $data,
         ]);
     }
 

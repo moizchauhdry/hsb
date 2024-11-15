@@ -13,10 +13,13 @@ import SuccessButton from "@/Components/SuccessButton.vue";
 import DangerButton from "@/Components/DangerButton.vue";
 import Multiselect from "@vueform/multiselect";
 import InputLabel from "@/Components/InputLabel.vue";
+import ReportFilter from "../Report/ReportFilter.vue";
 
 defineProps({
     policies: Array,
     policy: Object,
+    filter: Object,
+    data: Array,
 });
 
 const create_edit_ref = ref(null);
@@ -61,8 +64,7 @@ var search_types = [
 ];
 
 const search_form = useForm({
-    search_type: 1,
-    search_value: ""
+    search: ""
 });
 
 const search = () => {
@@ -78,6 +80,11 @@ const search = () => {
     });
 };
 
+const reset = () => {
+    search_form.search = "";
+    search();
+};
+
 </script>
 
 <template>
@@ -88,51 +95,43 @@ const search = () => {
         <!--start page wrapper -->
         <div class="page-wrapper">
             <div class="page-content">
-                <!--breadcrumb-->
-                <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-                    <div class="breadcrumb-title pe-3">Policies </div>
+                <div class="page-breadcrumb d-sm-flex align-items-center mb-3">
+                    <div class="breadcrumb-title pe-3">Manage Reports</div>
                     <div class="ps-3">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb mb-0 p-0">
                                 <li class="breadcrumb-item"><a href="javascript:;">
                                         <i class="bx bx-home-alt"></i></a>
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Policies List</li>
+                                <li class="breadcrumb-item active text-capitalize" aria-current="page">Manage Policies
+                                </li>
                             </ol>
                         </nav>
                     </div>
                     <div class="ms-auto">
-                        <div class="d-lg-flex align-items-center mb-4 gap-3">
-                            <div class="ms-auto d-flex" style="width: 210px;">
-                                <CreateEdit v-bind="$props" ref="create_edit_ref"></CreateEdit>
-                                <Import v-bind="$props"></Import>
+                        <!-- ref -->
+                    </div>
 
-                            </div>
-                        </div>
+                    <div class="ms-auto">
+                        <CreateEdit v-bind="$props" ref="create_edit_ref"></CreateEdit>
+                        <Import v-bind="$props"></Import>
+                        <ReportFilter v-bind="$props"></ReportFilter>
                     </div>
                 </div>
+
+
 
                 <div class="card">
                     <div class="card-body">
                         <form @submit.prevent="search">
-                            <div class="row mb-3">
+                            <div class="row mb-3 d-flex align-items-center">
                                 <div class="col-md-3">
-                                    <!-- <InputLabel for="search_type" value="Search Type" /> -->
-                                    <Multiselect :searchable="false" v-model="search_form.search_type"
-                                        :options="search_types">
-                                    </Multiselect>
+                                    <input type="text" v-model="search_form.search" class="form-control"
+                                        placeholder="Search">
                                 </div>
                                 <div class="col-md-3">
-                                    <!-- <InputLabel for="search_value" value="Search Value" /> -->
-                                    <input type="text" v-model="search_form.search_value" style="padding: 8px;"
-                                        class="form-control" placeholder="Search">
-                                </div>
-                                <div class="col-md-3">
-                                    <SuccessButton style="margin-top: 3.5px;" class="px-4 py-1"
-                                        :class="{ 'opacity-25': search_form.processing }"
-                                        :disabled="search_form.processing">
-                                        Search
-                                    </SuccessButton>
+                                    <SuccessButton class="px-4 py-1 mr-1">Search</SuccessButton>
+                                    <DangerButton class="px-4 py-1 mr-1" @click="reset()">Cancel</DangerButton>
                                 </div>
                             </div>
                         </form>
@@ -202,7 +201,7 @@ const search = () => {
                                                 </SecondaryButton>
 
                                                 <Link :href="route('policy.detail', policy.id)" class="mx-1">
-                                                <SecondaryButton> 
+                                                <SecondaryButton>
                                                     <i class="bx bxs-collection"></i>
                                                 </SecondaryButton>
                                                 </Link>

@@ -54,7 +54,7 @@ class Policy extends Model
     // *************************** ****** ***********************
     // *************************** SCOPES ***********************
     // *************************** ****** ***********************
-    public function scopePoliciesList($query, $filter, $slug)
+    public function scopePoliciesList($query, $filter, $slug = null)
     {
         $query->with(['client', 'insurer', 'agency', 'cob']);
 
