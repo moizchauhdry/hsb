@@ -23,8 +23,8 @@ defineProps({
                                         <p class="mb-0 text-secondary">Total Users</p>
                                         <h4 class="my-1">{{ data.users }}</h4>
                                     </div>
-                                    <div class="widgets-icons bg-light-success text-success ms-auto"><i
-                                            class='bx bx-dollar'></i>
+                                    <div class="widgets-icons bg-light-info text-info ms-auto"><i
+                                            class='bx bx-user'></i>
                                     </div>
                                 </div>
                             </div>
@@ -38,7 +38,7 @@ defineProps({
                                         <p class="mb-0 text-secondary">Total Clients</p>
                                         <h4 class="my-1">{{ data.clients }}</h4>
                                     </div>
-                                    <div class="widgets-icons bg-light-info text-info ms-auto"><i
+                                    <div class="widgets-icons bg-light-warning text-warning ms-auto"><i
                                             class="bx bxs-group"></i>
                                     </div>
                                 </div>
@@ -53,8 +53,8 @@ defineProps({
                                         <p class="mb-0 text-secondary">Total Policies</p>
                                         <h4 class="my-1">{{ data.policies }}</h4>
                                     </div>
-                                    <div class="widgets-icons bg-light-danger text-danger ms-auto"><i
-                                            class="bx bxs-binoculars"></i>
+                                    <div class="widgets-icons bg-light-success text-success ms-auto"><i
+                                            class="bx bx-poll"></i>
                                     </div>
                                 </div>
                             </div>
@@ -65,11 +65,11 @@ defineProps({
                             <div class="card-body">
                                 <div class="d-flex align-items-center">
                                     <div>
-                                        <p class="mb-0 text-secondary">Business Classes</p>
+                                        <p class="mb-0 text-secondary">Class of Business</p>
                                         <h4 class="my-1">{{data.cob}}</h4>
                                     </div>
-                                    <div class="widgets-icons bg-light-warning text-warning ms-auto"><i
-                                            class="bx bx-line-chart-down"></i>
+                                    <div class="widgets-icons bg-light-danger text-danger ms-auto"><i
+                                            class="bx bx-layer"></i>
                                     </div>
                                 </div>
                             </div>

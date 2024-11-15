@@ -11,20 +11,27 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, $slug)
     {
         $filter = [
             'search' => $request->search,
         ];
 
-        $users = User::orderBy('id', 'desc')
+        $users = User::query()
+            ->when($slug == 'users', function ($q) {
+                $q->withoutRole('client');
+            })
+            ->when($slug == 'clients', function ($q) {
+                $q->role('client');
+            })
+            ->orderBy('id', 'desc')
             ->when($filter['search'], function ($q) use ($filter) {
                 $q->where('id', $filter['search']);
                 $q->orWhere('name', 'LIKE', '%' . $filter['search'] . '%');
             })
             ->paginate(10)
             ->withQueryString()
-            ->through(fn ($user) => [
+            ->through(fn($user) => [
                 'id' => $user->id,
                 'code' => $user->code,
                 'name' => $user->name,
@@ -50,6 +57,7 @@ class UserController extends Controller
         return Inertia::render('User/Index', [
             'users' => $users,
             'roles' => $roles,
+            'slug' => $slug,
         ]);
     }
 
