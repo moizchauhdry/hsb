@@ -26,8 +26,9 @@ class UserController extends Controller
             })
             ->orderBy('id', 'desc')
             ->when($filter['search'], function ($q) use ($filter) {
-                $q->where('id', $filter['search']);
+                $q->where('code', $filter['search']);
                 $q->orWhere('name', 'LIKE', '%' . $filter['search'] . '%');
+                $q->orWhere('email', 'LIKE', '%' . $filter['search'] . '%');
             })
             ->paginate(10)
             ->withQueryString()

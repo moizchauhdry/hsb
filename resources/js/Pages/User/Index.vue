@@ -6,6 +6,7 @@ import { ref } from "vue";
 import Paginate from "@/Components/Paginate.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SuccessButton from "@/Components/SuccessButton.vue";
+import DangerButton from "@/Components/DangerButton.vue";
 
 defineProps({
     users: Object,
@@ -15,6 +16,7 @@ defineProps({
 
 const user_modal = ref(false);
 const edit_mode = ref(false);
+const slug = usePage().props.slug;
 
 const form = useForm({
     user_id: "",
@@ -95,7 +97,7 @@ const search_form = useForm({
 });
 
 const search = () => {
-    search_form.post(route("user.index"), {
+    search_form.post(route("user.index", slug), {
         preserveScroll: true,
         onSuccess: (response) => {
             // 
@@ -106,6 +108,12 @@ const search = () => {
         onFinish: () => { },
     });
 };
+
+const reset = () => {
+    search_form.search = "";
+    search();
+};
+
 </script>
 
 
@@ -133,8 +141,8 @@ const search = () => {
                     <div class="ms-auto">
                         <!-- CREATE & UPDATE MODAL -->
                         <div class="col">
-                            
-                            <PrimaryButton  @click="create"><i class="bx bx-plus text-lg mr-1"></i>Add</PrimaryButton>
+
+                            <PrimaryButton @click="create"><i class="bx bx-plus text-lg mr-1"></i>Add</PrimaryButton>
 
                             <div class="modal fade show" id="exampleLargeModal" tabindex="-1" aria-hidden="true"
                                 style="display: block;" v-if="user_modal">
@@ -150,7 +158,8 @@ const search = () => {
                                                 <div class="row g-3">
                                                     <div class="col-md-6">
                                                         <label for="input21" class="form-label">Role</label>
-                                                        <select id="input21" class="form-select text-capitalize" v-model="form.role">
+                                                        <select id="input21" class="form-select text-capitalize"
+                                                            v-model="form.role">
                                                             <option value="">Choose...</option>
                                                             <template v-for="role in roles" :key="role.id">
                                                                 <option :value="role.id">{{ role.name }}</option>
@@ -207,11 +216,11 @@ const search = () => {
                                                         <InputError :message="form.errors.phone" />
                                                     </div>
 
-                                                 
+
 
                                                     <div class="col-md-6">
                                                         <label for="input16" class="form-label">{{ form.type == 1 ?
-                                                            'CNIC': "NTN"}} #</label>
+                                                            'CNIC' : "NTN" }} #</label>
                                                         <div class="position-relative input-icon">
                                                             <input type="text" class="form-control" id="input16"
                                                                 :placeholder="form.type == 1 ? 'xxxxx-xxxxxxx-x' : ''"
@@ -341,16 +350,17 @@ const search = () => {
                     <div class="card-body">
 
                         <form @submit.prevent="search">
-                            <div class="row mb-3">
+                            <div class="row mb-3 d-flex align-items-center">
                                 <div class="col-md-3">
                                     <input type="text" v-model="search_form.search" class="form-control"
                                         placeholder="Search">
                                 </div>
                                 <div class="col-md-3">
-                                    <SuccessButton class="px-4 py-1" :class="{ 'opacity-25': form.processing }"
+                                    <SuccessButton class="px-4 py-1 mr-1" :class="{ 'opacity-25': form.processing }"
                                         :disabled="form.processing">
                                         Search
                                     </SuccessButton>
+                                    <DangerButton class="px-4 py-1 mr-1" @click="reset()">Cancel</DangerButton>
                                 </div>
                             </div>
                         </form>
@@ -378,7 +388,8 @@ const search = () => {
                                             <td class="text-capitalize">{{ user.role }}</td>
                                             <td>{{ user.created_at }}</td>
                                             <td>
-                                                <PrimaryButton @click="edit(user)" title="Edit"><i class="bx bx-edit mr-1"></i> Edit</PrimaryButton>
+                                                <PrimaryButton @click="edit(user)" title="Edit"><i
+                                                        class="bx bx-edit mr-1"></i> Edit</PrimaryButton>
                                             </td>
                                         </tr>
                                     </template>
