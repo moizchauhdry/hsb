@@ -10,6 +10,7 @@ import SecondaryButton from "@/Components/SecondaryButton.vue";
 import Paginate from "@/Components/Paginate.vue";
 import Swal from 'sweetalert2';
 import SuccessButton from "@/Components/SuccessButton.vue";
+import DangerButton from "@/Components/DangerButton.vue";
 import Multiselect from "@vueform/multiselect";
 import InputLabel from "@/Components/InputLabel.vue";
 
@@ -137,75 +138,78 @@ const search = () => {
                         </form>
 
                         <div class="table-responsive">
-                            <table class="table table-bordered table-sm text-uppercase" style="font-size:12px">
+                            <table class="table table-bordered table-sm text-uppercase">
                                 <thead class="table-light">
                                     <tr>
                                         <th class="px-2">Sr #</th>
                                         <th class="px-2">Policy ID</th>
-                                        <th class="px-2">Insurer Name</th>
+                                        <!-- <th class="px-2">Insurer Name</th> -->
                                         <th class="px-2">Client Name</th>
                                         <th class="px-2">Policy No</th>
-                                        <th class="px-2">Leader</th>
-                                        <th class="px-2">Leader Policy No</th>
-                                        <th class="px-2">Lead Type</th>
+                                        <!-- <th class="px-2">Leader</th> -->
+                                        <!-- <th class="px-2">Leader Policy No</th> -->
+                                        <!-- <th class="px-2">Lead Type</th> -->
                                         <th class="px-2">Agency Name</th>
-                                        <th class="px-2">Agency Code</th>
-                                        <th class="px-2">Child Agency</th>
-                                        <th class="px-2">Department Name</th>
+                                        <!-- <th class="px-2">Agency Code</th> -->
+                                        <!-- <th class="px-2">Child Agency</th> -->
+                                        <!-- <th class="px-2">Department Name</th> -->
                                         <th class="px-2">COB Name</th>
                                         <th class="px-2">Issuance Date</th>
                                         <th class="px-2">Inception Date</th>
                                         <th class="px-2">Expiry Date</th>
-                                        <th class="px-2">Sum Insured</th>
+                                        <!-- <th class="px-2">Sum Insured</th>
                                         <th class="px-2">Gross Premium (100%)</th>
                                         <th class="px-2">Gross Premium</th>
                                         <th class="px-2">Net Premium (100%)</th>
                                         <th class="px-2">Net Premium</th>
                                         <th class="px-2">Rate %</th>
                                         <th class="px-2">Brokerage %</th>
-                                        <th class="px-2">Brokerage Amount</th>
-                                        <th class="px-2"></th>
+                                        <th class="px-2">Brokerage Amount</th> -->
+                                        <th class="px-2">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <template v-for="(policy, index) in policies.data">
                                         <tr>
-                                            <td class="px-2">{{ (policies.current_page - 1) * policies.per_page + index + 1 }}</td>
+                                            <td class="px-2">{{ (policies.current_page - 1) * policies.per_page + index
+                                                + 1 }}</td>
                                             <td class="px-2">{{ policy.id }}</td>
-                                            <td class="px-2">{{ policy.insurer_name }}</td>
+                                            <!-- <td class="px-2">{{ policy.insurer_name }}</td> -->
                                             <td class="px-2">{{ policy.client_name }}</td>
                                             <td class="px-2">{{ policy.data.policy_no }}</td>
-                                            <td class="px-2">{{ policy.data.leader_name }}</td>
-                                            <td class="px-2">{{ policy.data.leader_policy_no }}</td>
-                                            <td class="px-2">{{ policy.data.lead_type }}</td>
+                                            <!-- <td class="px-2">{{ policy.data.leader_name }}</td> -->
+                                            <!-- <td class="px-2">{{ policy.data.leader_policy_no }}</td> -->
+                                            <!-- <td class="px-2">{{ policy.data.lead_type }}</td> -->
                                             <td class="px-2">{{ policy.agency_name }}</td>
-                                            <td class="px-2">{{ policy.data.agency_code }}</td>
-                                            <td class="px-2">{{ policy.data.child_agency_name }}</td>
-                                            <td class="px-2">{{ policy.department_name }}</td>
+                                            <!-- <td class="px-2">{{ policy.data.agency_code }}</td> -->
+                                            <!-- <td class="px-2">{{ policy.data.child_agency_name }}</td> -->
+                                            <!-- <td class="px-2">{{ policy.department_name }}</td> -->
                                             <td class="px-2">{{ policy.cob_name }}</td>
-                                            <td class="px-2">{{ policy.data.date_of_issuance}}</td>
+                                            <td class="px-2">{{ policy.data.date_of_issuance }}</td>
                                             <td class="px-2">{{ policy.data.policy_period_start }}</td>
                                             <td class="px-2">{{ policy.data.policy_period_end }}</td>
-                                            <td class="px-2">{{ policy.data.sum_insured }}</td>
+                                            <!-- <td class="px-2">{{ policy.data.sum_insured }}</td>
                                             <td class="px-2">{{ policy.data.gross_premium_100 }}</td>
                                             <td class="px-2">{{ policy.data.gross_premium }}</td>
                                             <td class="px-2">{{ policy.data.net_premium_100 }}</td>
                                             <td class="px-2">{{ policy.data.net_premium }}</td>
                                             <td class="px-2">{{ policy.data.rate_percentage }}</td>
                                             <td class="px-2">{{ policy.data.brokerage_percentage }}</td>
-                                            <td class="px-2">{{ policy.data.brokerage_amount }}</td>
+                                            <td class="px-2">{{ policy.data.brokerage_amount }}</td> -->
                                             <td class="px-2">
-                                                <SecondaryButton @click="edit(policy.id)">Edit <i
-                                                        class="bx bx-edit"></i></SecondaryButton>
+                                                <SecondaryButton @click="edit(policy.id)">
+                                                    <i class="bx bx-edit"></i>
+                                                </SecondaryButton>
 
                                                 <Link :href="route('policy.detail', policy.id)" class="mx-1">
-                                                <SecondaryButton>Detail <i class="bx bxs-collection"></i>
+                                                <SecondaryButton> 
+                                                    <i class="bx bxs-collection"></i>
                                                 </SecondaryButton>
                                                 </Link>
 
-                                                <SecondaryButton @click="confirmDelete(policy.id)">
-                                                    Delete <i class='bx bxs-folder-minus'></i>
-                                                </SecondaryButton>
+                                                <DangerButton @click="confirmDelete(policy.id)">
+                                                    <i class='bx bxs-trash'></i>
+                                                </DangerButton>
                                             </td>
                                         </tr>
                                     </template>
