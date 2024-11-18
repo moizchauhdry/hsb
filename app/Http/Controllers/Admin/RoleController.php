@@ -22,7 +22,7 @@ class RoleController extends Controller
                 'updated_at' => $role->updated_at->format('d-m-Y h:i A'),
             ]);
 
-        $permissions = Permission::get();
+        $permissions = Permission::orderBy('order','asc')->get();
 
         return Inertia::render('Role/Index', [
             'roles' => $roles,

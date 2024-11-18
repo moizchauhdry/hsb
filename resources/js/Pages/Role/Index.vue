@@ -122,7 +122,7 @@ const closeModal = () => {
                                                                     <h6 class="text-uppercase">{{ permission.name }}
                                                                     </h6>
                                                                 </div>
-                                                                <div class="form-check text-capitalize">
+                                                                <div class="form-check text-uppercase" v-if="permission.level != 1">
                                                                     <input class="form-check-input" type="checkbox"
                                                                         :value="permission.id" id="flexCheckDefault"
                                                                         v-model="form.permissions">

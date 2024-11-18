@@ -27,7 +27,7 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-Route::get('/dashboard', [DashboardController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'dashboard'])->middleware(['auth', 'verified','permission:analytics'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -42,10 +42,10 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('cobs')->group(function () {
         Route::any('/', [BusinessClassController::class, 'index'])->name('businessClass.index')->middleware('permission:cob_list');
-        Route::get('/create', [BusinessClassController::class, 'create'])->name('businessClass.create');
-        Route::post('/store', [BusinessClassController::class, 'store'])->name('businessClass.store');
-        Route::get('/edit/{id}', [BusinessClassController::class, 'edit'])->name('businessClass.edit');
-        Route::post('/update', [BusinessClassController::class, 'update'])->name('businessClass.update');
+        Route::get('/create', [BusinessClassController::class, 'create'])->name('businessClass.create')->middleware('permission:cob_create');;
+        Route::post('/store', [BusinessClassController::class, 'store'])->name('businessClass.store')->middleware('permission:cob_create');;
+        Route::get('/edit/{id}', [BusinessClassController::class, 'edit'])->name('businessClass.edit')->middleware('permission:cob_update');;
+        Route::post('/update', [BusinessClassController::class, 'update'])->name('businessClass.update')->middleware('permission:cob_update');;
     });
 
     Route::prefix('insurers')->group(function () {
@@ -57,26 +57,31 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::prefix('policy')->group(function () {
+
         Route::any('/', [PolicyController::class, 'index'])->name('policy.index')->middleware('permission:policy_list');
-        Route::get('/create', [PolicyController::class, 'create'])->name('policy.create');
-        Route::post('/store', [PolicyController::class, 'store'])->name('policy.store');
-        Route::get('/edit/{id}', [PolicyController::class, 'edit'])->name('policy.edit');
-        Route::post('/update', [PolicyController::class, 'update'])->name('policy.update');
-        Route::get('/detail/{id}', [PolicyController::class, 'detail'])->name('policy.detail');
-        Route::delete('/delete', [PolicyController::class, 'delete'])->name('policy.delete');
-        Route::post('/additional-notes', [PolicyController::class, 'additionalNotes'])->name('policy.additionalNotes');
-        Route::post('/uploads', [PolicyController::class, 'uploads'])->name('policy.uploads');
-        Route::get('/get/claim/{id}', [PolicyController::class, 'getClaim'])->name('policy.getClaim');
-        Route::post('/claims', [PolicyController::class, 'claims'])->name('policy.claims');
-        Route::post('/claim/update', [PolicyController::class, 'updateClaim'])->name('policy.updateClaim');
-        Route::get('/get/claim/upload/{id}', [PolicyController::class, 'getClaimUpload'])->name('policy.getClaimUpload');
-        Route::post('/claim/upload', [PolicyController::class, 'claimUpload'])->name('policy.claimUpload');
-        Route::post('/claim/note', [PolicyController::class, 'claimNote'])->name('policy.claimNote');
-        Route::get('/get/claim/note/{id}', [PolicyController::class, 'getClaimNote'])->name('policy.getClaimNote');
+        Route::get('/create', [PolicyController::class, 'create'])->name('policy.create')->middleware('permission:policy_create');
+        Route::post('/store', [PolicyController::class, 'store'])->name('policy.store')->middleware('permission:policy_create');
+        Route::get('/edit/{id}', [PolicyController::class, 'edit'])->name('policy.edit')->middleware('permission:policy_update');
+        Route::post('/update', [PolicyController::class, 'update'])->name('policy.update')->middleware('permission:policy_update');
+        Route::get('/detail/{id}', [PolicyController::class, 'detail'])->name('policy.detail')->middleware('permission:policy_detail');
+        Route::delete('/delete', [PolicyController::class, 'delete'])->name('policy.delete')->middleware('permission:policy_delete');
+
+        Route::post('/additional-notes', [PolicyController::class, 'additionalNotes'])->name('policy.additionalNotes')->middleware('permission:policy_note');
+        Route::post('/uploads', [PolicyController::class, 'uploads'])->name('policy.uploads')->middleware('permission:policy_upload');
+        
+        Route::get('/get/claim/{id}', [PolicyController::class, 'getClaim'])->name('policy.getClaim')->middleware('permission:policy_claim');
+        Route::post('/claims', [PolicyController::class, 'claims'])->name('policy.claims')->middleware('permission:policy_claim');
+        Route::post('/claim/update', [PolicyController::class, 'updateClaim'])->name('policy.updateClaim')->middleware('permission:policy_claim');;
+        Route::get('/get/claim/upload/{id}', [PolicyController::class, 'getClaimUpload'])->name('policy.getClaimUpload')->middleware('permission:policy_claim');;
+        Route::post('/claim/upload', [PolicyController::class, 'claimUpload'])->name('policy.claimUpload')->middleware('permission:policy_claim');;
+        Route::post('/claim/note', [PolicyController::class, 'claimNote'])->name('policy.claimNote')->middleware('permission:policy_claim');;
+        Route::get('/get/claim/note/{id}', [PolicyController::class, 'getClaimNote'])->name('policy.getClaimNote')->middleware('permission:policy_claim');;
+        
         Route::get('/getDepartmentByBusinessClass/{id}', [PolicyController::class, 'getDepartmentByBusinessClass'])->name('policy.getDepartmentByBusinessClass');
         Route::get('/getBusinessClassByPercent/{id}', [PolicyController::class, 'getBusinessClassByPercent'])->name('policy.getBusinessClassByPercent');
         Route::post('/installment-plan', [PolicyController::class, 'installmentPlan'])->name('policy.installmentPlan');
-        Route::post('/import', [PolicyController::class, 'importData'])->name('policy.import');
+
+        Route::post('/import', [PolicyController::class, 'importData'])->name('policy.import')->middleware('permission:excel_import');;
     });
 
     Route::prefix('roles')->group(function () {
@@ -91,7 +96,7 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::prefix('error-logs')->group(function () {
-        Route::any('/list', [ExcelImportController::class, 'index'])->name('error-logs.index');
+        Route::any('/list', [ExcelImportController::class, 'index'])->name('error-logs.index')->middleware('permission:excel_import');
     });
 });
 
