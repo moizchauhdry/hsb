@@ -2,10 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class PermissionSeeder extends Seeder
 {
@@ -89,5 +91,11 @@ class PermissionSeeder extends Seeder
                 'guard_name' => $permission['guard_name'],
             ]);
         }
+
+        $role = Role::updateOrCreate(['name' => 'admin'], ['name' => 'admin']);
+        Role::updateOrCreate(['name' => 'client'], ['name' => 'client']);
+
+        $permissions = Permission::pluck('id', 'id')->all();
+        $role->syncPermissions($permissions);
     }
 }
