@@ -12,7 +12,7 @@ class RoleController extends Controller
 {
     public function index()
     {
-        $roles = Role::orderBy('id', 'desc')->paginate(10)
+        $roles = Role::whereNotIn('id',[1,2])->orderBy('id', 'desc')->paginate(10)
             ->withQueryString()
             ->through(fn ($role) => [
                 'id' => $role->id,
@@ -22,7 +22,7 @@ class RoleController extends Controller
                 'updated_at' => $role->updated_at->format('d-m-Y h:i A'),
             ]);
 
-        $permissions = Permission::get();
+        $permissions = Permission::orderBy('order','asc')->get();
 
         return Inertia::render('Role/Index', [
             'roles' => $roles,
@@ -44,6 +44,12 @@ class RoleController extends Controller
     public function update(Request $request)
     {
         $role = Role::findOrFail($request->id);
+
+        if (auth()->id() != 1) {
+            if ($role->id == 1 || $role->id == 2) {
+                abort('403','Permission Denied.');
+            }
+        }
 
         $data = $request->validate([
             'id' => 'required',

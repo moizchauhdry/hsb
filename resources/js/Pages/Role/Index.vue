@@ -3,6 +3,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
 import InputError from "@/Components/InputError.vue";
 import { ref } from "vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 defineProps({
     roles: Object,
@@ -98,9 +99,9 @@ const closeModal = () => {
                                                     aria-label="Close" @click="closeModal"></button>
                                             </div>
                                             <div class="modal-body">
-                                                <div class="row g-3">
+                                                <div class="row">
                                                     <div class="col-md-12">
-                                                        <label for="input13" class="form-label">Role Name</label>
+                                                        <label for="input13" class="form-label">Role</label>
                                                         <div class="position-relative input-icon">
                                                             <input type="text" class="form-control" id="input13"
                                                                 placeholder="Name" v-model="form.name">
@@ -109,20 +110,31 @@ const closeModal = () => {
                                                         </div>
                                                         <InputError :message="form.errors.name" />
                                                     </div>
+                                                </div>
+                                                <div class="row mt-3">
                                                     <div class="col-md-12">
-                                                        <label for="input13" class="form-label">Role Name</label>
+                                                        <label for="input13" class="form-label">Permissions</label>
 
-                                                        <template v-for="permission in permissions"
-                                                            :key="permission.id">
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="checkbox"
-                                                                    :value="permission.id" id="flexCheckDefault"
-                                                                    v-model="form.permissions">
-                                                                <label class="form-check-label" for="flexCheckDefault">
-                                                                    {{ permission.name }}
-                                                                </label>
-                                                            </div>
-                                                        </template>
+                                                        <div class="card p-3" style="height: 400px;overflow-y: auto;">
+                                                            <template v-for="permission, index in permissions"
+                                                                :key="permission.id">
+                                                                <div v-if="permission.level == 1">
+                                                                    <hr v-if="index != 0">
+                                                                    <h6 class="text-uppercase">{{ permission.name }}
+                                                                    </h6>
+                                                                </div>
+                                                                <div class="form-check text-uppercase"
+                                                                    v-if="permission.level != 1">
+                                                                    <input class="form-check-input" type="checkbox"
+                                                                        :value="permission.id" id="flexCheckDefault"
+                                                                        v-model="form.permissions">
+                                                                    <label class="form-check-label"
+                                                                        for="flexCheckDefault">
+                                                                        {{ permission.name }}
+                                                                    </label>
+                                                                </div>
+                                                            </template>
+                                                        </div>
 
                                                         <InputError :message="form.errors.permissions" />
                                                     </div>
@@ -147,9 +159,9 @@ const closeModal = () => {
                     <div class="card-body">
                         <div class="table-responsive">
                             <table id="example" class="table table-striped table-bordered" style="width:100%">
-                                <thead>
+                                <thead class="text-uppercase">
                                     <tr>
-                                        <th>ID</th>
+                                        <th>SR.NO.</th>
                                         <th>Name</th>
                                         <th>Created Date</th>
                                         <th>Updated Date</th>
@@ -159,13 +171,13 @@ const closeModal = () => {
                                 <tbody>
                                     <template v-for="(role, index) in roles.data">
                                         <tr>
-                                            <td>{{ role.id }}</td>
+                                            <td>{{ ++index }}</td>
                                             <td>{{ role.name }}</td>
                                             <td>{{ role.created_at }}</td>
                                             <td>{{ role.updated_at }}</td>
                                             <td>
-                                                <button type="button" @click="edit(role)" title="Edit"
-                                                    clas="btn btn-primary"><i class="bx bx-edit"></i></button>
+                                                <PrimaryButton @click="edit(role)"><i class="bx bx-edit"></i>
+                                                </PrimaryButton>
                                             </td>
                                         </tr>
                                     </template>
