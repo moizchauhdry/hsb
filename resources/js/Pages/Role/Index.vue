@@ -3,6 +3,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
 import InputError from "@/Components/InputError.vue";
 import { ref } from "vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 defineProps({
     roles: Object,
@@ -122,7 +123,8 @@ const closeModal = () => {
                                                                     <h6 class="text-uppercase">{{ permission.name }}
                                                                     </h6>
                                                                 </div>
-                                                                <div class="form-check text-uppercase" v-if="permission.level != 1">
+                                                                <div class="form-check text-uppercase"
+                                                                    v-if="permission.level != 1">
                                                                     <input class="form-check-input" type="checkbox"
                                                                         :value="permission.id" id="flexCheckDefault"
                                                                         v-model="form.permissions">
@@ -157,9 +159,9 @@ const closeModal = () => {
                     <div class="card-body">
                         <div class="table-responsive">
                             <table id="example" class="table table-striped table-bordered" style="width:100%">
-                                <thead>
+                                <thead class="text-uppercase">
                                     <tr>
-                                        <th>ID</th>
+                                        <th>SR.NO.</th>
                                         <th>Name</th>
                                         <th>Created Date</th>
                                         <th>Updated Date</th>
@@ -169,13 +171,13 @@ const closeModal = () => {
                                 <tbody>
                                     <template v-for="(role, index) in roles.data">
                                         <tr>
-                                            <td>{{ role.id }}</td>
+                                            <td>{{ ++index }}</td>
                                             <td>{{ role.name }}</td>
                                             <td>{{ role.created_at }}</td>
                                             <td>{{ role.updated_at }}</td>
                                             <td>
-                                                <button type="button" @click="edit(role)" title="Edit"
-                                                    clas="btn btn-primary"><i class="bx bx-edit"></i></button>
+                                                <PrimaryButton @click="edit(role)"><i class="bx bx-edit"></i>
+                                                </PrimaryButton>
                                             </td>
                                         </tr>
                                     </template>

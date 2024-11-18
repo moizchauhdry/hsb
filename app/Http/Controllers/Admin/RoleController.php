@@ -12,7 +12,7 @@ class RoleController extends Controller
 {
     public function index()
     {
-        $roles = Role::orderBy('id', 'desc')->paginate(10)
+        $roles = Role::whereNotIn('id',[1,2])->orderBy('id', 'desc')->paginate(10)
             ->withQueryString()
             ->through(fn ($role) => [
                 'id' => $role->id,
