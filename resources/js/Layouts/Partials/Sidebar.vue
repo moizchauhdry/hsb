@@ -170,50 +170,50 @@ watch(
                 </li>
             </template>
 
-            <template v-if="permission.sales_report">
-                <li class="menu-label">Reports</li>
-                <li :class="{ 'mm-active': route().current('report.index') }">
-                    <a href="javascript:;" class="has-arrow" @click="toggleList('report')">
-                        <div class="parent-icon"><i class="bx bx-line-chart"></i>
-                        </div>
-                        <div class="menu-title">Manage Reports</div>
-                    </a>
-                    <ul :class="{ 'hidden': !isSubmenuVisible.report }">
-                        <li :class="{ 'mm-active': route().current('report.index', 'sales') }"
-                            v-if="permission.sales_report">
-                            <Link :href="route('report.index', 'sales')"><i class='bx bx-radio-circle'></i>Sales Report
-                            </Link>
-                        </li>
-                        <li :class="{ 'mm-active': route().current('report.index', 'renewal') }"
-                            v-if="permission.renewal_report">
-                            <Link :href="route('report.index', 'renewal')"><i class='bx bx-radio-circle'></i>Renewal
-                            Report</Link>
-                        </li>
-                        <li :class="{ 'mm-active': route().current('report.index', 'outstanding') }"
-                            v-if="permission.outstanding_report">
-                            <Link :href="route('report.index', 'outstanding')"><i
-                                class='bx bx-radio-circle'></i>Outstanding Report</Link>
-                        </li>
-                        <li :class="{ 'mm-active': route().current('report.index', 'commission-recovery') }"
-                            v-if="permission.commission_recovery_report">
-                            <Link :href="route('report.index', 'commission-recovery')"><i
-                                class='bx bx-radio-circle'></i>Commission Recovery Report</Link>
-                        </li>
-                        <li :class="{ 'mm-active': route().current('report.index', 'commission-outstanding-recovery') }"
-                            v-if="permission.commission_outstanding_recovery">
-                            <Link :href="route('report.index', 'commission-outstanding-recovery')"><i
-                                class='bx bx-radio-circle'></i>Commission Outstanding Recovery</Link>
-                        </li>
+            <li class="menu-label">Reports</li>
+            <li :class="{ 'mm-active': route().current('report.index') }">
+                <a href="javascript:;" class="has-arrow" @click="toggleList('report')">
+                    <div class="parent-icon"><i class="bx bx-line-chart"></i>
+                    </div>
+                    <div class="menu-title">Manage Reports</div>
+                </a>
+                <ul :class="{ 'hidden': !isSubmenuVisible.report }">
+                    <li :class="{ 'mm-active': route().current('report.index', 'sales') }"
+                        v-if="permission.sales_report">
+                        <Link :href="route('report.index', 'sales')"><i class='bx bx-radio-circle'></i>Sales Report
+                        </Link>
+                    </li>
+                    <li :class="{ 'mm-active': route().current('report.index', 'renewal') }"
+                        v-if="permission.renewal_report">
+                        <Link :href="route('report.index', 'renewal')"><i class='bx bx-radio-circle'></i>Renewal
+                        Report</Link>
+                    </li>
+                    <li :class="{ 'mm-active': route().current('report.index', 'outstanding') }"
+                        v-if="permission.outstanding_report">
+                        <Link :href="route('report.index', 'outstanding')"><i class='bx bx-radio-circle'></i>Outstanding
+                        Report
+                        </Link>
+                    </li>
+                    <li :class="{ 'mm-active': route().current('report.index', 'commission-recovery') }"
+                        v-if="permission.commission_recovery_report">
+                        <Link :href="route('report.index', 'commission-recovery')"><i
+                            class='bx bx-radio-circle'></i>Commission
+                        Recovery Report</Link>
+                    </li>
+                    <li :class="{ 'mm-active': route().current('report.index', 'commission-outstanding-recovery') }"
+                        v-if="permission.commission_outstanding_recovery">
+                        <Link :href="route('report.index', 'commission-outstanding-recovery')"><i
+                            class='bx bx-radio-circle'></i>Commission Outstanding Recovery</Link>
+                    </li>
 
-                        <!-- <li :class="{ 'mm-active': route().current('report.index','claims') }">
+                    <!-- <li :class="{ 'mm-active': route().current('report.index','claims') }">
                             <Link :href="route('report.index','claims')"><i class='bx bx-radio-circle'></i>Claims Report</Link>
                         </li> -->
-                        <!-- <li :class="{ 'mm-active': route().current('report.index','claims') }">
+                    <!-- <li :class="{ 'mm-active': route().current('report.index','claims') }">
                             <Link :href="route('report.index','claims')"><i class='bx bx-radio-circle'></i>Commission Report</Link>
                         </li> -->
-                    </ul>
-                </li>
-            </template>
+                </ul>
+            </li>
 
             <li class="menu-label" v-if="permission.excel_import">Settings</li>
             <li :class="{ 'mm-active': route().current('role.index') }">
