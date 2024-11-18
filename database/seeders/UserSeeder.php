@@ -23,21 +23,12 @@ class UserSeeder extends Seeder
         $permissions = Permission::pluck('id', 'id')->all();
         $role->syncPermissions($permissions);
 
-        $admin = User::updateOrCreate(['email' => 'moizchauhdry@gmail.com'], [
+        $admin = User::updateOrCreate(['email' => 'moizchauhdry@gmail.com',], [
             'name' => 'Moiz Chauhdry',
             'email' => 'moizchauhdry@gmail.com',
             'password' => Hash::make('12345678'),
         ]);
 
-        $admin->assignRole(1);
-
-        // $client = User::updateOrCreate(['email' => 'client@gmail.com'], [
-        //     'name' => 'Client',
-        //     'email' => 'client@gmail.com',
-        //     'password' => Hash::make('12345678'),
-        //     'role_users_id' => 2,
-        // ]);
-
-        // $client->assignRole(2);
+        $admin->assignRole('admin');
     }
 }

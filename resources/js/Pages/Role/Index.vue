@@ -98,9 +98,9 @@ const closeModal = () => {
                                                     aria-label="Close" @click="closeModal"></button>
                                             </div>
                                             <div class="modal-body">
-                                                <div class="row g-3">
+                                                <div class="row">
                                                     <div class="col-md-12">
-                                                        <label for="input13" class="form-label">Role Name</label>
+                                                        <label for="input13" class="form-label">Role</label>
                                                         <div class="position-relative input-icon">
                                                             <input type="text" class="form-control" id="input13"
                                                                 placeholder="Name" v-model="form.name">
@@ -109,20 +109,30 @@ const closeModal = () => {
                                                         </div>
                                                         <InputError :message="form.errors.name" />
                                                     </div>
+                                                </div>
+                                                <div class="row mt-3">
                                                     <div class="col-md-12">
-                                                        <label for="input13" class="form-label">Role Name</label>
+                                                        <label for="input13" class="form-label">Permissions</label>
 
-                                                        <template v-for="permission in permissions"
-                                                            :key="permission.id">
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="checkbox"
-                                                                    :value="permission.id" id="flexCheckDefault"
-                                                                    v-model="form.permissions">
-                                                                <label class="form-check-label" for="flexCheckDefault">
-                                                                    {{ permission.name }}
-                                                                </label>
-                                                            </div>
-                                                        </template>
+                                                        <div class="card p-3" style="height: 400px;overflow-y: auto;">
+                                                            <template v-for="permission, index in permissions"
+                                                                :key="permission.id">
+                                                                <div v-if="permission.level == 1">
+                                                                    <hr v-if="index != 0">
+                                                                    <h6 class="text-uppercase">{{ permission.name }}
+                                                                    </h6>
+                                                                </div>
+                                                                <div class="form-check text-capitalize">
+                                                                    <input class="form-check-input" type="checkbox"
+                                                                        :value="permission.id" id="flexCheckDefault"
+                                                                        v-model="form.permissions">
+                                                                    <label class="form-check-label"
+                                                                        for="flexCheckDefault">
+                                                                        {{ permission.name }}
+                                                                    </label>
+                                                                </div>
+                                                            </template>
+                                                        </div>
 
                                                         <InputError :message="form.errors.permissions" />
                                                     </div>

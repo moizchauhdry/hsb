@@ -45,6 +45,12 @@ class RoleController extends Controller
     {
         $role = Role::findOrFail($request->id);
 
+        if (auth()->id() != 1) {
+            if ($role->id == 1 || $role->id == 2) {
+                abort('403','Permission Denied.');
+            }
+        }
+
         $data = $request->validate([
             'id' => 'required',
             'name' => 'required|string|min:5|max:50',

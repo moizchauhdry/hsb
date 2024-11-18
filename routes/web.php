@@ -35,29 +35,29 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::prefix('users')->group(function () {
-        Route::any('/list/{slug}', [UserController::class, 'index'])->name('user.index')->middleware('permission:user-list');
-        Route::post('/create', [UserController::class, 'create'])->name('user.create')->middleware('permission:user-create');
-        Route::post('/update', [UserController::class, 'update'])->name('user.update')->middleware('permission:user-update');
+        Route::any('/list/{slug}', [UserController::class, 'index'])->name('user.index')->middleware('permission:user_list');
+        Route::post('/create', [UserController::class, 'create'])->name('user.create')->middleware('permission:user_create');
+        Route::post('/update', [UserController::class, 'update'])->name('user.update')->middleware('permission:user_update');
     });
 
-    Route::prefix('business-class')->group(function () {
-        Route::any('/', [BusinessClassController::class, 'index'])->name('businessClass.index')->middleware('permission:user-list');
+    Route::prefix('cobs')->group(function () {
+        Route::any('/', [BusinessClassController::class, 'index'])->name('businessClass.index')->middleware('permission:cob_list');
         Route::get('/create', [BusinessClassController::class, 'create'])->name('businessClass.create');
         Route::post('/store', [BusinessClassController::class, 'store'])->name('businessClass.store');
         Route::get('/edit/{id}', [BusinessClassController::class, 'edit'])->name('businessClass.edit');
         Route::post('/update', [BusinessClassController::class, 'update'])->name('businessClass.update');
     });
 
-    Route::prefix('insurance')->group(function () {
-        Route::get('/', [InsuranceController::class, 'index'])->name('insurance.index')->middleware('permission:user-list');
+    Route::prefix('insurers')->group(function () {
+        Route::get('/', [InsuranceController::class, 'index'])->name('insurance.index')->middleware('permission:insurer_list');
     });
 
-    Route::prefix('agency')->group(function () {
-        Route::get('/', [AgencyController::class, 'index'])->name('agency.index')->middleware('permission:user-list');
+    Route::prefix('agencies')->group(function () {
+        Route::get('/', [AgencyController::class, 'index'])->name('agency.index')->middleware('permission:agency_list');
     });
 
     Route::prefix('policy')->group(function () {
-        Route::any('/', [PolicyController::class, 'index'])->name('policy.index')->middleware('permission:user-list');
+        Route::any('/', [PolicyController::class, 'index'])->name('policy.index')->middleware('permission:policy_list');
         Route::get('/create', [PolicyController::class, 'create'])->name('policy.create');
         Route::post('/store', [PolicyController::class, 'store'])->name('policy.store');
         Route::get('/edit/{id}', [PolicyController::class, 'edit'])->name('policy.edit');
@@ -80,9 +80,9 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::prefix('roles')->group(function () {
-        Route::get('/', [RoleController::class, 'index'])->name('role.index')->middleware('permission:role-list');
-        Route::post('/create', [RoleController::class, 'create'])->name('role.create')->middleware('permission:role-create');
-        Route::post('/update', [RoleController::class, 'update'])->name('role.update')->middleware('permission:role-update');
+        Route::get('/', [RoleController::class, 'index'])->name('role.index')->middleware('permission:role_list');
+        Route::post('/create', [RoleController::class, 'create'])->name('role.create')->middleware('permission:role_create');
+        Route::post('/update', [RoleController::class, 'update'])->name('role.update')->middleware('permission:role_update');
     });
 
     Route::prefix('reports')->group(function () {
