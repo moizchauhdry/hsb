@@ -54,3 +54,21 @@ function getClientName($id)
         return NULL;
     }
 }
+
+function setDateTimeFormat($date)
+{
+    if ($date) {
+        return Carbon::parse($date)->format('Y-m-d h:i:s');
+    } else {
+        return NULL;
+    }
+}
+
+function setDateFormat($date)
+{
+    if ($date) {
+        return Carbon::parse($date)->format('Y-m-d');
+    } else {
+        return NULL;
+    }
+}

@@ -23,7 +23,7 @@ defineProps({
     policy: Object,
     policyInstallment: Array(),
     policyNotes: Object,
-    policyClaims: Array,
+    policy_claims: Array,
     policyUploads: Array,
     assetUrl: Object,
     // Add a new prop for single-open behavior
@@ -164,7 +164,6 @@ const format_number = (number) => {
                         <Link :href="route('policy.index',)" class="ml-5">
                         <SecondaryButton>Back</SecondaryButton>
                         </Link>
-
 
                         <ClaimNote v-bind="$props" ref="claim_note_ref"></ClaimNote>
                         <ClaimUpload v-bind="$props" ref="claim_upload_ref"></ClaimUpload>
@@ -344,7 +343,7 @@ const format_number = (number) => {
                             </tbody>
                         </table>
 
-                        <table class="table table-bordered text-uppercase">
+                        <table class="table table-bordered text-uppercase" v-if="policyNotes.length > 0">
                             <tbody>
                                 <tr>
                                     <th colspan="4" class="bg-primary text-white">
@@ -364,7 +363,7 @@ const format_number = (number) => {
                             </tbody>
                         </table>
 
-                        <table class="table table-bordered text-uppercase">
+                        <table class="table table-bordered text-uppercase" v-if="policy_claims.data.length > 0">
                             <tbody>
                                 <tr>
                                     <th colspan="5" class="bg-primary text-white">
@@ -372,29 +371,28 @@ const format_number = (number) => {
                                     </th>
                                 </tr>
                                 <tr>
-                                    <th>Sr No.</th>
-                                    <th>ID</th>
+                                    <th>Sr #</th>
+                                    <th>Claim ID</th>
                                     <th>Detail</th>
                                     <th>Status</th>
                                     <th>Action</th>
                                 </tr>
-                                <template v-for="policyClaim, index in policyClaims.data" :key="policyClaim.id">
+                                <template v-for="claim, index in policy_claims.data" :key="claim.id">
                                     <tr>
-                                        <td>{{ ++index }}</td>
-                                        <td>{{ policyClaim.id }}</td>
-                                        <td>{{ policyClaim.detail }}</td>
-                                        <td><span class="badge bg-primary">{{ policyClaim.status
-                                                }}</span></td>
+                                        <td>{{ (policy_claims.current_page - 1) * policy_claims.per_page + index + 1 }}</td>
+                                        <td>{{ claim.id }}</td>
+                                        <td>{{ claim.detail }}</td>
+                                        <td><span class="badge bg-primary">{{ claim.status}}</span></td>
                                         <td>
-                                            <PrimaryButton @click="claimEdit(policyClaim.id)" title="Edit"
+                                            <PrimaryButton @click="claimEdit(claim.id)" title="Edit"
                                                 data-bs-toggle="modal" data-bs-target="#EditLargeModal"><i
                                                     class='bx bx-edit mr-1'></i> Edit
                                             </PrimaryButton>
-                                            <PrimaryButton @click="claimNote(policyClaim.id)" title="Note"
+                                            <PrimaryButton @click="claimNote(claim.id)" title="Note"
                                                 data-bs-toggle="modal" data-bs-target="#notesLargeModal"><i
                                                     class='bx bxs-note mr-1'></i> Add Note
                                             </PrimaryButton>
-                                            <PrimaryButton @click="claimUpload(policyClaim.id)" title="Uploads"
+                                            <PrimaryButton @click="claimUpload(claim.id)" title="Uploads"
                                                 data-bs-toggle="modal" data-bs-target="#notesUploadLargeModal"><i
                                                     class='bx bx-cloud-upload mr-1'></i> Upload File
                                             </PrimaryButton>
@@ -403,14 +401,14 @@ const format_number = (number) => {
                                 </template>
 
                                 <tr>
-                                    <td>
-                                        <Paginate :links="policyClaims.links" :scroll="true" />
+                                    <td colspan="5">
+                                        <Paginate :links="policy_claims.links" :scroll="true" />
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
 
-                        <table class="table table-bordered text-uppercase">
+                        <table class="table table-bordered text-uppercase" v-if="policyUploads.data.length > 0">
                             <tbody>
                                 <tr>
                                     <th colspan="5" class="bg-primary text-white">
