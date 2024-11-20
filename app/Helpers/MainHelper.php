@@ -30,6 +30,15 @@ function dateFormat($date)
     }
 }
 
+function getDateTimeFormat($date)
+{
+    if ($date) {
+        return Carbon::parse($date)->format('d-m-Y H:i A');
+    } else {
+        return NULL;
+    }
+}
+
 function excelDateFormat($date)
 {
     if ($date) {

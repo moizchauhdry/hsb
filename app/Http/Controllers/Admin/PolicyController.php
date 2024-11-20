@@ -72,17 +72,17 @@ class PolicyController extends Controller
             ]);
 
 
-            $clients = User::role('client')->get();
-            $insurers = Insurance::get();
-            $agencies = Agency::get();
-            $cobs = BusinessClass::get();
-    
-            $data = [
-                'clients' => $clients,
-                'insurers' => $insurers,
-                'agencies' => $agencies,
-                'cobs' => $cobs,
-            ];
+        $clients = User::role('client')->get();
+        $insurers = Insurance::get();
+        $agencies = Agency::get();
+        $cobs = BusinessClass::get();
+
+        $data = [
+            'clients' => $clients,
+            'insurers' => $insurers,
+            'agencies' => $agencies,
+            'cobs' => $cobs,
+        ];
 
         return Inertia::render('Policy/Index', [
             'policies' => $policies,
@@ -235,12 +235,17 @@ class PolicyController extends Controller
             $policyNotes = PolicyNote::where('policy_id', $policy->id)->get();
 
             $policy_claims = PolicyClaim::where('policy_id', $policy->id)
+                ->orderBy('id', 'desc')
                 ->paginate(5)
                 ->withQueryString()
-                ->through(fn($policyClaim) => [
-                    'id' => $policyClaim->id,
-                    'detail' => $policyClaim->detail,
-                    'status' => $policyClaim->status
+                ->through(fn($claim) => [
+                    'id' => $claim->id,
+                    'detail' => $claim->detail,
+                    'status' => $claim->status,
+                    'claim_at' => getDateTimeFormat($claim->claim_at),
+                    'intimation_at' => getDateTimeFormat($claim->intimation_at),
+                    'survivor_name' => $claim->survivor_name,
+                    'contact_no' => $claim->contact_no,
                 ]);
 
             $policyUploads = PolicyUpload::where('policy_id', $policy->id)

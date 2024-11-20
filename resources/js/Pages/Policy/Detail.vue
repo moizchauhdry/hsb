@@ -7,10 +7,9 @@ import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import Uploads from "./Uploads.vue";
 import AdditionalNotes from "./AdditionalNotes.vue";
-import Claim from "./Claim.vue";
+import ClaimCreateEdit from "./ClaimCreateEdit.vue";
 import ClaimNote from "./Claim/Notes.vue";
 import ClaimUpload from "./Claim/Upload.vue";
-import ClaimEdit from "./Claim/Edit.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import Paginate from "@/Components/Paginate.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
@@ -26,10 +25,9 @@ defineProps({
     policy_claims: Array,
     policyUploads: Array,
     assetUrl: Object,
-    // Add a new prop for single-open behavior
     desiredSingleOpenBehavior: {
         type: Boolean,
-        default: false, // Set default to false (optional)
+        default: false,
     },
 });
 
@@ -159,189 +157,190 @@ const format_number = (number) => {
                     <div class="ms-auto">
                         <Uploads v-bind="$props"></Uploads>
                         <AdditionalNotes v-bind="$props"></AdditionalNotes>
-                        <Claim v-bind="$props" ref="claim_create_edit_ref"></Claim>
-
-                        <Link :href="route('policy.index',)" class="ml-5">
-                        <SecondaryButton>Back</SecondaryButton>
-                        </Link>
+                        <ClaimCreateEdit v-bind="$props" ref="claim_create_edit_ref"></ClaimCreateEdit>
+                        <Link :href="route('policy.index',)" class="ml-5"><SecondaryButton>Back</SecondaryButton></Link>
 
                         <ClaimNote v-bind="$props" ref="claim_note_ref"></ClaimNote>
                         <ClaimUpload v-bind="$props" ref="claim_upload_ref"></ClaimUpload>
-
-                        <!-- <ClaimEdit v-bind="$props" ref="claim_edit_ref"></ClaimEdit> -->
                     </div>
                 </div>
 
                 <div class="card">
                     <div class="card-body">
 
-                        <table class="table table-bordered text-uppercase">
-                            <tbody>
-                                <tr>
-                                    <th colspan="4" class="bg-primary text-white">
-                                        Policy Detail
-                                    </th>
-                                </tr>
-                                <tr>
-                                    <th>POLICY ID</th>
-                                    <td>{{ policy.id }}</td>
-                                    <th>USER ID</th>
-                                    <td>{{ policy.user_id }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Policy No</th>
-                                    <td>{{ policy.policy_no }}</td>
-                                    <th>Base Document No</th>
-                                    <td>{{ policy.base_doc_no }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Insurer Name</th>
-                                    <td>{{ policy?.insurer?.name }}</td>
-                                    <th>Insurance type</th>
-                                    <td>
-                                        <span v-if="policy.insurance_type == 'takaful'">Takaful</span>
-                                        <span v-if="policy.insurance_type == 'conventional'">Conventional</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Client Name</th>
-                                    <td>{{ policy?.client?.name }}</td>
-                                    <th>Lead type</th>
-                                    <td>
-                                        <span v-if="policy.lead_type == 'direct'">Direct 100%</span>
-                                        <span v-if="policy.lead_type == 'our'">Our lead</span>
-                                        <span v-if="policy.lead_type == 'other'">Other lead</span>
-                                    </td>
-                                </tr>
-                                <tr>
+                        <div class="table-responsive">
+                            <table class="table table-bordered text-uppercase">
+                                <tbody>
+                                    <tr>
+                                        <th colspan="4" class="bg-primary text-white">
+                                            Policy Detail
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th>POLICY ID</th>
+                                        <td>{{ policy.id }}</td>
+                                        <th>USER ID</th>
+                                        <td>{{ policy.user_id }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Policy No</th>
+                                        <td>{{ policy.policy_no }}</td>
+                                        <th>Base Document No</th>
+                                        <td>{{ policy.base_doc_no }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Insurer Name</th>
+                                        <td>{{ policy?.insurer?.name }}</td>
+                                        <th>Insurance type</th>
+                                        <td>
+                                            <span v-if="policy.insurance_type == 'takaful'">Takaful</span>
+                                            <span v-if="policy.insurance_type == 'conventional'">Conventional</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Client Name</th>
+                                        <td>{{ policy?.client?.name }}</td>
+                                        <th>Lead type</th>
+                                        <td>
+                                            <span v-if="policy.lead_type == 'direct'">Direct 100%</span>
+                                            <span v-if="policy.lead_type == 'our'">Our lead</span>
+                                            <span v-if="policy.lead_type == 'other'">Other lead</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
 
-                                    <th>Leader Name</th>
-                                    <td>{{ policy.leader_name }}</td>
-                                    <th>Leader Policy No</th>
-                                    <td>{{ policy.leader_policy_no }}</td>
+                                        <th>Leader Name</th>
+                                        <td>{{ policy.leader_name }}</td>
+                                        <th>Leader Policy No</th>
+                                        <td>{{ policy.leader_policy_no }}</td>
 
-                                    <!-- <th v-if="policy.lead_type == 1 || policy.lead_type == 3">Co Insurance</th>
-                                    <td v-if="policy.lead_type == 1 || policy.lead_type == 3">{{
-                                        policy.co_insurance }}</td> -->
-                                </tr>
+                                        <!-- <th v-if="policy.lead_type == 1 || policy.lead_type == 3">Co Insurance</th>
+                                        <td v-if="policy.lead_type == 1 || policy.lead_type == 3">{{
+                                            policy.co_insurance }}</td> -->
+                                    </tr>
 
-                                <tr>
-                                    <th>Agency Name / Agency Code</th>
-                                    <td>{{ policy?.agency?.name }} / {{ policy.agency_code }}</td>
+                                    <tr>
+                                        <th>Agency Name / Agency Code</th>
+                                        <td>{{ policy?.agency?.name }} / {{ policy.agency_code }}</td>
 
-                                    <th>Child Agency Name</th>
-                                    <td>{{ policy.child_agency_name }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Class of Business</th>
-                                    <td>{{ policy?.cob?.class_name }}</td>
+                                        <th>Child Agency Name</th>
+                                        <td>{{ policy.child_agency_name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Class of Business</th>
+                                        <td>{{ policy?.cob?.class_name }}</td>
 
-                                    <th>Department Name</th>
-                                    <td>{{ policy?.department?.name }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Inception Date</th>
-                                    <td>{{ policy.policy_period_start }}</td>
+                                        <th>Department Name</th>
+                                        <td>{{ policy?.department?.name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Inception Date</th>
+                                        <td>{{ policy.policy_period_start }}</td>
 
-                                    <th>Expiry Date</th>
-                                    <td>{{ policy.policy_period_end }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Policy Type</th>
-                                    <td>{{ policy.policy_type }}</td>
-                                    <th>Installment Plan </th>
-                                    <td> {{ policy.installment_plan }} </td>
-                                </tr>
+                                        <th>Expiry Date</th>
+                                        <td>{{ policy.policy_period_end }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Policy Type</th>
+                                        <td>{{ policy.policy_type }}</td>
+                                        <th>Installment Plan </th>
+                                        <td> {{ policy.installment_plan }} </td>
+                                    </tr>
 
-                                <tr>
-                                    <th>Issuance Date</th>
-                                    <td>{{ policy.date_of_issuance }}</td>
-                                    <th> Cover Note No </th>
-                                    <td> {{ policy.cover_note_no }} </td>
-                                </tr>
+                                    <tr>
+                                        <th>Issuance Date</th>
+                                        <td>{{ policy.date_of_issuance }}</td>
+                                        <th> Cover Note No </th>
+                                        <td> {{ policy.cover_note_no }} </td>
+                                    </tr>
 
-                                <tr>
-                                    <th> Excel Import </th>
-                                    <td> {{ policy.excel_import }} </td>
+                                    <tr>
+                                        <th> Excel Import </th>
+                                        <td> {{ policy.excel_import }} </td>
 
-                                    <template v-if="policy.excel_import">
-                                        <th>Excel Import Date</th>
-                                        <td> {{ policy.excel_import_at }} </td>
-                                    </template>
-                                </tr>
+                                        <template v-if="policy.excel_import">
+                                            <th>Excel Import Date</th>
+                                            <td> {{ policy.excel_import_at }} </td>
+                                        </template>
+                                    </tr>
 
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                        </div>
 
-                        <table class="table table-bordered text-uppercase">
-                            <tbody>
-                                <tr>
-                                    <th colspan="4" class="bg-primary text-white">
-                                        Policy Amount
-                                    </th>
-                                </tr>
-                                <tr>
-                                    <th>Sum insured </th>
-                                    <td> PKR {{ format_number(policy.sum_insured) }} </td>
+                        <div class="table-responsive">
+                            <table class="table table-bordered text-uppercase">
+                                <tbody>
+                                    <tr>
+                                        <th colspan="4" class="bg-primary text-white">
+                                            Policy Amount
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th>Sum insured </th>
+                                        <td> PKR {{ format_number(policy.sum_insured) }} </td>
 
-                                    <th>Rate Percentage</th>
-                                    <td> {{ policy.rate_percentage }} % </td>
-                                </tr>
-                                <tr>
-                                    <th>Gross Premium </th>
-                                    <td> PKR {{ format_number(policy.gross_premium) }} </td>
+                                        <th>Rate Percentage</th>
+                                        <td> {{ policy.rate_percentage }} % </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Gross Premium </th>
+                                        <td> PKR {{ format_number(policy.gross_premium) }} </td>
 
-                                    <th>Gross Premium 100%</th>
-                                    <td> PKR {{ format_number(policy.gross_premium_100) }} </td>
-                                </tr>
-                                <tr>
-                                    <th>Net Premium 100%</th>
-                                    <td> PKR {{ format_number(policy.net_premium_100) }} </td>
+                                        <th>Gross Premium 100%</th>
+                                        <td> PKR {{ format_number(policy.gross_premium_100) }} </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Net Premium 100%</th>
+                                        <td> PKR {{ format_number(policy.net_premium_100) }} </td>
 
-                                    <th>Net Premium </th>
-                                    <td> PKR {{ format_number(policy.net_premium) }} </td>
-                                </tr>
-                                <tr>
-                                    <th>Gross Premium Received</th>
-                                    <td> PKR {{ format_number(policy.gross_premium_received) }} </td>
+                                        <th>Net Premium </th>
+                                        <td> PKR {{ format_number(policy.net_premium) }} </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Gross Premium Received</th>
+                                        <td> PKR {{ format_number(policy.gross_premium_received) }} </td>
 
-                                    <th>Gross Premium Outstanding</th>
-                                    <td> PKR {{ format_number(policy.gross_premium_outstanding) }} </td>
-                                </tr>
-                                <tr>
-                                    <th>Outstanding 100%</th>
-                                    <td> PKR {{ format_number(policy.outstanding_100) }} </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                        <th>Gross Premium Outstanding</th>
+                                        <td> PKR {{ format_number(policy.gross_premium_outstanding) }} </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Outstanding 100%</th>
+                                        <td> PKR {{ format_number(policy.outstanding_100) }} </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
 
-                        <table class="table table-bordered text-uppercase">
-                            <tbody>
-                                <tr>
-                                    <th colspan="4" class="bg-primary text-white">
-                                        Brokerage Amount
-                                    </th>
-                                </tr>
-                                <tr>
-                                    <th>Brokerage/Commissioned Amount</th>
-                                    <td>PKR {{ format_number(policy.brokerage_amount) }} </td>
+                        <div class="table-responsive">
+                            <table class="table table-bordered text-uppercase">
+                                <tbody>
+                                    <tr>
+                                        <th colspan="4" class="bg-primary text-white">
+                                            Brokerage Amount
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th>Brokerage/Commissioned Amount</th>
+                                        <td>PKR {{ format_number(policy.brokerage_amount) }} </td>
 
-                                    <th>Brokerage Percentage </th>
-                                    <td>PKR {{ policy.brokerage_percentage }} % </td>
-                                </tr>
-                                <tr>
-                                    <th>Brokerage Received Amount</th>
-                                    <td>PKR {{ format_number(policy.brokerage_received_amount) }} </td>
+                                        <th>Brokerage Percentage </th>
+                                        <td>PKR {{ policy.brokerage_percentage }} % </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Brokerage Received Amount</th>
+                                        <td>PKR {{ format_number(policy.brokerage_received_amount) }} </td>
 
-                                    <th>Brokerage Paid Date</th>
-                                    <td>{{ policy.brokerage_paid_date }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Brokerage Status</th>
-                                    <td>{{ policy.brokerage_status }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                        <th>Brokerage Paid Date</th>
+                                        <td>{{ policy.brokerage_paid_date }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Brokerage Status</th>
+                                        <td>{{ policy.brokerage_status }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
 
                         <table class="table table-bordered text-uppercase" v-if="policyNotes.length > 0">
                             <tbody>
@@ -363,51 +362,60 @@ const format_number = (number) => {
                             </tbody>
                         </table>
 
-                        <table class="table table-bordered text-uppercase" v-if="policy_claims.data.length > 0">
-                            <tbody>
-                                <tr>
-                                    <th colspan="5" class="bg-primary text-white">
-                                        Policy Claims
-                                    </th>
-                                </tr>
-                                <tr>
-                                    <th>Sr #</th>
-                                    <th>Claim ID</th>
-                                    <th>Detail</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
-                                <template v-for="claim, index in policy_claims.data" :key="claim.id">
+                        <div class="table-responsive">
+                            <table class="table table-bordered text-uppercase" v-if="policy_claims.data.length > 0">
+                                <tbody>
                                     <tr>
-                                        <td>{{ (policy_claims.current_page - 1) * policy_claims.per_page + index + 1 }}
-                                        </td>
-                                        <td>{{ claim.id }}</td>
-                                        <td>{{ claim.detail }}</td>
-                                        <td><span class="badge bg-primary">{{ claim.status }}</span></td>
-                                        <td>
-                                            <PrimaryButton @click="claimEdit(claim.id)" title="Edit"
-                                                data-bs-toggle="modal" data-bs-target="#EditLargeModal"><i
-                                                    class='bx bx-edit mr-1'></i> Edit
-                                            </PrimaryButton>
-                                            <PrimaryButton @click="claimNote(claim.id)" title="Note"
-                                                data-bs-toggle="modal" data-bs-target="#notesLargeModal"><i
-                                                    class='bx bxs-note mr-1'></i> Add Note
-                                            </PrimaryButton>
-                                            <PrimaryButton @click="claimUpload(claim.id)" title="Uploads"
-                                                data-bs-toggle="modal" data-bs-target="#notesUploadLargeModal"><i
-                                                    class='bx bx-cloud-upload mr-1'></i> Upload File
-                                            </PrimaryButton>
+                                        <th colspan="9" class="bg-primary text-white">
+                                            Policy Claims
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th>Sr #</th>
+                                        <th>Claim ID</th>
+                                        <th>Claim Date</th>
+                                        <th>Survivor Name</th>
+                                        <th>Survivor Contact</th>
+                                        <th>Intimation Date</th>
+                                        <th>Description</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    <template v-for="claim, index in policy_claims.data" :key="claim.id">
+                                        <tr>
+                                            <td>{{ (policy_claims.current_page - 1) * policy_claims.per_page + index + 1 }}</td>
+                                            <td>{{ claim.id }}</td>
+                                            <td>{{ claim.claim_at }}</td>
+                                            <td>{{ claim.survivor_name }}</td>
+                                            <td>{{ claim.contact_no }}</td>
+                                            <td>{{ claim.intimation_at }}</td>
+                                            <td>{{ claim.detail }}</td>
+                                            <td><span class="badge bg-primary">{{ claim.status }}</span></td>
+                                            <td>
+                                                <PrimaryButton @click="claimEdit(claim.id)" title="Edit"
+                                                    data-bs-toggle="modal" data-bs-target="#EditLargeModal"><i
+                                                        class='bx bx-edit mr-1'></i> Edit
+                                                </PrimaryButton>
+                                                <PrimaryButton @click="claimNote(claim.id)" title="Note"
+                                                    data-bs-toggle="modal" data-bs-target="#notesLargeModal"><i
+                                                        class='bx bxs-note mr-1'></i> Add Note
+                                                </PrimaryButton>
+                                                <PrimaryButton @click="claimUpload(claim.id)" title="Uploads"
+                                                    data-bs-toggle="modal" data-bs-target="#notesUploadLargeModal"><i
+                                                        class='bx bx-cloud-upload mr-1'></i> Upload File
+                                                </PrimaryButton>
+                                            </td>
+                                        </tr>
+                                    </template>
+
+                                    <tr>
+                                        <td colspan="5">
+                                            <Paginate :links="policy_claims.links" :scroll="true" />
                                         </td>
                                     </tr>
-                                </template>
-
-                                <tr>
-                                    <td colspan="5">
-                                        <Paginate :links="policy_claims.links" :scroll="true" />
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                        </div>
 
                         <table class="table table-bordered text-uppercase" v-if="policyUploads.data.length > 0">
                             <tbody>
