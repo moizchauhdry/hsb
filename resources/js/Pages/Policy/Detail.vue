@@ -82,7 +82,7 @@ if (props.policyInstallment && props.policyInstallment.length > 0) {
 
 const claim_note_ref = ref(null);
 const claim_upload_ref = ref(null);
-const claim_edit_ref = ref(null);
+const claim_create_edit_ref = ref(null);
 
 const claimNote = (id) => {
     claim_note_ref.value.claimNote(id)
@@ -93,7 +93,7 @@ const claimUpload = (id) => {
 };
 
 const claimEdit = (id) => {
-    claim_edit_ref.value.claimEdit(id)
+    claim_create_edit_ref.value.claimEdit(id)
 };
 
 const submit = () => {
@@ -159,7 +159,7 @@ const format_number = (number) => {
                     <div class="ms-auto">
                         <Uploads v-bind="$props"></Uploads>
                         <AdditionalNotes v-bind="$props"></AdditionalNotes>
-                        <Claim v-bind="$props"></Claim>
+                        <Claim v-bind="$props" ref="claim_create_edit_ref"></Claim>
 
                         <Link :href="route('policy.index',)" class="ml-5">
                         <SecondaryButton>Back</SecondaryButton>
@@ -167,8 +167,8 @@ const format_number = (number) => {
 
                         <ClaimNote v-bind="$props" ref="claim_note_ref"></ClaimNote>
                         <ClaimUpload v-bind="$props" ref="claim_upload_ref"></ClaimUpload>
-                        <ClaimEdit v-bind="$props" ref="claim_edit_ref"></ClaimEdit>
 
+                        <!-- <ClaimEdit v-bind="$props" ref="claim_edit_ref"></ClaimEdit> -->
                     </div>
                 </div>
 
@@ -214,7 +214,7 @@ const format_number = (number) => {
                                     </td>
                                 </tr>
                                 <tr>
-                                    
+
                                     <th>Leader Name</th>
                                     <td>{{ policy.leader_name }}</td>
                                     <th>Leader Policy No</th>
@@ -379,10 +379,11 @@ const format_number = (number) => {
                                 </tr>
                                 <template v-for="claim, index in policy_claims.data" :key="claim.id">
                                     <tr>
-                                        <td>{{ (policy_claims.current_page - 1) * policy_claims.per_page + index + 1 }}</td>
+                                        <td>{{ (policy_claims.current_page - 1) * policy_claims.per_page + index + 1 }}
+                                        </td>
                                         <td>{{ claim.id }}</td>
                                         <td>{{ claim.detail }}</td>
-                                        <td><span class="badge bg-primary">{{ claim.status}}</span></td>
+                                        <td><span class="badge bg-primary">{{ claim.status }}</span></td>
                                         <td>
                                             <PrimaryButton @click="claimEdit(claim.id)" title="Edit"
                                                 data-bs-toggle="modal" data-bs-target="#EditLargeModal"><i

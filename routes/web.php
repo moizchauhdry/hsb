@@ -75,8 +75,9 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('claims')->group(function () {
         Route::post('/store', [ClaimController::class, 'store'])->name('claim.store')->middleware('permission:policy_claim');
+        Route::post('/update', [ClaimController::class, 'update'])->name('claim.update')->middleware('permission:policy_claim');
         
-        Route::get('/get/claim/{id}', [ClaimController::class, 'getClaim'])->name('policy.getClaim')->middleware('permission:policy_claim');
+        Route::get('/fetch/claim/{id}', [ClaimController::class, 'getClaim'])->name('policy.getClaim')->middleware('permission:policy_claim');
         Route::post('/claim/update', [ClaimController::class, 'updateClaim'])->name('policy.updateClaim')->middleware('permission:policy_claim');
         Route::get('/get/claim/upload/{id}', [ClaimController::class, 'getClaimUpload'])->name('policy.getClaimUpload')->middleware('permission:policy_claim');
         Route::post('/claim/upload', [ClaimController::class, 'claimUpload'])->name('policy.claimUpload')->middleware('permission:policy_claim');

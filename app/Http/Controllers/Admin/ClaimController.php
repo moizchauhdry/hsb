@@ -10,16 +10,14 @@ use App\Models\PolicyClaimUpload;
 use App\Models\PolicyClaim;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\File;
+use Inertia\Inertia;
 
 class ClaimController extends Controller
 {
     public function getClaim($id)
     {
-
-        $policyClaim = PolicyClaim::find($id);
-        $data = [
-            "policyClaim" => $policyClaim
-        ];
+        $policy_claim = PolicyClaim::find($id);
+        $data = ["policy_claim" => $policy_claim];
 
         return response()->json($data);
     }
@@ -47,6 +45,40 @@ class ClaimController extends Controller
         ];
 
         PolicyClaim::create($data);
+    }
+
+    public function update(Request $request)
+    {
+        $request->validate([
+            'policy_id' => ['required'],
+            'status' => ['required'],
+            'description' => ['required'],
+            'claim_at' => ['required'],
+            'intimation_at' => ['required'],
+            'survivor_name' => ['required'],
+            'contact_no' => ['required'],
+        ]);
+
+        try {
+            $policy_claim = PolicyClaim::find($request->claim_id);
+
+            $data = [
+                'policy_id' => $request->policy_id,
+                'status' => $request->status,
+                'detail' => $request->description,
+                'claim_at' => setDateFormat($request->claim_at),
+                'intimation_at' => setDateFormat($request->intimation_at),
+                'survivor_name' => $request->survivor_name,
+                'contact_no' => $request->contact_no,
+            ];
+
+            $policy_claim->update($data);
+        } catch (\Throwable $th) {
+            return back()->withErrors([
+                'status' => false,
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 
     public function updateClaim(Request $request)

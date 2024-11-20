@@ -18,6 +18,7 @@ const modal = ref(false);
 const edit_mode = ref(false);
 
 const form = useForm({
+    claim_id: "",
     policy_id: "",
     description: "",
     status: "progress",
@@ -45,6 +46,22 @@ const submit = () => {
     });
 };
 
+const update = () => {
+    form.post(route("claim.update"), {
+        preserveScroll: true,
+        onSuccess: () => {
+            Swal.fire('Updated!', 'The claim update successfully.', 'success')
+            close();
+        },
+        onError: (errors) => {
+            if (errors.status == false) {
+                Swal.fire('Error!', errors.message, 'error')
+            }
+        },
+        onFinish: () => { },
+    });
+};
+
 
 const error = () => {
     // alert('error');
@@ -53,6 +70,26 @@ const error = () => {
 const close = () => {
     modal.value = false;
 };
+
+const claimEdit = (id) => {
+    modal.value = true;
+    edit_mode.value = true;
+
+    axios.get(`/claims/fetch/claim/${id}`)
+        .then(({ data }) => {
+            form.claim_id = data.policy_claim.id;
+            form.policy_id = data.policy_claim.policy_id;
+            form.description = data.policy_claim.detail;
+            form.status = data.policy_claim.status;
+
+            form.claim_at = data.policy_claim.claim_at;
+            form.intimation_at = data.policy_claim.intimation_at;
+            form.survivor_name = data.policy_claim.survivor_name;
+            form.contact_no = data.policy_claim.contact_no;
+        });
+};
+
+defineExpose({ claimEdit: (id) => claimEdit(id) });
 
 </script>
 <template>
@@ -63,7 +100,7 @@ const close = () => {
     <Modal :show="modal" @close="close">
         <form @submit.prevent="edit_mode ? update() : submit()">
             <div class="p-6">
-                <h2 class="text-lg font-medium text-gray-900">Add Claim</h2>
+                <h2 class="text-lg font-medium text-gray-900">{{edit_mode ? 'Edit' : 'Add'}} Claim</h2>
 
                 <p class="mt-1 text-sm text-gray-600">
                     <hr>
