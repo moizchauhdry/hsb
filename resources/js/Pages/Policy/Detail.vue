@@ -392,18 +392,17 @@ const format_number = (number) => {
                                             <td>{{ claim.detail }}</td>
                                             <td><span class="badge bg-primary">{{ claim.status }}</span></td>
                                             <td>
-                                                <PrimaryButton @click="claimEdit(claim.id)" title="Edit"
-                                                    data-bs-toggle="modal" data-bs-target="#EditLargeModal"><i
-                                                        class='bx bx-edit mr-1'></i> Edit
-                                                </PrimaryButton>
-                                                <PrimaryButton @click="claimNote(claim.id)" title="Note"
-                                                    data-bs-toggle="modal" data-bs-target="#notesLargeModal"><i
-                                                        class='bx bxs-note mr-1'></i> Add Note
-                                                </PrimaryButton>
-                                                <PrimaryButton @click="claimUpload(claim.id)" title="Uploads"
-                                                    data-bs-toggle="modal" data-bs-target="#notesUploadLargeModal"><i
-                                                        class='bx bx-cloud-upload mr-1'></i> Upload File
-                                                </PrimaryButton>
+                                                <SecondaryButton class="mr-1" @click="claimEdit(claim.id)" title="Edit" data-bs-toggle="modal" data-bs-target="#EditLargeModal">
+                                                    <i class='bx bx-edit'></i>
+                                                </SecondaryButton>
+                                                
+                                                <SecondaryButton class="mr-1" @click="claimNote(claim.id)" title="Note" data-bs-toggle="modal" data-bs-target="#notesLargeModal">
+                                                    <i class='bx bxs-note'></i>
+                                                </SecondaryButton>
+
+                                                <SecondaryButton class="mr-1" @click="claimUpload(claim.id)" title="Uploads" data-bs-toggle="modal" data-bs-target="#notesUploadLargeModal">
+                                                    <i class='bx bx-cloud-upload'></i>
+                                                </SecondaryButton>
                                             </td>
                                         </tr>
                                     </template>
