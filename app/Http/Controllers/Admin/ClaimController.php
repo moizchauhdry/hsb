@@ -14,7 +14,7 @@ use Inertia\Inertia;
 
 class ClaimController extends Controller
 {
-    public function getClaim($id)
+    public function fetch($id)
     {
         $policy_claim = PolicyClaim::find($id);
         $data = ["policy_claim" => $policy_claim];
@@ -81,25 +81,6 @@ class ClaimController extends Controller
         }
     }
 
-    public function updateClaim(Request $request)
-    {
-        $policyClaim = PolicyClaim::where('id', $request->claim_id)->first();
-
-        $request->validate([
-            'policy_id' => ['required'],
-            'detail' => ['required'],
-            'status' => ['required']
-        ]);
-
-        $data = [
-            'policy_id' => $request->policy_id,
-            'detail' => $request->detail,
-            'status' => $request->status
-        ];
-
-        $policyClaim->update($data);
-    }
-
     public function getClaimUpload($id)
     {
 
@@ -150,19 +131,16 @@ class ClaimController extends Controller
         }
     }
 
-    public function getClaimNote($id)
+    public function fetchClaimNote($id)
     {
-
-        $policyClaimNotes = PolicyClaimNote::where('policy_id', $id)->get()->toArray();
-        $data = [
-            "policyClaimNotes" => $policyClaimNotes
-        ];
+        $claim_notes = PolicyClaimNote::where('policy_id', $id)->get()->toArray();
+        $data = ["claim_notes" => $claim_notes];
 
         return response()->json($data);
     }
 
     public function claimNote(Request $request)
-    {
+    {        
         $request->validate([
             'policy_id' => ['required'],
             'policy_claim_id' => ['required'],

@@ -76,13 +76,13 @@ Route::middleware('auth')->group(function () {
     Route::prefix('claims')->group(function () {
         Route::post('/store', [ClaimController::class, 'store'])->name('claim.store')->middleware('permission:policy_claim');
         Route::post('/update', [ClaimController::class, 'update'])->name('claim.update')->middleware('permission:policy_claim');        
-        Route::get('/fetch/claim/{id}', [ClaimController::class, 'getClaim'])->name('policy.getClaim')->middleware('permission:policy_claim');
+        Route::get('/fetch/claim/{id}', [ClaimController::class, 'fetch'])->name('claim.fetch')->middleware('permission:policy_claim');
         
-        // Route::post('/claim/update', [ClaimController::class, 'updateClaim'])->name('policy.updateClaim')->middleware('permission:policy_claim');
-        // Route::get('/get/claim/upload/{id}', [ClaimController::class, 'getClaimUpload'])->name('policy.getClaimUpload')->middleware('permission:policy_claim');
-        // Route::post('/claim/upload', [ClaimController::class, 'claimUpload'])->name('policy.claimUpload')->middleware('permission:policy_claim');
-        // Route::post('/claim/note', [ClaimController::class, 'claimNote'])->name('policy.claimNote')->middleware('permission:policy_claim');
-        // Route::get('/get/claim/note/{id}', [ClaimController::class, 'getClaimNote'])->name('policy.getClaimNote')->middleware('permission:policy_claim');
+        Route::get('/fetch/claim-note/{id}', [ClaimController::class, 'fetchClaimNote'])->name('claim.fetch.claim-note')->middleware('permission:policy_claim');
+        Route::post('/claim/note', [ClaimController::class, 'claimNote'])->name('claim.claim-note')->middleware('permission:policy_claim');
+
+        Route::get('/get/claim/upload/{id}', [ClaimController::class, 'getClaimUpload'])->name('policy.getClaimUpload')->middleware('permission:policy_claim');
+        Route::post('/claim/upload', [ClaimController::class, 'claimUpload'])->name('policy.claimUpload')->middleware('permission:policy_claim');
     });
 
     Route::prefix('roles')->group(function () {
