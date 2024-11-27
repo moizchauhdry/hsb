@@ -3,17 +3,60 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Agency;
+use App\Models\BusinessClass;
+use App\Models\Insurance;
+use App\Models\Policy;
 use Illuminate\Http\Request;
 
 use App\Models\PolicyClaimNote;
 use App\Models\PolicyClaimUpload;
 use App\Models\PolicyClaim;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\File;
 use Inertia\Inertia;
 
 class ClaimController extends Controller
 {
+    public function index(Request $request)
+    {
+        $current_month = $request->month ?? Carbon::now()->format('m');
+        $current_year = $request->year ?? Carbon::now()->format('Y');
+
+        $filter = [
+            'search' => $request->search,
+            'date_type' => $request->date_type,
+            'month' => $current_month,
+            'month_name' => getMonthName($current_month),
+            'year' => $current_year,
+        ];
+
+        $claims = PolicyClaim::query()
+            ->when($filter['search'], function ($q) use ($filter) {
+                $q->where('id', $filter['search']);
+            })
+            ->when($filter['date_type'], function ($q) use ($filter) {
+                $q->whereYear($filter['date_type'], $filter['year']);
+                $q->whereMonth($filter['date_type'], $filter['month']);
+            })
+            ->orderBy('id', 'desc')
+            ->paginate(25)
+            ->withQueryString()
+            ->through(fn($claim) => [
+                'data' => $claim,
+                'policy_no' => $claim->policy->policy_no ?? NULL,
+                'claim_at' => dateFormat($claim->claim_at),
+                'intimation_at' => dateFormat($claim->intimation_at),
+            ]);
+
+        return Inertia::render('Policy/Claim/Index', [
+            'claims' => $claims,
+            'filter' => $filter,
+        ]);
+    }
+
     public function fetch($id)
     {
         $policy_claim = PolicyClaim::find($id);
@@ -140,7 +183,7 @@ class ClaimController extends Controller
     }
 
     public function claimNote(Request $request)
-    {        
+    {
         $request->validate([
             'policy_id' => ['required'],
             'policy_claim_id' => ['required'],

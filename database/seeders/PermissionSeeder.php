@@ -78,9 +78,15 @@ class PermissionSeeder extends Seeder
             ['name' => 'commission_recovery_report', 'guard_name' => 'web', 'order' => 94, 'level' => 2],
             ['name' => 'commission_outstanding_recovery', 'guard_name' => 'web', 'order' => 95, 'level' => 2],
 
-            // Setting 10
+            // Setting 100
             ['name' => 'setting', 'guard_name' => 'web', 'order' => 100, 'level' => 1],
             ['name' => 'excel_import', 'guard_name' => 'web', 'order' => 101, 'level' => 2],
+
+            // Claim 110
+            ['name' => 'claim', 'guard_name' => 'web', 'order' => 110, 'level' => 1],
+            ['name' => 'claim_list', 'guard_name' => 'web', 'order' => 111, 'level' => 2],
+            ['name' => 'claim_create', 'guard_name' => 'web', 'order' => 112, 'level' => 2],
+            ['name' => 'claim_update', 'guard_name' => 'web', 'order' => 113, 'level' => 2],
         ];
 
         foreach ($permissions as $permission) {
