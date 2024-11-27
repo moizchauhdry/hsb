@@ -74,6 +74,8 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::prefix('claims')->group(function () {
+        Route::any('/index', [ClaimController::class, 'index'])->name('claim.index')->middleware('permission:claim_list');
+        
         Route::post('/store', [ClaimController::class, 'store'])->name('claim.store')->middleware('permission:policy_claim');
         Route::post('/update', [ClaimController::class, 'update'])->name('claim.update')->middleware('permission:policy_claim');        
         Route::get('/fetch/claim/{id}', [ClaimController::class, 'fetch'])->name('claim.fetch')->middleware('permission:policy_claim');

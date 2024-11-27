@@ -48,6 +48,9 @@ watch(
         else if (route().current('policy.index') || route().current('policy.detail')) {
             isSubmenuVisible.value.policy = true;
         }
+        else if (route().current('claim.index')) {
+            isSubmenuVisible.value.claim = true;
+        }
         else if (route().current('report.index')) {
             isSubmenuVisible.value.report = true;
         }
@@ -118,7 +121,22 @@ watch(
                     </a>
                     <ul :class="{ 'hidden': !isSubmenuVisible.policy }">
                         <li :class="{ 'mm-active': route().current('policy.index') }" v-if="permission.policy_list">
-                            <Link :href="route('policy.index')"><i class='bx bx-radio-circle'></i>List</Link>
+                            <Link :href="route('policy.index')"><i class='bx bx-radio-circle'></i>Policy List</Link>
+                        </li>
+                    </ul>
+                </li>
+            </template>
+
+            <template v-if="permission.claim_list">
+                <li :class="{ 'mm-active': route().current('claim.index') }">
+                    <a href="#" class="has-arrow" @click="toggleList('claim')">
+                        <div class="parent-icon"><i class="bx bx-poll"></i>
+                        </div>
+                        <div class="menu-title">Manage Claims</div>
+                    </a>
+                    <ul :class="{ 'hidden': !isSubmenuVisible.claim }">
+                        <li :class="{ 'mm-active': route().current('claim.index') }" v-if="permission.claim_list">
+                            <Link :href="route('claim.index')"><i class='bx bx-radio-circle'></i>Claim List</Link>
                         </li>
                     </ul>
                 </li>
