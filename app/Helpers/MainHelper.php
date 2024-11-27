@@ -30,6 +30,15 @@ function dateFormat($date)
     }
 }
 
+function getDateTimeFormat($date)
+{
+    if ($date) {
+        return Carbon::parse($date)->format('d-m-Y H:i A');
+    } else {
+        return NULL;
+    }
+}
+
 function excelDateFormat($date)
 {
     if ($date) {
@@ -50,6 +59,24 @@ function getClientName($id)
     $client = User::find($id);
     if ($client) {
         return $client->name;
+    } else {
+        return NULL;
+    }
+}
+
+function setDateTimeFormat($date)
+{
+    if ($date) {
+        return Carbon::parse($date)->format('Y-m-d h:i:s');
+    } else {
+        return NULL;
+    }
+}
+
+function setDateFormat($date)
+{
+    if ($date) {
+        return Carbon::parse($date)->format('Y-m-d');
     } else {
         return NULL;
     }

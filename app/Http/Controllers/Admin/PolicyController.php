@@ -6,7 +6,6 @@ use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Agency;
 use App\Models\Policy;
-use App\Rules\ExcelFile;
 use App\Models\Insurance;
 use Illuminate\Http\File;
 use App\Models\Department;
@@ -14,26 +13,17 @@ use App\Models\PolicyNote;
 use App\Models\PolicyClaim;
 use App\Models\PolicyUpload;
 use Illuminate\Http\Request;
-use App\Imports\ClientImport;
-use App\Imports\PolicyImport;
 use App\Models\BusinessClass;
 use Illuminate\Support\Carbon;
 use App\Models\PolicyClaimNote;
-use App\Models\PolicyInsurance;
 use App\Models\PolicyClaimUpload;
-use Monolog\Handler\IFTTTHandler;
 use App\Http\Controllers\Controller;
 use App\Imports\ExcelImport;
-use App\Imports\SpecificSheetImport;
 use App\Models\ErrorLog;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\PolicyInstallmentPlan;
-use Error;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
@@ -82,17 +72,17 @@ class PolicyController extends Controller
             ]);
 
 
-            $clients = User::role('client')->get();
-            $insurers = Insurance::get();
-            $agencies = Agency::get();
-            $cobs = BusinessClass::get();
-    
-            $data = [
-                'clients' => $clients,
-                'insurers' => $insurers,
-                'agencies' => $agencies,
-                'cobs' => $cobs,
-            ];
+        $clients = User::role('client')->get();
+        $insurers = Insurance::get();
+        $agencies = Agency::get();
+        $cobs = BusinessClass::get();
+
+        $data = [
+            'clients' => $clients,
+            'insurers' => $insurers,
+            'agencies' => $agencies,
+            'cobs' => $cobs,
+        ];
 
         return Inertia::render('Policy/Index', [
             'policies' => $policies,
@@ -244,13 +234,18 @@ class PolicyController extends Controller
 
             $policyNotes = PolicyNote::where('policy_id', $policy->id)->get();
 
-            $policyClaims = PolicyClaim::where('policy_id', $policy->id)
+            $policy_claims = PolicyClaim::where('policy_id', $policy->id)
+                ->orderBy('id', 'desc')
                 ->paginate(5)
                 ->withQueryString()
-                ->through(fn($policyClaim) => [
-                    'id' => $policyClaim->id,
-                    'detail' => $policyClaim->detail,
-                    'status' => $policyClaim->status
+                ->through(fn($claim) => [
+                    'id' => $claim->id,
+                    'detail' => $claim->detail,
+                    'status' => $claim->status,
+                    'claim_at' => getDateTimeFormat($claim->claim_at),
+                    'intimation_at' => getDateTimeFormat($claim->intimation_at),
+                    'survivor_name' => $claim->survivor_name,
+                    'contact_no' => $claim->contact_no,
                 ]);
 
             $policyUploads = PolicyUpload::where('policy_id', $policy->id)
@@ -266,7 +261,7 @@ class PolicyController extends Controller
                 'policy' => $policy,
                 'policyInstallment' => $policyInstallment,
                 'policyNotes' => $policyNotes,
-                'policyClaims' => $policyClaims,
+                'policy_claims' => $policy_claims,
                 'policyUploads' => $policyUploads,
                 'assetUrl' => asset('storage')
             ]);
@@ -389,151 +384,6 @@ class PolicyController extends Controller
             return response()->json(['error' => 'Policy not found'], 404);
         }
     }
-
-    // ******* POLICY CLAIMS *******
-
-    public function getClaim($id)
-    {
-
-        $policyClaim = PolicyClaim::find($id);
-        $data = [
-            "policyClaim" => $policyClaim
-        ];
-
-        return response()->json($data);
-    }
-
-    public function claims(Request $request)
-    {
-        $request->validate([
-            'policy_id' => ['required'],
-            'detail' => ['required'],
-            'status' => ['required']
-        ]);
-
-        try {
-            $data = [
-                'policy_id' => $request->policy_id,
-                'detail' => $request->detail,
-                'status' => $request->status,
-            ];
-
-            PolicyClaim::create($data);
-        } catch (ModelNotFoundException $e) {
-            // Handle case when policy with the given ID doesn't exist
-            return response()->json(['error' => 'Policy not found'], 404);
-        }
-    }
-
-    public function updateClaim(Request $request)
-    {
-        $policyClaim = PolicyClaim::where('id', $request->claim_id)->first();
-
-        $request->validate([
-            'policy_id' => ['required'],
-            'detail' => ['required'],
-            'status' => ['required']
-        ]);
-
-
-
-        $data = [
-            'policy_id' => $request->policy_id,
-            'detail' => $request->detail,
-            'status' => $request->status
-        ];
-        $policyClaim->update($data);
-    }
-
-    public function getClaimUpload($id)
-    {
-
-        $policyClaimUploads = PolicyClaimUpload::where('policy_id', $id)->get()->toArray();
-        $data = [
-            "policyClaimUploads" => $policyClaimUploads
-        ];
-
-        return response()->json($data);
-    }
-
-    public function claimUpload(Request $request)
-    {
-        $request->validate([
-            'policy_id' => ['required'],
-            'policy_claim_id' => ['required'],
-            'uploads' => ['required'],
-        ]);
-
-        try {
-            $data = [
-                'policy_id' => $request->policy_id,
-                'policy_claim_id' => $request->policy_claim_id,
-            ];
-
-            $policyClaimUpload = PolicyClaimUpload::create($data);
-
-            $policyClaimUploadDirectory = 'policyClaimUploads';
-            if ($request->hasFile('uploads')) {
-
-                // Assuming $request->file('uploads') returns an array of uploaded files
-                $files = $request->file('uploads');
-
-                foreach ($files as $file) {
-                    // Get the original file name
-                    $fileName = $file->getClientOriginalName();
-
-                    // Check if the storage directory exists, if not create it
-                    if (!Storage::exists($policyClaimUploadDirectory)) {
-                        Storage::makeDirectory($policyClaimUploadDirectory);
-                    }
-
-                    // Store the file and get the path
-                    $imageUrl = Storage::putFile($policyClaimUploadDirectory, new File($file));
-
-                    // Update the policy upload with the file path
-                    $policyClaimUpload->update(['file_url' => $imageUrl]);
-                }
-            }
-        } catch (ModelNotFoundException $e) {
-            // Handle case when policy with the given ID doesn't exist
-            return response()->json(['error' => 'Policy not found'], 404);
-        }
-    }
-
-    public function getClaimNote($id)
-    {
-
-        $policyClaimNotes = PolicyClaimNote::where('policy_id', $id)->get()->toArray();
-        $data = [
-            "policyClaimNotes" => $policyClaimNotes
-        ];
-
-        return response()->json($data);
-    }
-
-    public function claimNote(Request $request)
-    {
-        $request->validate([
-            'policy_id' => ['required'],
-            'policy_claim_id' => ['required'],
-            'note' => ['required']
-        ]);
-
-        try {
-            $data = [
-                'policy_id' => $request->policy_id,
-                'policy_claim_id' => $request->policy_claim_id,
-                'note' => $request->note,
-            ];
-
-            PolicyClaimNote::create($data);
-        } catch (ModelNotFoundException $e) {
-            // Handle case when policy with the given ID doesn't exist
-            return response()->json(['error' => 'Policy not found'], 404);
-        }
-    }
-
-    // Policy Claim function End
 
     public function getDepartmentByBusinessClass($id)
     {
