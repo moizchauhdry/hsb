@@ -47,46 +47,45 @@ class PermissionSeeder extends Seeder
             ['name' => 'policy_update', 'guard_name' => 'web', 'order' => 53, 'level' => 2],
             ['name' => 'policy_detail', 'guard_name' => 'web', 'order' => 54, 'level' => 2],
             ['name' => 'policy_delete', 'guard_name' => 'web', 'order' => 55, 'level' => 2],
-
             ['name' => 'policy_claim', 'guard_name' => 'web', 'order' => 56, 'level' => 2],
             ['name' => 'policy_note', 'guard_name' => 'web', 'order' => 57, 'level' => 2],
             ['name' => 'policy_upload', 'guard_name' => 'web', 'order' => 58, 'level' => 2],
 
-            // Insurer 60
-            ['name' => 'insurer', 'guard_name' => 'web', 'order' => 60, 'level' => 1],
-            ['name' => 'insurer_list', 'guard_name' => 'web', 'order' => 61, 'level' => 2],
-            ['name' => 'insurer_create', 'guard_name' => 'web', 'order' => 62, 'level' => 2],
-            ['name' => 'insurer_update', 'guard_name' => 'web', 'order' => 63, 'level' => 2],
+            // Claim 60
+            ['name' => 'claim', 'guard_name' => 'web', 'order' => 60, 'level' => 1],
+            ['name' => 'claim_list', 'guard_name' => 'web', 'order' => 61, 'level' => 2],
+            ['name' => 'claim_create', 'guard_name' => 'web', 'order' => 62, 'level' => 2],
+            ['name' => 'claim_update', 'guard_name' => 'web', 'order' => 63, 'level' => 2],
 
-            // Agency 70
-            ['name' => 'agency', 'guard_name' => 'web', 'order' => 71, 'level' => 1],
-            ['name' => 'agency_list', 'guard_name' => 'web', 'order' => 72, 'level' => 2],
-            ['name' => 'agency_create', 'guard_name' => 'web', 'order' => 73, 'level' => 2],
-            ['name' => 'agency_update', 'guard_name' => 'web', 'order' => 74, 'level' => 2],
+            // Insurer 70
+            ['name' => 'insurer', 'guard_name' => 'web', 'order' => 70, 'level' => 1],
+            ['name' => 'insurer_list', 'guard_name' => 'web', 'order' => 71, 'level' => 2],
+            ['name' => 'insurer_create', 'guard_name' => 'web', 'order' => 72, 'level' => 2],
+            ['name' => 'insurer_update', 'guard_name' => 'web', 'order' => 73, 'level' => 2],
 
-            // COB 80
-            ['name' => 'cob', 'guard_name' => 'web', 'order' => 80, 'level' => 1],
-            ['name' => 'cob_list', 'guard_name' => 'web', 'order' => 81, 'level' => 2],
-            ['name' => 'cob_create', 'guard_name' => 'web', 'order' => 82, 'level' => 2],
-            ['name' => 'cob_update', 'guard_name' => 'web', 'order' => 83, 'level' => 2],
+            // Agency 80
+            ['name' => 'agency', 'guard_name' => 'web', 'order' => 81, 'level' => 1],
+            ['name' => 'agency_list', 'guard_name' => 'web', 'order' => 82, 'level' => 2],
+            ['name' => 'agency_create', 'guard_name' => 'web', 'order' => 83, 'level' => 2],
+            ['name' => 'agency_update', 'guard_name' => 'web', 'order' => 84, 'level' => 2],
 
-            // Report 90
-            ['name' => 'report', 'guard_name' => 'web', 'order' => 90, 'level' => 1],
-            ['name' => 'sales_report', 'guard_name' => 'web', 'order' => 91, 'level' => 2],
-            ['name' => 'renewal_report', 'guard_name' => 'web', 'order' => 92, 'level' => 2],
-            ['name' => 'outstanding_report', 'guard_name' => 'web', 'order' => 93, 'level' => 2],
-            ['name' => 'commission_recovery_report', 'guard_name' => 'web', 'order' => 94, 'level' => 2],
-            ['name' => 'commission_outstanding_recovery', 'guard_name' => 'web', 'order' => 95, 'level' => 2],
+            // COB 90
+            ['name' => 'cob', 'guard_name' => 'web', 'order' => 90, 'level' => 1],
+            ['name' => 'cob_list', 'guard_name' => 'web', 'order' => 91, 'level' => 2],
+            ['name' => 'cob_create', 'guard_name' => 'web', 'order' => 92, 'level' => 2],
+            ['name' => 'cob_update', 'guard_name' => 'web', 'order' => 93, 'level' => 2],
 
-            // Setting 100
-            ['name' => 'setting', 'guard_name' => 'web', 'order' => 100, 'level' => 1],
-            ['name' => 'excel_import', 'guard_name' => 'web', 'order' => 101, 'level' => 2],
+            // Report 100
+            ['name' => 'report', 'guard_name' => 'web', 'order' => 100, 'level' => 1],
+            ['name' => 'sales_report', 'guard_name' => 'web', 'order' => 101, 'level' => 2],
+            ['name' => 'renewal_report', 'guard_name' => 'web', 'order' => 102, 'level' => 2],
+            ['name' => 'outstanding_report', 'guard_name' => 'web', 'order' => 103, 'level' => 2],
+            ['name' => 'commission_recovery_report', 'guard_name' => 'web', 'order' => 104, 'level' => 2],
+            ['name' => 'commission_outstanding_recovery', 'guard_name' => 'web', 'order' => 105, 'level' => 2],
 
-            // Claim 110
-            ['name' => 'claim', 'guard_name' => 'web', 'order' => 110, 'level' => 1],
-            ['name' => 'claim_list', 'guard_name' => 'web', 'order' => 111, 'level' => 2],
-            ['name' => 'claim_create', 'guard_name' => 'web', 'order' => 112, 'level' => 2],
-            ['name' => 'claim_update', 'guard_name' => 'web', 'order' => 113, 'level' => 2],
+            // Setting 110
+            ['name' => 'setting', 'guard_name' => 'web', 'order' => 110, 'level' => 1],
+            ['name' => 'excel_import', 'guard_name' => 'web', 'order' => 111, 'level' => 2],
         ];
 
         foreach ($permissions as $permission) {
