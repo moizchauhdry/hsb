@@ -177,7 +177,7 @@ class ClaimController extends Controller
         $request->validate([
             'policy_id' => ['required'],
             'policy_claim_id' => ['required'],
-            'uploads' => ['required'],
+            'file' => ['required'],
         ]);
 
         $data = [
@@ -187,21 +187,9 @@ class ClaimController extends Controller
 
         $policy_claim_upload = PolicyClaimUpload::create($data);
 
-        $directory = 'policyClaimUploads';
-
-        if ($request->hasFile('uploads')) {
-            $files = $request->file('uploads');
-
-            foreach ($files as $file) {
-                $file->getClientOriginalName();
-
-                if (!Storage::exists($directory)) {
-                    Storage::makeDirectory($directory);
-                }
-
-                $imageUrl = Storage::putFile($directory, new File($file));
-                $policy_claim_upload->update(['file_url' => $imageUrl]);
-            }
+        if ($request->hasFile('file')) {
+            $url = $request->file('file')->store('policy-claim-upload', 'public');
+            $policy_claim_upload->update(['file_url' => $url]);
         }
 
         return redirect()->back()->with(['data' => $policy_claim_upload]);
