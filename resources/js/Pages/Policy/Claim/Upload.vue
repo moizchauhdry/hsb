@@ -15,14 +15,14 @@ const claim_uploads = ref([]);
 const asset_url = usePage().props.asset_url;
 
 const handleFileChange = (event) => {
-  const selectedFiles = event.target.files;
-  form.uploads = selectedFiles;
+  const selected_file = event.target.files[0];
+  form.file = selected_file;
 };
 
 const form = useForm({
   policy_id: "",
   policy_claim_id: "",
-  uploads: "",
+  file: "",
 });
 
 const submit = () => {
@@ -110,7 +110,7 @@ defineExpose({ claimUpload: (id, policy_id) => claimUpload(id, policy_id) });
                         <td>{{ upload.id }}</td>
                         <td>{{ upload.policy_id }}/{{ upload.policy_claim_id }}</td>
                         <td>
-                          <img :src="asset_url + '/' + upload.file_url" alt="" style="height: 100px;width: 100px;">
+                          <img :src="'/storage/' + upload.file_url" alt="" style="height: 100px;width: 100px;">
                         </td>
                       </tr>
                     </template>
