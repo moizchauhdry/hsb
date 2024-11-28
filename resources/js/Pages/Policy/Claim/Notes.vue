@@ -3,115 +3,115 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import InputError from "@/Components/InputError.vue";
 import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
 import { ref } from "vue";
+import Modal from "@/Components/Modal.vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
+import SuccessButton from "@/Components/SuccessButton.vue";
 
-const { props } = usePage();
+// const { props } = usePage();
 
-const claim_notes = ref([]);
-const notes_modal = ref(false);
+const modal = ref(false);
 const edit_mode = ref(false);
+const claim_notes = ref([]);
+
 const form = useForm({
-  policy_id: props.policy.id ?? "",
+  policy_id: "",
   policy_claim_id: "",
   note: "",
 });
 
-
 const submit = () => {
   form.post(route("claim.claim-note"), {
     preserveScroll: true,
-    onSuccess: () => closeModal(),
-    onError: () => error(),
+    onSuccess: (response) => {
+      var data = response.props.flash.data;
+      fetchClaimNotes(data.policy_claim_id, data.policy_id);
+      form.note = ""
+    },
+    onError: () => { },
     onFinish: () => { },
   });
 };
 
-const error = () => {
-  // alert('error');
+const close = () => {
+  modal.value = false;
 };
 
-const closeModal = () => {
-  notes_modal.value = false;
-  form.reset();
-};
-
-const claimNote = (id) => {
-  notes_modal.value = true;
+const claimNote = (id, policy_id) => {
+  modal.value = true;
   edit_mode.value = false;
 
-  form.policy_id = props.policy.id ?? "";
+  form.policy_id = policy_id;
   form.policy_claim_id = id;
-  form.note = '';
+  form.note = "";
 
-  axios.get(`/claims/fetch/claim-note/${props.policy.id}`)
+  fetchClaimNotes(id, policy_id);
+};
+
+const fetchClaimNotes = (id, policy_id) => {
+  axios.get(`/claims/fetch/claim-notes/${id}/${policy_id}`)
     .then(({ data }) => {
       claim_notes.value = data.claim_notes;
     });
 };
 
-defineExpose({ claimNote: (id) => claimNote(id) });
+defineExpose({ claimNote: (id, policy_id) => claimNote(id, policy_id) });
 </script>
+
 <template>
-  <AuthenticatedLayout>
-    <div class="col">
-      <div class="modal fade show" id="notesLargeModal" tabindex="-1" aria-hidden="true" style="display: block;"
-        v-if="notes_modal">
-        <div class="modal fade show" id="notesLargeModal" tabindex="-1" aria-hidden="true" style="display: block;">
-          <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-              <form @submit.prevent="edit_mode ? update() : submit()">
-                <div class="modal-header">
-                  <h5 class="modal-title">Claim Notes</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-                    @click="closeModal"></button>
-                </div>
-                <div class="modal-body">
-                  <input type="hidden" v-model="form.policy_id">
-                  <input type="hidden" v-model="form.policy_claim_id">
-                  <div class="row g-3">
-                    <div class="col-md-12">
-                      <label for="input13" class="form-label">Note</label>
-                      <textarea class="form-control" id="detail" v-model="form.note"></textarea>
-                      <InputError :message="form.errors.note" />
-                    </div>
-                  </div>
-                </div>
-                <div class="card">
-                  <div class="card-body">
-                    <div class="table-responsive">
-                      <table id="example" class="table table-striped table-bordered" style="width:100%">
-                        <thead>
-                          <tr>
-                            <th>Sr No.</th>
-                            <th>Claim ID</th>
-                            <th>Notes</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <template v-for="(claim_note, index) in claim_notes" :key="claim_note.id">
-                            <tr>
-                              <td>{{ ++index }}</td>
-                              <td>{{ claim_note.id }}</td>
-                              <td>{{ claim_note.note }}</td>
-                            </tr>
-                          </template>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal"
-                    @click="closeModal">Close</button>
-                  <button type="submit" class="btn btn-primary btn-sm">
-                    {{ edit_mode ? 'Save & Update' : 'Save & Submit' }}
-                  </button>
-                </div>
-              </form>
+  <Modal :show="modal" @close="close">
+    <form @submit.prevent="edit_mode ? update() : submit()">
+      <div class="p-6">
+        <h2 class="text-lg font-medium text-gray-900">{{ edit_mode ? 'Edit' : 'Add' }} Note</h2>
+
+        <p class="mt-1 text-sm text-gray-600">
+          <hr>
+        </p>
+
+        <div class="mt-6">
+          <input type="hidden" v-model="form.policy_id">
+          <input type="hidden" v-model="form.policy_claim_id">
+          <div class="row g-3">
+            <div class="col-md-12">
+              <label for="input13" class="form-label">Description</label>
+              <textarea class="form-control" id="detail" v-model="form.note" rows="5"></textarea>
+              <InputError :message="form.errors.note" />
+            </div>
+          </div>
+
+          <div class="card mt-3" style="height: 300px;overflow-y: auto;">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table id="example" class="table table-striped table-bordered" style="width:100%">
+                  <thead>
+                    <tr>
+                      <th>Sr #</th>
+                      <th>Note #</th>
+                      <th>Policy/Claim ID</th>
+                      <th>Notes</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <template v-for="(claim_note, index) in claim_notes" :key="claim_note.id">
+                      <tr>
+                        <td>{{ ++index }}</td>
+                        <td>{{ claim_note.id }}</td>
+                        <td>{{ claim_note.policy_id }}/{{ claim_note.policy_claim_id }}</td>
+                        <td>{{ claim_note.note }}</td>
+                      </tr>
+                    </template>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
 
-  </AuthenticatedLayout>
+        <div class="mt-6 flex justify-end">
+          <SecondaryButton @click="close">Close</SecondaryButton>
+          <SuccessButton class="ml-3" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+            {{ edit_mode ? 'Save & Update' : 'Save & Submit' }}</SuccessButton>
+        </div>
+      </div>
+    </form>
+  </Modal>
 </template>

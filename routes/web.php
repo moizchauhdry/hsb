@@ -80,7 +80,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/update', [ClaimController::class, 'update'])->name('claim.update')->middleware('permission:policy_claim');        
         Route::get('/fetch/claim/{id}', [ClaimController::class, 'fetch'])->name('claim.fetch')->middleware('permission:policy_claim');
         
-        Route::get('/fetch/claim-note/{id}', [ClaimController::class, 'fetchClaimNote'])->name('claim.fetch.claim-note')->middleware('permission:policy_claim');
+        Route::get('/fetch/claim-notes/{claim_id}/{policy_id}', [ClaimController::class, 'fetchClaimNotes'])->name('claim.fetch.claim-notes')->middleware('permission:policy_claim');
         Route::post('/claim/note', [ClaimController::class, 'claimNote'])->name('claim.claim-note')->middleware('permission:policy_claim');
 
         Route::get('/get/claim/upload/{id}', [ClaimController::class, 'getClaimUpload'])->name('policy.getClaimUpload')->middleware('permission:policy_claim');

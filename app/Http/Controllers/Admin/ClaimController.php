@@ -16,6 +16,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\File;
+use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 
 class ClaimController extends Controller
@@ -46,6 +47,7 @@ class ClaimController extends Controller
             ->withQueryString()
             ->through(fn($claim) => [
                 'data' => $claim,
+                'id' => $claim->id,
                 'policy_no' => $claim->policy->policy_no ?? NULL,
                 'claim_at' => dateFormat($claim->claim_at),
                 'intimation_at' => dateFormat($claim->intimation_at),
@@ -174,9 +176,15 @@ class ClaimController extends Controller
         }
     }
 
-    public function fetchClaimNote($id)
+    public function fetchClaimNotes($claim_id, $policy_id)
     {
-        $claim_notes = PolicyClaimNote::where('policy_id', $id)->get()->toArray();
+        $claim_notes = PolicyClaimNote::query()
+            ->where('policy_claim_id', $claim_id)
+            ->where('policy_id', $policy_id)
+            ->orderBy('id','desc')
+            ->get()
+            ->toArray();
+
         $data = ["claim_notes" => $claim_notes];
 
         return response()->json($data);
@@ -196,6 +204,8 @@ class ClaimController extends Controller
             'note' => $request->note,
         ];
 
-        PolicyClaimNote::create($data);
+        $policy_claim_note = PolicyClaimNote::create($data);
+
+        return redirect()->back()->with(['data' => $policy_claim_note]);
     }
 }
