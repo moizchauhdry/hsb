@@ -104,7 +104,13 @@ defineExpose({ claimEdit: (id) => claimEdit(id) });
     <Modal :show="modal" @close="close">
         <form @submit.prevent="edit_mode ? update() : submit()">
             <div class="p-6">
-                <h2 class="text-lg font-medium text-gray-900">{{edit_mode ? 'Edit' : 'Add'}} Claim</h2>
+                <h2 class="text-lg font-medium text-gray-900 flex justify-between items-center">
+                    <span>{{ edit_mode ? 'Edit' : 'Add' }} Claim</span>
+                    <span class="text-sm text-gray-500">
+                        <span v-if="form.claim_id" class="mr-2">CLM #{{ form.claim_id }}</span> 
+                        <span>POL #{{ form.policy_id }}</span>
+                    </span>
+                </h2>
 
                 <p class="mt-1 text-sm text-gray-600">
                     <hr>
