@@ -12,6 +12,10 @@ import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import Swal from 'sweetalert2';
 
+defineProps({
+    create_mode: Boolean,
+});
+
 const { props } = usePage();
 
 const modal = ref(false);
@@ -93,7 +97,7 @@ defineExpose({ claimEdit: (id) => claimEdit(id) });
 
 </script>
 <template>
-    <PrimaryButton @click="create" data-bs-toggle="modal" data-bs-target="#claimsLargeModal">
+    <PrimaryButton @click="create" data-bs-toggle="modal" data-bs-target="#claimsLargeModal" v-if="create_mode">
         <i class='bx bx-plus mr-1'></i> Claim
     </PrimaryButton>
 

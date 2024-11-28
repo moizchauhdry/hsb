@@ -141,7 +141,7 @@ class ClaimController extends Controller
     }
 
     public function storeClaimNote(Request $request)
-    {
+    {        
         $request->validate([
             'policy_id' => ['required'],
             'policy_claim_id' => ['required'],

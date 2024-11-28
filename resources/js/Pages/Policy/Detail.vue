@@ -79,17 +79,16 @@ if (props.policyInstallment && props.policyInstallment.length > 0) {
 }
 
 const claim_note_ref = ref(null);
+const claimNote = (id, policy_id) => {
+    claim_note_ref.value.claimNote(id, policy_id)
+};
+
 const claim_upload_ref = ref(null);
+const claimUpload = (id, policy_id) => {
+    claim_upload_ref.value.claimUpload(id, policy_id)
+};
+
 const claim_create_edit_ref = ref(null);
-
-const claimNote = (id) => {
-    claim_note_ref.value.claimNote(id)
-};
-
-const claimUpload = (id) => {
-    claim_upload_ref.value.claimUpload(id)
-};
-
 const claimEdit = (id) => {
     claim_create_edit_ref.value.claimEdit(id)
 };
@@ -157,8 +156,12 @@ const format_number = (number) => {
                     <div class="ms-auto">
                         <Uploads v-bind="$props"></Uploads>
                         <AdditionalNotes v-bind="$props"></AdditionalNotes>
-                        <ClaimCreateEdit v-bind="$props" ref="claim_create_edit_ref"></ClaimCreateEdit>
-                        <Link :href="route('policy.index',)" class="ml-5"><SecondaryButton>Back</SecondaryButton></Link>
+                        
+                        <ClaimCreateEdit v-bind="$props" ref="claim_create_edit_ref" :create_mode="true"></ClaimCreateEdit>
+
+                        <Link :href="route('policy.index',)" class="ml-5">
+                        <SecondaryButton>Back</SecondaryButton>
+                        </Link>
 
                         <ClaimNote v-bind="$props" ref="claim_note_ref"></ClaimNote>
                         <ClaimUpload v-bind="$props" ref="claim_upload_ref"></ClaimUpload>
@@ -366,13 +369,14 @@ const format_number = (number) => {
                             <table class="table table-bordered text-uppercase" v-if="policy_claims.data.length > 0">
                                 <tbody>
                                     <tr>
-                                        <th colspan="9" class="bg-primary text-white">
+                                        <th colspan="10" class="bg-primary text-white">
                                             Policy Claims
                                         </th>
                                     </tr>
                                     <tr>
                                         <th>Sr #</th>
                                         <th>Claim ID</th>
+                                        <th>Policy ID</th>
                                         <th>Claim Date</th>
                                         <th>Survivor Name</th>
                                         <th>Survivor Contact</th>
@@ -383,24 +387,30 @@ const format_number = (number) => {
                                     </tr>
                                     <template v-for="claim, index in policy_claims.data" :key="claim.id">
                                         <tr>
-                                            <td>{{ (policy_claims.current_page - 1) * policy_claims.per_page + index + 1 }}</td>
-                                            <td>{{ claim.id }}</td>
+                                            <td>{{ (policy_claims.current_page - 1) * policy_claims.per_page + index + 1}}</td>
+                                            <td>{{ claim.data.id }}</td>
+                                            <td>{{ claim.data.policy_id }}</td>
                                             <td>{{ claim.claim_at }}</td>
-                                            <td>{{ claim.survivor_name }}</td>
-                                            <td>{{ claim.contact_no }}</td>
+                                            <td>{{ claim.data.survivor_name }}</td>
+                                            <td>{{ claim.data.contact_no }}</td>
                                             <td>{{ claim.intimation_at }}</td>
-                                            <td>{{ claim.detail }}</td>
-                                            <td><span class="badge bg-primary">{{ claim.status }}</span></td>
+                                            <td>{{ claim.data.detail }}</td>
+                                            <td><span class="badge bg-primary">{{ claim.data.status }}</span></td>
                                             <td>
-                                                <SecondaryButton class="mr-1" @click="claimEdit(claim.id)" title="Edit" data-bs-toggle="modal" data-bs-target="#EditLargeModal">
+                                                <SecondaryButton class="mr-1" @click="claimEdit(claim.data.id)" title="Edit"
+                                                    data-bs-toggle="modal" data-bs-target="#EditLargeModal">
                                                     <i class='bx bx-edit'></i>
                                                 </SecondaryButton>
-                                                
-                                                <SecondaryButton class="mr-1" @click="claimNote(claim.id)" title="Note" data-bs-toggle="modal" data-bs-target="#notesLargeModal">
+
+                                                <SecondaryButton class="mr-1"
+                                                    @click="claimNote(claim.data.id, claim.data.policy_id)" title="Note"
+                                                    data-bs-toggle="modal" data-bs-target="#notesLargeModal">
                                                     <i class='bx bxs-note'></i>
                                                 </SecondaryButton>
 
-                                                <SecondaryButton class="mr-1" @click="claimUpload(claim.id)" title="Uploads" data-bs-toggle="modal" data-bs-target="#notesUploadLargeModal">
+                                                <SecondaryButton class="mr-1"
+                                                    @click="claimUpload(claim.data.id, claim.data.policy_id)" title="Uploads"
+                                                    data-bs-toggle="modal" data-bs-target="#notesUploadLargeModal">
                                                     <i class='bx bx-cloud-upload'></i>
                                                 </SecondaryButton>
                                             </td>

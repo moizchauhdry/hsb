@@ -20,7 +20,7 @@ const form = useForm({
 });
 
 const submit = () => {
-  form.post(route("claim.claim-note"), {
+  form.post(route("claim.store.claim-note"), {
     preserveScroll: true,
     onSuccess: (response) => {
       var data = response.props.flash.data;
