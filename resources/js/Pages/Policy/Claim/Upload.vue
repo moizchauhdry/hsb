@@ -3,6 +3,9 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import InputError from "@/Components/InputError.vue";
 import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
 import { ref } from "vue";
+import Modal from "@/Components/Modal.vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
+import SuccessButton from "@/Components/SuccessButton.vue";
 
 // const { props } = usePage();
 
@@ -63,68 +66,61 @@ defineExpose({ claimUpload: (id, policy_id) => claimUpload(id, policy_id) });
 </script>
 
 <template>
-  <AuthenticatedLayout>
-    <div class="col">
-      <div class="modal fade show" id="notesUploadLargeModal" tabindex="-1" aria-hidden="true" style="display: block;"
-        v-if="modal">
-        <div class="modal fade show" id="notesUploadLargeModal" tabindex="-1" aria-hidden="true"
-          style="display: block;">
-          <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-              <form @submit.prevent="edit_mode ? update() : submit()">
-                <div class="modal-header">
-                  <h5 class="modal-title">Claim Upload</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-                    @click="close"></button>
-                </div>
-                <div class="modal-body">
+  <Modal :show="modal" @close="close">
+    <form @submit.prevent="edit_mode ? update() : submit()">
+      <div class="p-6">
+        <h2 class="text-lg font-medium text-gray-900">{{ edit_mode ? 'Edit' : 'Add' }} Upload</h2>
 
-                  <div class="row g-3">
+        <p class="mt-1 text-sm text-gray-600">
+          <hr>
+        </p>
 
-                    <div class="col-md-12">
-                      <label for="input13" class="form-label">Uploads</label>
-                      <input type="file" class="form-control" id="input13" @change="handleFileChange">
-                    </div>
-                  </div>
-                </div>
-                <div class="card">
-                  <div class="card-body">
-                    <div class="table-responsive">
-                      <table id="example" class="table table-striped table-bordered" style="width:100%">
-                        <thead>
-                          <tr>
-                            <th>Sr No.</th>
-                            <th>Claim ID</th>
-                            <th>File</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <template v-for="(upload, index) in claim_uploads" :key="upload.id">
-                            <tr>
-                              <td>{{ ++index }}</td>
-                              <td>{{ upload.id }}</td>
-                              <td>
-                                <img :src="asset_url + '/' + upload.file_url" alt="" style="height: 100px;width: 100px;">
-                              </td>
-                            </tr>
-                          </template>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal"
-                    @click="close">Close</button>
-                  <button type="submit" class="btn btn-primary btn-sm">
-                    {{ edit_mode ? 'Save & Update' : 'Save & Submit' }}
-                  </button>
-                </div>
-              </form>
+        <div class="mt-6">
+
+          <div class="row g-3">
+            <div class="col-md-12">
+              <label for="input13" class="form-label">Uploads</label>
+              <input type="file" class="form-control" id="input13" @change="handleFileChange">
             </div>
           </div>
+
+          <div class="card mt-3" style="height: 300px;overflow-y: auto;">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table id="example" class="table table-striped table-bordered" style="width:100%">
+                  <thead>
+                    <tr>
+                      <th>Sr #</th>
+                      <th>Upload #</th>
+                      <th>Policy/Claim ID</th>
+                      <th>File</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <template v-for="(upload, index) in claim_uploads" :key="upload.id">
+                      <tr>
+                        <td>{{ ++index }}</td>
+                        <td>{{ upload.id }}</td>
+                        <td>{{ upload.policy_id }}/{{ upload.policy_claim_id }}</td>
+                        <td>
+                          <img :src="asset_url + '/' + upload.file_url" alt="" style="height: 100px;width: 100px;">
+                        </td>
+                      </tr>
+                    </template>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="mt-6 flex justify-end">
+          <SecondaryButton @click="close">Close</SecondaryButton>
+          <SuccessButton class="ml-3" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+            {{ edit_mode ? 'Save & Update' : 'Save & Submit' }}</SuccessButton>
         </div>
       </div>
-    </div>
-  </AuthenticatedLayout>
+    </form>
+  </Modal>
 </template>
