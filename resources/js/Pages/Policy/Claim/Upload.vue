@@ -3,126 +3,131 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import InputError from "@/Components/InputError.vue";
 import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
 import { ref } from "vue";
+import Modal from "@/Components/Modal.vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
+import SuccessButton from "@/Components/SuccessButton.vue";
 
-const { props } = usePage();
+// const { props } = usePage();
 
-const policyClaimUploads = ref([]);
-const notes_upload_modal = ref(false);
+const modal = ref(false);
 const edit_mode = ref(false);
+const claim_uploads = ref([]);
+const asset_url = usePage().props.asset_url;
+
 const handleFileChange = (event) => {
-    // Access the selected files from the event
-    const selectedFiles = event.target.files;
-    // Update the data property with the selected files
-    form.uploads = selectedFiles;
+  const selectedFiles = event.target.files;
+  form.uploads = selectedFiles;
 };
+
 const form = useForm({
-  policy_id: props.policy.id ?? "",
-  policy_claim_id: '',
-  uploads: null,
+  policy_id: "",
+  policy_claim_id: "",
+  uploads: "",
 });
 
-const create = () => {
-  notes_upload_modal.value = true;
-  edit_mode.value = false;
-};
-
 const submit = () => {
-  form.post(route("policy.claimUpload"), {
+  form.post(route("claim.store.claim-upload"), {
     preserveScroll: true,
-    onSuccess: () => closeModal(),
-    onError: () => error(),
+    onSuccess: (response) => {
+      var data = response.props.flash.data;
+      fetchClaimUploads(data.policy_claim_id, data.policy_id);
+      form.uploads = ""
+    },
+    onError: () => { },
     onFinish: () => { },
   });
 };
 
-const error = () => {
-  // alert('error');
-};
-
-const closeModal = () => {
-  notes_upload_modal.value = false;
+const close = () => {
+  modal.value = false;
   form.reset();
 };
 
-const claimUpload = (id) => {
-  notes_upload_modal.value = true;
+const claimUpload = (id, policy_id) => {
+  modal.value = true;
   edit_mode.value = false;
 
-  form.policy_id = props.policy.id ?? "";
   form.policy_claim_id = id;
-  form.uploads = '';
+  form.policy_id = policy_id;
 
-  axios.get(`/policy/get/claim/upload/${props.policy.id}`)
+  fetchClaimUploads(id, policy_id)
+};
+
+const fetchClaimUploads = (id, policy_id) => {
+  axios.get(`/claims/fetch/claim-uploads/${id}/${policy_id}`)
     .then(({ data }) => {
       console.log(data);
-      policyClaimUploads.value = data.policyClaimUploads;
+      claim_uploads.value = data.claim_uploads;
     });
 };
 
-defineExpose({ claimUpload: (id) => claimUpload(id) });
-
-
+defineExpose({ claimUpload: (id, policy_id) => claimUpload(id, policy_id) });
 
 </script>
+
 <template>
-    <AuthenticatedLayout>
-      <div class="col">
-        <div class="modal fade show" id="notesUploadLargeModal" tabindex="-1" aria-hidden="true" style="display: block;" v-if="notes_upload_modal">
-          <div class="modal fade show" id="notesUploadLargeModal" tabindex="-1" aria-hidden="true" style="display: block;">
-            <div class="modal-dialog modal-lg">
-              <div class="modal-content">
-                <form @submit.prevent="edit_mode ? update() : submit()">
-                  <div class="modal-header">
-                    <h5 class="modal-title">Claim Upload</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="closeModal"></button>
-                  </div>
-                  <div class="modal-body">
-                    <input type="hidden" v-model="form.policy_id">
-                    <input type="hidden" v-model="form.policy_claim_id">
-                    <div class="row g-3">
-                     
-                        <div class="col-md-12">
-                            <label for="input13" class="form-label">Uploads</label>
-                            <input type="file" class="form-control" id="input13" @change="handleFileChange">
-                        </div>
-                    </div>
-                  </div>
-                  <div class="card">
-                    <div class="card-body">
-                      <div class="table-responsive">
-                        <table id="example" class="table table-striped table-bordered" style="width:100%">
-                          <thead>
-                            <tr>
-                              <th>Sr No.</th>
-                              <th>Claim ID</th>
-                              <th>File</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <template v-for="(policyClaimUpload, index) in policyClaimUploads" :key="policyClaimUpload.id">
-                              <tr>
-                                <td>{{ ++index }}</td>
-                                <td>{{ policyClaimUpload.id }}</td>
-                                <td><img :src="props.assetUrl + '/' + policyClaimUpload.file_url" alt="" style="height: 100px;width: 100px;"></td>
-                              </tr>
-                            </template>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" @click="closeModal">Close</button>
-                    <button type="submit" class="btn btn-primary btn-sm">
-                      {{ edit_mode ? 'Save & Update' : 'Save & Submit' }}
-                    </button>
-                  </div>
-                </form>
+  <Modal :show="modal" @close="close">
+    <form @submit.prevent="edit_mode ? update() : submit()">
+      <div class="p-6">
+
+        <h2 class="text-lg font-medium text-gray-900 flex justify-between items-center">
+          <span>{{ edit_mode ? 'Edit' : 'Add' }} Upload</span>
+          <span class="text-sm text-gray-500">
+            <span v-if="form.policy_claim_id" class="mr-2">CLM #{{ form.policy_claim_id }}</span>
+            <span>POL #{{ form.policy_id }}</span>
+          </span>
+        </h2>
+
+        <p class="mt-1 text-sm text-gray-600">
+          <hr>
+        </p>
+
+        <div class="mt-6">
+
+          <div class="row g-3">
+            <div class="col-md-12">
+              <label for="input13" class="form-label">Uploads</label>
+              <input type="file" class="form-control" id="input13" @change="handleFileChange">
+            </div>
+          </div>
+
+          <div class="card mt-3" style="height: 300px;overflow-y: auto;">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table id="example" class="table table-striped table-bordered" style="width:100%">
+                  <thead>
+                    <tr>
+                      <th>Sr #</th>
+                      <th>Upload #</th>
+                      <th>Policy/Claim ID</th>
+                      <th>File</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <template v-for="(upload, index) in claim_uploads" :key="upload.id">
+                      <tr>
+                        <td>{{ ++index }}</td>
+                        <td>{{ upload.id }}</td>
+                        <td>{{ upload.policy_id }}/{{ upload.policy_claim_id }}</td>
+                        <td>
+                          <img :src="asset_url + '/' + upload.file_url" alt="" style="height: 100px;width: 100px;">
+                        </td>
+                      </tr>
+                    </template>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
+
+        </div>
+
+        <div class="mt-6 flex justify-end">
+          <SecondaryButton @click="close">Close</SecondaryButton>
+          <SuccessButton class="ml-3" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+            {{ edit_mode ? 'Save & Update' : 'Save & Submit' }}</SuccessButton>
         </div>
       </div>
-    </AuthenticatedLayout>
+    </form>
+  </Modal>
 </template>
-

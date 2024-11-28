@@ -49,7 +49,7 @@ class HandleInertiaRequests extends Middleware
                 'flash' => [
                     'success' => $request->session()->get('success'),
                     'error' => $request->session()->get('error'),
-                    'error' => $request->session()->get('error'),
+                    'data' => $request->session()->get('data'),
                 ],
                 'can' => $can,
                 'ziggy' => function () use ($request) {
@@ -57,6 +57,7 @@ class HandleInertiaRequests extends Middleware
                         'location' => $request->url(),
                     ]);
                 },
+                'asset_url' => asset('storage'),
             ];
         }
 

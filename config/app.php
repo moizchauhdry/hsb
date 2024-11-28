@@ -55,7 +55,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'https://m.wowentertainmentforlife.ca'),
+    'url' => env('APP_URL', NULL),
 
     'asset_url' => env('ASSET_URL'),
 

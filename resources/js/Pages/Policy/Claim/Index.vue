@@ -11,45 +11,28 @@ import SuccessButton from "@/Components/SuccessButton.vue";
 import DangerButton from "@/Components/DangerButton.vue";
 import Filter from "./Filter.vue";
 
+import ClaimCreateEdit from "../ClaimCreateEdit.vue";
+import ClaimNote from "./Notes.vue";
+import ClaimUpload from "./Upload.vue";
+
 defineProps({
     claims: Array,
     filter: Object,
 });
 
-const create_edit_ref = ref(null);
-const edit = (id) => {
-    create_edit_ref.value.edit(id)
+const claim_note_ref = ref(null);
+const claimNote = (id, policy_id) => {
+    claim_note_ref.value.claimNote(id, policy_id)
 };
 
-const confirmDelete = (claim_id) => {
-    const form = useForm({
-        id: claim_id
-    });
+const claim_upload_ref = ref(null);
+const claimUpload = (id, policy_id) => {
+    claim_upload_ref.value.claimUpload(id, policy_id)
+};
 
-    Swal.fire({
-        title: 'Are you sure?',
-        text: 'You will not be able to recover this claim!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Yes, delete it!'
-    }).then(async (result) => {
-        if (result.isConfirmed) {
-            form.delete(route("claim.delete"), {
-                preserveScroll: true,
-                onSuccess: () => {
-                    Swal.fire(
-                        'Deleted!',
-                        'The claim has been deleted.',
-                        'success'
-                    )
-                },
-                onError: () => { },
-                onFinish: () => form.reset(),
-            });
-        }
-    });
+const claim_create_edit_ref = ref(null);
+const claimEdit = (id) => {
+    claim_create_edit_ref.value.claimEdit(id)
 };
 
 const search_form = useForm({
@@ -98,11 +81,12 @@ const reset = () => {
                         </nav>
                     </div>
                     <div class="ms-auto">
-                        <!-- ref -->
+                        <ClaimCreateEdit v-bind="$props" ref="claim_create_edit_ref"></ClaimCreateEdit>
+                        <ClaimNote ref="claim_note_ref"></ClaimNote>
+                        <ClaimUpload ref="claim_upload_ref"></ClaimUpload>
                     </div>
 
                     <div class="ms-auto" style="display: flex; justify-content: space-between; align-items: center;">
-                        <!-- <CreateEdit v-bind="$props" ref="create_edit_ref"></CreateEdit>-->
                         <Filter v-bind="$props"></Filter>
                     </div>
                 </div>
@@ -135,13 +119,15 @@ const reset = () => {
                                         <th class="px-2">Survivor Name</th>
                                         <th class="px-2">Contact No</th>
                                         <th class="px-2">Description</th>
-                                        <!-- <th class="px-2">Action</th> -->
+                                        <th class="px-2">Status</th>
+                                        <th class="px-2">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <template v-for="(claim, index) in claims.data">
                                         <tr>
-                                            <td class="px-2">{{ (claims.current_page - 1) * claims.per_page + index+ 1 }}</td>
+                                            <td class="px-2">{{ (claims.current_page - 1) * claims.per_page + index + 1
+                                                }}</td>
                                             <td class="px-2">{{ claim.data.id }}</td>
                                             <td class="px-2">{{ claim.data.policy_id }}</td>
                                             <td class="px-2">{{ claim.policy_no }}</td>
@@ -150,7 +136,25 @@ const reset = () => {
                                             <td class="px-2">{{ claim.data.survivor_name }}</td>
                                             <td class="px-2">{{ claim.data.contact_no }}</td>
                                             <td class="px-2">{{ claim.data.detail }}</td>
-                                            <!-- <td class="px-2"></td> -->
+                                            <td><span class="badge bg-primary">{{ claim.data.status }}</span></td>
+                                            <td class="px-2">
+                                                <SecondaryButton class="mr-1" @click="claimEdit(claim.id)" title="Edit"
+                                                    data-bs-toggle="modal" data-bs-target="#EditLargeModal">
+                                                    <i class='bx bx-edit'></i>
+                                                </SecondaryButton>
+
+                                                <SecondaryButton class="mr-1"
+                                                    @click="claimNote(claim.id, claim.data.policy_id)" title="Note"
+                                                    data-bs-toggle="modal" data-bs-target="#notesLargeModal">
+                                                    <i class='bx bxs-note'></i>
+                                                </SecondaryButton>
+
+                                                <SecondaryButton class="mr-1"
+                                                    @click="claimUpload(claim.id, claim.data.policy_id)" title="Uploads"
+                                                    data-bs-toggle="modal" data-bs-target="#notesUploadLargeModal">
+                                                    <i class='bx bx-cloud-upload'></i>
+                                                </SecondaryButton>
+                                            </td>
                                         </tr>
                                     </template>
                                 </tbody>
