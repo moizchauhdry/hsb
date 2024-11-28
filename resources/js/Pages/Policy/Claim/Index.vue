@@ -26,8 +26,8 @@ const claimNote = (id, policy_id) => {
 };
 
 const claim_upload_ref = ref(null);
-const claimUpload = (id) => {
-    claim_upload_ref.value.claimUpload(id)
+const claimUpload = (id, policy_id) => {
+    claim_upload_ref.value.claimUpload(id, policy_id)
 };
 
 const claim_create_edit_ref = ref(null);
@@ -83,7 +83,7 @@ const reset = () => {
                     <div class="ms-auto">
                         <ClaimCreateEdit v-bind="$props" ref="claim_create_edit_ref"></ClaimCreateEdit>
                         <ClaimNote ref="claim_note_ref"></ClaimNote>
-                        <ClaimUpload v-bind="$props" ref="claim_upload_ref"></ClaimUpload>
+                        <ClaimUpload ref="claim_upload_ref"></ClaimUpload>
                     </div>
 
                     <div class="ms-auto" style="display: flex; justify-content: space-between; align-items: center;">
@@ -126,7 +126,8 @@ const reset = () => {
                                 <tbody>
                                     <template v-for="(claim, index) in claims.data">
                                         <tr>
-                                            <td class="px-2">{{ (claims.current_page - 1) * claims.per_page + index+ 1 }}</td>
+                                            <td class="px-2">{{ (claims.current_page - 1) * claims.per_page + index + 1
+                                                }}</td>
                                             <td class="px-2">{{ claim.data.id }}</td>
                                             <td class="px-2">{{ claim.data.policy_id }}</td>
                                             <td class="px-2">{{ claim.policy_no }}</td>
@@ -137,15 +138,20 @@ const reset = () => {
                                             <td class="px-2">{{ claim.data.detail }}</td>
                                             <td><span class="badge bg-primary">{{ claim.data.status }}</span></td>
                                             <td class="px-2">
-                                                <SecondaryButton class="mr-1" @click="claimEdit(claim.id)" title="Edit" data-bs-toggle="modal" data-bs-target="#EditLargeModal">
+                                                <SecondaryButton class="mr-1" @click="claimEdit(claim.id)" title="Edit"
+                                                    data-bs-toggle="modal" data-bs-target="#EditLargeModal">
                                                     <i class='bx bx-edit'></i>
                                                 </SecondaryButton>
-                                                
-                                                <SecondaryButton class="mr-1" @click="claimNote(claim.id, claim.data.policy_id)" title="Note" data-bs-toggle="modal" data-bs-target="#notesLargeModal">
+
+                                                <SecondaryButton class="mr-1"
+                                                    @click="claimNote(claim.id, claim.data.policy_id)" title="Note"
+                                                    data-bs-toggle="modal" data-bs-target="#notesLargeModal">
                                                     <i class='bx bxs-note'></i>
                                                 </SecondaryButton>
 
-                                                <SecondaryButton class="mr-1" @click="claimUpload(claim.id)" title="Uploads" data-bs-toggle="modal" data-bs-target="#notesUploadLargeModal">
+                                                <SecondaryButton class="mr-1"
+                                                    @click="claimUpload(claim.id, claim.data.policy_id)" title="Uploads"
+                                                    data-bs-toggle="modal" data-bs-target="#notesUploadLargeModal">
                                                     <i class='bx bx-cloud-upload'></i>
                                                 </SecondaryButton>
                                             </td>

@@ -126,62 +126,12 @@ class ClaimController extends Controller
         }
     }
 
-    public function getClaimUpload($id)
-    {
-
-        $policyClaimUploads = PolicyClaimUpload::where('policy_id', $id)->get()->toArray();
-        $data = [
-            "policyClaimUploads" => $policyClaimUploads
-        ];
-
-        return response()->json($data);
-    }
-
-    public function claimUpload(Request $request)
-    {
-        $request->validate([
-            'policy_id' => ['required'],
-            'policy_claim_id' => ['required'],
-            'uploads' => ['required'],
-        ]);
-
-        $data = [
-            'policy_id' => $request->policy_id,
-            'policy_claim_id' => $request->policy_claim_id,
-        ];
-
-        $policyClaimUpload = PolicyClaimUpload::create($data);
-
-        $policyClaimUploadDirectory = 'policyClaimUploads';
-        if ($request->hasFile('uploads')) {
-
-            // Assuming $request->file('uploads') returns an array of uploaded files
-            $files = $request->file('uploads');
-
-            foreach ($files as $file) {
-                // Get the original file name
-                $fileName = $file->getClientOriginalName();
-
-                // Check if the storage directory exists, if not create it
-                if (!Storage::exists($policyClaimUploadDirectory)) {
-                    Storage::makeDirectory($policyClaimUploadDirectory);
-                }
-
-                // Store the file and get the path
-                $imageUrl = Storage::putFile($policyClaimUploadDirectory, new File($file));
-
-                // Update the policy upload with the file path
-                $policyClaimUpload->update(['file_url' => $imageUrl]);
-            }
-        }
-    }
-
     public function fetchClaimNotes($claim_id, $policy_id)
     {
         $claim_notes = PolicyClaimNote::query()
             ->where('policy_claim_id', $claim_id)
             ->where('policy_id', $policy_id)
-            ->orderBy('id','desc')
+            ->orderBy('id', 'desc')
             ->get()
             ->toArray();
 
@@ -190,7 +140,7 @@ class ClaimController extends Controller
         return response()->json($data);
     }
 
-    public function claimNote(Request $request)
+    public function storeClaimNote(Request $request)
     {
         $request->validate([
             'policy_id' => ['required'],
@@ -207,5 +157,54 @@ class ClaimController extends Controller
         $policy_claim_note = PolicyClaimNote::create($data);
 
         return redirect()->back()->with(['data' => $policy_claim_note]);
+    }
+
+    public function fetchClaimUploads($claim_id, $policy_id)
+    {
+        $claim_uploads = PolicyClaimUpload::query()
+            ->where('policy_claim_id', $claim_id)
+            ->where('policy_id', $policy_id)
+            ->orderBy('id', 'desc')
+            ->get();
+
+        $data = ["claim_uploads" => $claim_uploads];
+
+        return response()->json($data);
+    }
+
+    public function storeClaimUpload(Request $request)
+    {
+        $request->validate([
+            'policy_id' => ['required'],
+            'policy_claim_id' => ['required'],
+            'uploads' => ['required'],
+        ]);
+
+        $data = [
+            'policy_id' => $request->policy_id,
+            'policy_claim_id' => $request->policy_claim_id,
+        ];
+
+        $policy_claim_upload = PolicyClaimUpload::create($data);
+
+        $directory = 'policyClaimUploads';
+
+        if ($request->hasFile('uploads')) {
+            $files = $request->file('uploads');
+
+            foreach ($files as $file) {
+                $file->getClientOriginalName();
+
+                if (!Storage::exists($directory)) {
+                    Storage::makeDirectory($directory);
+                }
+
+                $imageUrl = Storage::putFile($directory, new File($file));
+                $policy_claim_upload->update(['file_url' => $imageUrl]);
+            }
+        }
+
+        return redirect()->back()->with(['data' => $policy_claim_upload]);
+
     }
 }

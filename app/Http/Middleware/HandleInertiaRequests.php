@@ -57,6 +57,7 @@ class HandleInertiaRequests extends Middleware
                         'location' => $request->url(),
                     ]);
                 },
+                'asset_url' => asset('storage'),
             ];
         }
 

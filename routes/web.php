@@ -81,10 +81,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/fetch/claim/{id}', [ClaimController::class, 'fetch'])->name('claim.fetch')->middleware('permission:policy_claim');
         
         Route::get('/fetch/claim-notes/{claim_id}/{policy_id}', [ClaimController::class, 'fetchClaimNotes'])->name('claim.fetch.claim-notes')->middleware('permission:policy_claim');
-        Route::post('/claim/note', [ClaimController::class, 'claimNote'])->name('claim.claim-note')->middleware('permission:policy_claim');
+        Route::post('/store/claim-note', [ClaimController::class, 'storeClaimNote'])->name('claim.store.claim-note')->middleware('permission:policy_claim');
 
-        Route::get('/get/claim/upload/{id}', [ClaimController::class, 'getClaimUpload'])->name('policy.getClaimUpload')->middleware('permission:policy_claim');
-        Route::post('/claim/upload', [ClaimController::class, 'claimUpload'])->name('policy.claimUpload')->middleware('permission:policy_claim');
+        Route::get('/fetch/claim-uploads/{claim_id}/{policy_id}', [ClaimController::class, 'fetchClaimUploads'])->name('claim.fetch.claim-uploads')->middleware('permission:policy_claim');
+        Route::post('/store/claim-upload', [ClaimController::class, 'storeClaimUpload'])->name('claim.store.claim-upload')->middleware('permission:policy_claim');
     });
 
     Route::prefix('roles')->group(function () {

@@ -68,8 +68,7 @@ defineExpose({ claimNote: (id, policy_id) => claimNote(id, policy_id) });
         </p>
 
         <div class="mt-6">
-          <input type="hidden" v-model="form.policy_id">
-          <input type="hidden" v-model="form.policy_claim_id">
+
           <div class="row g-3">
             <div class="col-md-12">
               <label for="input13" class="form-label">Description</label>
