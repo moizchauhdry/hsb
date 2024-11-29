@@ -15,6 +15,8 @@ import ClaimCreateEdit from "../ClaimCreateEdit.vue";
 import ClaimNote from "./Notes.vue";
 import ClaimUpload from "./Upload.vue";
 
+import moment from 'moment';
+
 defineProps({
     claims: Array,
     filter: Object,
@@ -56,6 +58,12 @@ const reset = () => {
     search_form.search = "";
     search();
 };
+
+const getDateFormat = (date) => {
+    let parsedDate = moment(date);
+    let formattedDate = parsedDate.format('DD-MM-YYYY');
+    return formattedDate;
+}
 
 </script>
 
@@ -112,8 +120,7 @@ const reset = () => {
                                     <tr>
                                         <th class="px-2">Sr #</th>
                                         <th class="px-2">Claim ID</th>
-                                        <th class="px-2">Policy ID</th>
-                                        <th class="px-2">Policy No</th>
+                                        <th class="px-2">Policy</th>
                                         <th class="px-2">Claim Date</th>
                                         <th class="px-2">Intimation Date</th>
                                         <th class="px-2">Survivor Name</th>
@@ -128,15 +135,19 @@ const reset = () => {
                                         <tr>
                                             <td class="px-2">{{ (claims.current_page - 1) * claims.per_page + index + 1
                                                 }}</td>
-                                            <td class="px-2">{{ claim.data.id }}</td>
-                                            <td class="px-2">{{ claim.data.policy_id }}</td>
-                                            <td class="px-2">{{ claim.policy_no }}</td>
-                                            <td class="px-2">{{ claim.claim_at }}</td>
-                                            <td class="px-2">{{ claim.intimation_at }}</td>
-                                            <td class="px-2">{{ claim.data.survivor_name }}</td>
-                                            <td class="px-2">{{ claim.data.contact_no }}</td>
-                                            <td class="px-2">{{ claim.data.detail }}</td>
-                                            <td><span class="badge bg-primary">{{ claim.data.status }}</span></td>
+                                            <td class="px-2">{{ claim.id }}</td>
+                                            <td class="px-2">
+                                                <a :href="route('policy.detail', claim.policy_id)"
+                                                    target="_blank"> {{ claim.policy_no }} <i class="bx bx-link-external"></i>
+                                                </a>
+                                                <br> {{ claim.client_name }}
+                                            </td>
+                                            <td class="px-2">{{ getDateFormat(claim.claim_at) }}</td>
+                                            <td class="px-2">{{ getDateFormat(claim.intimation_at) }}</td>
+                                            <td class="px-2">{{ claim.survivor_name }}</td>
+                                            <td class="px-2">{{ claim.contact_no }}</td>
+                                            <td class="px-2">{{ claim.detail }}</td>
+                                            <td><span class="badge bg-primary">{{ claim.status }}</span></td>
                                             <td class="px-2">
                                                 <SecondaryButton class="mr-1" @click="claimEdit(claim.id)" title="Edit"
                                                     data-bs-toggle="modal" data-bs-target="#EditLargeModal">
@@ -144,13 +155,13 @@ const reset = () => {
                                                 </SecondaryButton>
 
                                                 <SecondaryButton class="mr-1"
-                                                    @click="claimNote(claim.id, claim.data.policy_id)" title="Note"
+                                                    @click="claimNote(claim.id, claim.policy_id)" title="Note"
                                                     data-bs-toggle="modal" data-bs-target="#notesLargeModal">
                                                     <i class='bx bxs-note'></i>
                                                 </SecondaryButton>
 
                                                 <SecondaryButton class="mr-1"
-                                                    @click="claimUpload(claim.id, claim.data.policy_id)" title="Uploads"
+                                                    @click="claimUpload(claim.id, claim.policy_id)" title="Uploads"
                                                     data-bs-toggle="modal" data-bs-target="#notesUploadLargeModal">
                                                     <i class='bx bx-cloud-upload'></i>
                                                 </SecondaryButton>

@@ -35,23 +35,33 @@ class ClaimController extends Controller
         ];
 
         $claims = PolicyClaim::query()
+            ->select(
+                'pc.*',
+                'p.policy_no as policy_no',
+                'u.name as client_name',
+            )
+            ->from('policy_claims as pc')
+            ->join('policies as p', 'p.id', 'pc.policy_id')
+            ->leftJoin('users as u', 'u.id', 'p.client_id')
             ->when($filter['search'], function ($q) use ($filter) {
-                $q->where('id', $filter['search']);
+                $q->where('pc.id', $filter['search']);
+                $q->orWhere('pc.policy_id', $filter['search']);
+                $q->orWhere('p.policy_no', "LIKE", "%" . $filter['search'] . "%");
+                $q->orWhere('u.name', "LIKE", "%" . $filter['search'] . "%");
             })
             ->when($filter['date_type'], function ($q) use ($filter) {
-                $q->whereYear($filter['date_type'], $filter['year']);
-                $q->whereMonth($filter['date_type'], $filter['month']);
+                $q->whereYear('pc.' . $filter['date_type'], $filter['year']);
+                $q->whereMonth('pc.' . $filter['date_type'], $filter['month']);
             })
-            ->orderBy('id', 'desc')
-            ->paginate(25)
-            ->withQueryString()
-            ->through(fn($claim) => [
-                'data' => $claim,
-                'id' => $claim->id,
-                'policy_no' => $claim->policy->policy_no ?? NULL,
-                'claim_at' => dateFormat($claim->claim_at),
-                'intimation_at' => dateFormat($claim->intimation_at),
-            ]);
+            ->orderBy('pc.id', 'desc')
+            ->paginate(25);
+            // ->withQueryString()
+            // ->through(fn($claim) => [
+            //     'data' => $claim,
+            //     'id' => $claim->id,
+            //     'claim_at' => dateFormat($claim->claim_at),
+            //     'intimation_at' => dateFormat($claim->intimation_at),
+            // ]);
 
         return Inertia::render('Policy/Claim/Index', [
             'claims' => $claims,
@@ -141,7 +151,7 @@ class ClaimController extends Controller
     }
 
     public function storeClaimNote(Request $request)
-    {        
+    {
         $request->validate([
             'policy_id' => ['required'],
             'policy_claim_id' => ['required'],
@@ -193,6 +203,5 @@ class ClaimController extends Controller
         }
 
         return redirect()->back()->with(['data' => $policy_claim_upload]);
-
     }
 }
