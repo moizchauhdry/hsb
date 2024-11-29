@@ -158,7 +158,7 @@ const format_date = (date) => {
 </script>
 
 <template>
-    <PrimaryButton @click="create" type="button" class="mx-1">Search</PrimaryButton>
+    <PrimaryButton @click="create" type="button" class="mx-1"><i class="bx bx-search-alt text-lg mr-1"></i> Filters</PrimaryButton>
 
     <Modal :show="modal" @close="closeModal">
         <form @submit.prevent="edit ? update() : submit()">
