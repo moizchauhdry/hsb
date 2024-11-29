@@ -22,7 +22,9 @@ use Inertia\Inertia;
 class ClaimController extends Controller
 {
     public function index(Request $request)
-    {
+    {        
+        $page_count = $request->page_count ?? 10;
+
         $current_month = $request->month ?? Carbon::now()->format('m');
         $current_year = $request->year ?? Carbon::now()->format('Y');
 
@@ -54,8 +56,9 @@ class ClaimController extends Controller
                 $q->whereMonth('pc.' . $filter['date_type'], $filter['month']);
             })
             ->orderBy('pc.id', 'desc')
-            ->paginate(25);
-            // ->withQueryString()
+            ->paginate($page_count)
+            ->withQueryString();
+
             // ->through(fn($claim) => [
             //     'data' => $claim,
             //     'id' => $claim->id,
