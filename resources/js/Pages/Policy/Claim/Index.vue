@@ -15,6 +15,8 @@ import ClaimCreateEdit from "../ClaimCreateEdit.vue";
 import ClaimNote from "./Notes.vue";
 import ClaimUpload from "./Upload.vue";
 
+import moment from 'moment';
+
 defineProps({
     claims: Array,
     filter: Object,
@@ -36,11 +38,13 @@ const claimEdit = (id) => {
 };
 
 const search_form = useForm({
-    search: ""
+    search: "",
+    page_count: 10,
 });
 
 const search = () => {
-    search_form.post(route("claim.index"), {
+    const queryParams = new URLSearchParams(search_form).toString();
+    search_form.post(`${route("claim.index")}?${queryParams}`, {
         preserveScroll: true,
         onSuccess: (response) => {
             // 
@@ -56,6 +60,12 @@ const reset = () => {
     search_form.search = "";
     search();
 };
+
+const getDateFormat = (date) => {
+    let parsedDate = moment(date);
+    let formattedDate = parsedDate.format('DD-MM-YYYY');
+    return formattedDate;
+}
 
 </script>
 
@@ -93,18 +103,35 @@ const reset = () => {
 
                 <div class="card">
                     <div class="card-body">
-                        <form @submit.prevent="search">
-                            <div class="row mb-3 d-flex align-items-center">
-                                <div class="col-md-3">
-                                    <input type="text" v-model="search_form.search" class="form-control"
-                                        placeholder="Search">
-                                </div>
-                                <div class="col-md-3">
-                                    <SuccessButton class="px-4 py-1 mr-1">Search</SuccessButton>
-                                    <DangerButton class="px-4 py-1 mr-1" @click="reset()">Reset</DangerButton>
-                                </div>
+                        <div class="row align-items-center mb-3">
+                            <div class="col-12 col-md-2 d-flex align-items-center mb-2 mb-md-0">
+                                <span class="mr-2">Show</span>
+                                <select v-model="search_form.page_count" class="form-control" style="width: 70px;"
+                                    @change="search()">
+                                    <option value="10">10</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                    <option value="500">500</option>
+                                </select>
+                                <span class="ml-2">entries</span>
                             </div>
-                        </form>
+
+                            <div class="col-12 col-md-10">
+                                <form
+                                    class="d-flex flex-column flex-md-row justify-content-md-end align-items-md-center"
+                                    @submit.prevent="search">
+                                    <div class="d-flex flex-column flex-md-row align-items-md-center">
+                                        <input type="text" v-model="search_form.search" class="form-control mr-2 mb-2"
+                                            placeholder="Search" style="width: 100%;">
+                                        <div class="d-flex">
+                                            <SuccessButton class="mb-2 px-4 py-1 mr-1">Search</SuccessButton>
+                                            <DangerButton class="mb-2 px-2 py-1" @click="reset()"><i class="bx bx-reset text-lg"></i></DangerButton>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
 
                         <div class="table-responsive">
                             <table class="table table-bordered table-sm text-uppercase">
@@ -112,8 +139,7 @@ const reset = () => {
                                     <tr>
                                         <th class="px-2">Sr #</th>
                                         <th class="px-2">Claim ID</th>
-                                        <th class="px-2">Policy ID</th>
-                                        <th class="px-2">Policy No</th>
+                                        <th class="px-2">Policy</th>
                                         <th class="px-2">Claim Date</th>
                                         <th class="px-2">Intimation Date</th>
                                         <th class="px-2">Survivor Name</th>
@@ -128,15 +154,19 @@ const reset = () => {
                                         <tr>
                                             <td class="px-2">{{ (claims.current_page - 1) * claims.per_page + index + 1
                                                 }}</td>
-                                            <td class="px-2">{{ claim.data.id }}</td>
-                                            <td class="px-2">{{ claim.data.policy_id }}</td>
-                                            <td class="px-2">{{ claim.policy_no }}</td>
-                                            <td class="px-2">{{ claim.claim_at }}</td>
-                                            <td class="px-2">{{ claim.intimation_at }}</td>
-                                            <td class="px-2">{{ claim.data.survivor_name }}</td>
-                                            <td class="px-2">{{ claim.data.contact_no }}</td>
-                                            <td class="px-2">{{ claim.data.detail }}</td>
-                                            <td><span class="badge bg-primary">{{ claim.data.status }}</span></td>
+                                            <td class="px-2">{{ claim.id }}</td>
+                                            <td class="px-2">
+                                                <a :href="route('policy.detail', claim.policy_id)" target="_blank"> {{
+                                                    claim.policy_no }} <i class="bx bx-link-external"></i>
+                                                </a>
+                                                <br> {{ claim.client_name }}
+                                            </td>
+                                            <td class="px-2">{{ getDateFormat(claim.claim_at) }}</td>
+                                            <td class="px-2">{{ getDateFormat(claim.intimation_at) }}</td>
+                                            <td class="px-2">{{ claim.survivor_name }}</td>
+                                            <td class="px-2">{{ claim.contact_no }}</td>
+                                            <td class="px-2">{{ claim.detail }}</td>
+                                            <td><span class="badge bg-primary">{{ claim.status }}</span></td>
                                             <td class="px-2">
                                                 <SecondaryButton class="mr-1" @click="claimEdit(claim.id)" title="Edit"
                                                     data-bs-toggle="modal" data-bs-target="#EditLargeModal">
@@ -144,13 +174,13 @@ const reset = () => {
                                                 </SecondaryButton>
 
                                                 <SecondaryButton class="mr-1"
-                                                    @click="claimNote(claim.id, claim.data.policy_id)" title="Note"
+                                                    @click="claimNote(claim.id, claim.policy_id)" title="Note"
                                                     data-bs-toggle="modal" data-bs-target="#notesLargeModal">
                                                     <i class='bx bxs-note'></i>
                                                 </SecondaryButton>
 
                                                 <SecondaryButton class="mr-1"
-                                                    @click="claimUpload(claim.id, claim.data.policy_id)" title="Uploads"
+                                                    @click="claimUpload(claim.id, claim.policy_id)" title="Uploads"
                                                     data-bs-toggle="modal" data-bs-target="#notesUploadLargeModal">
                                                     <i class='bx bx-cloud-upload'></i>
                                                 </SecondaryButton>
@@ -163,6 +193,9 @@ const reset = () => {
                         </div>
                     </div>
                     <div class="card-body">
+                        <div class="float-left">
+                            <span>Showing {{ claims.from }} to {{ claims.to }} of {{claims.total}} entries</span>
+                        </div>
                         <div class="float-right">
                             <Paginate :links="claims.links" />
                         </div>

@@ -31,6 +31,8 @@ class PolicyController extends Controller
 {
     public function index(Request $request)
     {
+        $page_count = $request->page_count ?? 10;
+
         $current_month = $request->month ?? Carbon::now()->format('m');
         $current_year = $request->year ?? Carbon::now()->format('Y');
 
@@ -52,10 +54,10 @@ class PolicyController extends Controller
         $policies = Policy::policiesList($filter)
             ->when($filter['search'], function ($q) use ($filter) {
                 $q->where('id', $filter['search']);
-                $q->orWhere('policy_no', $filter['search']);
+                $q->orWhere('policy_no', "LIKE", "%" . $filter['search'] . "%");
             })
             ->orderBy('id', 'desc')
-            ->paginate(25)
+            ->paginate($page_count)
             ->withQueryString()
             ->through(fn($policy) => [
                 'id' => $policy->id,

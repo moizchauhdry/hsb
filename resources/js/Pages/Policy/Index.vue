@@ -58,17 +58,14 @@ const confirmDelete = (policyId) => {
     });
 };
 
-var search_types = [
-    { value: 1, label: "Policy ID" },
-    { value: 2, label: "Policy NO" },
-];
-
 const search_form = useForm({
-    search: ""
+    search: "",
+    page_count: 10,
 });
 
 const search = () => {
-    search_form.post(route("policy.index"), {
+    const queryParams = new URLSearchParams(search_form).toString();
+    search_form.post(`${route("policy.index")}?${queryParams}`, {
         preserveScroll: true,
         onSuccess: (response) => {
             // 
@@ -121,18 +118,35 @@ const reset = () => {
 
                 <div class="card">
                     <div class="card-body">
-                        <form @submit.prevent="search">
-                            <div class="row mb-3 d-flex align-items-center">
-                                <div class="col-md-3">
-                                    <input type="text" v-model="search_form.search" class="form-control"
-                                        placeholder="Search">
-                                </div>
-                                <div class="col-md-3">
-                                    <SuccessButton class="px-4 py-1 mr-1">Search</SuccessButton>
-                                    <DangerButton class="px-4 py-1 mr-1" @click="reset()">Cancel</DangerButton>
-                                </div>
+                        <div class="row align-items-center mb-3">
+                            <div class="col-12 col-md-2 d-flex align-items-center mb-2 mb-md-0">
+                                <span class="mr-2">Show</span>
+                                <select v-model="search_form.page_count" class="form-control" style="width: 70px;"
+                                    @change="search()">
+                                    <option value="10">10</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                    <option value="500">500</option>
+                                </select>
+                                <span class="ml-2">entries</span>
                             </div>
-                        </form>
+
+                            <div class="col-12 col-md-10">
+                                <form
+                                    class="d-flex flex-column flex-md-row justify-content-md-end align-items-md-center"
+                                    @submit.prevent="search">
+                                    <div class="d-flex flex-column flex-md-row align-items-md-center">
+                                        <input type="text" v-model="search_form.search" class="form-control mr-2 mb-2"
+                                            placeholder="Search" style="width: 100%;">
+                                        <div class="d-flex">
+                                            <SuccessButton class="mb-2 px-4 py-1 mr-1">Search</SuccessButton>
+                                            <DangerButton class="mb-2 px-2 py-1" @click="reset()"><i class="bx bx-reset text-lg"></i></DangerButton>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
 
                         <div class="table-responsive">
                             <table class="table table-bordered table-sm text-uppercase">
@@ -171,7 +185,11 @@ const reset = () => {
                                             <td class="px-2">{{ (policies.current_page - 1) * policies.per_page + index
                                                 + 1 }}</td>
                                             <td class="px-2">{{ policy.id }}</td>
-                                            <td class="px-2">{{ policy.data.policy_no }}</td>
+                                            <td class="px-2">
+                                                <a :href="route('policy.detail', policy.id)" target="_blank"> {{
+                                                    policy.data.policy_no }} <i class="bx bx-link-external"></i>
+                                                </a>
+                                            </td>
                                             <!-- <td class="px-2">{{ policy.insurer_name }}</td> -->
                                             <td class="px-2">{{ policy.client_name }}</td>
                                             <!-- <td class="px-2">{{ policy.data.leader_name }}</td> -->
@@ -216,6 +234,9 @@ const reset = () => {
                         </div>
                     </div>
                     <div class="card-body">
+                        <div class="float-left">
+                            <span>Showing {{ policies.from }} to {{ policies.to }} of {{policies.total}} entries</span>
+                        </div>
                         <div class="float-right">
                             <Paginate :links="policies.links" />
                         </div>
