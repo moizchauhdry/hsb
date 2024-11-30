@@ -1,12 +1,10 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
-import InputError from "@/Components/InputError.vue";
 import { ref } from "vue";
 import Paginate from "@/Components/Paginate.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import SuccessButton from "@/Components/SuccessButton.vue";
-import DangerButton from "@/Components/DangerButton.vue";
+import Search from "@/Components/Search.vue";
 import CreateEdit from "./CreateEdit.vue";
 
 defineProps({
@@ -15,36 +13,12 @@ defineProps({
     slug: Object,
 });
 
-
 const slug = usePage().props.slug;
 
 const user_create_edit_ref = ref(null);
 const edit = (id) => {
     user_create_edit_ref.value.edit(id)
 };
-
-const search_form = useForm({
-    search: ""
-});
-
-const search = () => {
-    search_form.post(route("user.index", slug), {
-        preserveScroll: true,
-        onSuccess: (response) => {
-            // 
-        },
-        onError: (errors) => {
-            console.log(errors)
-        },
-        onFinish: () => { },
-    });
-};
-
-const reset = () => {
-    search_form.search = "";
-    search();
-};
-
 </script>
 
 
@@ -70,38 +44,20 @@ const reset = () => {
                         </nav>
                     </div>
                     <div class="ms-auto">
-                        <!-- CREATE & UPDATE MODAL -->
-                        <div class="col">
-
-                            <CreateEdit ref="user_create_edit_ref" v-bind="$props"></CreateEdit>
-                           
-                        </div>
+                        <CreateEdit ref="user_create_edit_ref" v-bind="$props"></CreateEdit>
                     </div>
                 </div>
 
                 <div class="card">
+                    <div class="card-header">
+                        <Search :route_name="route('user.index', { slug })" />
+                    </div>
+
                     <div class="card-body">
-
-                        <!-- <form @submit.prevent="search">
-                            <div class="row mb-3 d-flex align-items-center">
-                                <div class="col-md-3">
-                                    <input type="text" v-model="search_form.search" class="form-control"
-                                        placeholder="Search">
-                                </div>
-                                <div class="col-md-3">
-                                    <SuccessButton class="px-4 py-1 mr-1" :class="{ 'opacity-25': form.processing }"
-                                        :disabled="form.processing">
-                                        Search
-                                    </SuccessButton>
-                                    <DangerButton class="px-4 py-1 mr-1" @click="reset()">Cancel</DangerButton>
-                                </div>
-                            </div>
-                        </form> -->
-
                         <div class="table-responsive">
-                            <table id="example" class="table table-striped table-bordered" style="width:100%">
-                                <thead>
-                                    <tr class="text-uppercase">
+                            <table id="example" class="table table-bordered table-hover table-sm text-uppercase" style="width:100%">
+                                <thead class="table-light">
+                                    <tr>
                                         <th>Sr.No.</th>
                                         <th v-if="slug == 'clients'">Code</th>
                                         <th>Name</th>
@@ -117,7 +73,7 @@ const reset = () => {
                                             <td>{{ (users.current_page - 1) * users.per_page + index + 1 }}</td>
                                             <td v-if="slug == 'clients'">{{ user.code }}</td>
                                             <td class="text-capitalize">{{ user.name }}</td>
-                                            <td v-if="slug == 'users'">{{ user.email }}</td>
+                                            <td class="text-lowercase" v-if="slug == 'users'">{{ user.email }}</td>
                                             <td class="text-capitalize">{{ user.role }}</td>
                                             <td>{{ user.created_at }}</td>
                                             <td>
@@ -132,8 +88,11 @@ const reset = () => {
                     </div>
 
                     <div class="card-footer">
+                        <div class="float-left">
+                            <h6>Showing {{ users.from }} to {{ users.to }} of {{users.total}} entries</h6>
+                        </div>
                         <div class="float-right">
-                            <Paginate :links="users.links" :scroll="true" />
+                            <Paginate :links="users.links" />
                         </div>
                     </div>
                 </div>

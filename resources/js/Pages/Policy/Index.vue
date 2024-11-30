@@ -2,18 +2,15 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Inertia } from '@inertiajs/inertia'
 import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
-import "@vuepic/vue-datepicker/dist/main.css";
 import CreateEdit from "./CreateEdit.vue";
 import Import from "./Import/Import.vue";
 import { ref } from "vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import Paginate from "@/Components/Paginate.vue";
 import Swal from 'sweetalert2';
-import SuccessButton from "@/Components/SuccessButton.vue";
 import DangerButton from "@/Components/DangerButton.vue";
-import Multiselect from "@vueform/multiselect";
-import InputLabel from "@/Components/InputLabel.vue";
 import ReportFilter from "../Report/ReportFilter.vue";
+import Search from "@/Components/Search.vue";
 
 defineProps({
     policies: Array,
@@ -57,38 +54,6 @@ const confirmDelete = (policyId) => {
         }
     });
 };
-
-const search_form = useForm({
-    search: "",
-    page_count: 10,
-});
-
-const search = () => {
-    var filters = {
-        search: search_form.search,
-        page_count: search_form.page_count,
-    };
-    
-    const queryParams = new URLSearchParams(filters).toString();
-    var url_with_filters = `${route("policy.index")}?${queryParams}`;
-
-    search_form.post(url_with_filters, {
-        preserveScroll: true,
-        onSuccess: (response) => {
-            // 
-        },
-        onError: (errors) => {
-            console.log(errors)
-        },
-        onFinish: () => { },
-    });
-};
-
-const reset = () => {
-    search_form.search = "";
-    search();
-};
-
 </script>
 
 <template>
@@ -124,38 +89,10 @@ const reset = () => {
                 </div>
 
                 <div class="card">
+                    <div class="card-header">
+                        <Search :route_name="route('policy.index')" />
+                    </div>
                     <div class="card-body">
-                        <div class="row align-items-center mb-3">
-                            <div class="col-12 col-md-2 d-flex align-items-center mb-2 mb-md-0">
-                                <span class="mr-2">Show</span>
-                                <select v-model="search_form.page_count" class="form-control" style="width: 70px;"
-                                    @change="search()">
-                                    <option value="10">10</option>
-                                    <option value="25">25</option>
-                                    <option value="50">50</option>
-                                    <option value="100">100</option>
-                                    <option value="500">500</option>
-                                </select>
-                                <span class="ml-2">entries</span>
-                            </div>
-
-                            <div class="col-12 col-md-10">
-                                <form
-                                    class="d-flex flex-column flex-md-row justify-content-md-end align-items-md-center"
-                                    @submit.prevent="search">
-                                    <div class="d-flex flex-column flex-md-row align-items-md-center">
-                                        <input type="text" v-model="search_form.search" class="form-control mr-2 mb-2"
-                                            placeholder="Search" style="width: 100%;">
-                                        <div class="d-flex">
-                                            <SuccessButton class="mb-2 px-4 py-1 mr-1">Search</SuccessButton>
-                                            <DangerButton class="mb-2 px-2 py-1" @click="reset()"><i
-                                                    class="bx bx-reset text-lg"></i></DangerButton>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-
                         <div class="table-responsive">
                             <table class="table table-bordered table-sm text-uppercase">
                                 <thead class="table-light">
@@ -241,7 +178,7 @@ const reset = () => {
 
                         </div>
                     </div>
-                    <div class="card-body">
+                    <div class="card-footer">
                         <div class="float-left">
                             <span>Showing {{ policies.from }} to {{ policies.to }} of {{ policies.total }} entries</span>
                         </div>
@@ -257,5 +194,3 @@ const reset = () => {
     </AuthenticatedLayout>
 
 </template>
-
-<style src="@vueform/multiselect/themes/default.css"></style>

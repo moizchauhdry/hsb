@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller
@@ -17,8 +18,9 @@ class UserController extends Controller
     {
         $filter = [
             'search' => $request->search,
+            'page_count' => $request->page_count,
         ];
-
+        
         $users = User::query()
             ->when($slug == 'users', function ($q) {
                 $q->withoutRole('client');
@@ -32,7 +34,7 @@ class UserController extends Controller
                 $q->orWhere('name', 'LIKE', '%' . $filter['search'] . '%');
                 $q->orWhere('email', 'LIKE', '%' . $filter['search'] . '%');
             })
-            ->paginate(10)
+            ->paginate($filter['page_count'])
             ->withQueryString()
             ->through(fn($user) => [
                 'id' => $user->id,
