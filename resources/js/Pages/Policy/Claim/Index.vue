@@ -6,9 +6,6 @@ import "@vuepic/vue-datepicker/dist/main.css";
 import { ref } from "vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import Paginate from "@/Components/Paginate.vue";
-import Swal from 'sweetalert2';
-import SuccessButton from "@/Components/SuccessButton.vue";
-import DangerButton from "@/Components/DangerButton.vue";
 import Filter from "./Filter.vue";
 
 import ClaimCreateEdit from "../ClaimCreateEdit.vue";
@@ -16,6 +13,7 @@ import ClaimNote from "./Notes.vue";
 import ClaimUpload from "./Upload.vue";
 
 import moment from 'moment';
+import Search from "@/Components/Search.vue";
 
 defineProps({
     claims: Array,
@@ -37,43 +35,11 @@ const claimEdit = (id) => {
     claim_create_edit_ref.value.claimEdit(id)
 };
 
-const search_form = useForm({
-    search: "",
-    page_count: 10,
-});
-
-const search = () => {
-    var filters = {
-        search: search_form.search,
-        page_count: search_form.page_count,
-    };
-    
-    const queryParams = new URLSearchParams(filters).toString();
-    var url_with_filters = `${route("claim.index")}?${queryParams}`;
-
-    search_form.post(url_with_filters, {
-        preserveScroll: true,
-        onSuccess: (response) => {
-            // 
-        },
-        onError: (errors) => {
-            console.log(errors)
-        },
-        onFinish: () => { },
-    });
-};
-
-const reset = () => {
-    search_form.search = "";
-    search();
-};
-
 const getDateFormat = (date) => {
     let parsedDate = moment(date);
     let formattedDate = parsedDate.format('DD-MM-YYYY');
     return formattedDate;
 }
-
 </script>
 
 <template>
@@ -109,37 +75,11 @@ const getDateFormat = (date) => {
                 </div>
 
                 <div class="card">
+                    <div class="card-header">
+                        <Search :route_name="route('claim.index')" />
+                    </div>
+
                     <div class="card-body">
-                        <div class="row align-items-center mb-3">
-                            <div class="col-12 col-md-2 d-flex align-items-center mb-2 mb-md-0">
-                                <span class="mr-2">Show</span>
-                                <select v-model="search_form.page_count" class="form-control" style="width: 70px;"
-                                    @change="search()">
-                                    <option value="10">10</option>
-                                    <option value="25">25</option>
-                                    <option value="50">50</option>
-                                    <option value="100">100</option>
-                                    <option value="500">500</option>
-                                </select>
-                                <span class="ml-2">entries</span>
-                            </div>
-
-                            <div class="col-12 col-md-10">
-                                <form
-                                    class="d-flex flex-column flex-md-row justify-content-md-end align-items-md-center"
-                                    @submit.prevent="search">
-                                    <div class="d-flex flex-column flex-md-row align-items-md-center">
-                                        <input type="text" v-model="search_form.search" class="form-control mr-2 mb-2"
-                                            placeholder="Search" style="width: 100%;">
-                                        <div class="d-flex">
-                                            <SuccessButton class="mb-2 px-4 py-1 mr-1">Search</SuccessButton>
-                                            <DangerButton class="mb-2 px-2 py-1" @click="reset()"><i class="bx bx-reset text-lg"></i></DangerButton>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-
                         <div class="table-responsive">
                             <table class="table table-bordered table-sm text-uppercase">
                                 <thead class="table-light">
@@ -199,9 +139,9 @@ const getDateFormat = (date) => {
 
                         </div>
                     </div>
-                    <div class="card-body">
+                    <div class="card-footer">
                         <div class="float-left">
-                            <span>Showing {{ claims.from }} to {{ claims.to }} of {{claims.total}} entries</span>
+                            <span><h6>Showing {{ claims.from }} to {{ claims.to }} of {{claims.total}} entries</h6></span>
                         </div>
                         <div class="float-right">
                             <Paginate :links="claims.links" />
