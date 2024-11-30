@@ -121,7 +121,7 @@ const reset = () => {
                                             <td class="text-capitalize">{{ user.role }}</td>
                                             <td>{{ user.created_at }}</td>
                                             <td>
-                                                <PrimaryButton @click="edit(user)" title="Edit"><i
+                                                <PrimaryButton @click="edit(user.id)" title="Edit"><i
                                                         class="bx bx-edit mr-1"></i> Edit</PrimaryButton>
                                             </td>
                                         </tr>

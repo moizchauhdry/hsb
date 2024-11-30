@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\UserCob;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
@@ -62,7 +63,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function create(Request $request)
+    private function save($request, $edit_mode)
     {
         $rules = [
             'name' => ['required', 'string', 'min:3', 'max:50'],
@@ -73,9 +74,10 @@ class UserController extends Controller
             'designation' => ['nullable'],
             'qualification' => ['nullable'],
             'role' => ['required'],
+            'cob_id' => ['nullable'],
         ];
 
-        if ($request->role == 1) {
+        if ($edit_mode == false && $request->role == 1) {
             $rules += [
                 'password' => ['required', 'string', 'min:8', 'confirmed'],
                 'email' => ['required'],
@@ -97,59 +99,66 @@ class UserController extends Controller
             'dob'  =>  $request->dob,
             'type'  =>  $request->type,
             'designation'  =>  $request->designation,
-            // 'role_users_id'  =>  $validate['role'],
             'qualification'   => $request->qualification,
         ];
 
-        if ($request->role != 2) {
-            $data += [
-                'password' => Hash::make($request->password),
-            ];
+        if ($edit_mode) {
+            $user = User::find($request->user_id);
+            $user->update($data);
+            $user->syncRoles($validate['role']);
         } else {
-            $data += [
-                'password' => Hash::make(0),
-            ];
+            if ($request->role != 2) {
+                $data += [
+                    'password' => Hash::make($request->password),
+                ];
+            } else {
+                $data += [
+                    'password' => Hash::make(0),
+                ];
+            }
+
+            $user = User::create($data);
+            $user->assignRole($validate['role']);
         }
 
-        $user = User::create($data);
-        $user->assignRole($validate['role']);
+        if ($request->cob_id) {
+            UserCob::where('user_id', $user->id)->delete();
+            foreach ($request->cob_id as $key => $cob) {
+                UserCob::create([
+                    'user_id' => $user->id,
+                    'cob_id' => $cob,
+                ]);
+            }
+        }
+    }
+
+    public function create(Request $request)
+    {
+        $this->save($request, false);
+    }
+
+    public function edit($id)
+    {
+        $user = User::find($id);
+
+        $selected_cobs = UserCob::query()
+            ->from('user_cobs as uc')
+            ->select('cob.id as cob_id')
+            ->join('business_classes as cob', 'cob.id', 'uc.cob_id')
+            ->where('uc.user_id', $id)
+            ->get()->pluck('cob_id');
+
+        $data = [
+            'user' => $user,
+            'role_id' => $user->roles[0]->id,
+            'selected_cobs' => $selected_cobs,
+        ];
+
+        return response()->json($data);
     }
 
     public function update(Request $request)
     {
-        $user = User::findOrFail($request->user_id);
-
-        $validate = $request->validate([
-            'user_id' => ['required'],
-            'name' => ['required', 'string', 'min:3', 'max:50'],
-            'email' => ['nullable', 'string', 'email', 'max:50'],
-            'address' => ['nullable', 'string', 'min:3', 'max:100'],
-            'phone' => ['nullable'],
-            'cnic_no' => ['nullable'],
-            'designation' => ['nullable'],
-            'qualification' => ['nullable'],
-            'role' => ['required'],
-        ]);
-
-        $data = [
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'address' => $request->address,
-            'cnic_name'  =>  $request->cnic_name,
-            'cnic_no'  =>  $request->cnic_no,
-            'cnic_expiry_date'  =>  $request->cnic_expiry_date,
-            'father_name'  =>  $request->father_name,
-            'gender'  =>  $request->gender,
-            'dob'  =>  $request->dob,
-            'type'  =>  $request->type,
-            // 'role_users_id'  =>  $validate['role'],
-            'designation'  =>  $request->designation,
-            'qualification'   => $request->qualification,
-            'password' => Hash::make($request->password),
-        ];
-
-        $user->update($data);
-        $user->syncRoles($validate['role']);
+        $this->save($request, true);
     }
 }

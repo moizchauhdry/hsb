@@ -1,15 +1,17 @@
 <script setup>
 import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
-import InputError from "@/Components/InputError.vue";
 import { ref } from "vue";
+import axios from 'axios';
+
+import Modal from "@/Components/Modal.vue";
+import InputError from "@/Components/InputError.vue";
+import InputLabel from "@/Components/InputLabel.vue";
+import Multiselect from "@vueform/multiselect";
 
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SuccessButton from "@/Components/SuccessButton.vue";
 import DangerButton from "@/Components/DangerButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
-
-import Modal from "@/Components/Modal.vue";
-import InputLabel from "@/Components/InputLabel.vue";
 
 defineProps({
     roles: Object,
@@ -19,6 +21,7 @@ defineProps({
 const modal = ref(false);
 const edit_mode = ref(false);
 const slug = usePage().props.slug;
+const cobs = ref([]);
 
 const form = useForm({
     user_id: "",
@@ -38,47 +41,58 @@ const form = useForm({
     password: "",
     password_confirmation: "",
     role: "",
+
+    cob_id: [],
 });
 
 const create = () => {
     modal.value = true;
     edit_mode.value = false;
+
+    fetchCobs();
 };
 
 const submit = () => {
     form.post(route("user.create"), {
         preserveScroll: true,
-        onSuccess: () => closeModal(),
+        onSuccess: () => close(),
         onError: () => error(),
         onFinish: () => { },
     });
 };
 
-const edit = (user) => {
+const edit = (id) => {
     modal.value = true;
     edit_mode.value = true;
+    fetchCobs();
 
-    form.user_id = user.id;
-    form.name = user.name;
-    form.phone = user.phone;
-    form.email = user.email;
-    form.address = user.address;
-    form.cnic_name = user.cnic_name;
-    form.cnic_no = user.cnic_no;
-    form.cnic_expiry_date = user.cnic_expiry_date;
-    form.father_name = user.father_name;
-    form.gender = user.gender;
-    form.dob = user.dob;
-    form.type = user.type;
-    form.designation = user.designation;
-    form.qualification = user.qualification;
-    form.role = user.role_id;
+    axios.get(`/users/edit/${id}`)
+        .then(({ data }) => {
+            console.log(data)
+
+            form.user_id = data.user.id;
+            form.name = data.user.name;
+            form.phone = data.user.phone;
+            form.email = data.user.email;
+            form.address = data.user.address;
+            form.cnic_name = data.user.cnic_name;
+            form.cnic_no = data.user.cnic_no;
+            form.cnic_expiry_date = data.user.cnic_expiry_date;
+            form.father_name = data.user.father_name;
+            form.gender = data.user.gender;
+            form.dob = data.user.dob;
+            form.type = data.user.type;
+            form.designation = data.user.designation;
+            form.qualification = data.user.qualification;
+            form.role = data.role_id;
+            form.cob_id = data.selected_cobs;
+        });
 };
 
 const update = () => {
     form.post(route("user.update"), {
         preserveScroll: true,
-        onSuccess: () => closeModal(),
+        onSuccess: () => close(),
         onError: () => error(),
         onFinish: () => { },
     });
@@ -91,6 +105,14 @@ const error = () => {
 const close = () => {
     modal.value = false;
     form.reset();
+};
+
+const fetchCobs = () => {
+    axios.get("/axios/fetch/cobs")
+        .then(({ data }) => {
+            console.log(data)
+            cobs.value = data.cobs;
+        });
 };
 
 defineExpose({ edit: (id) => edit(id) });
@@ -129,8 +151,8 @@ defineExpose({ edit: (id) => edit(id) });
                         <div class="col-md-6">
                             <label for="input16" class="form-label">Type</label>
                             <select id="input21" class="form-select" v-model="form.type">
-                                <option :value="1">Individual</option>
-                                <option :value="2">Business</option>
+                                <option :value="'individual'">Individual</option>
+                                <option :value="'business'">Business</option>
                             </select>
                             <InputError :message="form.errors.type" />
                         </div>
@@ -273,6 +295,18 @@ defineExpose({ edit: (id) => edit(id) });
                             </div>
                         </template>
                     </div>
+                    <hr>
+                    <div class="row" v-if="slug == 'users'">
+                        <div class="col-md-12">
+                            <label for="input21" class="form-label">Class of Business</label>
+
+                            <Multiselect style="margin-top: 3px !important" mode="tags" v-model="form.cob_id"
+                                :options="cobs" :searchable="true">
+                            </Multiselect>
+
+                            <InputError :message="form.errors.cob_id" />
+                        </div>
+                    </div>
                 </div>
 
                 <div class="mt-6 flex justify-end">
@@ -286,3 +320,5 @@ defineExpose({ edit: (id) => edit(id) });
         </form>
     </Modal>
 </template>
+
+<style src="@vueform/multiselect/themes/default.css"></style>
