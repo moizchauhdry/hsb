@@ -204,7 +204,7 @@ const toggle = () => {
                         <img src="../../../images/logo-icon.png" class="user-img" alt="user avatar">
                         <div class="user-info">
                             <p class="user-name mb-0"> {{ $page.props.auth.user.name }}</p>
-                            <p class="designattion mb-0">Super Admin</p>
+                            <p class="designattion mb-0">{{ $page.props.auth.user?.roles[0]?.name }}</p>
                         </div>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end profile-dropdown" :class="{ 'show': dropdownOpen }">

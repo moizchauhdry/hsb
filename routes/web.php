@@ -38,6 +38,8 @@ Route::middleware('auth')->group(function () {
     Route::prefix('users')->group(function () {
         Route::any('/list/{slug}', [UserController::class, 'index'])->name('user.index')->middleware('permission:user_list');
         Route::post('/create', [UserController::class, 'create'])->name('user.create')->middleware('permission:user_create');
+        
+        Route::get('/edit/{id}', [UserController::class, 'edit'])->name('user.edit')->middleware('permission:user_update');
         Route::post('/update', [UserController::class, 'update'])->name('user.update')->middleware('permission:user_update');
     });
 
@@ -105,3 +107,4 @@ Route::middleware('auth')->group(function () {
 
 
 require __DIR__ . '/auth.php';
+require __DIR__ . '/axios.php';
