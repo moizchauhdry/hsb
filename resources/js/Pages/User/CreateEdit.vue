@@ -151,12 +151,23 @@ defineExpose({ edit: (id) => edit(id) });
                         <div class="col-md-6">
                             <label for="input16" class="form-label">Type</label>
                             <select id="input21" class="form-select" v-model="form.type">
+                                <option value="">Choose...</option>
                                 <option :value="'individual'">Individual</option>
                                 <option :value="'business'">Business</option>
                             </select>
                             <InputError :message="form.errors.type" />
                         </div>
-                        <div class="col-md-12">
+                        
+                        <div class="col-md-12" v-if="slug == 'users'">
+                            <label for="input21" class="form-label">Class of Business</label>
+
+                            <Multiselect style="margin-top: 3px !important" mode="tags" v-model="form.cob_id"
+                                :options="cobs" :searchable="true">
+                            </Multiselect>
+
+                            <InputError :message="form.errors.cob_id" />
+                        </div>
+                        <div class="col-md-6">
                             <label for="input13" class="form-label">Name</label>
                             <div class="position-relative input-icon">
                                 <input type="text" class="form-control" id="input13" placeholder="" v-model="form.name">
@@ -165,7 +176,7 @@ defineExpose({ edit: (id) => edit(id) });
                             </div>
                             <InputError :message="form.errors.name" />
                         </div>
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <label for="input13" class="form-label">Father Name</label>
                             <div class="position-relative input-icon">
                                 <input type="text" class="form-control" id="input13" placeholder=""
@@ -175,16 +186,7 @@ defineExpose({ edit: (id) => edit(id) });
                             </div>
                             <InputError :message="form.errors.father_name" />
                         </div>
-                        <div class="col-md-12">
-                            <label for="input16" class="form-label">Email</label>
-                            <div class="position-relative input-icon">
-                                <input type="text" class="form-control" id="input16" placeholder=""
-                                    v-model="form.email">
-                                <span class="position-absolute top-50 translate-middle-y"><i
-                                        class='bx bx-envelope'></i></span>
-                            </div>
-                            <InputError :message="form.errors.email" />
-                        </div>
+                      
                         <div class="col-md-6">
                             <label for="input15" class="form-label">Phone</label>
                             <div class="position-relative input-icon">
@@ -197,7 +199,7 @@ defineExpose({ edit: (id) => edit(id) });
                         </div>
 
                         <div class="col-md-6">
-                            <label for="input16" class="form-label">{{ form.type == 1 ?
+                            <label for="input16" class="form-label">{{ form.type == "individual" ?
                                 'CNIC' : "NTN" }} #</label>
                             <div class="position-relative input-icon">
                                 <input type="text" class="form-control" id="input16"
@@ -208,7 +210,18 @@ defineExpose({ edit: (id) => edit(id) });
                             <InputError :message="form.errors.cnic_no" />
                         </div>
 
-                        <template v-if="form.type == 1">
+                        <div class="col-md-6">
+                            <label for="input16" class="form-label">Email</label>
+                            <div class="position-relative input-icon">
+                                <input type="text" class="form-control" id="input16" placeholder=""
+                                    v-model="form.email">
+                                <span class="position-absolute top-50 translate-middle-y"><i
+                                        class='bx bx-envelope'></i></span>
+                            </div>
+                            <InputError :message="form.errors.email" />
+                        </div>
+
+                        <template v-if="form.type == 'individual'">
 
                             <div class="col-md-6">
                                 <label for="input16" class="form-label">CNIC Expiry
@@ -266,12 +279,14 @@ defineExpose({ edit: (id) => edit(id) });
                             </div>
                         </template>
 
+                        
                         <div class="col-md-12">
                             <label for="input16" class="form-label">Address</label>
                             <textarea v-model="form.address" class="form-control" rows="4"></textarea>
                             <InputError :message="form.errors.address" />
                         </div>
 
+                    
                         <template v-if="!edit_mode && form.role != 2">
                             <div class="col-md-6">
                                 <label for="input17" class="form-label">Password</label>
@@ -294,18 +309,6 @@ defineExpose({ edit: (id) => edit(id) });
                                 </div>
                             </div>
                         </template>
-                    </div>
-                    <hr>
-                    <div class="row" v-if="slug == 'users'">
-                        <div class="col-md-12">
-                            <label for="input21" class="form-label">Class of Business</label>
-
-                            <Multiselect style="margin-top: 3px !important" mode="tags" v-model="form.cob_id"
-                                :options="cobs" :searchable="true">
-                            </Multiselect>
-
-                            <InputError :message="form.errors.cob_id" />
-                        </div>
                     </div>
                 </div>
 

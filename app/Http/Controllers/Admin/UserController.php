@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -67,21 +68,31 @@ class UserController extends Controller
     {
         $rules = [
             'name' => ['required', 'string', 'min:3', 'max:50'],
-            'email' => ['nullable', 'string', 'email', 'max:50', 'unique:users'],
-            'phone' => ['nullable', 'unique:users', 'max:50'],
+            // 'email' => ['nullable', 'string', 'email', 'max:50'],
+            'phone' => ['nullable', 'max:50'],
             'address' => ['nullable', 'string', 'min:3', 'max:100'],
             'cnic_no' => ['nullable'],
             'designation' => ['nullable'],
             'qualification' => ['nullable'],
             'role' => ['required'],
+            'type' => ['required'],
             'cob_id' => ['nullable'],
         ];
 
-        if ($edit_mode == false && $request->role == 1) {
-            $rules += [
-                'password' => ['required', 'string', 'min:8', 'confirmed'],
-                'email' => ['required'],
-            ];
+        if ($request->role != 2) {
+            if ($edit_mode) {
+                $rules += [
+                    'email' => [
+                        'required',
+                        Rule::unique('users', 'email')->ignore($request->user_id),
+                    ],
+                ];
+            } else {
+                $rules += [
+                    'password' => ['required', 'string', 'min:8', 'confirmed'],
+                    'email' => ['required', 'email', 'unique:users,email'],
+                ];
+            }
         }
 
         $validate = $request->validate($rules);
@@ -107,13 +118,13 @@ class UserController extends Controller
             $user->update($data);
             $user->syncRoles($validate['role']);
         } else {
-            if ($request->role != 2) {
+            if ($request->role == 2) {
                 $data += [
-                    'password' => Hash::make($request->password),
+                    'password' => Hash::make(0),
                 ];
             } else {
                 $data += [
-                    'password' => Hash::make(0),
+                    'password' => Hash::make($request->password),
                 ];
             }
 
