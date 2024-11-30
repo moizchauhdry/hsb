@@ -65,7 +65,7 @@ const search_form = useForm({
 
 const search = () => {
     const queryParams = new URLSearchParams(search_form).toString();
-    search_form.post(`${route("policy.index")}?${queryParams}`, {
+    search_form.post(route("policy.index"), {
         preserveScroll: true,
         onSuccess: (response) => {
             // 
@@ -141,7 +141,8 @@ const reset = () => {
                                             placeholder="Search" style="width: 100%;">
                                         <div class="d-flex">
                                             <SuccessButton class="mb-2 px-4 py-1 mr-1">Search</SuccessButton>
-                                            <DangerButton class="mb-2 px-2 py-1" @click="reset()"><i class="bx bx-reset text-lg"></i></DangerButton>
+                                            <DangerButton class="mb-2 px-2 py-1" @click="reset()"><i
+                                                    class="bx bx-reset text-lg"></i></DangerButton>
                                         </div>
                                     </div>
                                 </form>
@@ -235,7 +236,7 @@ const reset = () => {
                     </div>
                     <div class="card-body">
                         <div class="float-left">
-                            <span>Showing {{ policies.from }} to {{ policies.to }} of {{policies.total}} entries</span>
+                            <span>Showing {{ policies.from }} to {{ policies.to }} of {{ policies.total }} entries</span>
                         </div>
                         <div class="float-right">
                             <Paginate :links="policies.links" />
