@@ -43,8 +43,15 @@ const search_form = useForm({
 });
 
 const search = () => {
-    const queryParams = new URLSearchParams(search_form).toString();
-    search_form.post(`${route("claim.index")}?${queryParams}`, {
+    var filters = {
+        search: search_form.search,
+        page_count: search_form.page_count,
+    };
+    
+    const queryParams = new URLSearchParams(filters).toString();
+    var url_with_filters = `${route("claim.index")}?${queryParams}`;
+
+    search_form.post(url_with_filters, {
         preserveScroll: true,
         onSuccess: (response) => {
             // 
