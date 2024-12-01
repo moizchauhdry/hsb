@@ -3,26 +3,21 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Agency;
-use App\Models\BusinessClass;
-use App\Models\Insurance;
-use App\Models\Policy;
 use Illuminate\Http\Request;
 
 use App\Models\PolicyClaimNote;
 use App\Models\PolicyClaimUpload;
 use App\Models\PolicyClaim;
-use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\File;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class ClaimController extends Controller
 {
     public function index(Request $request)
-    {        
+    {
+        $role = Auth::user()->roles[0];
+
         $page_count = $request->page_count ?? 10;
 
         $current_month = $request->month ?? Carbon::now()->format('m');
@@ -36,7 +31,7 @@ class ClaimController extends Controller
             'year' => $current_year,
         ];
 
-        $claims = PolicyClaim::query()
+        $query = PolicyClaim::query()
             ->select(
                 'pc.*',
                 'p.policy_no as policy_no',
@@ -44,27 +39,35 @@ class ClaimController extends Controller
             )
             ->from('policy_claims as pc')
             ->join('policies as p', 'p.id', 'pc.policy_id')
-            ->leftJoin('users as u', 'u.id', 'p.client_id')
-            ->when($filter['search'], function ($q) use ($filter) {
-                $q->where('pc.id', $filter['search']);
-                $q->orWhere('pc.policy_id', $filter['search']);
-                $q->orWhere('p.policy_no', "LIKE", "%" . $filter['search'] . "%");
-                $q->orWhere('u.name', "LIKE", "%" . $filter['search'] . "%");
+            ->leftJoin('users as u', 'u.id', 'p.client_id');
+
+        if ($role->id != 1) {
+            $query->leftJoin('user_cobs as uc', function ($join) {
+                $join->on('uc.cob_id', '=', 'p.cob_id')->where('uc.user_id', auth()->id());
             })
-            ->when($filter['date_type'], function ($q) use ($filter) {
-                $q->whereYear('pc.' . $filter['date_type'], $filter['year']);
-                $q->whereMonth('pc.' . $filter['date_type'], $filter['month']);
-            })
-            ->orderBy('pc.id', 'desc')
+                ->leftJoin('user_clients as ucl', function ($join) {
+                    $join->on('ucl.client_id', '=', 'p.client_id')->where('ucl.user_id', auth()->id());
+                })
+                ->where(function ($q) {
+                    $q->whereNotNull('uc.id')->orWhereNotNull('ucl.id');
+                });
+        }
+
+        $query->when($filter['search'], function ($q) use ($filter) {
+            $q->where('pc.id', $filter['search']);
+            $q->orWhere('pc.policy_id', $filter['search']);
+            $q->orWhere('p.policy_no', "LIKE", "%" . $filter['search'] . "%");
+            $q->orWhere('u.name', "LIKE", "%" . $filter['search'] . "%");
+        });
+
+        $query->when($filter['date_type'], function ($q) use ($filter) {
+            $q->whereYear('pc.' . $filter['date_type'], $filter['year']);
+            $q->whereMonth('pc.' . $filter['date_type'], $filter['month']);
+        });
+
+        $claims = $query->orderBy('pc.id', 'desc')
             ->paginate($page_count)
             ->withQueryString();
-
-            // ->through(fn($claim) => [
-            //     'data' => $claim,
-            //     'id' => $claim->id,
-            //     'claim_at' => dateFormat($claim->claim_at),
-            //     'intimation_at' => dateFormat($claim->intimation_at),
-            // ]);
 
         return Inertia::render('Policy/Claim/Index', [
             'claims' => $claims,
