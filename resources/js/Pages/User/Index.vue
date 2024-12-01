@@ -4,6 +4,7 @@ import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
 import { ref } from "vue";
 import Paginate from "@/Components/Paginate.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
 import Search from "@/Components/Search.vue";
 import CreateEdit from "./CreateEdit.vue";
 import AssignClient from "./AssignClient.vue";
@@ -72,8 +73,7 @@ const assignClient = (id) => {
                                         <th v-if="slug == 'users'">Email</th>
                                         <th>Role</th>
                                         <th>Register Date</th>
-                                        <th></th>
-                                        <th></th>
+                                        <th colspan="3"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -85,18 +85,24 @@ const assignClient = (id) => {
                                             <td class="text-lowercase" v-if="slug == 'users'">{{ user.email }}</td>
                                             <td class="text-capitalize">{{ user.role }}</td>
                                             <td>{{ user.created_at }}</td>
+
                                             <td>
-                                                <PrimaryButton @click="assignClient(user.id)" v-if="slug == 'users'"><i
-                                                        class="bx bx-list-ul mr-1"></i> Assign COB
+                                                <PrimaryButton class="mr-1" @click="edit(user.id)" title="Edit"><i
+                                                        class="bx bx-edit mr-1"></i> Edit</PrimaryButton>
+
+                                                <PrimaryButton class=" mr-1" @click="assignClient(user.id)"
+                                                    v-if="slug == 'users'">
+                                                    <i class="bx bx-list-ul mr-1"></i>COB <small class="ml-1">{{
+                                                        user.user_cobs_count }}/{{
+                                                            user.total_cob_count }}</small>
                                                 </PrimaryButton>
 
-                                                <span class="badge bg-primary text-lg ml-1">{{
-                                                    user.user_cobs_count }}/{{
-                                                        user.total_cob_count }}</span>
-                                            </td>
-                                            <td>
-                                                <PrimaryButton @click="edit(user.id)" title="Edit"><i
-                                                        class="bx bx-edit mr-1"></i> Edit</PrimaryButton>
+                                                <PrimaryButton class="" @click="assignClient(user.id)"
+                                                    v-if="slug == 'users'">
+                                                    <i class="bx bx-list-ul mr-1"></i>Client <small class="ml-1">{{
+                                                        user.user_cobs_count }}/{{
+                                                            user.total_cob_count }}</small>
+                                                </PrimaryButton>
                                             </td>
                                         </tr>
                                     </template>
