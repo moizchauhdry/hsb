@@ -221,7 +221,7 @@ class UserController extends Controller
 
     public function assignClient(Request $request)
     {
-        // dd($request->all());
+        dd($request->all());
 
         $user = User::find($request->user_id);
         UserClient::where('user_id', $user->id)->delete();
