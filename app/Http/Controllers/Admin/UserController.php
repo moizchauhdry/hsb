@@ -228,7 +228,6 @@ class UserController extends Controller
 
         if ($request->client_id) {
             foreach ($request->client_id as $key => $client) {
-                dd($client);
                 UserClient::create([
                     'user_id' => $user->id,
                     'client_id' => $client,
