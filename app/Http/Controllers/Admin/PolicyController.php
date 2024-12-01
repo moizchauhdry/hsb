@@ -51,12 +51,12 @@ class PolicyController extends Controller
             'cob' => $request->cob,
         ];
 
-        $policies = Policy::policiesList($filter)
+        $policies = Policy::select('p.*')
+            ->policiesList($filter)
             ->when($filter['search'], function ($q) use ($filter) {
-                $q->where('id', $filter['search']);
-                $q->orWhere('policy_no', "LIKE", "%" . $filter['search'] . "%");
+                $q->where('p.id', $filter['search']);
+                $q->orWhere('p.policy_no', "LIKE", "%" . $filter['search'] . "%");
             })
-            ->orderBy('id', 'desc')
             ->paginate($page_count)
             ->withQueryString()
             ->through(fn($policy) => [
