@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\BusinessClass;
 use App\Models\User;
 use App\Models\UserCob;
 use Illuminate\Http\Request;
@@ -41,20 +42,16 @@ class UserController extends Controller
                 'code' => $user->code,
                 'name' => $user->name,
                 'email' => $user->email,
-                'address' => $user->address,
-                'cnic_name'  =>  $user->cnic_name,
-                'cnic_no'  =>  $user->cnic_no,
-                'cnic_expiry_date'  =>  $user->cnic_expiry_date,
-                'father_name'  =>  $user->father_name,
-                'gender'  =>  $user->gender,
-                'dob'  =>  $user->dob,
+               
                 'type'  =>  $user->type,
                 'phone' => $user->phone,
-                'designation' => $user->designation,
-                'qualification' => $user->qualification,
+                
                 'role' => $user->roles[0]->name ?? '-',
                 'role_id' => $user->roles[0]->id ?? NULL,
                 'created_at' => $user->created_at->format('d-m-Y h:i A'),
+
+                'user_cobs_count' => $user->cobs->count(),
+                'total_cob_count' => BusinessClass::count(),
             ]);
 
         $roles = Role::select('id', 'name')->get();

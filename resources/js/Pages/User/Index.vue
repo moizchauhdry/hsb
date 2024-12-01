@@ -73,6 +73,7 @@ const assignClient = (id) => {
                                         <th>Role</th>
                                         <th>Register Date</th>
                                         <th></th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -85,11 +86,17 @@ const assignClient = (id) => {
                                             <td class="text-capitalize">{{ user.role }}</td>
                                             <td>{{ user.created_at }}</td>
                                             <td>
+                                                <PrimaryButton @click="assignClient(user.id)" v-if="slug == 'users'"><i
+                                                        class="bx bx-list-ul mr-1"></i> Assign COB
+                                                </PrimaryButton>
+
+                                                <span class="badge bg-primary text-lg ml-1">{{
+                                                    user.user_cobs_count }}/{{
+                                                        user.total_cob_count }}</span>
+                                            </td>
+                                            <td>
                                                 <PrimaryButton @click="edit(user.id)" title="Edit"><i
                                                         class="bx bx-edit mr-1"></i> Edit</PrimaryButton>
-
-                                                <PrimaryButton @click="assignClient(user.id)" v-if="slug=='users'"><i
-                                                        class="bx bx-list-ul mr-1"></i> Assign COB</PrimaryButton>
                                             </td>
                                         </tr>
                                     </template>

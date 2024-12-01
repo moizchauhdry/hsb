@@ -16,7 +16,7 @@ class AxiosController extends Controller
             $query->where('class_name', 'LIKE', '%' . $request->search . '%');
         }
         
-        $items = $query->paginate(10);
+        $items = $query->orderBy('id','asc')->paginate(15);
 
         return response()->json($items);
     }

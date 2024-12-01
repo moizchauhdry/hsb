@@ -31,7 +31,7 @@ const submit = () => {
 
     form.post(route("user.assign-cob"), {
         preserveScroll: true,
-        onSuccess: () => { 
+        onSuccess: () => {
             modal.value = false;
         },
         onError: () => { },
@@ -49,16 +49,16 @@ const edit = (id) => {
 };
 
 const fetchSavedSelectedItems = async (id) => {
-      try {
+    try {
         const response = await axios.get(`/users/selected-cob/${id}`);
         const savedItems = response.data.items;
-        console.log(savedItems,'saved');
+        console.log(savedItems, 'saved');
         savedItems.forEach(item => selectedItems.value.add(item));
         fetchItems(); // Fetch items for pagination
-      } catch (error) {
+    } catch (error) {
         console.error('Error fetching saved items:', error);
-      }
-    };
+    }
+};
 
 const close = () => {
     modal.value = false;
@@ -170,14 +170,14 @@ defineExpose({ assignClient: (id) => edit(id) });
                         </div>
                     </div> -->
                     <div class="card-footer">
-                        <div class="pagination-container">
-                            <button class="pagination-btn" :disabled="currentPage === 1"
+                        <div class="">
+                            <button class="btn btn-primary btn-sm mr-1 pb-2" :disabled="currentPage === 1"
                                 @click="fetchItems(currentPage - 1)">
-                                ⬅️
+                                <i class="bx bx-arrow-to-left"></i>
                             </button>
-                            <button class="pagination-btn" :disabled="currentPage === lastPage"
+                            <button class="btn btn-primary btn-sm mr-1 pb-2" :disabled="currentPage === lastPage"
                                 @click="fetchItems(currentPage + 1)">
-                                ➡️
+                                <i class="bx bx-arrow-to-right"></i>
                             </button>
                         </div>
                     </div>
@@ -197,39 +197,3 @@ defineExpose({ assignClient: (id) => edit(id) });
 </template>
 
 <style src="@vueform/multiselect/themes/default.css"></style>
-
-<style>
-.pagination-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    /* Space between buttons */
-}
-
-.pagination-btn {
-    padding: 5px 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.pagination-btn:hover {
-    background-color: #0056b3;
-}
-
-.pagination-btn:active {
-    transform: scale(0.98);
-    /* Click effect */
-}
-
-.pagination-btn:disabled {
-    background-color: #d6d6d6;
-    color: #8c8c8c;
-    cursor: not-allowed;
-}
-</style>
