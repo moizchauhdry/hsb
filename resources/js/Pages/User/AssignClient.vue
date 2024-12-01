@@ -130,6 +130,8 @@ defineExpose({ assignClient: (id) => edit(id) });
                             <div class="col-md-6">
                                 <input type="text" v-model="searchQuery" class="form-control mr-2 mb-2"
                                     placeholder="Search" style="width: 100%;" @keyup="fetchItems()">
+
+                                    {{ selectedItems }}
                             </div>
                         </div>
                     </div>
