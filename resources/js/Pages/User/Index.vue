@@ -8,6 +8,7 @@ import SecondaryButton from "@/Components/SecondaryButton.vue";
 import Search from "@/Components/Search.vue";
 import CreateEdit from "./CreateEdit.vue";
 import AssignClient from "./AssignClient.vue";
+import AssignCOB from "./AssignCOB.vue";
 
 defineProps({
     users: Object,
@@ -25,6 +26,11 @@ const edit = (id) => {
 const assign_client_ref = ref(null);
 const assignClient = (id) => {
     assign_client_ref.value.assignClient(id)
+};
+
+const assign_cob_ref = ref(null);
+const assignCob = (id) => {
+    assign_cob_ref.value.assignCob(id)
 };
 </script>
 
@@ -53,6 +59,7 @@ const assignClient = (id) => {
                     <div class="ms-auto">
                         <CreateEdit ref="user_create_edit_ref" v-bind="$props"></CreateEdit>
                         <AssignClient ref="assign_client_ref" v-bind="$props"></AssignClient>
+                        <AssignCOB ref="assign_cob_ref" v-bind="$props" />
                     </div>
                 </div>
 
@@ -90,7 +97,7 @@ const assignClient = (id) => {
                                                 <PrimaryButton class="mr-1" @click="edit(user.id)" title="Edit"><i
                                                         class="bx bx-edit mr-1"></i> Edit</PrimaryButton>
 
-                                                <PrimaryButton class=" mr-1" @click="assignClient(user.id)"
+                                                <PrimaryButton class=" mr-1" @click="assignCob(user.id)"
                                                     v-if="slug == 'users'">
                                                     <i class="bx bx-list-ul mr-1"></i>COB <small class="ml-1">{{
                                                         user.user_cobs_count }}/{{
@@ -100,8 +107,8 @@ const assignClient = (id) => {
                                                 <PrimaryButton class="" @click="assignClient(user.id)"
                                                     v-if="slug == 'users'">
                                                     <i class="bx bx-list-ul mr-1"></i>Client <small class="ml-1">{{
-                                                        user.user_cobs_count }}/{{
-                                                            user.total_cob_count }}</small>
+                                                        user.user_clients_count }}/{{
+                                                            user.total_client_count }}</small>
                                                 </PrimaryButton>
                                             </td>
                                         </tr>

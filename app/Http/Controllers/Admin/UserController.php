@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\BusinessClass;
 use App\Models\User;
+use App\Models\UserClient;
 use App\Models\UserCob;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -52,6 +53,9 @@ class UserController extends Controller
 
                 'user_cobs_count' => $user->cobs->count(),
                 'total_cob_count' => BusinessClass::count(),
+
+                'user_clients_count' => $user->clients->count(),
+                'total_client_count' => User::role('client')->count(),
             ]);
 
         $roles = Role::select('id', 'name')->get();
@@ -200,5 +204,35 @@ class UserController extends Controller
         ];
 
         return response()->json($data);
+    }
+
+    public function selectedClient($id)
+    {
+        $items = UserClient::query()
+            ->where('user_id', $id)
+            ->pluck('client_id')->toArray();
+
+        $data = [
+            'items' => $items,
+        ];
+
+        return response()->json($data);
+    }
+
+    public function assignClient(Request $request)
+    {
+        // dd($request->all());
+
+        $user = User::find($request->user_id);
+        UserClient::where('user_id', $user->id)->delete();
+
+        if ($request->client_id) {
+            foreach ($request->client_id as $key => $cob) {
+                UserClient::create([
+                    'user_id' => $user->id,
+                    'client_id' => $cob,
+                ]);
+            }
+        }
     }
 }

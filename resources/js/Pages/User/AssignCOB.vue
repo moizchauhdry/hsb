@@ -22,14 +22,14 @@ const searchQuery = ref('');
 
 const form = useForm({
     user_id: "",
-    client_id: [],
+    cob_id: [],
 });
 
 
 const submit = () => {
-    form.client_id = Array.from(selectedItems.value);
+    form.cob_id = Array.from(selectedItems.value);
 
-    form.post(route("user.assign-client"), {
+    form.post(route("user.assign-cob"), {
         preserveScroll: true,
         onSuccess: () => {
             modal.value = false;
@@ -43,18 +43,18 @@ const edit = (id) => {
     modal.value = true;
     edit_mode.value = true;
     form.user_id = id;
-    form.client_id = [];
+    form.cob_id = [];
     selectedItems.value = new Set();
     fetchSavedSelectedItems(id);
 };
 
 const fetchSavedSelectedItems = async (id) => {
     try {
-        const response = await axios.get(`/users/selected-client/${id}`);
+        const response = await axios.get(`/users/selected-cob/${id}`);
         const savedItems = response.data.items;
         console.log(savedItems, 'saved');
         savedItems.forEach(item => selectedItems.value.add(item));
-        fetchItems();
+        fetchItems(); // Fetch items for pagination
     } catch (error) {
         console.error('Error fetching saved items:', error);
     }
@@ -67,7 +67,7 @@ const close = () => {
 
 const fetchItems = async (page = 1) => {
     try {
-        const response = await axios.get(`/axios/fetch/clients`, {
+        const response = await axios.get(`/axios/fetch/cobs`, {
             params: {
                 page: page,
                 search: searchQuery.value,
@@ -105,7 +105,7 @@ const toggleItemSelection = (id) => {
 };
 
 
-defineExpose({ assignClient: (id) => edit(id) });
+defineExpose({ assignCob: (id) => edit(id) });
 
 </script>
 
@@ -113,7 +113,7 @@ defineExpose({ assignClient: (id) => edit(id) });
     <Modal :show="modal" @close="close">
         <div class="p-6">
             <h2 class="text-lg font-medium text-gray-900 flex justify-between items-center">
-                <span>Assign Client</span>
+                <span>Assign Class of Business</span>
                 <span class="text-sm text-gray-500">
                     <span v-if="form.user_id" class="mr-2">ID #{{ form.user_id }}</span>
                 </span>
@@ -152,7 +152,7 @@ defineExpose({ assignClient: (id) => edit(id) });
                                             <input type="checkbox" :value="item.id" :checked="isItemSelected(item.id)"
                                                 @change="toggleItemSelection(item.id)" /> {{ item.id }}
                                         </td>
-                                        <td>{{ item.name }}</td>
+                                        <td>{{ item.class_name }}</td>
                                         <td>{{ item.code }}</td>
                                     </tr>
                                 </tbody>
@@ -195,3 +195,5 @@ defineExpose({ assignClient: (id) => edit(id) });
         </div>
     </Modal>
 </template>
+
+<style src="@vueform/multiselect/themes/default.css"></style>
