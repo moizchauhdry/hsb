@@ -158,7 +158,7 @@ defineExpose({ edit: (id) => edit(id) });
                             <InputError :message="form.errors.type" />
                         </div>
                         
-                        <div class="col-md-12" v-if="slug == 'users'">
+                        <!-- <div class="col-md-12" v-if="slug == 'users'">
                             <label for="input21" class="form-label">Class of Business</label>
 
                             <Multiselect style="margin-top: 3px !important" mode="tags" v-model="form.cob_id"
@@ -166,7 +166,7 @@ defineExpose({ edit: (id) => edit(id) });
                             </Multiselect>
 
                             <InputError :message="form.errors.cob_id" />
-                        </div>
+                        </div> -->
                         <div class="col-md-6">
                             <label for="input13" class="form-label">Name</label>
                             <div class="position-relative input-icon">
