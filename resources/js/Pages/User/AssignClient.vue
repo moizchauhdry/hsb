@@ -130,8 +130,6 @@ defineExpose({ assignClient: (id) => edit(id) });
                             <div class="col-md-6">
                                 <input type="text" v-model="searchQuery" class="form-control mr-2 mb-2"
                                     placeholder="Search" style="width: 100%;" @keyup="fetchItems()">
-
-                                    {{ selectedItems }}
                             </div>
                         </div>
                     </div>
@@ -161,16 +159,6 @@ defineExpose({ assignClient: (id) => edit(id) });
                             </table>
                         </div>
                     </div>
-                    <!-- <div class="card-footer" v-if="cobs.data && cobs.data.length">
-                        <div v-if="cobs">
-                            <ul class="pagination">
-                                <li v-for="link in cobs.links" :key="link.label" :class="{ active: link.active }">
-                                    <button :disabled="!link.url" @click="handlePageChange(link)"
-                                        v-html="link.label"></button>
-                                </li>
-                            </ul>
-                        </div>
-                    </div> -->
                     <div class="card-footer">
                         <div class="">
                             <button class="btn btn-primary btn-sm mr-1 pb-2" :disabled="currentPage === 1"
