@@ -224,11 +224,11 @@ class UserController extends Controller
         // dd($request->all());
 
         $user = User::find($request->user_id);
-        dd($user);
         UserClient::where('user_id', $user->id)->delete();
 
         if ($request->client_id) {
             foreach ($request->client_id as $key => $cob) {
+                dd($cob);
                 UserClient::create([
                     'user_id' => $user->id,
                     'client_id' => $cob,
