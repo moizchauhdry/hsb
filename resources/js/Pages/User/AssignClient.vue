@@ -53,7 +53,7 @@ const fetchSavedSelectedItems = async (id) => {
         const response = await axios.get(`/users/selected-client/${id}`);
         const savedItems = response.data.items;
         console.log(savedItems, 'saved');
-        savedItems.forEach(item => selectedItems.value.add(item));
+        savedItems.forEach(item => selectedItems.value.add(parseInt(item)));
         fetchItems();
     } catch (error) {
         console.error('Error fetching saved items:', error);
