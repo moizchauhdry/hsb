@@ -221,17 +221,17 @@ class UserController extends Controller
 
     public function assignClient(Request $request)
     {
-        dd($request->all());
+        // dd($request->all());
 
         $user = User::find($request->user_id);
         UserClient::where('user_id', $user->id)->delete();
 
         if ($request->client_id) {
-            foreach ($request->client_id as $key => $cob) {
-                dd($cob);
+            foreach ($request->client_id as $key => $client) {
+                dd($client);
                 UserClient::create([
                     'user_id' => $user->id,
-                    'client_id' => $cob,
+                    'client_id' => $client,
                 ]);
             }
         }
