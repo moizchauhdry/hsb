@@ -52,9 +52,8 @@ const fetchSavedSelectedItems = async (id) => {
     try {
         const response = await axios.get(`/users/selected-cob/${id}`);
         const savedItems = response.data.items;
-        console.log(savedItems, 'saved');
-        savedItems.forEach(item => selectedItems.value.add(item));
-        fetchItems(); // Fetch items for pagination
+        savedItems.forEach(item => selectedItems.value.add(parseInt(item)));
+        fetchItems();
     } catch (error) {
         console.error('Error fetching saved items:', error);
     }
