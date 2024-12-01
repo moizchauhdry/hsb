@@ -20,7 +20,7 @@ class UserController extends Controller
             'search' => $request->search,
             'page_count' => $request->page_count,
         ];
-        
+
         $users = User::query()
             ->when($slug == 'users', function ($q) {
                 $q->withoutRole('client');
@@ -173,5 +173,35 @@ class UserController extends Controller
     public function update(Request $request)
     {
         $this->save($request, true);
+    }
+
+    public function assignCob(Request $request)
+    {
+        // dd($request->all());
+
+        $user = User::find($request->user_id);
+        UserCob::where('user_id', $user->id)->delete();
+
+        if ($request->cob_id) {
+            foreach ($request->cob_id as $key => $cob) {
+                UserCob::create([
+                    'user_id' => $user->id,
+                    'cob_id' => $cob,
+                ]);
+            }
+        }
+    }
+
+    public function selectedCob($id)
+    {
+        $items = UserCob::query()
+            ->where('user_id', $id)
+            ->pluck('cob_id')->toArray();
+
+        $data = [
+            'items' => $items,
+        ];
+
+        return response()->json($data);
     }
 }

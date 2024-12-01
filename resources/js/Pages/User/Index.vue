@@ -6,6 +6,7 @@ import Paginate from "@/Components/Paginate.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import Search from "@/Components/Search.vue";
 import CreateEdit from "./CreateEdit.vue";
+import AssignClient from "./AssignClient.vue";
 
 defineProps({
     users: Object,
@@ -18,6 +19,11 @@ const slug = usePage().props.slug;
 const user_create_edit_ref = ref(null);
 const edit = (id) => {
     user_create_edit_ref.value.edit(id)
+};
+
+const assign_client_ref = ref(null);
+const assignClient = (id) => {
+    assign_client_ref.value.assignClient(id)
 };
 </script>
 
@@ -45,6 +51,7 @@ const edit = (id) => {
                     </div>
                     <div class="ms-auto">
                         <CreateEdit ref="user_create_edit_ref" v-bind="$props"></CreateEdit>
+                        <AssignClient ref="assign_client_ref" v-bind="$props"></AssignClient>
                     </div>
                 </div>
 
@@ -55,7 +62,8 @@ const edit = (id) => {
 
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table id="example" class="table table-bordered table-hover table-sm text-uppercase" style="width:100%">
+                            <table id="example" class="table table-bordered table-hover table-sm text-uppercase"
+                                style="width:100%">
                                 <thead class="table-light">
                                     <tr>
                                         <th>Sr.No.</th>
@@ -79,6 +87,9 @@ const edit = (id) => {
                                             <td>
                                                 <PrimaryButton @click="edit(user.id)" title="Edit"><i
                                                         class="bx bx-edit mr-1"></i> Edit</PrimaryButton>
+
+                                                <PrimaryButton @click="assignClient(user.id)" v-if="slug=='users'"><i
+                                                        class="bx bx-list-ul mr-1"></i> Assign COB</PrimaryButton>
                                             </td>
                                         </tr>
                                     </template>
@@ -89,7 +100,7 @@ const edit = (id) => {
 
                     <div class="card-footer">
                         <div class="float-left">
-                            <h6>Showing {{ users.from }} to {{ users.to }} of {{users.total}} entries</h6>
+                            <h6>Showing {{ users.from }} to {{ users.to }} of {{ users.total }} entries</h6>
                         </div>
                         <div class="float-right">
                             <Paginate :links="users.links" />
