@@ -3,26 +3,19 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Agency;
-use App\Models\BusinessClass;
-use App\Models\Insurance;
-use App\Models\Policy;
 use Illuminate\Http\Request;
 
 use App\Models\PolicyClaimNote;
 use App\Models\PolicyClaimUpload;
 use App\Models\PolicyClaim;
-use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\File;
-use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 
 class ClaimController extends Controller
 {
     public function index(Request $request)
-    {        
+    {
+
         $page_count = $request->page_count ?? 10;
 
         $current_month = $request->month ?? Carbon::now()->format('m');
@@ -36,35 +29,10 @@ class ClaimController extends Controller
             'year' => $current_year,
         ];
 
-        $claims = PolicyClaim::query()
-            ->select(
-                'pc.*',
-                'p.policy_no as policy_no',
-                'u.name as client_name',
-            )
-            ->from('policy_claims as pc')
-            ->join('policies as p', 'p.id', 'pc.policy_id')
-            ->leftJoin('users as u', 'u.id', 'p.client_id')
-            ->when($filter['search'], function ($q) use ($filter) {
-                $q->where('pc.id', $filter['search']);
-                $q->orWhere('pc.policy_id', $filter['search']);
-                $q->orWhere('p.policy_no', "LIKE", "%" . $filter['search'] . "%");
-                $q->orWhere('u.name', "LIKE", "%" . $filter['search'] . "%");
-            })
-            ->when($filter['date_type'], function ($q) use ($filter) {
-                $q->whereYear('pc.' . $filter['date_type'], $filter['year']);
-                $q->whereMonth('pc.' . $filter['date_type'], $filter['month']);
-            })
+        $claims = PolicyClaim::policyClaimList($filter)
             ->orderBy('pc.id', 'desc')
             ->paginate($page_count)
             ->withQueryString();
-
-            // ->through(fn($claim) => [
-            //     'data' => $claim,
-            //     'id' => $claim->id,
-            //     'claim_at' => dateFormat($claim->claim_at),
-            //     'intimation_at' => dateFormat($claim->intimation_at),
-            // ]);
 
         return Inertia::render('Policy/Claim/Index', [
             'claims' => $claims,
