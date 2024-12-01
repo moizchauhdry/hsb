@@ -38,9 +38,14 @@ Route::middleware('auth')->group(function () {
     Route::prefix('users')->group(function () {
         Route::any('/list/{slug}', [UserController::class, 'index'])->name('user.index')->middleware('permission:user_list');
         Route::post('/create', [UserController::class, 'create'])->name('user.create')->middleware('permission:user_create');
-        
         Route::get('/edit/{id}', [UserController::class, 'edit'])->name('user.edit')->middleware('permission:user_update');
         Route::post('/update', [UserController::class, 'update'])->name('user.update')->middleware('permission:user_update');
+        
+        Route::get('/selected-cob/{id}', [UserController::class, 'selectedCob'])->name('user.selected-cob')->middleware('permission:user_update');
+        Route::post('/assign-cob', [UserController::class, 'assignCob'])->name('user.assign-cob')->middleware('permission:user_update');
+        
+        Route::get('/selected-client/{id}', [UserController::class, 'selectedClient'])->name('user.selected-client')->middleware('permission:user_update');
+        Route::post('/assign-client', [UserController::class, 'assignClient'])->name('user.assign-client')->middleware('permission:user_update');
     });
 
     Route::prefix('cobs')->group(function () {

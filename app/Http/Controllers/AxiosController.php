@@ -3,15 +3,35 @@
 namespace App\Http\Controllers;
 
 use App\Models\BusinessClass;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Svg\Tag\Rect;
 
 class AxiosController extends Controller
 {
-    public function fetchCobs()
+    public function fetchCobs(Request $request)
     {
-        $cobs = BusinessClass::select('id as value', 'class_name as label')->get()->toArray();
-        $data = ['cobs' => $cobs];
+        $query = BusinessClass::query();
+        
+        if ($request->has('search') && $request->search) {
+            $query->where('class_name', 'LIKE', '%' . $request->search . '%');
+        }
+        
+        $items = $query->orderBy('id','asc')->paginate(15);
 
-        return response()->json($data);
+        return response()->json($items);
+    }
+
+    public function fetchClients(Request $request)
+    {
+        $query = User::role('client');
+        
+        if ($request->has('search') && $request->search) {
+            $query->where('name', 'LIKE', '%' . $request->search . '%');
+        }
+        
+        $items = $query->orderBy('id','asc')->paginate(15);
+
+        return response()->json($items);
     }
 }

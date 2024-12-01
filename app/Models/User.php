@@ -39,5 +39,14 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function cobs()
+    {
+        return $this->belongsToMany(BusinessClass::class, 'user_cobs', 'user_id', 'cob_id');
+    }
+
+    public function clients()
+    {
+        return $this->belongsToMany(User::class, 'user_clients', 'user_id', 'client_id');
+    }
     
 }

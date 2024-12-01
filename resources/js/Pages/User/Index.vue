@@ -4,8 +4,11 @@ import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
 import { ref } from "vue";
 import Paginate from "@/Components/Paginate.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
 import Search from "@/Components/Search.vue";
 import CreateEdit from "./CreateEdit.vue";
+import AssignClient from "./AssignClient.vue";
+import AssignCOB from "./AssignCOB.vue";
 
 defineProps({
     users: Object,
@@ -18,6 +21,16 @@ const slug = usePage().props.slug;
 const user_create_edit_ref = ref(null);
 const edit = (id) => {
     user_create_edit_ref.value.edit(id)
+};
+
+const assign_client_ref = ref(null);
+const assignClient = (id) => {
+    assign_client_ref.value.assignClient(id)
+};
+
+const assign_cob_ref = ref(null);
+const assignCob = (id) => {
+    assign_cob_ref.value.assignCob(id)
 };
 </script>
 
@@ -45,6 +58,8 @@ const edit = (id) => {
                     </div>
                     <div class="ms-auto">
                         <CreateEdit ref="user_create_edit_ref" v-bind="$props"></CreateEdit>
+                        <AssignClient ref="assign_client_ref" v-bind="$props"></AssignClient>
+                        <AssignCOB ref="assign_cob_ref" v-bind="$props" />
                     </div>
                 </div>
 
@@ -55,7 +70,8 @@ const edit = (id) => {
 
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table id="example" class="table table-bordered table-hover table-sm text-uppercase" style="width:100%">
+                            <table id="example" class="table table-bordered table-hover table-sm text-uppercase"
+                                style="width:100%">
                                 <thead class="table-light">
                                     <tr>
                                         <th>Sr.No.</th>
@@ -64,7 +80,7 @@ const edit = (id) => {
                                         <th v-if="slug == 'users'">Email</th>
                                         <th>Role</th>
                                         <th>Register Date</th>
-                                        <th></th>
+                                        <th colspan="3"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -76,9 +92,24 @@ const edit = (id) => {
                                             <td class="text-lowercase" v-if="slug == 'users'">{{ user.email }}</td>
                                             <td class="text-capitalize">{{ user.role }}</td>
                                             <td>{{ user.created_at }}</td>
+
                                             <td>
-                                                <PrimaryButton @click="edit(user.id)" title="Edit"><i
+                                                <PrimaryButton class="mr-1" @click="edit(user.id)" title="Edit"><i
                                                         class="bx bx-edit mr-1"></i> Edit</PrimaryButton>
+
+                                                <PrimaryButton class=" mr-1" @click="assignCob(user.id)"
+                                                    v-if="slug == 'users'">
+                                                    <i class="bx bx-list-ul mr-1"></i>COB <small class="ml-1">{{
+                                                        user.user_cobs_count }}/{{
+                                                            user.total_cob_count }}</small>
+                                                </PrimaryButton>
+
+                                                <PrimaryButton class="" @click="assignClient(user.id)"
+                                                    v-if="slug == 'users'">
+                                                    <i class="bx bx-list-ul mr-1"></i>Client <small class="ml-1">{{
+                                                        user.user_clients_count }}/{{
+                                                            user.total_client_count }}</small>
+                                                </PrimaryButton>
                                             </td>
                                         </tr>
                                     </template>
@@ -89,7 +120,7 @@ const edit = (id) => {
 
                     <div class="card-footer">
                         <div class="float-left">
-                            <h6>Showing {{ users.from }} to {{ users.to }} of {{users.total}} entries</h6>
+                            <h6>Showing {{ users.from }} to {{ users.to }} of {{ users.total }} entries</h6>
                         </div>
                         <div class="float-right">
                             <Paginate :links="users.links" />

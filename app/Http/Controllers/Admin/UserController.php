@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\BusinessClass;
 use App\Models\User;
+use App\Models\UserClient;
 use App\Models\UserCob;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -20,7 +22,7 @@ class UserController extends Controller
             'search' => $request->search,
             'page_count' => $request->page_count,
         ];
-        
+
         $users = User::query()
             ->when($slug == 'users', function ($q) {
                 $q->withoutRole('client');
@@ -41,20 +43,19 @@ class UserController extends Controller
                 'code' => $user->code,
                 'name' => $user->name,
                 'email' => $user->email,
-                'address' => $user->address,
-                'cnic_name'  =>  $user->cnic_name,
-                'cnic_no'  =>  $user->cnic_no,
-                'cnic_expiry_date'  =>  $user->cnic_expiry_date,
-                'father_name'  =>  $user->father_name,
-                'gender'  =>  $user->gender,
-                'dob'  =>  $user->dob,
+               
                 'type'  =>  $user->type,
                 'phone' => $user->phone,
-                'designation' => $user->designation,
-                'qualification' => $user->qualification,
+                
                 'role' => $user->roles[0]->name ?? '-',
                 'role_id' => $user->roles[0]->id ?? NULL,
                 'created_at' => $user->created_at->format('d-m-Y h:i A'),
+
+                'user_cobs_count' => $user->cobs->count(),
+                'total_cob_count' => BusinessClass::count(),
+
+                'user_clients_count' => $user->clients->count(),
+                'total_client_count' => User::role('client')->count(),
             ]);
 
         $roles = Role::select('id', 'name')->get();
@@ -173,5 +174,65 @@ class UserController extends Controller
     public function update(Request $request)
     {
         $this->save($request, true);
+    }
+
+    public function assignCob(Request $request)
+    {
+        // dd($request->all());
+
+        $user = User::find($request->user_id);
+        UserCob::where('user_id', $user->id)->delete();
+
+        if ($request->cob_id) {
+            foreach ($request->cob_id as $key => $cob) {
+                UserCob::create([
+                    'user_id' => $user->id,
+                    'cob_id' => $cob,
+                ]);
+            }
+        }
+    }
+
+    public function selectedCob($id)
+    {
+        $items = UserCob::query()
+            ->where('user_id', $id)
+            ->pluck('cob_id')->toArray();
+
+        $data = [
+            'items' => $items,
+        ];
+
+        return response()->json($data);
+    }
+
+    public function selectedClient($id)
+    {
+        $items = UserClient::query()
+            ->where('user_id', $id)
+            ->pluck('client_id')->toArray();
+
+        $data = [
+            'items' => $items,
+        ];
+
+        return response()->json($data);
+    }
+
+    public function assignClient(Request $request)
+    {
+        // dd($request->all());
+
+        $user = User::find($request->user_id);
+        UserClient::where('user_id', $user->id)->delete();
+
+        if ($request->client_id) {
+            foreach ($request->client_id as $key => $cob) {
+                UserClient::create([
+                    'user_id' => $user->id,
+                    'client_id' => $cob,
+                ]);
+            }
+        }
     }
 }
