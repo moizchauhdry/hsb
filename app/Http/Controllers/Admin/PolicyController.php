@@ -146,8 +146,8 @@ class PolicyController extends Controller
                 'sum_insured' => ['required'],
                 'gross_premium' => ['required'],
                 'net_premium' => ['required'],
-                'rate_percentage' => ['required'],
-                'brokerage_amount' => ['required'],
+                // 'rate_percentage' => ['required'],
+                // 'brokerage_amount' => ['required'],
             ]);
         }
 

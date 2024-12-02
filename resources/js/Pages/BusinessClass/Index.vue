@@ -24,7 +24,7 @@ const search_form = useForm({
 });
 
 const search = () => {
-    search_form.post(route("businessClass.index"), {
+    search_form.post(route("cob.index"), {
         preserveScroll: true,
         onSuccess: (response) => {
             // 
