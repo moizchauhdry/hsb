@@ -67,7 +67,7 @@ class PolicyController extends Controller
                 'agency_name' => $policy->agency->name ?? null,
                 'department_name' => $policy->department->name ?? null,
                 'cob_name' => $policy->cob->class_name ?? null,
-                'date_of_insurance' => dateFormat($policy->date_of_insurance),
+                'date_of_issuance' => dateFormat($policy->date_of_issuance),
                 'policy_period_start' => dateFormat($policy->policy_period_start),
                 'policy_period_end' => dateFormat($policy->policy_period_end),
 
@@ -95,12 +95,12 @@ class PolicyController extends Controller
 
     public function create()
     {
-        $users = User::select('id', 'name')->where('role_users_id', 1)->get()->toArray();
-        $clients = User::select('id', 'name')->where('role_users_id', 2)->get()->toArray();
+        $users = User::select('id', 'name')->withoutRole('client')->get()->toArray();
+        $clients = User::select('id', 'name')->role('client')->get()->toArray();
         $insurances = Insurance::select('id', 'name')->get()->toArray();
         $agencies = Agency::select('id', 'name')->get()->toArray();
-        $departments = Department::select('id', 'name')->get()->toArray();
         $cobs = BusinessClass::select('id', 'class_name')->get()->toArray();
+        $departments = Department::select('id', 'name')->get()->toArray();
 
         $data = [
             'users' => $users,
@@ -121,19 +121,19 @@ class PolicyController extends Controller
         if ($current_step == 1) {
             $request->validate([
                 'client_id' => ['required'],
-                'insurance_id' => ['required'],
+                'insurer_id' => ['required'],
                 'lead_type' => ['required'],
                 'policy_no' => ['required'],
                 'agency_id' => ['required'],
                 'department_id' => ['required'],
-                'class_of_business_id' => ['required'],
-                'date_of_insurance' => 'required|date',
+                'cob_id' => ['required'],
+                'date_of_issuance' => 'required|date',
                 'policy_period_start' => 'required|date',
                 'policy_period_end' => 'required|date',
-                'installment_plan' => 'required',
+                'installment_plan' => 'nullable',
             ], [
-                'date_of_insurance.required' => 'The insurance date is required.',
-                'date_of_insurance.date' => 'The insurance date must be a valid date.',
+                'date_of_issuance.required' => 'The insurance date is required.',
+                'date_of_issuance.date' => 'The insurance date must be a valid date.',
                 'policy_period_start.required' => 'The Inception Date is required.',
                 'policy_period_start.date' => 'The Inception Date must be a valid date.',
                 'policy_period_end.required' => 'The Expiry Date is required.',
@@ -146,42 +146,43 @@ class PolicyController extends Controller
                 'sum_insured' => ['required'],
                 'gross_premium' => ['required'],
                 'net_premium' => ['required'],
-                'percentage' => ['required'],
+                'rate_percentage' => ['required'],
+                'brokerage_amount' => ['required'],
             ]);
         }
 
         if ($current_step == 3) {
-            $date_of_insurance = Carbon::parse($request->date_of_insurance);
+            $date_of_issuance = Carbon::parse($request->date_of_issuance);
             $policy_period_start = Carbon::parse($request->policy_period_start);
             $policy_period_end = Carbon::parse($request->policy_period_end);
 
-            $dateOfInsurance = $date_of_insurance->format('Y-m-d');
+            $date_of_issuance = $date_of_issuance->format('Y-m-d');
             $policyStartPeriod = $policy_period_start->format('Y-m-d');
             $policyEndPeriod = $policy_period_end->format('Y-m-d');
 
             $data = [
                 'client_id' => $request->client_id,
-                'insurance_id' => $request->insurance_id,
-                'co_insurance' => $request->co_insurance,
-                'takeful_type' => $request->takeful_type,
+                'insurer_id' => $request->insurer_id,
+                // 'co_insurance' => $request->co_insurance,
+                'insurance_type' => $request->insurance_type,
                 'department_id' => $request->department_id,
                 'lead_type' => $request->lead_type,
                 'policy_no' => $request->policy_no,
                 'agency_id' => $request->agency_id,
                 'agency_code' => $request->agency_code,
-                'class_of_business_id' => $request->class_of_business_id,
-                'orignal_endorsment' => $request->orignal_endorsment,
-                'date_of_insurance' => $dateOfInsurance,
+                'cob_id' => $request->cob_id,
+                'policy_type' => $request->policy_type,
+                'date_of_issuance' => $date_of_issuance,
                 'policy_period_start' => $policyStartPeriod,
                 'policy_period_end' => $policyEndPeriod,
                 'sum_insured' => $request->sum_insured,
                 'gross_premium' => $request->gross_premium,
                 'net_premium' => $request->net_premium,
-                'cover_note_no' => $request->cover_note_no,
+                // 'cover_note_no' => $request->cover_note_no,
                 'installment_plan' => $request->installment_plan,
                 'user_id' => auth()->user()->id,
-                'percentage' => $request->percentage,
-                'hsb_profit' => $request->hsb_profit,
+                'rate_percentage' => $request->rate_percentage,
+                'brokerage_amount' => $request->brokerage_amount,
             ];
 
             if ($request->policy_id) {
@@ -202,8 +203,8 @@ class PolicyController extends Controller
     {
         $policy = Policy::where('id', $id)->first();
 
-        $users = User::select('id', 'name')->where('role_users_id', 1)->get()->toArray();
-        $clients = User::select('id', 'name')->where('role_users_id', 2)->get()->toArray();
+        $users = User::select('id', 'name')->withoutRole('client')->get()->toArray();
+        $clients = User::select('id', 'name')->role('client')->get()->toArray();
         $insurances = Insurance::select('id', 'name')->get()->toArray();
         $agencies = Agency::select('id', 'name')->get()->toArray();
         $cobs = BusinessClass::select('id', 'class_name')->get()->toArray();
