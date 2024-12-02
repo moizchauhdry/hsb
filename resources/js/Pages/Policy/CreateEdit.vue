@@ -28,17 +28,17 @@ const form = useForm({
     total_step: 3,
     policy_id: "",
     client_id: "",
-    insurance_id: "",
+    insurer_id: "",
     co_insurance: "",
-    takeful_type: "",
+    insurance_type: "",
     lead_type: "",
     department_id: "",
     policy_no: "",
     agency_id: "",
     agency_code: "",
-    class_of_business_id: "",
-    orignal_endorsment: "",
-    date_of_insurance: "",
+    cob_id: "",
+    policy_type: "",
+    date_of_issuance: "",
     policy_period_start: "",
     policy_period_end: "",
     sum_insured: "",
@@ -52,7 +52,7 @@ const form = useForm({
     brokerage_amount: "",
     tax: "",
     percentage: "",
-    hsb_profit: "",
+    brokerage_amount: "",
 });
 
 const create = () => {
@@ -140,15 +140,15 @@ const close = () => {
 
     form.policy_id = "";
     form.client_id = "";
-    form.insurance_id = "";
+    form.insurer_id = "";
     form.co_insurance = "";
-    form.takeful_type = "";
+    form.insurance_type = "";
     form.policy_no = "";
     form.agency_id = "";
     form.agency_code = "";
-    form.class_of_business_id = "";
-    form.orignal_endorsment = "";
-    form.date_of_insurance = "";
+    form.cob_id = "";
+    form.policy_type = "";
+    form.date_of_issuance = "";
     form.policy_period_start = "";
     form.policy_period_end = "";
     form.sum_insured = "";
@@ -162,7 +162,7 @@ const close = () => {
     form.brokerage_amount = "";
     form.user_id = "";
     form.tax = "";
-    form.percentage = "";
+    form.rate_percentage = "";
 };
 
 const edit = (id) => {
@@ -181,17 +181,17 @@ const edit = (id) => {
 
             form.policy_id = data.policy.id;
             form.client_id = data.policy.client_id;
-            form.insurance_id = data.policy.insurance_id;
+            form.insurer_id = data.policy.insurer_id;
             form.co_insurance = data.policy.co_insurance;
-            form.takeful_type = data.policy.takeful_type;
+            form.insurance_type = data.policy.insurance_type;
             form.department_id = data.policy.department_id;
             form.lead_type = data.policy.lead_type;
             form.policy_no = data.policy.policy_no;
             form.agency_id = data.policy.agency_id;
             form.agency_code = data.policy.agency_code;
-            form.class_of_business_id = data.policy.class_of_business_id;
-            form.orignal_endorsment = data.policy.orignal_endorsment;
-            form.date_of_insurance = data.policy.date_of_insurance;
+            form.cob_id = data.policy.cob_id;
+            form.policy_type = data.policy.policy_type;
+            form.date_of_issuance = data.policy.date_of_issuance;
             form.policy_period_start = data.policy.policy_period_start;
             form.policy_period_end = data.policy.policy_period_end;
             form.sum_insured = data.policy.sum_insured;
@@ -204,8 +204,8 @@ const edit = (id) => {
             form.branch = data.policy.branch;
             form.brokerage_amount = data.policy.brokerage_amount;
             form.tax = data.policy.tax;
-            form.percentage = data.policy.percentage;
-            form.hsb_profit = data.policy.hsb_profit;
+            form.rate_percentage = data.policy.percentage;
+            form.brokerage_amount = data.policy.brokerage_amount;
         });
 };
 
@@ -230,13 +230,13 @@ const calculatePercentage = () => {
 };
 
 watch(() => calculatePercentage(), (newVal) => {
-    form.percentage = newVal;
+    form.rate_percentage = newVal;
 });
 
 let cobPercentage = null;
 
 const selectBusinessClass = () => {
-    axios.get(`/policy/getBusinessClassByPercent/${form.class_of_business_id}`)
+    axios.get(`/policy/getBusinessClassByPercent/${form.cob_id}`)
         .then(({ data }) => {
 
             cobPercentage = data.cobPercentage;
@@ -251,7 +251,7 @@ const selectBusinessClass = () => {
 
 const calculatePremium = () => {
     if (cobPercentage && form.gross_premium) {
-        form.hsb_profit = form.gross_premium * cobPercentage / 100;
+        form.brokerage_amount = form.gross_premium * cobPercentage / 100;
     }
 };
 
@@ -346,24 +346,23 @@ watch(() => form.gross_premium, calculatePremium);
                                                 <div class="col-md-4">
                                                     <label for="input21" class="form-label">Insurer</label>
 
-                                                    <select id="input21" class="form-select"
-                                                        v-model="form.insurance_id">
+                                                    <select id="input21" class="form-select" v-model="form.insurer_id">
                                                         <template v-for="insurance in insurances" :key="insurance.id">
                                                             <option :value="insurance.id">{{ insurance.name }}
                                                             </option>
                                                         </template>
                                                     </select>
-                                                    <InputError :message="form.errors.insurance_id" />
+                                                    <InputError :message="form.errors.insurer_id" />
                                                 </div>
                                                 <div class="col-md-4">
                                                     <label for="input21" class="form-label">Insurance type</label>
 
                                                     <select id="input21" class="form-select"
-                                                        v-model="form.takeful_type">
-                                                        <option value="1">Takaful</option>
-                                                        <option value="2">Conventional</option>
+                                                        v-model="form.insurance_type">
+                                                        <option value="takaful">Takaful</option>
+                                                        <option value="conventional">Conventional</option>
                                                     </select>
-                                                    <InputError :message="form.errors.takeful_type" />
+                                                    <InputError :message="form.errors.insurance_type" />
                                                 </div>
                                                 <div class="col-md-4">
                                                     <label for="input21" class="form-label">Lead type</label>
@@ -424,34 +423,30 @@ watch(() => form.gross_premium, calculatePremium);
                                                     <label for="businessClassSelect" class="form-label">Business
                                                         Class</label>
                                                     <select id="businessClassSelect" class="form-select"
-                                                        v-model="form.class_of_business_id"
-                                                        @change="selectBusinessClass">
+                                                        v-model="form.cob_id" @change="selectBusinessClass">
                                                         <option v-for="cob in cobs" :value="cob.id">{{ cob.class_name }}
                                                         </option>
                                                     </select>
-                                                    <InputError :message="form.errors.class_of_business_id" />
+                                                    <InputError :message="form.errors.cob_id" />
                                                 </div>
 
                                                 <div class="col-md-4">
-                                                    <label for="input21"
-                                                        class="form-label">New/Renewal/Endorsement</label>
+                                                    <label for="input21" class="form-label">Policy Type</label>
 
-                                                    <select id="input21" class="form-select"
-                                                        v-model="form.orignal_endorsment">
-
+                                                    <select id="input21" class="form-select" v-model="form.policy_type">
                                                         <option value="new">New</option>
                                                         <option value="renewal">Renewal</option>
-                                                        <option value="endorsment">Endorsement</option>
-                                                        <option value="others">Others</option>
+                                                        <option value="endorsement">Endorsement</option>
+                                                        <option value="other">Other</option>
                                                     </select>
-                                                    <InputError :message="form.errors.orignal_endorsment" />
+                                                    <InputError :message="form.errors.policy_type" />
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <label for="" class="form-label">Date of Insurer</label>
-                                                    <VueDatePicker v-model="form.date_of_insurance"
+                                                    <label for="" class="form-label">Date of Issuance</label>
+                                                    <VueDatePicker v-model="form.date_of_issuance"
                                                         :enable-time-picker="false" :show-time="false">
                                                     </VueDatePicker>
-                                                    <InputError :message="form.errors.date_of_insurance" />
+                                                    <InputError :message="form.errors.date_of_issuance" />
                                                 </div>
 
                                                 <div class="col-md-4">
@@ -520,9 +515,9 @@ watch(() => form.gross_premium, calculatePremium);
                                                                 <th>Percentage</th>
                                                                 <td>
                                                                     <input type="number" class="form-control"
-                                                                        id="percentage" v-model="form.percentage"
+                                                                        id="percentage" v-model="form.rate_percentage"
                                                                         readonly>
-                                                                    <InputError :message="form.errors.percentage" />
+                                                                    <InputError :message="form.errors.rate_percentage" />
                                                                 </td>
                                                             </tr>
 
@@ -530,8 +525,10 @@ watch(() => form.gross_premium, calculatePremium);
                                                                 <th>HSB Profit</th>
                                                                 <td>
                                                                     <input type="number" class="form-control"
-                                                                        id="hsb_profit" v-model="form.hsb_profit">
-                                                                    <InputError :message="form.errors.hsb_profit" />
+                                                                        id="brokerage_amount"
+                                                                        v-model="form.brokerage_amount">
+                                                                    <InputError
+                                                                        :message="form.errors.brokerage_amount" />
                                                                 </td>
                                                             </tr>
 
@@ -542,102 +539,90 @@ watch(() => form.gross_premium, calculatePremium);
                                         </template>
 
                                         <template v-if="form.current_step == 3">
-                                            <h6>Please finalize data.</h6>
-                                            <div class="table-responsive" style="overflow-x: hidden;">
-                                                <div class="container-fluid">
-                                                    <div class="border mb-4" id="partner">
-                                                        <div style="background-color: #037DE2">
-                                                            <h5 style="text-align: center" class="w-auto title">Policy
-                                                                Info</h5>
-                                                        </div>
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered text-capitalize">
+                                                    <tr>
+                                                        <th colspan="4" class="bg-primary text-white">
+                                                            Policy Detail
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Client</th>
+                                                        <td>{{ form.client_id }}</td>
 
-                                                        <div class="row">
-                                                            <table class="table table-bordered"
-                                                                style="margin-left: 18px;">
-                                                                <tr>
-                                                                    <th>Client</th>
-                                                                    <td>{{ form.client_id }}</td>
+                                                        <th>Insurance</th>
+                                                        <td>{{ form.insurer_id }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Insurance type</th>
+                                                        <td> {{ form.insurance_type }}</td>
 
-                                                                    <th>Insurance</th>
-                                                                    <td>{{ form.insurance_id }}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>Insurance type</th>
-                                                                    <td> {{ form.takeful_type }}</td>
+                                                        <th>Lead type</th>
+                                                        <td> {{ form.lead_type }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Co Insurance</th>
+                                                        <td>{{ form.co_insurance }}</td>
 
-                                                                    <th>Lead type</th>
-                                                                    <td> {{ form.lead_type }}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>Co Insurance</th>
-                                                                    <td>{{ form.co_insurance }}</td>
+                                                        <th>Policy No.</th>
+                                                        <td>{{ form.policy_no }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Agency</th>
+                                                        <td>{{ form.agency_id }}</td>
 
-                                                                    <th>Policy No.</th>
-                                                                    <td>{{ form.policy_no }}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>Agency</th>
-                                                                    <td>{{ form.agency_id }}</td>
+                                                        <th>Department</th>
+                                                        <td>
+                                                            {{ form.department_id }}
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Class of Business</th>
+                                                        <td>{{ form.cob_id }}</td>
 
-                                                                    <th>Department</th>
-                                                                    <td>
-                                                                        {{ form.department_id }}
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>Class business</th>
-                                                                    <td>{{ form.class_of_business_id }}</td>
+                                                        <th>Policy Type</th>
+                                                        <td>{{ form.policy_type }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th> Cover Note No </th>
+                                                        <td> {{ form.cover_note_no }} </td>
 
-                                                                    <th>New/Renewal/Endorsment</th>
-                                                                    <td>{{ form.orignal_endorsment }}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th> Cover Note No </th>
-                                                                    <td> {{ form.cover_note_no }} </td>
+                                                        <th>Installment Plan </th>
+                                                        <td> {{ form.installment_plan }} </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
 
-                                                                    <th>Installment Plan </th>
-                                                                    <td> {{ form.installment_plan }} </td>
-                                                                </tr>
-                                                                <tr>
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered text-capitalize">
+                                                    <tr>
+                                                        <th colspan="4" class="bg-primary text-white">
+                                                            Policy Amount
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Sum insured </th>
+                                                        <td> PKR {{ form.sum_insured.toLocaleString() }}
+                                                        </td>
 
-                                                                </tr>
-                                                            </table>
-                                                        </div>
-                                                    </div>
+                                                        <th>Gross Premium </th>
+                                                        <td> PKR {{ form.gross_premium.toLocaleString() }}
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Net Premium </th>
+                                                        <td> PKR {{ form.net_premium.toLocaleString() }}
+                                                        </td>
 
-                                                    <div class="border mb-4" id="partner">
-                                                        <div style="background-color: #037DE2">
-                                                            <h5 style="text-align: center" class="w-auto title">Policy
-                                                                Amount</h5>
-                                                        </div>
-                                                        <div class="row">
-                                                            <table class="table table-bordered"
-                                                                style="margin-left: 18px;">
-                                                                <tr>
-                                                                    <th>Sum insured </th>
-                                                                    <td> PKR {{ form.sum_insured.toLocaleString() }}
-                                                                    </td>
-
-                                                                    <th>Gross Premium </th>
-                                                                    <td> PKR {{ form.gross_premium.toLocaleString() }}
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>Net Premium </th>
-                                                                    <td> PKR {{ form.net_premium.toLocaleString() }}
-                                                                    </td>
-
-                                                                    <th>Percentage</th>
-                                                                    <td> {{ form.percentage }} % </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>HSB profit</th>
-                                                                    <td> PKR {{ form.hsb_profit.toLocaleString() }}</td>
-                                                                </tr>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                        <th>Percentage</th>
+                                                        <td> {{ form.rate_percentage }} % </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>HSB profit</th>
+                                                        <td> PKR {{ form.brokerage_amount.toLocaleString()
+                                                            }}</td>
+                                                    </tr>
+                                                </table>
                                             </div>
                                         </template>
 
@@ -656,96 +641,16 @@ watch(() => form.gross_premium, calculatePremium);
                                                         class='bx bx-right-arrow-alt ms-2'></i></button>
 
                                                 <button class="btn btn-success px-4"
-                                                    v-if="form.current_step == 3">Submit</button>
+                                                    v-if="form.current_step == 3">Save & Submit</button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <!-- <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal"
-                                @click="close">Close</button>
-
-                            <button type="submit" class="btn btn-primary btn-sm">
-                                {{ edit_mode ? 'Save & Update' : 'Save & Submit' }}</button>
-                        </div> -->
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </template>
-
-<!-- <style>
-.bs-stepper-circle-active {
-    width: 2.7rem;
-    height: 2.7rem;
-    font-size: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    background-color: #008cff;
-    border-radius: 50%;
-}
-
-table,
-th,
-td {
-    padding: 3px !important;
-    font-size: 14px !important;
-}
-
-#lc-table td {
-    border: 1px solid rgb(194, 189, 189) !important;
-    text-align: left !important;
-}
-
-#lc-table th {
-    border: 1px solid rgb(194, 189, 189) !important;
-    text-align: left !important;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-fieldset legend {
-    color: black;
-    font-weight: 500;
-    font-size: 18px;
-}
-
-fieldset.border {
-    border: 2px solid #037DE2 !important;
-    border-radius: 5px !important;
-}
-
-fieldset.member-border {
-    border: 2px solid blue !important;
-    border-radius: 5px !important;
-}
-
-.mb-4 {
-    margin-bottom: 20px
-}
-
-.custom-image-preview {
-    width: 100px;
-    height: 100px
-}
-
-.table-bordered>:not(caption)>* {
-    border-width: 0;
-}
-
-h5.w-auto.title {
-    text-align: center;
-    color: #fff;
-    height: 34px;
-    padding: 5px;
-    font-size: 18px;
-}
-</style> -->

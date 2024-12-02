@@ -58,7 +58,7 @@ const exportExcel = () => {
 
                     <div class="ms-auto">
                         <ReportFilter v-bind="$props" :filter_route="'report'"></ReportFilter>
-                        <SuccessButton @click="exportExcel">Excel Export</SuccessButton>
+                        <SuccessButton @click="exportExcel"><i class="bx bx-export text-lg mr-1"></i> Excel Export</SuccessButton>
                     </div>
                 </div>
 

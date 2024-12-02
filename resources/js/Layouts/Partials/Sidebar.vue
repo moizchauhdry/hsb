@@ -42,7 +42,7 @@ watch(
         else if (route().current('agency.index')) {
             isSubmenuVisible.value.agency = true;
         }
-        else if (route().current('businessClass.index')) {
+        else if (route().current('cob.index')) {
             isSubmenuVisible.value.businessClass = true;
         }
         else if (route().current('policy.index') || route().current('policy.detail')) {
@@ -173,15 +173,15 @@ watch(
             </template>
 
             <template v-if="permission.cob_list">
-                <li :class="{ 'mm-active': route().current('businessClass.index') }">
+                <li :class="{ 'mm-active': route().current('cob.index') }">
                     <a href="#" class="has-arrow" @click="toggleList('businessClass')">
                         <div class="parent-icon"><i class="bx bx-layer"></i>
                         </div>
                         <div class="menu-title">Class of Business</div>
                     </a>
                     <ul :class="{ 'hidden': !isSubmenuVisible.businessClass }">
-                        <li :class="{ 'mm-active': route().current('businessClass.index') }" v-if="permission.cob_list">
-                            <Link :href="route('businessClass.index')"><i class='bx bx-radio-circle'></i>List
+                        <li :class="{ 'mm-active': route().current('cob.index') }" v-if="permission.cob_list">
+                            <Link :href="route('cob.index')"><i class='bx bx-radio-circle'></i>List
                             </Link>
                         </li>
                     </ul>

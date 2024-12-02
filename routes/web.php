@@ -49,11 +49,11 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::prefix('cobs')->group(function () {
-        Route::any('/', [BusinessClassController::class, 'index'])->name('businessClass.index')->middleware('permission:cob_list');
-        Route::get('/create', [BusinessClassController::class, 'create'])->name('businessClass.create')->middleware('permission:cob_create');
-        Route::post('/store', [BusinessClassController::class, 'store'])->name('businessClass.store')->middleware('permission:cob_create');
-        Route::get('/edit/{id}', [BusinessClassController::class, 'edit'])->name('businessClass.edit')->middleware('permission:cob_update');
-        Route::post('/update', [BusinessClassController::class, 'update'])->name('businessClass.update')->middleware('permission:cob_update');
+        Route::any('/', [BusinessClassController::class, 'index'])->name('cob.index')->middleware('permission:cob_list');
+        Route::get('/create', [BusinessClassController::class, 'create'])->name('cob.create')->middleware('permission:cob_create');
+        Route::post('/store', [BusinessClassController::class, 'store'])->name('cob.store')->middleware('permission:cob_create');
+        Route::get('/edit/{id}', [BusinessClassController::class, 'edit'])->name('cob.edit')->middleware('permission:cob_update');
+        Route::post('/update', [BusinessClassController::class, 'update'])->name('cob.update')->middleware('permission:cob_update');
     });
 
     Route::prefix('insurers')->group(function () {

@@ -20,7 +20,7 @@ const create = () => {
     modal.value = true;
     edit_mode.value = false;
 
-    axios.get("/business-class/create")
+    axios.get("/cobs/create")
         .then(({ data }) => {
             insurances.value = data.insurances;
             departments.value = data.departments;
@@ -36,7 +36,7 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.post(route("businessClass.store"), {
+    form.post(route("cob.store"), {
         preserveScroll: true,
         onSuccess: () => close(),
         onError: () => error(),
@@ -69,7 +69,7 @@ const edit = (id) => {
     modal.value = true;
     edit_mode.value = true;
 
-    axios.get(`/business-class/edit/${id}`)
+    axios.get(`/cobs/edit/${id}`)
         .then(({ data }) => {
             form.business_class_id = data.business_cls.id;
             form.class_name = data.business_cls.class_name;
@@ -84,7 +84,7 @@ const edit = (id) => {
 defineExpose({ edit: (id) => edit(id) });
 
 const update = () => {
-    form.post(route("businessClass.update"), {
+    form.post(route("cob.update"), {
         preserveScroll: true,
         onSuccess: () => close(),
         onError: () => error(),

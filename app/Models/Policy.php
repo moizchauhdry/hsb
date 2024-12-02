@@ -116,7 +116,7 @@ class Policy extends Model
             });
     
             $query->when($filter['cob'], function ($q) use ($filter) {
-                $q->where('p.class_of_business_id', $filter['cob']);
+                $q->where('p.cob_id', $filter['cob']);
             });
         }
 

@@ -89,7 +89,7 @@ const getDateFormat = (date) => {
                                         <th class="px-2">Policy</th>
                                         <th class="px-2">Claim Date</th>
                                         <th class="px-2">Intimation Date</th>
-                                        <th class="px-2">Survivor Name</th>
+                                        <th class="px-2">Surveyor Name</th>
                                         <th class="px-2">Contact No</th>
                                         <th class="px-2">Description</th>
                                         <th class="px-2">Status</th>
