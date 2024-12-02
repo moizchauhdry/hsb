@@ -11,6 +11,8 @@ defineProps({
     policy: Object,
 });
 
+const permission = usePage().props.can;
+
 const modal = ref(false);
 const edit_mode = ref(false);
 
@@ -260,7 +262,8 @@ watch(() => form.gross_premium, calculatePremium);
 <template>
     <div class="col">
 
-        <SuccessButton @click="create" class="mr-1"> <i class="bx bx-plus text-lg"></i> Add Policy</SuccessButton>
+        <SuccessButton @click="create" class="mr-1" v-if="permission.policy_create"> <i class="bx bx-plus text-lg"></i>
+            Add Policy</SuccessButton>
 
         <div class="modal fade show" id="exampleLargeModal" tabindex="-1" aria-hidden="true" style="display: block;"
             v-if="modal">
@@ -612,14 +615,17 @@ watch(() => form.gross_premium, calculatePremium);
                                                                 style="margin-left: 18px;">
                                                                 <tr>
                                                                     <th>Sum insured </th>
-                                                                    <td> PKR {{ form.sum_insured.toLocaleString() }} </td>
+                                                                    <td> PKR {{ form.sum_insured.toLocaleString() }}
+                                                                    </td>
 
                                                                     <th>Gross Premium </th>
-                                                                    <td> PKR {{ form.gross_premium.toLocaleString() }} </td>
+                                                                    <td> PKR {{ form.gross_premium.toLocaleString() }}
+                                                                    </td>
                                                                 </tr>
                                                                 <tr>
                                                                     <th>Net Premium </th>
-                                                                    <td> PKR {{ form.net_premium.toLocaleString() }} </td>
+                                                                    <td> PKR {{ form.net_premium.toLocaleString() }}
+                                                                    </td>
 
                                                                     <th>Percentage</th>
                                                                     <td> {{ form.percentage }} % </td>

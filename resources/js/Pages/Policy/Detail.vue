@@ -15,6 +15,7 @@ import Paginate from "@/Components/Paginate.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 const { props } = usePage();
+const permission = props.can;
 
 const isOpen = ref(new Array(props.policyNotes.length).fill(false)); // Array to store isOpen states
 
@@ -154,24 +155,26 @@ const format_number = (number) => {
                         </nav>
                     </div>
                     <div class="ms-auto">
-                        <Uploads v-bind="$props"></Uploads>
-                        <AdditionalNotes v-bind="$props"></AdditionalNotes>
-                        
-                        <ClaimCreateEdit v-bind="$props" ref="claim_create_edit_ref" :create_mode="true"></ClaimCreateEdit>
+                        <Uploads v-bind="$props" v-if="permission.policy_upload"></Uploads>
+                        <AdditionalNotes v-bind="$props" v-if="permission.policy_note"></AdditionalNotes>
+
+                        <ClaimCreateEdit v-bind="$props" ref="claim_create_edit_ref" :create_mode="true"
+                            v-if="permission.policy_claim"></ClaimCreateEdit>
 
                         <Link :href="route('policy.index',)" class="ml-5">
                         <SecondaryButton>Back</SecondaryButton>
                         </Link>
 
-                        <ClaimNote v-bind="$props" ref="claim_note_ref"></ClaimNote>
-                        <ClaimUpload v-bind="$props" ref="claim_upload_ref"></ClaimUpload>
+                        <ClaimNote v-bind="$props" ref="claim_note_ref" v-if="permission.policy_claim"></ClaimNote>
+                        <ClaimUpload v-bind="$props" ref="claim_upload_ref" v-if="permission.policy_claim">
+                        </ClaimUpload>
                     </div>
                 </div>
 
                 <div class="card">
                     <div class="card-body">
 
-                        <div class="table-responsive">
+                        <div class="table-responsive" v-if="permission.policy_detail">
                             <table class="table table-bordered text-uppercase">
                                 <tbody>
                                     <tr>
@@ -271,7 +274,7 @@ const format_number = (number) => {
                             </table>
                         </div>
 
-                        <div class="table-responsive">
+                        <div class="table-responsive" v-if="permission.policy_amount">
                             <table class="table table-bordered text-uppercase">
                                 <tbody>
                                     <tr>
@@ -315,7 +318,7 @@ const format_number = (number) => {
                             </table>
                         </div>
 
-                        <div class="table-responsive">
+                        <div class="table-responsive" v-if="permission.policy_brokerage_amount">
                             <table class="table table-bordered text-uppercase">
                                 <tbody>
                                     <tr>
@@ -345,7 +348,8 @@ const format_number = (number) => {
                             </table>
                         </div>
 
-                        <table class="table table-bordered text-uppercase" v-if="policyNotes.length > 0">
+                        <div class="table-responsive" v-if="permission.policy_note">
+                            <table class="table table-bordered text-uppercase" v-if="policyNotes.length > 0">
                             <tbody>
                                 <tr>
                                     <th colspan="4" class="bg-primary text-white">
@@ -364,8 +368,9 @@ const format_number = (number) => {
                                 </template>
                             </tbody>
                         </table>
+                        </div>
 
-                        <div class="table-responsive">
+                        <div class="table-responsive" v-if="permission.policy_claim">
                             <table class="table table-bordered text-uppercase" v-if="policy_claims.data.length > 0">
                                 <tbody>
                                     <tr>
@@ -387,7 +392,8 @@ const format_number = (number) => {
                                     </tr>
                                     <template v-for="claim, index in policy_claims.data" :key="claim.id">
                                         <tr>
-                                            <td>{{ (policy_claims.current_page - 1) * policy_claims.per_page + index + 1}}</td>
+                                            <td>{{ (policy_claims.current_page - 1) * policy_claims.per_page + index +
+                                                1}}</td>
                                             <td>{{ claim.data.id }}</td>
                                             <td>{{ claim.data.policy_id }}</td>
                                             <td>{{ claim.claim_at }}</td>
@@ -397,8 +403,9 @@ const format_number = (number) => {
                                             <td>{{ claim.data.detail }}</td>
                                             <td><span class="badge bg-primary">{{ claim.data.status }}</span></td>
                                             <td>
-                                                <SecondaryButton class="mr-1" @click="claimEdit(claim.data.id)" title="Edit"
-                                                    data-bs-toggle="modal" data-bs-target="#EditLargeModal">
+                                                <SecondaryButton class="mr-1" @click="claimEdit(claim.data.id)"
+                                                    title="Edit" data-bs-toggle="modal"
+                                                    data-bs-target="#EditLargeModal">
                                                     <i class='bx bx-edit'></i>
                                                 </SecondaryButton>
 
@@ -409,8 +416,9 @@ const format_number = (number) => {
                                                 </SecondaryButton>
 
                                                 <SecondaryButton class="mr-1"
-                                                    @click="claimUpload(claim.data.id, claim.data.policy_id)" title="Uploads"
-                                                    data-bs-toggle="modal" data-bs-target="#notesUploadLargeModal">
+                                                    @click="claimUpload(claim.data.id, claim.data.policy_id)"
+                                                    title="Uploads" data-bs-toggle="modal"
+                                                    data-bs-target="#notesUploadLargeModal">
                                                     <i class='bx bx-cloud-upload'></i>
                                                 </SecondaryButton>
                                             </td>
@@ -426,44 +434,46 @@ const format_number = (number) => {
                             </table>
                         </div>
 
-                        <table class="table table-bordered text-uppercase" v-if="policyUploads.data.length > 0">
-                            <tbody>
-                                <tr>
-                                    <th colspan="5" class="bg-primary text-white">
-                                        Policy Uploads
-                                    </th>
-                                </tr>
-                                <tr>
-                                    <th>Sr No.</th>
-                                    <th>Type</th>
-                                    <th>File</th>
-                                    <th>Action</th>
-                                </tr>
-                                <template v-for="policyUpload, index in policyUploads.data" :key="policyUpload.id">
+                        <div class="table-responsive" v-if="permission.policy_upload">
+                            <table class="table table-bordered text-uppercase" v-if="policyUploads.data.length > 0">
+                                <tbody>
                                     <tr>
-                                        <td>{{ ++index }}</td>
-                                        <td>{{ policyUpload.type }}</td>
+                                        <th colspan="5" class="bg-primary text-white">
+                                            Policy Uploads
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th>Sr No.</th>
+                                        <th>Type</th>
+                                        <th>File</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    <template v-for="policyUpload, index in policyUploads.data" :key="policyUpload.id">
+                                        <tr>
+                                            <td>{{ ++index }}</td>
+                                            <td>{{ policyUpload.type }}</td>
+                                            <td>
+                                                <img :src="props.assetUrl + '/' + policyUpload.upload" alt=""
+                                                    style="width: 70px;">
+                                            </td>
+                                            <td>
+                                                <a :href="props.assetUrl + '/' + policyUpload.upload" download>
+                                                    <PrimaryButton>
+                                                        <i class='bx bxs-down-arrow-square mr-1'></i> Download
+                                                    </PrimaryButton>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </template>
+
+                                    <tr>
                                         <td>
-                                            <img :src="props.assetUrl + '/' + policyUpload.upload" alt=""
-                                                style="width: 70px;">
-                                        </td>
-                                        <td>
-                                            <a :href="props.assetUrl + '/' + policyUpload.upload" download>
-                                                <PrimaryButton>
-                                                    <i class='bx bxs-down-arrow-square mr-1'></i> Download
-                                                </PrimaryButton>
-                                            </a>
+                                            <Paginate :links="policyUploads.links" :scroll="true" />
                                         </td>
                                     </tr>
-                                </template>
-
-                                <tr>
-                                    <td>
-                                        <Paginate :links="policyUploads.links" :scroll="true" />
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                        </div>
 
                         <!-- INSTALLMENT PLAN-->
                         <div class="table-responsive" style="display: none">
