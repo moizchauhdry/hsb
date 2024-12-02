@@ -383,8 +383,8 @@ const format_number = (number) => {
                                         <th>Claim ID</th>
                                         <th>Policy ID</th>
                                         <th>Claim Date</th>
-                                        <th>Survivor Name</th>
-                                        <th>Survivor Contact</th>
+                                        <th>Surveyor Name</th>
+                                        <th>Surveyor Contact</th>
                                         <th>Intimation Date</th>
                                         <th>Description</th>
                                         <th>Status</th>

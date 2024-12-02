@@ -107,8 +107,8 @@ defineExpose({ claimEdit: (id) => claimEdit(id) });
                 <h2 class="text-lg font-medium text-gray-900 flex justify-between items-center">
                     <span>{{ edit_mode ? 'Edit' : 'Add' }} Claim</span>
                     <span class="text-sm text-gray-500">
-                        <span v-if="form.claim_id" class="mr-2">CLM #{{ form.claim_id }}</span> 
-                        <span>POL #{{ form.policy_id }}</span>
+                        <span v-if="form.claim_id" class="mr-2">ID #{{ form.claim_id }}</span> 
+                        <!-- <span>POL #{{ form.policy_id }}</span> -->
                     </span>
                 </h2>
 
@@ -121,9 +121,8 @@ defineExpose({ claimEdit: (id) => claimEdit(id) });
                         <div class="col-md-6">
                             <InputLabel for="" value="Status" class="mb-1" />
                             <select id="input21" class="form-select" v-model="form.status">
-                                <option value="progress">Progress</option>
+                                <option value="progress">In Progress</option>
                                 <option value="settled">Settled</option>
-                                <option value="close">Close</option>
                             </select>
                             <InputError :message="form.errors.status" />
                         </div>
@@ -141,7 +140,7 @@ defineExpose({ claimEdit: (id) => claimEdit(id) });
                             <InputError :message="form.errors.intimation_at" />
                         </div>
                         <div class="col-md-6">
-                            <InputLabel for="" value="Survivor Name" class="mb-1" />
+                            <InputLabel for="" value="Surveyor Name" class="mb-1" />
                             <input type="text" class="form-control" v-model="form.survivor_name">
                             <InputError :message="form.errors.survivor_name" />
                         </div>
