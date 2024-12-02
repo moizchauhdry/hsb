@@ -97,19 +97,25 @@ const assignCob = (id) => {
                                                 <PrimaryButton class="mr-1" @click="edit(user.id)" title="Edit"><i
                                                         class="bx bx-edit mr-1"></i> Edit</PrimaryButton>
 
-                                                <PrimaryButton class=" mr-1" @click="assignCob(user.id)"
-                                                    v-if="slug == 'users'">
-                                                    <i class="bx bx-list-ul mr-1"></i>COB <small class="ml-1">{{
-                                                        user.user_cobs_count }}/{{
-                                                            user.total_cob_count }}</small>
-                                                </PrimaryButton>
+                                                <template v-if="user.role_id != 1">
+                                                    <PrimaryButton class=" mr-1" @click="assignCob(user.id)"
+                                                        v-if="slug == 'users'">
+                                                        <i class="bx bx-list-ul mr-1"></i>COB <small class="ml-1">{{
+                                                            user.user_cobs_count }}/{{
+                                                                user.total_cob_count }}</small>
+                                                    </PrimaryButton>
 
-                                                <PrimaryButton class="" @click="assignClient(user.id)"
-                                                    v-if="slug == 'users'">
-                                                    <i class="bx bx-list-ul mr-1"></i>Client <small class="ml-1">{{
-                                                        user.user_clients_count }}/{{
-                                                            user.total_client_count }}</small>
-                                                </PrimaryButton>
+                                                    <PrimaryButton class="" @click="assignClient(user.id)"
+                                                        v-if="slug == 'users'">
+                                                        <i class="bx bx-list-ul mr-1"></i>Client <small class="ml-1">{{
+                                                            user.user_clients_count }}/{{
+                                                                user.total_client_count }}</small>
+                                                    </PrimaryButton>
+                                                </template>
+
+                                                <template v-if="user.role_id == 1">
+                                                    <span style="font-size: 10px;" class="text-primary"><b>The admin has access to all COBs & clients.</b></span>
+                                                </template>
                                             </td>
                                         </tr>
                                     </template>
