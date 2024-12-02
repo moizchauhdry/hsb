@@ -45,11 +45,15 @@ class PermissionSeeder extends Seeder
             ['name' => 'policy_list', 'guard_name' => 'web', 'order' => 51, 'level' => 2],
             ['name' => 'policy_create', 'guard_name' => 'web', 'order' => 52, 'level' => 2],
             ['name' => 'policy_update', 'guard_name' => 'web', 'order' => 53, 'level' => 2],
-            ['name' => 'policy_detail', 'guard_name' => 'web', 'order' => 54, 'level' => 2],
-            ['name' => 'policy_delete', 'guard_name' => 'web', 'order' => 55, 'level' => 2],
-            ['name' => 'policy_claim', 'guard_name' => 'web', 'order' => 56, 'level' => 2],
+            ['name' => 'policy_delete', 'guard_name' => 'web', 'order' => 54, 'level' => 2],
+            ['name' => 'policy_detail', 'guard_name' => 'web', 'order' => 55, 'level' => 2],
+
+            ['name' => 'policy_amount', 'guard_name' => 'web', 'order' => 56, 'level' => 2],
+            ['name' => 'policy_brokerage_amount', 'guard_name' => 'web', 'order' => 56, 'level' => 2],
+
+            ['name' => 'policy_claim', 'guard_name' => 'web', 'order' => 57, 'level' => 2],
             ['name' => 'policy_note', 'guard_name' => 'web', 'order' => 57, 'level' => 2],
-            ['name' => 'policy_upload', 'guard_name' => 'web', 'order' => 58, 'level' => 2],
+            ['name' => 'policy_upload', 'guard_name' => 'web', 'order' => 57, 'level' => 2],
 
             // Claim 60
             ['name' => 'claim', 'guard_name' => 'web', 'order' => 60, 'level' => 1],

@@ -19,6 +19,8 @@ defineProps({
     data: Array,
 });
 
+const permission = usePage().props.can;
+
 const create_edit_ref = ref(null);
 const edit = (id) => {
     create_edit_ref.value.edit(id)
@@ -83,7 +85,7 @@ const confirmDelete = (policyId) => {
 
                     <div class="ms-auto" style="display: flex; justify-content: space-between; align-items: center;">
                         <CreateEdit v-bind="$props" ref="create_edit_ref"></CreateEdit>
-                        <Import v-bind="$props"></Import>
+                        <Import v-bind="$props" v-if="permission.excel_import"></Import>
                         <ReportFilter v-bind="$props" :filter_route="'policy'"></ReportFilter>
                     </div>
                 </div>
@@ -157,17 +159,17 @@ const confirmDelete = (policyId) => {
                                             <td class="px-2">{{ policy.data.brokerage_percentage }}</td>
                                             <td class="px-2">{{ policy.data.brokerage_amount }}</td> -->
                                             <td class="px-2">
-                                                <SecondaryButton @click="edit(policy.id)">
+                                                <SecondaryButton @click="edit(policy.id)" v-if="permission.policy_update">
                                                     <i class="bx bx-edit"></i>
                                                 </SecondaryButton>
 
-                                                <Link :href="route('policy.detail', policy.id)" class="mx-1">
+                                                <Link :href="route('policy.detail', policy.id)" class="mx-1" v-if="permission.policy_detail">
                                                 <SecondaryButton>
                                                     <i class="bx bxs-collection"></i>
                                                 </SecondaryButton>
                                                 </Link>
 
-                                                <DangerButton @click="confirmDelete(policy.id)">
+                                                <DangerButton @click="confirmDelete(policy.id)" v-if="permission.policy_delete">
                                                     <i class='bx bxs-trash'></i>
                                                 </DangerButton>
                                             </td>
