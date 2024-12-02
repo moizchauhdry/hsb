@@ -37,18 +37,18 @@ class ReportController extends Controller
 
         $query = Policy::policiesList($filter, $slug);
 
+        $grand_total = [
+            'sum_insured' => $query->sum('sum_insured'),
+            'gross_premium' => $query->sum('gross_premium'),
+            'net_premium' => $query->sum('net_premium'),
+        ];
+
         $policies = $query
             ->paginate(25)
             ->withQueryString()
             ->through(fn($policy) => [
                 'data' => $policy,
             ]);
-
-        $grand_total = [
-            'sum_insured' => $query->sum('sum_insured'),
-            'gross_premium' => $query->sum('gross_premium'),
-            'net_premium' => $query->sum('net_premium'),
-        ];
 
         $clients = User::role('client')->get();
         $insurers = Insurance::get();
