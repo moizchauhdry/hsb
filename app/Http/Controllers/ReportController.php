@@ -48,6 +48,11 @@ class ReportController extends Controller
             ->withQueryString()
             ->through(fn($policy) => [
                 'data' => $policy,
+                'client_name' => getClientName($policy->client_id),
+                'insurer_name' => $policy->insurer->name ?? null,
+                'agency_name' => $policy->agency->name ?? null,
+                'department_name' => $policy->department->name ?? null,
+                'cob_name' => $policy->cob->class_name ?? null,
             ]);
 
         $clients = User::role('client')->get();

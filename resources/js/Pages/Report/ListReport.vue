@@ -170,10 +170,10 @@ const exportExcel = () => {
                                         <tr>
                                             <td class="px-2">{{ (policies.current_page - 1) * policies.per_page + index + 1 }}</td>
                                             <td class="px-2">{{ policy?.data?.policy_no }}</td>
-                                            <td class="px-2">{{ policy?.data?.client?.name }}</td>
-                                            <td class="px-2">{{ policy?.data?.insurer?.name }}</td>
-                                            <td class="px-2">{{ policy?.data?.agency?.name }}</td>
-                                            <td class="px-2">{{ policy?.data?.cob?.class_name }}</td>
+                                            <td class="px-2">{{ policy.client_name }}</td>
+                                            <td class="px-2">{{ policy.insurer_name }}</td>
+                                            <td class="px-2">{{ policy.agency_name }}</td>
+                                            <td class="px-2">{{ policy.cob_name }}</td>
                                             <td class="px-2">{{ policy?.data?.policy_type }}</td>
 
                                             <template v-if="slug == 'renewal' || slug == 'outstanding'">
