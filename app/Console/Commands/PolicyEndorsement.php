@@ -32,6 +32,7 @@ class PolicyEndorsement extends Command
             UPDATE policies
             SET policy_type = 'endorsement'
             WHERE policy_no LIKE '%E%'
+            AND sum_insured = 0
             AND DATEDIFF(policy_period_end, date_of_issuance) < 365;
         ");
 
