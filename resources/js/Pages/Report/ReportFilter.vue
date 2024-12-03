@@ -107,7 +107,7 @@ const submit = () => {
     const queryParams = new URLSearchParams(filters).toString();
 
     var urlWithFilters;
-    
+
     if (props.filter_route === 'report') {
         urlWithFilters = `${route("report.index", slug)}?${queryParams}`;
     }
@@ -158,7 +158,8 @@ const format_date = (date) => {
 </script>
 
 <template>
-    <PrimaryButton @click="create" type="button" class="mx-1"><i class="bx bx-search-alt text-lg mr-1"></i> Filters</PrimaryButton>
+    <PrimaryButton @click="create" type="button" class="mx-1"><i class="bx bx-search-alt text-lg mr-1"></i> Filters
+    </PrimaryButton>
 
     <Modal :show="modal" @close="closeModal">
         <form @submit.prevent="edit ? update() : submit()">
@@ -199,7 +200,7 @@ const format_date = (date) => {
                             </select>
                         </div>
 
-                        <div class="col-md-6" v-if="slug == 'sales'">
+                        <div class="col-md-6">
                             <InputLabel for="" value="Policy Type" class="mb-1" />
                             <select v-model="form.policy_type" class="form-control">
                                 <option value="">All Types</option>
