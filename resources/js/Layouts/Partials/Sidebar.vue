@@ -34,22 +34,13 @@ watch(
             isSubmenuVisible.value.dashboard = true;
         }
         else if (route().current('user.index') || route().current('role.index')) {
-            isSubmenuVisible.value.user = true;
+            isSubmenuVisible.value.account = true;
         }
-        else if (route().current('insurance.index')) {
-            isSubmenuVisible.value.insurance = true;
-        }
-        else if (route().current('agency.index')) {
-            isSubmenuVisible.value.agency = true;
-        }
-        else if (route().current('cob.index')) {
-            isSubmenuVisible.value.businessClass = true;
+        else if (route().current('insurance.index') || route().current('cob.index') || route().current('agency.index')) {
+            isSubmenuVisible.value.stakeholder = true;
         }
         else if (route().current('policy.index') || route().current('policy.detail')) {
             isSubmenuVisible.value.policy = true;
-        }
-        else if (route().current('claim.index')) {
-            isSubmenuVisible.value.claim = true;
         }
         else if (route().current('report.index')) {
             isSubmenuVisible.value.report = true;
@@ -76,124 +67,70 @@ watch(
 
             <template v-if="permission.analytics">
                 <li :class="{ 'mm-active': route().current('dashboard') }">
-                    <a href="#" class="has-arrow" @click="toggleList('dashboard')">
+                    <a :href="route('dashboard')">
                         <div class="parent-icon"><i class='bx bx-home-alt'></i>
                         </div>
                         <div class="menu-title">Dashboard</div>
                     </a>
-                    <ul :class="{ 'hidden': !isSubmenuVisible.dashboard }">
-                        <li :class="{ 'mm-active': route().current('dashboard') }" v-if="permission.analytics">
-                            <Link :href="route('dashboard')"><i class='bx bx-radio-circle'></i>Analytics</Link>
-                        </li>
-                    </ul>
                 </li>
             </template>
 
-            <li class="menu-label" v-if="permission.policy_list">Policies</li>
-            <template v-if="permission.user_list || permission.client_list">
-                <li :class="{ 'mm-active': route().current('user.index', 'users') || route().current('role.index') }">
-                    <a href="#" class="has-arrow" @click="toggleList('user')">
-                        <div class="parent-icon"><i class="bx bx-user"></i>
+            <template v-if="permission.client_list">
+                <li :class="{ 'mm-active': route().current('user.index', 'clients') }">
+                    <a :href="route('user.index', 'clients')">
+                        <div class="parent-icon"><i class='bx bx-user'></i>
                         </div>
-                        <div class="menu-title">Manage Users</div>
+                        <div class="menu-title">My Customer</div>
                     </a>
-                    <ul :class="{ 'hidden': !isSubmenuVisible.user }">
-                        <li :class="{ 'mm-active': route().current('user.index', 'users') }"
-                            v-if="permission.user_list">
-                            <Link :href="route('user.index', 'users')"><i class='bx bx-radio-circle'></i>List Users
-                            </Link>
-                        </li>
-                        <li :class="{ 'mm-active': route().current('user.index', 'clients') }"
-                            v-if="permission.client_list">
-                            <Link :href="route('user.index', 'clients')"><i class='bx bx-radio-circle'></i>List Clients
-                            </Link>
-                        </li>
-                    </ul>
                 </li>
             </template>
 
             <template v-if="permission.policy_list">
                 <li :class="{ 'mm-active': route().current('policy.index') || route().current('policy.detail') }">
-                    <a href="#" class="has-arrow" @click="toggleList('policy')">
-                        <div class="parent-icon"><i class="bx bx-poll"></i>
+                    <a :href="route('policy.index')">
+                        <div class="parent-icon"><i class='bx bx-poll'></i>
                         </div>
-                        <div class="menu-title">Manage Policies</div>
+                        <div class="menu-title">Active Policies</div>
                     </a>
-                    <ul :class="{ 'hidden': !isSubmenuVisible.policy }">
-                        <li :class="{ 'mm-active': route().current('policy.index') }" v-if="permission.policy_list">
-                            <Link :href="route('policy.index')"><i class='bx bx-radio-circle'></i>Policy List</Link>
-                        </li>
-                    </ul>
                 </li>
             </template>
 
             <template v-if="permission.claim_list">
-                <li :class="{ 'mm-active': route().current('claim.index') }">
-                    <a href="#" class="has-arrow" @click="toggleList('claim')">
-                        <div class="parent-icon"><i class="bx bx-poll"></i>
+                <li :class="{ 'mm-active': route().current('claim.index')}">
+                    <a :href="route('claim.index')">
+                        <div class="parent-icon"><i class='bx bx-poll'></i>
                         </div>
-                        <div class="menu-title">Manage Claims</div>
+                        <div class="menu-title">Filed Claims</div>
                     </a>
-                    <ul :class="{ 'hidden': !isSubmenuVisible.claim }">
-                        <li :class="{ 'mm-active': route().current('claim.index') }" v-if="permission.claim_list">
-                            <Link :href="route('claim.index')"><i class='bx bx-radio-circle'></i>Claim List</Link>
-                        </li>
-                    </ul>
                 </li>
             </template>
 
-            <template v-if="permission.insurer_list">
-                <li :class="{ 'mm-active': route().current('insurance.index') }">
-                    <a href="#" class="has-arrow" @click="toggleList('insurance')">
+            <template v-if="permission.insurer_list || permission.agency_list || permission.cob_list">
+                <li :class="{ 'mm-active': route().current('insurance.index') || route().current('agency.index') || route().current('cob.index') }">
+                    <a href="#" class="has-arrow" @click="toggleList('stakeholder')">
                         <div class="parent-icon"><i class="bx bx-category"></i>
                         </div>
-                        <div class="menu-title">Manage Insurers</div>
+                        <div class="menu-title">Stakeholders</div>
                     </a>
-                    <ul :class="{ 'hidden': !isSubmenuVisible.insurance }">
+                    <ul :class="{ 'hidden': !isSubmenuVisible.stakeholder }">
                         <li :class="{ 'mm-active': route().current('insurance.index') }" v-if="permission.insurer_list">
-                            <Link :href="route('insurance.index')"><i class='bx bx-radio-circle'></i>List</Link>
+                            <Link :href="route('insurance.index')"><i class='bx bx-radio-circle'></i>Active Insurers</Link>
                         </li>
-                    </ul>
-                </li>
-            </template>
-
-            <template v-if="permission.agency_list">
-                <li :class="{ 'mm-active': route().current('agency.index') }">
-                    <a href="#" class="has-arrow" @click="toggleList('agency')">
-                        <div class="parent-icon"><i class="bx bx-list-ul"></i>
-                        </div>
-                        <div class="menu-title">Manage Agencies</div>
-                    </a>
-                    <ul :class="{ 'hidden': !isSubmenuVisible.agency }">
-                        <li :class="{ 'mm-active': route().current('agency.index') }" v-if="permission.agency_list">
-                            <Link :href="route('agency.index')"><i class='bx bx-radio-circle'></i>List</Link>
-                        </li>
-                    </ul>
-                </li>
-            </template>
-
-            <template v-if="permission.cob_list">
-                <li :class="{ 'mm-active': route().current('cob.index') }">
-                    <a href="#" class="has-arrow" @click="toggleList('businessClass')">
-                        <div class="parent-icon"><i class="bx bx-layer"></i>
-                        </div>
-                        <div class="menu-title">Class of Business</div>
-                    </a>
-                    <ul :class="{ 'hidden': !isSubmenuVisible.businessClass }">
                         <li :class="{ 'mm-active': route().current('cob.index') }" v-if="permission.cob_list">
-                            <Link :href="route('cob.index')"><i class='bx bx-radio-circle'></i>List
-                            </Link>
+                            <Link :href="route('cob.index')"><i class='bx bx-radio-circle'></i>Active Classes of Business</Link>
+                        </li>
+                        <li :class="{ 'mm-active': route().current('agency.index') }" v-if="permission.agency_list">
+                            <Link :href="route('agency.index')"><i class='bx bx-radio-circle'></i>Active Agencies</Link>
                         </li>
                     </ul>
                 </li>
             </template>
 
-            <li class="menu-label">Reports</li>
             <li :class="{ 'mm-active': route().current('report.index') }">
                 <a href="javascript:;" class="has-arrow" @click="toggleList('report')">
                     <div class="parent-icon"><i class="bx bx-line-chart"></i>
                     </div>
-                    <div class="menu-title">Manage Reports</div>
+                    <div class="menu-title">Financial Books</div>
                 </a>
                 <ul :class="{ 'hidden': !isSubmenuVisible.report }">
                     <li :class="{ 'mm-active': route().current('report.index', 'sales') }"
@@ -209,39 +146,43 @@ watch(
                     <li :class="{ 'mm-active': route().current('report.index', 'outstanding') }"
                         v-if="permission.outstanding_report">
                         <Link :href="route('report.index', 'outstanding')"><i class='bx bx-radio-circle'></i>Outstanding
-                        Report
+                        Balance
                         </Link>
                     </li>
                     <li :class="{ 'mm-active': route().current('report.index', 'commission-recovery') }"
                         v-if="permission.commission_recovery_report">
                         <Link :href="route('report.index', 'commission-recovery')"><i
                             class='bx bx-radio-circle'></i>Commission
-                        Recovery Report</Link>
+                        Recovery</Link>
                     </li>
                     <li :class="{ 'mm-active': route().current('report.index', 'commission-outstanding-recovery') }"
                         v-if="permission.commission_outstanding_recovery">
                         <Link :href="route('report.index', 'commission-outstanding-recovery')"><i
-                            class='bx bx-radio-circle'></i>Commission Outstanding Recovery</Link>
+                            class='bx bx-radio-circle'></i>Outstanding Commission Recovery</Link>
                     </li>
-
-                    <!-- <li :class="{ 'mm-active': route().current('report.index','claims') }">
-                            <Link :href="route('report.index','claims')"><i class='bx bx-radio-circle'></i>Claims Report</Link>
-                        </li> -->
-                    <!-- <li :class="{ 'mm-active': route().current('report.index','claims') }">
-                            <Link :href="route('report.index','claims')"><i class='bx bx-radio-circle'></i>Commission Report</Link>
-                        </li> -->
                 </ul>
             </li>
 
-            <li class="menu-label" v-if="permission.excel_import">Settings</li>
-            <li :class="{ 'mm-active': route().current('role.index') }">
-                <a :href="route('role.index')" v-if="permission.role_list">
-                    <div class="parent-icon">
-                        <i class="bx bx-category"></i>
-                    </div>
-                    <div class="menu-title">Roles & Permissions</div>
-                </a>
-            </li>
+            <template v-if="permission.user_list || permission.role_list">
+                <li :class="{ 'mm-active': route().current('user.index') || route().current('role.index') }">
+                    <a href="#" class="has-arrow" @click="toggleList('account')">
+                        <div class="parent-icon"><i class="bx bx-category"></i>
+                        </div>
+                        <div class="menu-title">Manage Accounts</div>
+                    </a>
+                    <ul :class="{ 'hidden': !isSubmenuVisible.account }">
+                        <li :class="{ 'mm-active': route('user.index', 'users') }" v-if="permission.user_list">
+                            <Link :href="route('user.index','users')"><i class='bx bx-radio-circle'></i>Manage Users
+                            </Link>
+                        </li>
+                        <li :class="{ 'mm-active': route().current('role.index') }" v-if="permission.role_list">
+                            <Link :href="route('role.index')"><i class='bx bx-radio-circle'></i>Roles & Permission</Link>
+                        </li>
+                    </ul>
+                </li>
+            </template>
+
+            <!-- <li class="menu-label" v-if="permission.excel_import">Settings</li> -->
             <li :class="{ 'mm-active': route().current('error-logs.index') }">
                 <a :href="route('error-logs.index')" v-if="permission.excel_import">
                     <div class="parent-icon">
