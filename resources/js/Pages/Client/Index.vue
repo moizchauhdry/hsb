@@ -3,12 +3,11 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
 import { ref } from "vue";
 import Paginate from "@/Components/Paginate.vue";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
-import SecondaryButton from "@/Components/SecondaryButton.vue";
 import Search from "@/Components/Search.vue";
 import CreateEdit from "./CreateEdit.vue";
 import AssignClient from "./AssignClient.vue";
 import AssignCOB from "./AssignCOB.vue";
+import IconButton from "@/Components/IconButton.vue";
 
 defineProps({
     users: Object,
@@ -67,17 +66,17 @@ const assignCob = (id) => {
                     </div>
 
                     <div class="card-body">
-                        <div class="table">
-                            <table id="example" class="table table-bordered table-hover table-sm text-uppercase">
+                        <div style="overflow-x: auto">
+                            <table id="example" class="table table-bordered table-hover table-sm text-uppercase"
+                                style="width: 100%;">
                                 <thead class="table-light">
                                     <tr>
-                                        <th>SR #</th>
-                                        <th>Client Name</th>
-                                        <!-- <th>Client Code</th> -->
+                                        <th style="min-width: 50px;">SR.</th>
+                                        <th style="min-width: 250px;">Client Name</th>
                                         <th>Policies</th>
-                                        <th>Insurers</th>
-                                        <th>Classes</th>
-                                        <th>Created At</th>
+                                        <th style="min-width: 200px;">Insurers</th>
+                                        <th style="min-width: 200px;">Class of Business</th>
+                                        <th style="min-width: 180px;">Created At</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -86,7 +85,6 @@ const assignCob = (id) => {
                                         <tr>
                                             <td>{{ (users.current_page - 1) * users.per_page + index + 1 }}</td>
                                             <td>{{ user.user_name }}</td>
-                                            <!-- <td>{{ user.code }}</td> -->
                                             <td>
                                                 <a :href="`${route('policy.index')}?client=${user.user_id}`"
                                                     target="_blank">
@@ -102,12 +100,13 @@ const assignCob = (id) => {
                                             <td>
                                                 <span v-for="(insurer, i) in user.insurers.split(',')"
                                                     :key="'insurer-' + i" class="badge bg-secondary mr-1">{{
-                                                    insurer.trim() }}</span>
+                                                        insurer.trim() }}</span>
                                             </td>
                                             <td>{{ user.user_created_at }}</td>
                                             <td>
-                                                <PrimaryButton class="mr-1" @click="edit(user.user_id)" title="Edit"><i
-                                                        class="bx bx-edit mr-1"></i> Edit</PrimaryButton>
+                                                <IconButton @click="edit(user.user_id)" title="Edit">
+                                                    <i class="bx bx-edit" style="font-size: 16px;"></i>
+                                                </IconButton>
                                             </td>
                                         </tr>
                                     </template>
