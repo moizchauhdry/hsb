@@ -76,11 +76,11 @@ watch(
             </template>
 
             <template v-if="permission.client_list">
-                <li :class="{ 'mm-active': route().current('user.index', 'clients') }">
-                    <a :href="route('user.index', 'clients')">
+                <li :class="{ 'mm-active': route().current('client.index') }">
+                    <a :href="route('client.index')">
                         <div class="parent-icon"><i class='bx bx-user'></i>
                         </div>
-                        <div class="menu-title">My Customer</div>
+                        <div class="menu-title">My Customers</div>
                     </a>
                 </li>
             </template>

@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\PolicyController;
 use App\Http\Controllers\Admin\InsuranceController;
 use App\Http\Controllers\Admin\BusinessClassController;
 use App\Http\Controllers\Admin\ClaimController;
+use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\ExcelImportController;
 use App\Http\Controllers\ReportController;
 
@@ -28,7 +29,7 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-Route::get('/dashboard', [DashboardController::class, 'dashboard'])->middleware(['auth', 'verified','permission:analytics'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'dashboard'])->middleware(['auth', 'verified', 'permission:analytics'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -40,12 +41,19 @@ Route::middleware('auth')->group(function () {
         Route::post('/create', [UserController::class, 'create'])->name('user.create')->middleware('permission:user_create');
         Route::get('/edit/{id}', [UserController::class, 'edit'])->name('user.edit')->middleware('permission:user_update');
         Route::post('/update', [UserController::class, 'update'])->name('user.update')->middleware('permission:user_update');
-        
-        Route::get('/selected-cob/{id}', [UserController::class, 'selectedCob'])->name('user.selected-cob')->middleware('permission:user_update');
-        Route::post('/assign-cob', [UserController::class, 'assignCob'])->name('user.assign-cob')->middleware('permission:user_update');
-        
-        Route::get('/selected-client/{id}', [UserController::class, 'selectedClient'])->name('user.selected-client')->middleware('permission:user_update');
-        Route::post('/assign-client', [UserController::class, 'assignClient'])->name('user.assign-client')->middleware('permission:user_update');
+    });
+
+    Route::prefix('clients')->group(function () {
+        Route::any('/list', [ClientController::class, 'index'])->name('client.index')->middleware('permission:client_list');
+        Route::post('/create', [ClientController::class, 'create'])->name('client.create')->middleware('permission:client_create');
+        Route::get('/edit/{id}', [ClientController::class, 'edit'])->name('client.edit')->middleware('permission:client_update');
+        Route::post('/update', [ClientController::class, 'update'])->name('client.update')->middleware('permission:client_update');
+
+        Route::get('/selected-cob/{id}', [ClientController::class, 'selectedCob'])->name('client.selected-cob')->middleware('permission:client_update');
+        Route::post('/assign-cob', [ClientController::class, 'assignCob'])->name('client.assign-cob')->middleware('permission:client_update');
+
+        Route::get('/selected-client/{id}', [ClientController::class, 'selectedClient'])->name('client.selected-client')->middleware('permission:client_update');
+        Route::post('/assign-client', [ClientController::class, 'assignClient'])->name('client.assign-client')->middleware('permission:client_update');
     });
 
     Route::prefix('cobs')->group(function () {
@@ -82,11 +90,11 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('claims')->group(function () {
         Route::any('/index', [ClaimController::class, 'index'])->name('claim.index')->middleware('permission:claim_list');
-        
+
         Route::post('/store', [ClaimController::class, 'store'])->name('claim.store')->middleware('permission:policy_claim');
-        Route::post('/update', [ClaimController::class, 'update'])->name('claim.update')->middleware('permission:policy_claim');        
+        Route::post('/update', [ClaimController::class, 'update'])->name('claim.update')->middleware('permission:policy_claim');
         Route::get('/fetch/claim/{id}', [ClaimController::class, 'fetch'])->name('claim.fetch')->middleware('permission:policy_claim');
-        
+
         Route::get('/fetch/claim-notes/{claim_id}/{policy_id}', [ClaimController::class, 'fetchClaimNotes'])->name('claim.fetch.claim-notes')->middleware('permission:policy_claim');
         Route::post('/store/claim-note', [ClaimController::class, 'storeClaimNote'])->name('claim.store.claim-note')->middleware('permission:policy_claim');
 

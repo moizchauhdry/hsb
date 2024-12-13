@@ -62,8 +62,8 @@ const reset = () => {
                     <div class="d-flex">
                         <SuccessButton class="mb-2 px-4 py-1 mr-1" :class="{ 'opacity-25': form.processing }"
                             :disabled="form.processing">Search</SuccessButton>
-                        <DangerButton class="mb-2 px-2 py-1" @click="reset()"><i class="bx bx-reset text-lg"></i>
-                        </DangerButton>
+                        <!-- <DangerButton class="mb-2 px-2 py-1" @click="reset()"><i class="bx bx-reset text-lg"></i>
+                        </DangerButton> -->
                     </div>
                 </div>
             </form>
