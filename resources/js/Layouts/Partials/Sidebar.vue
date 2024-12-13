@@ -67,41 +67,41 @@ watch(
 
             <template v-if="permission.analytics">
                 <li :class="{ 'mm-active': route().current('dashboard') }">
-                    <a :href="route('dashboard')">
+                    <Link :href="route('dashboard')">
                         <div class="parent-icon"><i class='bx bx-home-alt'></i>
                         </div>
                         <div class="menu-title">Dashboard</div>
-                    </a>
+                    </Link>
                 </li>
             </template>
 
             <template v-if="permission.client_list">
                 <li :class="{ 'mm-active': route().current('client.index') }">
-                    <a :href="route('client.index')">
+                    <Link :href="route('client.index')">
                         <div class="parent-icon"><i class='bx bx-user'></i>
                         </div>
                         <div class="menu-title">My Customers</div>
-                    </a>
+                    </Link>
                 </li>
             </template>
 
             <template v-if="permission.policy_list">
                 <li :class="{ 'mm-active': route().current('policy.index') || route().current('policy.detail') }">
-                    <a :href="route('policy.index')">
+                    <Link :href="route('policy.index')">
                         <div class="parent-icon"><i class='bx bx-poll'></i>
                         </div>
                         <div class="menu-title">Active Policies</div>
-                    </a>
+                    </Link>
                 </li>
             </template>
 
             <template v-if="permission.claim_list">
                 <li :class="{ 'mm-active': route().current('claim.index')}">
-                    <a :href="route('claim.index')">
+                    <Link :href="route('claim.index')">
                         <div class="parent-icon"><i class='bx bx-poll'></i>
                         </div>
                         <div class="menu-title">Filed Claims</div>
-                    </a>
+                    </Link>
                 </li>
             </template>
 

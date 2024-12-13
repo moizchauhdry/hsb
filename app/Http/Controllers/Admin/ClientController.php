@@ -8,6 +8,7 @@ use App\Models\BusinessClass;
 use App\Models\User;
 use App\Models\UserClient;
 use App\Models\UserCob;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
@@ -23,34 +24,28 @@ class ClientController extends Controller
         ];
 
         $users = User::query()
+            ->select([
+                'users.id as user_id',
+                'users.name as user_name',
+                'users.code as user_code',
+                'users.created_at as user_created_at',
+                DB::raw('COUNT(DISTINCT policies.id) as policy_count'),
+                DB::raw('GROUP_CONCAT(DISTINCT business_classes.class_name SEPARATOR ", ") as cobs'),
+                DB::raw('GROUP_CONCAT(DISTINCT insurances.name SEPARATOR ", ") as insurers'),
+            ])
+            ->leftJoin('policies', 'users.id', '=', 'policies.client_id')
+            ->leftJoin('business_classes', 'policies.cob_id', '=', 'business_classes.id')
+            ->leftJoin('insurances', 'policies.insurer_id', '=', 'insurances.id')
             ->role('client')
-            ->orderBy('id', 'desc')
+            ->groupBy('users.id', 'users.name', 'users.email', 'users.code')
+            ->orderBy('users.id', 'desc')
             ->when($filter['search'], function ($q) use ($filter) {
-                $q->where('code', $filter['search']);
-                $q->orWhere('name', 'LIKE', '%' . $filter['search'] . '%');
-                $q->orWhere('email', 'LIKE', '%' . $filter['search'] . '%');
+                $q->where('users.code', $filter['search'])
+                    ->orWhere('users.name', 'LIKE', '%' . $filter['search'] . '%')
+                    ->orWhere('users.email', 'LIKE', '%' . $filter['search'] . '%');
             })
             ->paginate($filter['page_count'])
-            ->withQueryString()
-            ->through(fn($user) => [
-                'id' => $user->id,
-                'code' => $user->code,
-                'name' => $user->name,
-                'email' => $user->email,
-
-                'type'  =>  $user->type,
-                'phone' => $user->phone,
-
-                'role' => $user->roles[0]->name ?? '-',
-                'role_id' => $user->roles[0]->id ?? NULL,
-                'created_at' => $user->created_at->format('d-m-Y h:i A'),
-
-                'user_cobs_count' => $user->cobs->count(),
-                'total_cob_count' => BusinessClass::count(),
-
-                'user_clients_count' => $user->clients->count(),
-                'total_client_count' => User::role('client')->count(),
-            ]);
+            ->withQueryString();
 
         $roles = Role::select('id', 'name')->get();
 

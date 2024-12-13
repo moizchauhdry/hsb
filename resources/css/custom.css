@@ -1,0 +1,11 @@
+html.semi-dark .sidebar-wrapper .metismenu .mm-active > a, html.semi-dark .sidebar-wrapper .metismenu a:active, html.semi-dark .sidebar-wrapper .metismenu a:focus, html.semi-dark .sidebar-wrapper .metismenu a:hover {
+	color: #ffc107 !important;
+	text-decoration: none;
+	background: rgb(255 255 255 / 12%);
+}
+
+
+html.semi-dark .logo-icon {
+    filter: brightness(100%) !important;
+}
+  

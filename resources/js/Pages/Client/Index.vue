@@ -50,7 +50,7 @@ const assignCob = (id) => {
                                 <li class="breadcrumb-item"><a href="javascript:;">
                                         <i class="bx bx-home-alt"></i></a>
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Client List</li>
+                                <li class="breadcrumb-item active" aria-current="page">Customer List</li>
                             </ol>
                         </nav>
                     </div>
@@ -67,14 +67,16 @@ const assignCob = (id) => {
                     </div>
 
                     <div class="card-body">
-                        <div class="table-responsive">
-                            <table id="example" class="table table-bordered table-hover table-sm text-uppercase"
-                                style="width:100%">
+                        <div class="table">
+                            <table id="example" class="table table-bordered table-hover table-sm text-uppercase">
                                 <thead class="table-light">
                                     <tr>
-                                        <th>Sr.</th>
-                                        <th>Code</th>
+                                        <th>SR #</th>
                                         <th>Client Name</th>
+                                        <!-- <th>Client Code</th> -->
+                                        <th>Policies</th>
+                                        <th>Insurers</th>
+                                        <th>Classes</th>
                                         <th>Created At</th>
                                         <th>Action</th>
                                     </tr>
@@ -83,17 +85,29 @@ const assignCob = (id) => {
                                     <template v-for="(user, index) in users.data">
                                         <tr>
                                             <td>{{ (users.current_page - 1) * users.per_page + index + 1 }}</td>
-                                            <td>{{ user.code }}</td>
-                                            <td class="text-capitalize">{{ user.name }}</td>
-                                            <td>{{ user.created_at }}</td>
+                                            <td>{{ user.user_name }}</td>
+                                            <!-- <td>{{ user.code }}</td> -->
                                             <td>
-                                                <PrimaryButton class="mr-1" @click="edit(user.id)" title="Edit"><i
+                                                <a :href="`${route('policy.index')}?client=${user.user_id}`"
+                                                    target="_blank">
+                                                    <span class="badge bg-primary">
+                                                        {{ user.policy_count }} <i class="bx bx-link-external"></i>
+                                                    </span>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <span v-for="(cob, i) in user.cobs.split(',')" :key="'cob-' + i"
+                                                    class="badge bg-secondary mr-1">{{ cob.trim() }}</span>
+                                            </td>
+                                            <td>
+                                                <span v-for="(insurer, i) in user.insurers.split(',')"
+                                                    :key="'insurer-' + i" class="badge bg-secondary mr-1">{{
+                                                    insurer.trim() }}</span>
+                                            </td>
+                                            <td>{{ user.user_created_at }}</td>
+                                            <td>
+                                                <PrimaryButton class="mr-1" @click="edit(user.user_id)" title="Edit"><i
                                                         class="bx bx-edit mr-1"></i> Edit</PrimaryButton>
-
-                                                <template v-if="user.role_id == 1">
-                                                    <span style="font-size: 10px;" class="text-primary"><b>The admin has
-                                                            access to all COBs & clients.</b></span>
-                                                </template>
                                             </td>
                                         </tr>
                                     </template>
