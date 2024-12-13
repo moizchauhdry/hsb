@@ -62,7 +62,7 @@ const reset = () => {
                     <div class="d-flex">
                         <DarkButton class="mb-2 px-4 py-1 mr-1" :class="{ 'opacity-25': form.processing }"
                             :disabled="form.processing">Search</DarkButton>
-                        <SecondaryButton class="mb-2 px-2 py-1" @click="reset()"><i class="bx bx-left-arrow-circle text-lg"></i>
+                        <SecondaryButton class="mb-2 px-2 py-1" @click="reset()"><i class="bx bx-sync text-lg"></i>
                         </SecondaryButton>
                     </div>
                 </div>

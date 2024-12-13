@@ -61,6 +61,7 @@ const edit = (id) => {
                                         <th style="min-width: 50px;">SR.</th>
                                         <th style="min-width: 250px;">Client Name</th>
                                         <th>Policies</th>
+                                        <th>Claims</th>
                                         <th style="min-width: 200px;">Insurers</th>
                                         <th style="min-width: 200px;">Class of Business</th>
                                         <th style="min-width: 180px;">Created At</th>
@@ -75,8 +76,16 @@ const edit = (id) => {
                                             <td>
                                                 <a :href="`${route('policy.index')}?client=${user.user_id}`"
                                                     target="_blank">
-                                                    <span class="badge bg-primary">
+                                                    <span class="badge bg-dark">
                                                         {{ user.policy_count }} <i class="bx bx-link-external"></i>
+                                                    </span>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a :href="`${route('claim.index')}?client=${user.user_id}`"
+                                                    target="_blank">
+                                                    <span class="badge bg-dark">
+                                                        {{ user.policy_claim_count }} <i class="bx bx-link-external"></i>
                                                     </span>
                                                 </a>
                                             </td>

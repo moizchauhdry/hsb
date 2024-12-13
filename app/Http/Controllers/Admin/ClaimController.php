@@ -15,7 +15,6 @@ class ClaimController extends Controller
 {
     public function index(Request $request)
     {
-
         $page_count = $request->page_count ?? 10;
 
         $current_month = $request->month ?? Carbon::now()->format('m');
@@ -23,6 +22,7 @@ class ClaimController extends Controller
 
         $filter = [
             'search' => $request->search,
+            'client' => $request->client,
             'date_type' => $request->date_type,
             'month' => $current_month,
             'month_name' => getMonthName($current_month),
