@@ -207,7 +207,7 @@ const format_date = (date) => {
                                 <option value="new">New</option>
                                 <option value="renewal">Renewal</option>
                                 <option value="endorsement">Endorsement</option>
-                                <option value="others">Others</option>
+                                <option value="other">Other</option>
                             </select>
                         </div>
 

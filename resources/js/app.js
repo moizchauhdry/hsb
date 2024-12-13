@@ -7,6 +7,8 @@ import '../css/bootstrap-extended.css';
 import '../css/main.css'; // app.css
 import '../css/icons.css';
 
+import '../css/custom.css';
+
 // Theme Style CSS
 import '../css/dark-theme.css';
 import '../css/semi-dark.css';
@@ -34,6 +36,6 @@ createInertiaApp({
             .mount(el);
     },
     progress: {
-        color: '#4B5563',
+        color: '#ffc107',
     },
 });

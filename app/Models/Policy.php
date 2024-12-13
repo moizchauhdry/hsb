@@ -66,12 +66,12 @@ class Policy extends Model
             $query->leftJoin('user_cobs as uc', function ($join) {
                 $join->on('uc.cob_id', '=', 'p.cob_id')->where('uc.user_id', auth()->id());
             })
-            ->leftJoin('user_clients as ucl', function ($join) {
-                $join->on('ucl.client_id', '=', 'p.client_id')->where('ucl.user_id', auth()->id());
-            })
-            ->where(function ($q) {
-                $q->whereNotNull('uc.id')->orWhereNotNull('ucl.id');
-            });
+                ->leftJoin('user_clients as ucl', function ($join) {
+                    $join->on('ucl.client_id', '=', 'p.client_id')->where('ucl.user_id', auth()->id());
+                })
+                ->where(function ($q) {
+                    $q->whereNotNull('uc.id')->orWhereNotNull('ucl.id');
+                });
         }
 
         if ($filter) {
@@ -79,42 +79,46 @@ class Policy extends Model
                 $q->whereYear('p.date_of_issuance', $filter['year']);
                 $q->whereMonth('p.date_of_issuance', $filter['month']);
             });
-    
+
             $query->when($filter['date_type'] == 'policy_period_start', function ($q) use ($filter) {
                 $q->whereYear('p.policy_period_start', $filter['year']);
                 $q->whereMonth('p.policy_period_start', $filter['month']);
             });
-    
+
             $query->when($filter['date_type'] == 'policy_period_end', function ($q) use ($filter) {
                 $q->whereYear('p.policy_period_end', $filter['year']);
                 $q->whereMonth('p.policy_period_end', $filter['month']);
             });
-    
+
             $query->when($filter['date_type'] == 'created_at', function ($q) use ($filter) {
                 $q->whereYear('p.created_at', $filter['year']);
                 $q->whereMonth('p.created_at', $filter['month']);
             });
-    
-            if ($slug == 'sales') {
+
+            if ($slug == 'renewal') {
+                if ($filter['policy_type']) {
+                    $query->where('p.policy_type', $filter['policy_type']);
+                } else {
+                    $query->where('p.policy_type', 'renewal');
+                }
+            } else {
                 $query->when($filter['policy_type'], function ($q) use ($filter) {
                     $q->where('p.policy_type', $filter['policy_type']);
                 });
-            } elseif ($slug == 'renewal') {
-                $query->where('p.policy_type', 'renewal');
             }
-    
+
             $query->when($filter['client'], function ($q) use ($filter) {
                 $q->where('p.client_id', $filter['client']);
             });
-    
+
             $query->when($filter['agency'], function ($q) use ($filter) {
                 $q->where('p.agency_id', $filter['agency']);
             });
-    
+
             $query->when($filter['insurer'], function ($q) use ($filter) {
                 $q->where('p.insurance_id', $filter['insurer']);
             });
-    
+
             $query->when($filter['cob'], function ($q) use ($filter) {
                 $q->where('p.cob_id', $filter['cob']);
             });
