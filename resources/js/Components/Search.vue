@@ -1,7 +1,7 @@
 <script setup>
 import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
-import SuccessButton from "@/Components/SuccessButton.vue";
-import DangerButton from "@/Components/DangerButton.vue";
+import DarkButton from "./DarkButton.vue";
+import SecondaryButton from "./SecondaryButton.vue";
 
 const props = defineProps({
     route_name: Array,
@@ -60,10 +60,10 @@ const reset = () => {
                     <input type="text" v-model="form.search" class="form-control mr-2 mb-2" placeholder="Search"
                         style="width: 100%;">
                     <div class="d-flex">
-                        <SuccessButton class="mb-2 px-4 py-1 mr-1" :class="{ 'opacity-25': form.processing }"
-                            :disabled="form.processing">Search</SuccessButton>
-                        <!-- <DangerButton class="mb-2 px-2 py-1" @click="reset()"><i class="bx bx-reset text-lg"></i>
-                        </DangerButton> -->
+                        <DarkButton class="mb-2 px-4 py-1 mr-1" :class="{ 'opacity-25': form.processing }"
+                            :disabled="form.processing">Search</DarkButton>
+                        <SecondaryButton class="mb-2 px-2 py-1" @click="reset()"><i class="bx bx-left-arrow-circle text-lg"></i>
+                        </SecondaryButton>
                     </div>
                 </div>
             </form>

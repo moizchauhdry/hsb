@@ -117,7 +117,7 @@ defineExpose({ edit: (id) => edit(id) });
 </script>
 
 <template>
-    <PrimaryButton @click="create"><i class="bx bx-plus text-lg mr-1"></i>Add</PrimaryButton>
+    <PrimaryButton @click="create"><i class="bx bx-plus text-lg"></i>Add Client</PrimaryButton>
 
     <Modal :show="modal" @close="close">
         <form @submit.prevent="edit_mode ? update() : submit()">
