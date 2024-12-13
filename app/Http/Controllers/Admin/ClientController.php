@@ -39,7 +39,7 @@ class ClientController extends Controller
             ->leftJoin('business_classes', 'policies.cob_id', '=', 'business_classes.id')
             ->leftJoin('insurances', 'policies.insurer_id', '=', 'insurances.id')
             ->role('client')
-            ->groupBy('users.id', 'users.name', 'users.email', 'users.code')
+            ->groupBy('users.id', 'users.name', 'users.email', 'users.code','users.created_at')
             ->orderBy('users.id', 'desc')
             ->when($filter['search'], function ($q) use ($filter) {
                 $q->where('users.code', $filter['search'])
