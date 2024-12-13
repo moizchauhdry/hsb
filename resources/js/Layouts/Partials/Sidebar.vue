@@ -80,7 +80,7 @@ watch(
                     <Link :href="route('client.index')">
                     <div class="parent-icon"><i class='bx bx-user'></i>
                     </div>
-                    <div class="menu-title">My Customers</div>
+                    <div class="menu-title">My Clients</div>
                     </Link>
                 </li>
             </template>

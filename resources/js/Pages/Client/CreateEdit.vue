@@ -5,12 +5,9 @@ import axios from 'axios';
 
 import Modal from "@/Components/Modal.vue";
 import InputError from "@/Components/InputError.vue";
-import InputLabel from "@/Components/InputLabel.vue";
-import Multiselect from "@vueform/multiselect";
 
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SuccessButton from "@/Components/SuccessButton.vue";
-import DangerButton from "@/Components/DangerButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 
 defineProps({
@@ -126,7 +123,7 @@ defineExpose({ edit: (id) => edit(id) });
         <form @submit.prevent="edit_mode ? update() : submit()">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-900 flex justify-between items-center">
-                    <span>{{ edit_mode ? 'Edit' : 'Add' }} User</span>
+                    <span>{{ edit_mode ? 'Edit' : 'Add' }} Client</span>
                     <span class="text-sm text-gray-500">
                         <span v-if="form.user_id" class="mr-2">ID #{{ form.user_id }}</span>
                     </span>
@@ -138,7 +135,7 @@ defineExpose({ edit: (id) => edit(id) });
 
                 <div class="mt-6">
                     <div class="row g-3">
-                        <div class="col-md-6">
+                        <div class="col-md-6" style="display: none;">
                             <label for="input21" class="form-label">Role</label>
                             <select id="input21" class="form-select text-capitalize" v-model="form.role">
                                 <option value="">Choose...</option>
@@ -158,15 +155,6 @@ defineExpose({ edit: (id) => edit(id) });
                             <InputError :message="form.errors.type" />
                         </div>
                         
-                        <!-- <div class="col-md-12" v-if="slug == 'users'">
-                            <label for="input21" class="form-label">Class of Business</label>
-
-                            <Multiselect style="margin-top: 3px !important" mode="tags" v-model="form.cob_id"
-                                :options="cobs" :searchable="true">
-                            </Multiselect>
-
-                            <InputError :message="form.errors.cob_id" />
-                        </div> -->
                         <div class="col-md-6">
                             <label for="input13" class="form-label">Name</label>
                             <div class="position-relative input-icon">

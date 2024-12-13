@@ -5,8 +5,6 @@ import { ref } from "vue";
 import Paginate from "@/Components/Paginate.vue";
 import Search from "@/Components/Search.vue";
 import CreateEdit from "./CreateEdit.vue";
-import AssignClient from "./AssignClient.vue";
-import AssignCOB from "./AssignCOB.vue";
 import IconButton from "@/Components/IconButton.vue";
 
 defineProps({
@@ -20,15 +18,6 @@ const edit = (id) => {
     user_create_edit_ref.value.edit(id)
 };
 
-const assign_client_ref = ref(null);
-const assignClient = (id) => {
-    assign_client_ref.value.assignClient(id)
-};
-
-const assign_cob_ref = ref(null);
-const assignCob = (id) => {
-    assign_cob_ref.value.assignCob(id)
-};
 </script>
 
 
@@ -42,21 +31,19 @@ const assignCob = (id) => {
             <div class="page-content">
                 <!--breadcrumb-->
                 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-                    <div class="breadcrumb-title pe-3">My Customers</div>
+                    <div class="breadcrumb-title pe-3">My Clients</div>
                     <div class="ps-3">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb mb-0 p-0">
                                 <li class="breadcrumb-item"><a href="javascript:;">
                                         <i class="bx bx-home-alt"></i></a>
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Customer List</li>
+                                <li class="breadcrumb-item active" aria-current="page">Client List</li>
                             </ol>
                         </nav>
                     </div>
                     <div class="ms-auto">
                         <CreateEdit ref="user_create_edit_ref" v-bind="$props"></CreateEdit>
-                        <AssignClient ref="assign_client_ref" v-bind="$props"></AssignClient>
-                        <AssignCOB ref="assign_cob_ref" v-bind="$props" />
                     </div>
                 </div>
 
