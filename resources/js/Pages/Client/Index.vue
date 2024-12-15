@@ -101,7 +101,7 @@ const edit = (id) => {
                                             <td>{{ user.user_created_at }}</td>
                                             <td>
                                                 <IconButton @click="edit(user.user_id)" title="Edit">
-                                                    <i class="bx bx-edit" style="font-size: 16px;"></i>
+                                                    <i class="bx bx-edit bx-text-md"></i>
                                                 </IconButton>
                                             </td>
                                         </tr>

@@ -11,3 +11,7 @@ html.semi-dark .sidebar-wrapper .metismenu a:hover {
 html.semi-dark .logo-icon {
 	filter: brightness(100%) !important;
 }
+
+.bx-text-md {
+	font-size: 16px;
+}
