@@ -7,10 +7,10 @@ import SecondaryButton from "@/Components/SecondaryButton.vue";
 import SuccessButton from "@/Components/SuccessButton.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import InputError from '@/Components/InputError.vue';
-import VueDatePicker from "@vuepic/vue-datepicker";
-import "@vuepic/vue-datepicker/dist/main.css";
-import { onMounted } from "vue";
-import moment from 'moment';
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
+import Multiselect from "@vueform/multiselect";
+import DarkButton from "@/Components/DarkButton.vue";
 
 const props = defineProps({
     data: Array,
@@ -22,67 +22,78 @@ const props = defineProps({
 
 const modal = ref(false);
 const edit = ref(false);
-const data = usePage().props.data;
 const slug = usePage().props.slug;
-const filter = usePage().props.filter;
-const filter_route = usePage().props.filter_route;
-console.log(usePage().props)
 
-var months = [
-    { id: 1, name: "January" },
-    { id: 2, name: "February" },
-    { id: 3, name: "March" },
-    { id: 4, name: "April" },
-    { id: 5, name: "May" },
-    { id: 6, name: "June" },
-    { id: 7, name: "July" },
-    { id: 8, name: "August" },
-    { id: 9, name: "September" },
-    { id: 10, name: "October" },
-    { id: 11, name: "November" },
-    { id: 12, name: "December" },
-];
+const policy_types = ref([]);
+const fetchPolicyTypes = () => {
+    axios.get(`/axios/fetch/policy-types`)
+        .then(({ data }) => {
+            policy_types.value = data.policy_types;
+        });
+};
 
-var years = [
-    { id: 1, value: "2023" },
-    { id: 2, value: "2024" },
-    { id: 3, value: "2025" },
-    { id: 4, value: "2026" },
-    { id: 5, value: "2027" },
-    { id: 6, value: "2028" },
-    { id: 7, value: "2029" },
-    { id: 8, value: "2030" },
-];
+const clients = ref([]);
+const fetchClients = () => {
+    axios.get(`/axios/fetch/clients/v2`)
+        .then(({ data }) => {
+            clients.value = data.clients;
+        });
+};
+
+const agencies = ref([]);
+const fetchAgencies = () => {
+    axios.get(`/axios/fetch/agencies`)
+        .then(({ data }) => {
+            agencies.value = data.agencies;
+        });
+};
+
+const cobs = ref([]);
+const fetchCobs = () => {
+    axios.get(`/axios/fetch/cobs/v2`)
+        .then(({ data }) => {
+            cobs.value = data.cobs;
+        });
+};
+
+const insurers = ref([]);
+const fetchInsurers = () => {
+    axios.get(`/axios/fetch/insurers`)
+        .then(({ data }) => {
+            insurers.value = data.insurers;
+        });
+};
 
 var saved_filters = "";
 
 const form = useForm({
     date_type: "",
-    month: "",
-    year: "",
-    policy_type: "",
+    date_value: "",
 
-    client: "",
-    agency: "",
-    insurer: "",
-    cob: "",
+    policy_type: [],
+    client: [],
+    agency: [],
+    cob: [],
+    insurer: [],
 });
 
 const create = () => {
     modal.value = true;
     edit.value = false;
 
-    form.month = filter.month;
-    form.year = filter.year;
-    form.date_type = "date_of_insurance";
+    fetchPolicyTypes();
+    fetchClients();
+    fetchAgencies();
+    fetchCobs();
+    fetchInsurers();
 
     saved_filters = localStorage.getItem('filters');
 
     if (saved_filters) {
         saved_filters = JSON.parse(saved_filters);
         form.date_type = saved_filters.date_type
-        form.month = saved_filters.month
-        form.year = saved_filters.year
+        form.date_value = saved_filters.date_value
+
         form.policy_type = saved_filters.policy_type
         form.client = saved_filters.client
         form.agency = saved_filters.agency
@@ -94,10 +105,9 @@ const create = () => {
 const submit = () => {
     var filters = {
         date_type: form.date_type,
-        month: form.month,
-        year: form.year,
-        policy_type: form.policy_type,
+        date_value: form.date_value,
 
+        policy_type: form.policy_type,
         client: form.client,
         agency: form.agency,
         cob: form.cob,
@@ -145,21 +155,11 @@ const format_date = (date) => {
     return formattedDate;
 }
 
-// watch(
-//     () => {
-//         if (form.from_date) {
-//             form.from_date = format_date(form.from_date)
-//         }
-//         if (form.to_date) {
-//             form.to_date = format_date(form.to_date)
-//         }
-//     }
-// );
 </script>
 
 <template>
-    <PrimaryButton @click="create" type="button" class="mx-1"><i class="bx bx-search-alt text-lg mr-1"></i> Filters
-    </PrimaryButton>
+    <DarkButton @click="create" type="button" class="mx-1"><i class="bx bx-search-alt text-lg mr-1"></i> Filters
+    </DarkButton>
 
     <Modal :show="modal" @close="closeModal">
         <form @submit.prevent="edit ? update() : submit()">
@@ -175,6 +175,7 @@ const format_date = (date) => {
                         <div class="col-md-6">
                             <InputLabel for="" value="Date Type" class="mb-1" />
                             <select v-model="form.date_type" class="form-control">
+                                <option value="">All</option>
                                 <option value="date_of_issuance">Issuance Date</option>
                                 <option value="policy_period_start">Inception Date</option>
                                 <option value="policy_period_end">Expiry Date</option>
@@ -182,77 +183,41 @@ const format_date = (date) => {
                             </select>
                         </div>
 
-                        <div class="col-md-3">
-                            <InputLabel for="" value="Month" class="mb-1" />
-                            <select v-model="form.month" class="form-control">
-                                <template v-for="month in months">
-                                    <option :value="month.id">{{ month.name }}</option>
-                                </template>
-                            </select>
-                        </div>
-
-                        <div class="col-md-3">
-                            <InputLabel for="" value="Year" class="mb-1" />
-                            <select v-model="form.year" class="form-control">
-                                <template v-for="year in years">
-                                    <option :value="year.value">{{ year.value }}</option>
-                                </template>
-                            </select>
+                        <div class="col-md-6" v-if="form.date_type">
+                            <InputLabel for="" :value="form.date_type" class="mb-1 uppercase" />
+                            <VueDatePicker v-model="form.date_value" range :enable-time-picker="false" :show-time="false"></VueDatePicker>
                         </div>
 
                         <div class="col-md-6">
                             <InputLabel for="" value="Policy Type" class="mb-1" />
-                            <select v-model="form.policy_type" class="form-control">
-                                <option value="">All Types</option>
-                                <option value="new">New</option>
-                                <option value="renewal">Renewal</option>
-                                <option value="endorsement">Endorsement</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-
-                        <div class="col-md-6">
-                            <InputLabel for="" value="Client" class="mb-1" />
-                            <select v-model="form.client" class="form-control">
-                                <option :value="''">All Clients</option>
-                                <template v-for="client in data.clients">
-                                    <option :value="client.id">{{ client.name }}</option>
-                                </template>
-                            </select>
-                            <InputError :message="form.errors.client" />
-                        </div>
-
-                        <div class="col-md-6">
-                            <InputLabel for="" value="Agency" class="mb-1" />
-                            <select v-model="form.agency" class="form-control">
-                                <option :value="''">All Agencies</option>
-                                <template v-for="agency in data.agencies">
-                                    <option :value="agency.id">{{ agency.name }}</option>
-                                </template>
-                            </select>
-                            <InputError :message="form.errors.agency" />
+                            <Multiselect v-model="form.policy_type" :options="policy_types" :searchable="true"
+                                mode="tags">
+                            </Multiselect>
                         </div>
 
                         <div class="col-md-6">
                             <InputLabel for="" value="Insurer" class="mb-1" />
-                            <select v-model="form.insurer" class="form-control">
-                                <option :value="''">All Insurers</option>
-                                <template v-for="insurer in data.insurers">
-                                    <option :value="insurer.id">{{ insurer.name }}</option>
-                                </template>
-                            </select>
-                            <InputError :message="form.errors.insurer" />
+                            <Multiselect v-model="form.insurer" :options="insurers" :searchable="true"
+                                mode="tags">
+                            </Multiselect>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-12">
+                            <InputLabel for="" value="Agency" class="mb-1" />
+                            <Multiselect v-model="form.agency" :options="agencies" :searchable="true" mode="tags">
+                            </Multiselect>
+                        </div>
+
+                        <div class="col-md-12">
+                            <InputLabel for="" value="Client" class="mb-1" />
+                            <Multiselect v-model="form.client" :options="clients" :searchable="true" mode="tags">
+                            </Multiselect>
+                        </div>
+
+                        <div class="col-md-12">
                             <InputLabel for="" value="Class of Business" class="mb-1" />
-                            <select v-model="form.cob" class="form-control">
-                                <option :value="''">All Classes</option>
-                                <template v-for="cob in data.cobs">
-                                    <option :value="cob.id">{{ cob.class_name }}</option>
-                                </template>
-                            </select>
-                            <InputError :message="form.errors.cob" />
+                            <Multiselect v-model="form.cob" :options="cobs" :searchable="true" mode="tags">
+                            </Multiselect>
                         </div>
                     </div>
                 </div>
@@ -268,3 +233,5 @@ const format_date = (date) => {
         </form>
     </Modal>
 </template>
+
+<style src="@vueform/multiselect/themes/default.css"></style>
