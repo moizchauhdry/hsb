@@ -11,7 +11,6 @@ import ReportFilter from "../Report/ReportFilter.vue";
 import Search from "@/Components/Search.vue";
 import IconButton from "@/Components/IconButton.vue";
 
-
 defineProps({
     policies: Array,
     policy: Object,
@@ -100,66 +99,32 @@ const confirmDelete = (policyId) => {
                                 <thead class="table-light">
                                     <tr>
                                         <th>Sr.</th>
-                                        <!-- <th>Policy ID</th> -->
                                         <th>Policy No</th>
-                                        <!-- <th>Insurer Name</th> -->
                                         <th style="min-width: 200px">Client Name</th>
-                                        <!-- <th>Leader</th> -->
-                                        <!-- <th>Leader Policy No</th> -->
-                                        <!-- <th>Lead Type</th> -->
                                         <th style="min-width: 200px">Agency Name</th>
-                                        <!-- <th>Agency Code</th> -->
-                                        <!-- <th>Child Agency</th> -->
-                                        <!-- <th>Department Name</th> -->
                                         <th style="min-width: 120px">COB Name</th>
-                                        <!-- <th>Issuance Date</th> -->
-                                        <!-- <th>Inception Date</th> -->
                                         <th style="min-width: 120px;">Expiry Date</th>
-                                        <!-- <th>Sum Insured</th>
-                                        <th>Gross Premium (100%)</th>
-                                        <th>Gross Premium</th>
-                                        <th>Net Premium (100%)</th>
-                                        <th>Net Premium</th>
-                                        <th>Rate %</th>
-                                        <th>Brokerage %</th>
-                                        <th>Brokerage Amount</th> -->
                                         <th style="min-width: 150px">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <template v-for="(policy, index) in policies.data">
                                         <tr>
-                                            <td>{{ (policies.current_page - 1) * policies.per_page + index +
-                                                1 }}</td>
-                                            <!-- <td>{{ policy.id }}</td> -->
+                                            <td>
+                                                {{ (policies.current_page - 1) * policies.per_page + index + 1 }}
+                                            </td>
                                             <td>
                                                 <a :href="route('policy.detail', policy.id)" target="_blank"> {{
                                                     policy.data.policy_no }} <i class="bx bx-link-external"></i>
                                                 </a>
                                             </td>
-                                            <!-- <td>{{ policy.insurer_name }}</td> -->
                                             <td>{{ policy.client_name }}</td>
-                                            <!-- <td>{{ policy.data.leader_name }}</td> -->
-                                            <!-- <td>{{ policy.data.leader_policy_no }}</td> -->
-                                            <!-- <td>{{ policy.data.lead_type }}</td> -->
                                             <td>{{ policy.agency_name }}</td>
-                                            <!-- <td>{{ policy.data.agency_code }}</td> -->
-                                            <!-- <td>{{ policy.data.child_agency_name }}</td> -->
-                                            <!-- <td>{{ policy.department_name }}</td> -->
                                             <td><span class="badge bg-secondary">{{ policy.cob_name }}</span></td>
-                                            <!-- <td>{{ policy.data.date_of_issuance }}</td> -->
-                                            <!-- <td>{{ policy.data.policy_period_start }}</td> -->
                                             <td>{{ policy.data.policy_period_end }}</td>
-                                            <!-- <td>{{ policy.data.sum_insured }}</td>
-                                            <td>{{ policy.data.gross_premium_100 }}</td>
-                                            <td>{{ policy.data.gross_premium }}</td>
-                                            <td>{{ policy.data.net_premium_100 }}</td>
-                                            <td>{{ policy.data.net_premium }}</td>
-                                            <td>{{ policy.data.rate_percentage }}</td>
-                                            <td>{{ policy.data.brokerage_percentage }}</td>
-                                            <td>{{ policy.data.brokerage_amount }}</td> -->
                                             <td>
-                                                <IconButton class="m-1" @click="edit(policy.id)" v-if="permission.policy_update">
+                                                <IconButton class="m-1" @click="edit(policy.id)"
+                                                    v-if="permission.policy_update">
                                                     <i class="bx bx-edit bx-text-md"></i>
                                                 </IconButton>
 

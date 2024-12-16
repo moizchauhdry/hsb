@@ -58,7 +58,6 @@ class Policy extends Model
     public function scopePoliciesList($query, $filter, $slug = null)
     {
         $role = Auth::user()->roles[0];
-        // $query->with(['client', 'insurer', 'agency', 'cob']);
 
         $query->from('policies as p');
 
@@ -75,52 +74,47 @@ class Policy extends Model
         }
 
         if ($filter) {
-            $query->when($filter['date_type'] == 'date_of_issuance', function ($q) use ($filter) {
-                $q->whereYear('p.date_of_issuance', $filter['year']);
-                $q->whereMonth('p.date_of_issuance', $filter['month']);
-            });
-
-            $query->when($filter['date_type'] == 'policy_period_start', function ($q) use ($filter) {
-                $q->whereYear('p.policy_period_start', $filter['year']);
-                $q->whereMonth('p.policy_period_start', $filter['month']);
-            });
-
-            $query->when($filter['date_type'] == 'policy_period_end', function ($q) use ($filter) {
-                $q->whereYear('p.policy_period_end', $filter['year']);
-                $q->whereMonth('p.policy_period_end', $filter['month']);
-            });
-
-            $query->when($filter['date_type'] == 'created_at', function ($q) use ($filter) {
-                $q->whereYear('p.created_at', $filter['year']);
-                $q->whereMonth('p.created_at', $filter['month']);
+            $query->when($filter['date_type'], function ($q) use ($filter) {
+                if ($filter['from_date']) {
+                    $q->where('p.' . $filter['date_type'], ">=", $filter['from_date']);
+                }
+                if ($filter['to_date']) {
+                    $q->where('p.' . $filter['date_type'], "<=", $filter['to_date']);
+                }
             });
 
             if ($slug == 'renewal') {
                 if ($filter['policy_type']) {
-                    $query->where('p.policy_type', $filter['policy_type']);
+                    $types = is_array($filter['policy_type']) ? $filter['policy_type'] : explode(',', $filter['policy_type']);
+                    $query->whereIn('p.policy_type', $types);
                 } else {
                     $query->where('p.policy_type', 'renewal');
                 }
             } else {
                 $query->when($filter['policy_type'], function ($q) use ($filter) {
-                    $q->where('p.policy_type', $filter['policy_type']);
+                    $types = is_array($filter['policy_type']) ? $filter['policy_type'] : explode(',', $filter['policy_type']);
+                    $q->whereIn('p.policy_type', $types);
                 });
             }
 
-            $query->when($filter['client'], function ($q) use ($filter) {
-                $q->where('p.client_id', $filter['client']);
+            $query->when(!empty($filter['client']), function ($q) use ($filter) {
+                $clients = is_array($filter['client']) ? $filter['client'] : explode(',', $filter['client']);
+                $q->whereIn('p.client_id', $clients);
             });
 
-            $query->when($filter['agency'], function ($q) use ($filter) {
-                $q->where('p.agency_id', $filter['agency']);
+            $query->when(!empty($filter['agency']), function ($q) use ($filter) {
+                $agencies = is_array($filter['agency']) ? $filter['agency'] : explode(',', $filter['agency']);
+                $q->whereIn('p.agency_id', $agencies);
             });
 
-            $query->when($filter['insurer'], function ($q) use ($filter) {
-                $q->where('p.insurance_id', $filter['insurer']);
+            $query->when(!empty($filter['insurer']), function ($q) use ($filter) {
+                $insurers = is_array($filter['insurer']) ? $filter['insurer'] : explode(',', $filter['insurer']);
+                $q->whereIn('p.insurer_id', $insurers);
             });
 
             $query->when($filter['cob'], function ($q) use ($filter) {
-                $q->where('p.cob_id', $filter['cob']);
+                $cobs = is_array($filter['cob']) ? $filter['cob'] : explode(',', $filter['cob']);
+                $q->whereIn('p.cob_id', $cobs);
             });
         }
 
