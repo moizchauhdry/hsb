@@ -2,37 +2,55 @@
 
 namespace App\Imports;
 
-use App\Models\Agency;
-use App\Models\BusinessClass;
-use App\Models\Department;
-use App\Models\Insurance;
-use App\Models\Policy;
-use App\Models\PolicyExcel;
-use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Models\User;
+use App\Models\Batch;
+use App\Models\Agency;
+use App\Models\Policy;
+use App\Models\Insurance;
+use App\Models\BatchError;
+use App\Models\Department;
+use App\Models\PolicyExcel;
+use App\Models\BusinessClass;
 use Illuminate\Support\Collection;
-use Maatwebsite\Excel\Concerns\ToCollection;
-use Maatwebsite\Excel\Concerns\WithChunkReading;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
-use Maatwebsite\Excel\Concerns\WithEvents;
-use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Events\AfterImport;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
+use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\ImportFailed;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Maatwebsite\Excel\Concerns\ToCollection;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
 class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, WithMultipleSheets, ShouldQueue, WithEvents
 {
     /**
      * @param Collection $collection
      */
+
+    private $batch;
+
+    public function __construct(int $totalRecords)
+    {
+        $this->batch = Batch::create([
+            'total_records' => $totalRecords, // Save total records at initialization
+            'failed_records' => 0,
+        ]);
+    }
     public function collection(Collection $rows)
     {
         // dd($rows[0]);
 
-        Log::channel('database')->info('Processing chunk with ' . $rows->count() . ' rows.', ['type' => 'excel_import']);
+        Log::channel('database')->info(
+            'Processing chunk with ' . $rows->count() . ' rows.',
+            [
+                'total_count' => $rows->count(),
+                'type' => 'excel_import'
+            ]
+        );
 
         $agency_id = $insurer_id = $cob_id = $department_id = $client_id = NULL;
 
@@ -160,6 +178,15 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
                 Log::channel('database')->info('Error importing row:' . $e->getMessage(), ['type' => 'excel_import']);
 
                 // Skip the row when any error accurs and continue
+
+                BatchError::create([
+                    'batch_id' => $this->batch->id,
+                    'row_data' => json_encode($row->toArray()),
+                    'error_message' => $e->getMessage(),
+                ]);
+
+                // Increment failed record count
+                $this->batch->increment('failed_records');
                 continue;
             }
         }
@@ -175,7 +202,7 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
         return [
             // 'Report' => new PolicyImport(), // Replace 'Sheet1' with your sheet's name
             // 0 => new PolicyImport(),
-            0 => new ExcelImport(),
+            0 => new ExcelImport($this->batch->total_records),
         ];
     }
 
@@ -183,7 +210,9 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
     {
         return [
             AfterImport::class => function (AfterImport $event) {
-                Log::channel('database')->info('Excel import completed successfully.', ['type' => 'excel_import', 'import_completed' => true]);
+                // Log::channel('database')->info('Excel import completed successfully.', ['type' => 'excel_import', 'import_completed' => true]);
+                $failedRecordsCount = BatchError::where('batch_id', $this->batch->id)->count();
+                $this->batch->update(['failed_records' => $failedRecordsCount]);
             },
             ImportFailed::class => function (ImportFailed $event) {
                 Log::channel('database')->error('failed excel import.', ['type' => 'excel_import', 'import_completed' => true]);

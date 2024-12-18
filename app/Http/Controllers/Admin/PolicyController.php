@@ -44,7 +44,7 @@ class PolicyController extends Controller
 
         $filter = [
             'search' => $request->search,
-            
+
             'date_type' => $request->date_type,
             'from_date' => $from_date,
             'to_date' => $to_date,
@@ -458,8 +458,14 @@ class PolicyController extends Controller
 
             $error_logs = ErrorLog::where('type', 'excel_import')->delete();
 
+            $filePath = $file->getRealPath();
+            $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReaderForFile($filePath);
+            $spreadsheet = $reader->load($filePath);
+            $sheet = $spreadsheet->getActiveSheet();
+            $totalRows = $sheet->getHighestRow();
+
             if ($type == "1") {
-                Excel::queueImport(new ExcelImport, $file);
+                Excel::queueImport(new ExcelImport($totalRows), $file);
             }
 
             // Session::put('excel_import', true);
