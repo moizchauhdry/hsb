@@ -60,8 +60,8 @@ const edit = (id) => {
                                     <tr>
                                         <th style="min-width: 50px;">SR.</th>
                                         <th style="min-width: 250px;">Client Name</th>
-                                        <th>Policies</th>
-                                        <th>Claims</th>
+                                        <th style="min-width: 80px;">Policies</th>
+                                        <th style="min-width: 80px;">Claims</th>
                                         <th style="min-width: 200px;">Insurers</th>
                                         <th style="min-width: 200px;">Class of Business</th>
                                         <th style="min-width: 180px;">Created At</th>
@@ -101,7 +101,7 @@ const edit = (id) => {
                                             <td>{{ user.user_created_at }}</td>
                                             <td>
                                                 <IconButton @click="edit(user.user_id)" title="Edit">
-                                                    <i class="bx bx-edit" style="font-size: 16px;"></i>
+                                                    <i class="bx bx-edit bx-text-md"></i>
                                                 </IconButton>
                                             </td>
                                         </tr>
