@@ -31,6 +31,8 @@ class DatabaseHandler extends AbstractProcessingHandler
         $user_id = auth()->check() ? auth()->id() : 0;
         $type = $record->context['type'] ?? 'default';
         $import_completed = $record->context['import_completed'] ?? false;
+        // $row_data = $record->context['row_data'] ?? '';
+        // $error = $record->context['error'] ?? '';
 
         try {
             DB::table('error_logs')->insert([
