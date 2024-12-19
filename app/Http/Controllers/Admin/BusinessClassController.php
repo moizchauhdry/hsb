@@ -31,8 +31,10 @@ class BusinessClassController extends Controller
             ->join('groups as g', 'g.id', 'cob.group_id')
             ->orderBy('cob.id', 'desc')
             ->when($filter['search'], function ($q) use ($filter) {
-                $q->where('id', $filter['search']);
-                $q->orWhere('class_name', 'LIKE', '%' . $filter['search'] . '%');
+                $q->where('cob.code', $filter['search'])
+                    ->orWhere('cob.class_name', 'LIKE', '%' . $filter['search'] . '%')
+                    ->orWhere('d.name', 'LIKE', '%' . $filter['search'] . '%')
+                    ->orWhere('g.name', 'LIKE', '%' . $filter['search'] . '%');
             })
             ->paginate(10)
             ->withQueryString();
@@ -58,10 +60,12 @@ class BusinessClassController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request->all());
+
         $request->validate([
             'class_name' => ['required', 'string', 'min:3', 'max:50'],
             'percentage' => ['required'],
-            'insurance_id*' => ['required'],
+            'insurance_id' => ['required'],
             'department_id' => ['required'],
         ]);
 
@@ -88,7 +92,7 @@ class BusinessClassController extends Controller
 
     public function edit($id)
     {
-        $business_cls = BusinessClass::with('businessInsurance')->where('id', $id)->first();
+        $cob = BusinessClass::with('businessInsurance')->where('id', $id)->first();
         $insurances = Insurance::select('id as value', 'name as label')->get()->toArray();
         $departments = Department::select('id', 'name')->get()->toArray();
         $selected_insurers = BusinessClassInsurance::query()
@@ -100,7 +104,7 @@ class BusinessClassController extends Controller
         $data = [
             'insurances' => $insurances,
             'departments' => $departments,
-            'business_cls' => $business_cls,
+            'cob' => $cob,
             'selected_insurers' => $selected_insurers,
         ];
 

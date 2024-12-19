@@ -7,18 +7,12 @@ import { ref } from "vue";
 import Paginate from "@/Components/Paginate.vue";
 import SuccessButton from "@/Components/SuccessButton.vue";
 import IconButton from "@/Components/IconButton.vue";
+import Search from "@/Components/Search.vue";
 
 defineProps({
     cobs: Array,
     businessClass: Object,
 });
-
-const create_edit_ref = ref(null);
-const edit = (id) => {
-    create_edit_ref.value.edit(id)
-};
-
-
 
 const search_form = useForm({
     search: ""
@@ -35,6 +29,12 @@ const search = () => {
         },
         onFinish: () => { },
     });
+};
+
+
+const cob_create_edit_ref = ref(null);
+const edit = (id) => {
+    cob_create_edit_ref.value.edit(id)
 };
 
 
@@ -61,31 +61,16 @@ const search = () => {
                             </ol>
                         </nav>
                     </div>
+                    <div class="ms-auto">
+                        <CreateEdit ref="cob_create_edit_ref" v-bind="$props"></CreateEdit>
+                    </div>
                 </div>
 
                 <div class="card">
+                    <div class="card-header">
+                        <Search :route_name="route('cob.index')" />
+                    </div>
                     <div class="card-body">
-                        <form @submit.prevent="search">
-                            <div class="row mb-3">
-                                <div class="col-md-3">
-                                    <input type="text" v-model="search_form.search" class="form-control"
-                                        placeholder="Search">
-                                </div>
-                                <div class="col-md-3">
-                                    <SuccessButton class="px-4 py-1" :class="{ 'opacity-25': search_form.processing }"
-                                        :disabled="search_form.processing">
-                                        Search
-                                    </SuccessButton>
-                                </div>
-                            </div>
-                        </form>
-
-                        <div class="d-lg-flex align-items-center mb-4 gap-3">
-                            <div class="ms-auto">
-                                <CreateEdit v-bind="$props" ref="create_edit_ref"></CreateEdit>
-                            </div>
-                        </div>
-
                         <div class="table-responsive">
                             <table class="table mb-0">
                                 <thead class="table-light">
@@ -107,9 +92,9 @@ const search = () => {
                                             <td><span class="badge bg-secondary">{{ cob.group_name }}</span></td>
                                             <td>{{ cob.created_at }}</td>
                                             <td>
-                                                <IconButton type="button" @click="edit(cob.cob_id)" title="Edit"
-                                                    data-bs-toggle="modal" data-bs-target="#exampleLargeModal"><i
-                                                        class="bx bx-edit bx-text-md"></i></IconButton>
+                                                <IconButton @click="edit(cob.cob_id)" title="Edit">
+                                                    <i class="bx bx-edit bx-text-md"></i>
+                                                </IconButton>
                                             </td>
                                         </tr>
                                     </template>
