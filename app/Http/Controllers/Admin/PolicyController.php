@@ -4,28 +4,29 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
 use Inertia\Inertia;
+use App\Models\Batch;
 use App\Models\Agency;
 use App\Models\Policy;
+use App\Models\ErrorLog;
 use App\Models\Insurance;
 use Illuminate\Http\File;
 use App\Models\Department;
 use App\Models\PolicyNote;
 use App\Models\PolicyClaim;
+use App\Imports\ExcelImport;
 use App\Models\PolicyUpload;
 use Illuminate\Http\Request;
 use App\Models\BusinessClass;
 use Illuminate\Support\Carbon;
 use App\Models\PolicyClaimNote;
 use App\Models\PolicyClaimUpload;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Imports\ExcelImport;
-use App\Models\ErrorLog;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\PolicyInstallmentPlan;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Session;
 
 class PolicyController extends Controller
 {
@@ -458,14 +459,19 @@ class PolicyController extends Controller
 
             $error_logs = ErrorLog::where('type', 'excel_import')->delete();
 
-            $filePath = $file->getRealPath();
-            $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReaderForFile($filePath);
+            $filePath    = $file->getRealPath();
+            $reader      = \PhpOffice\PhpSpreadsheet\IOFactory::createReaderForFile($filePath);
             $spreadsheet = $reader->load($filePath);
-            $sheet = $spreadsheet->getActiveSheet();
-            $totalRows = $sheet->getHighestRow();
+            $sheet       = $spreadsheet->getActiveSheet();
+            $totalRows   = $sheet->getHighestRow();
+
+            $batch = Batch::create([
+                'total_records' => $totalRows,
+                'failed_records' => 0,
+            ]);
 
             if ($type == "1") {
-                Excel::queueImport(new ExcelImport($totalRows), $file);
+                Excel::queueImport(new ExcelImport($batch->id, $totalRows), $file);
             }
 
             // Session::put('excel_import', true);
