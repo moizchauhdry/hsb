@@ -30,7 +30,7 @@ use Illuminate\Support\Facades\Session;
 class PolicyController extends Controller
 {
     public function index(Request $request)
-    {
+    {        
         $page_count = $request->page_count ?? 10;
 
         if (is_array($request->date_value)) {

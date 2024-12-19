@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Agency;
 use App\Models\BusinessClass;
+use App\Models\Department;
+use App\Models\Group;
 use App\Models\Insurance;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -88,9 +90,41 @@ class AxiosController extends Controller
         return response()->json($data);
     }
 
-    public function fetchCobsV2()
+    public function fetchDepartments()
     {
-        $cobs = BusinessClass::select('id as value', 'class_name as label')->orderBy('id', 'asc')->get();
+        $departments = Department::query()
+        ->select('id as value', 'name as label')
+        ->orderBy('id', 'asc')
+        ->get();
+        
+        $data = ['departments' => $departments];
+
+        return response()->json($data);
+    }
+    
+    public function fetchGroups(Request $request)
+    {
+        $groups = Group::query()
+        ->select('id as value', 'name as label')
+        ->whereIn('department_id', $request->department_ids)
+        ->orderBy('id', 'asc')
+        ->get()
+        ->toArray();
+        
+        $data = ['groups' => $groups];
+
+        return response()->json($data);
+    }
+
+    public function fetchCobsV2(Request $request)
+    {        
+        $cobs = BusinessClass::query()
+        ->select('id as value', 'class_name as label')
+        ->whereIn('group_id', $request->group_ids)
+        ->orderBy('id', 'asc')
+        ->get()
+        ->toArray();
+        
         $data = ['cobs' => $cobs];
 
         return response()->json($data);
