@@ -18,24 +18,27 @@ class BusinessClassController extends Controller
             'search' => $request->search,
         ];
 
-        $businessClasses = BusinessClass::orderBy('id', 'desc')
+        $cobs = BusinessClass::query()
+            ->select(
+                'cob.id as cob_id',
+                'cob.code as cob_code',
+                'cob.class_name as cob_name',
+                'd.name as department_name',
+                'g.name as group_name',
+            )
+            ->from('business_classes as cob')
+            ->join('departments as d', 'd.id', 'cob.department_id')
+            ->join('groups as g', 'g.id', 'cob.group_id')
+            ->orderBy('cob.id', 'desc')
             ->when($filter['search'], function ($q) use ($filter) {
                 $q->where('id', $filter['search']);
                 $q->orWhere('class_name', 'LIKE', '%' . $filter['search'] . '%');
             })
             ->paginate(10)
-            ->withQueryString()
-            ->through(fn ($businessClass) => [
-                'id' => $businessClass->id,
-                'code' => $businessClass->code,
-                'class_name' => $businessClass->class_name,
-                'department_name' => $businessClass->department->name ?? NULL,
-                'percentage' => $businessClass->percentage,
-                'created_at' => $businessClass->created_at->format('d-m-Y h:i A'),
-            ]);
+            ->withQueryString();
 
         return Inertia::render('BusinessClass/Index', [
-            'businessClasses' => $businessClasses,
+            'cobs' => $cobs,
             'businessClass' => NULL,
         ]);
     }

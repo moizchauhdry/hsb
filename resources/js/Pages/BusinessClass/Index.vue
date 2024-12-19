@@ -6,9 +6,10 @@ import CreateEdit from "./CreateUpdate.vue";
 import { ref } from "vue";
 import Paginate from "@/Components/Paginate.vue";
 import SuccessButton from "@/Components/SuccessButton.vue";
+import IconButton from "@/Components/IconButton.vue";
 
 defineProps({
-    businessClasses: Array,
+    cobs: Array,
     businessClass: Object,
 });
 
@@ -89,32 +90,26 @@ const search = () => {
                             <table class="table mb-0">
                                 <thead class="table-light">
                                     <tr class="text-uppercase">
-                                        <th>Sr.No.</th>
-                                        <th>COB Code</th>
+                                        <th>Sr.</th>
                                         <th>Class Name</th>
                                         <th>Department</th>
-                                        <th>Percentage</th>
+                                        <th>Group</th>
                                         <th>Created Date</th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <template v-for="(cls, index) in businessClasses.data" :key="cls.id">
+                                    <template v-for="(cob, index) in cobs.data" :key="cob.id">
                                         <tr>
-                                            <td>{{ (businessClasses.current_page - 1) * businessClasses.per_page + index
-                                                + 1 }}</td>
+                                            <td>{{ (cobs.current_page - 1) * cobs.per_page + index + 1 }}</td>
+                                            <td><span :title="cob.cob_code">{{ cob.cob_name }}</span></td>
+                                            <td><span class="badge bg-secondary">{{ cob.department_name }}</span></td>
+                                            <td><span class="badge bg-secondary">{{ cob.group_name }}</span></td>
+                                            <td>{{ cob.created_at }}</td>
                                             <td>
-                                                {{ cls.code }}
-                                            </td>
-                                            <td>{{ cls.class_name }}</td>
-                                            <td>{{ cls.department_name }}</td>
-                                            <td>{{ cls.percentage }}</td>
-                                            <td>{{ cls.created_at }}</td>
-                                            <td>
-                                                <button type="button" @click="edit(cls.id)" title="Edit"
-                                                    data-bs-toggle="modal" data-bs-target="#exampleLargeModal"
-                                                    class="btn btn-primary btn-sm radius-30"><i
-                                                        class="bx bx-edit"></i></button>
+                                                <IconButton type="button" @click="edit(cob.cob_id)" title="Edit"
+                                                    data-bs-toggle="modal" data-bs-target="#exampleLargeModal"><i
+                                                        class="bx bx-edit bx-text-md"></i></IconButton>
                                             </td>
                                         </tr>
                                     </template>
@@ -124,7 +119,7 @@ const search = () => {
                     </div>
                     <div class="card-footer">
                         <div class="float-right">
-                            <Paginate :links="businessClasses.links" :scroll="true" />
+                            <Paginate :links="cobs.links" :scroll="true" />
                         </div>
                     </div>
                 </div>
