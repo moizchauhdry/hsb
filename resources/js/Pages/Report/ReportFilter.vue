@@ -48,19 +48,36 @@ const fetchAgencies = () => {
         });
 };
 
-const cobs = ref([]);
-const fetchCobs = () => {
-    axios.get(`/axios/fetch/cobs/v2`)
-        .then(({ data }) => {
-            cobs.value = data.cobs;
-        });
-};
 
 const insurers = ref([]);
 const fetchInsurers = () => {
     axios.get(`/axios/fetch/insurers`)
         .then(({ data }) => {
             insurers.value = data.insurers;
+        });
+};
+
+const departments = ref([]);
+const fetchDepartments = () => {
+    axios.get(`/axios/fetch/departments`)
+        .then(({ data }) => {
+            departments.value = data.departments;
+        });
+};
+
+const groups = ref([]);
+const fetchGroups = (department_ids) => {
+    axios.post(`/axios/fetch/groups`, { department_ids: department_ids })
+        .then(({ data }) => {
+            groups.value = data.groups;
+        });
+};
+
+const cobs = ref([]);
+const fetchCobs = (group_ids) => {
+    axios.post(`/axios/fetch/cobs/v2`, { group_ids: group_ids })
+        .then(({ data }) => {
+            cobs.value = data.cobs;
         });
 };
 
@@ -73,8 +90,10 @@ const form = useForm({
     policy_type: [],
     client: [],
     agency: [],
-    cob: [],
     insurer: [],
+    department: [],
+    group: [],
+    cob: [],
 });
 
 const create = () => {
@@ -84,8 +103,8 @@ const create = () => {
     fetchPolicyTypes();
     fetchClients();
     fetchAgencies();
-    fetchCobs();
     fetchInsurers();
+    fetchDepartments();
 
     saved_filters = localStorage.getItem('filters');
 
@@ -155,6 +174,18 @@ const format_date = (date) => {
     return formattedDate;
 }
 
+watch(() => form.department, (new_department) => {
+    if (new_department && new_department.length > 0) {
+        fetchGroups(form.department);
+    }
+});
+
+watch(() => form.group, (new_group) => {
+    if (new_group && new_group.length > 0) {
+        fetchCobs(form.group);
+    }
+});
+
 </script>
 
 <template>
@@ -185,8 +216,11 @@ const format_date = (date) => {
 
                         <div class="col-md-6" v-if="form.date_type">
                             <InputLabel for="" :value="form.date_type" class="mb-1 uppercase" />
-                            <VueDatePicker v-model="form.date_value" range :enable-time-picker="false" :show-time="false"></VueDatePicker>
+                            <VueDatePicker v-model="form.date_value" range :enable-time-picker="false"
+                                :show-time="false"></VueDatePicker>
                         </div>
+
+                        <hr style="margin-top: 30px">
 
                         <div class="col-md-6">
                             <InputLabel for="" value="Policy Type" class="mb-1" />
@@ -197,8 +231,7 @@ const format_date = (date) => {
 
                         <div class="col-md-6">
                             <InputLabel for="" value="Insurer" class="mb-1" />
-                            <Multiselect v-model="form.insurer" :options="insurers" :searchable="true"
-                                mode="tags">
+                            <Multiselect v-model="form.insurer" :options="insurers" :searchable="true" mode="tags">
                             </Multiselect>
                         </div>
 
@@ -211,6 +244,21 @@ const format_date = (date) => {
                         <div class="col-md-12">
                             <InputLabel for="" value="Client" class="mb-1" />
                             <Multiselect v-model="form.client" :options="clients" :searchable="true" mode="tags">
+                            </Multiselect>
+                        </div>
+
+                        <hr style="margin-top: 30px">
+
+                        <div class="col-md-12">
+                            <InputLabel for="" value="Department" class="mb-1" />
+                            <Multiselect v-model="form.department" :options="departments" :searchable="true"
+                                mode="tags">
+                            </Multiselect>
+                        </div>
+
+                        <div class="col-md-12">
+                            <InputLabel for="" value="Group" class="mb-1" />
+                            <Multiselect v-model="form.group" :options="groups" :searchable="true" mode="tags">
                             </Multiselect>
                         </div>
 
