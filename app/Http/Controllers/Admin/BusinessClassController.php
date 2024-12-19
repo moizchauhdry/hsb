@@ -27,8 +27,8 @@ class BusinessClassController extends Controller
                 'g.name as group_name',
             )
             ->from('business_classes as cob')
-            ->join('departments as d', 'd.id', 'cob.department_id')
-            ->join('groups as g', 'g.id', 'cob.group_id')
+            ->leftJoin('departments as d', 'd.id', 'cob.department_id')
+            ->leftJoin('groups as g', 'g.id', 'cob.group_id')
             ->orderBy('cob.id', 'desc')
             ->when($filter['search'], function ($q) use ($filter) {
                 $q->where('cob.code', $filter['search'])
