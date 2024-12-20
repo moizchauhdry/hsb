@@ -45,12 +45,12 @@ class ClientController extends Controller
                 'users.created_at as user_created_at',
                 DB::raw('COUNT(DISTINCT p.id) as policy_count'),
                 DB::raw('COUNT(DISTINCT policy_claims.id) as policy_claim_count'),
-                DB::raw('GROUP_CONCAT(DISTINCT business_classes.class_name SEPARATOR ", ") as cobs'),
+                DB::raw('GROUP_CONCAT(DISTINCT cob.class_name SEPARATOR ", ") as cobs'),
                 DB::raw('GROUP_CONCAT(DISTINCT insurances.name SEPARATOR ", ") as insurers'),
             ])
             ->leftJoin('policies as p', 'users.id', '=', 'p.client_id')
             ->leftJoin('policy_claims', 'policy_claims.policy_id', '=', 'p.id')
-            ->leftJoin('business_classes', 'p.cob_id', '=', 'business_classes.id')
+            ->leftJoin('business_classes as cob', 'p.cob_id', '=', 'cob.id')
             ->leftJoin('insurances', 'p.insurer_id', '=', 'insurances.id')
             ->role('client')
             ->groupBy('users.id', 'users.name', 'users.email', 'users.code', 'users.created_at')
