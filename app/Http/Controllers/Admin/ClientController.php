@@ -96,6 +96,16 @@ class ClientController extends Controller
                 $cobs = is_array($filter['cob']) ? $filter['cob'] : explode(',', $filter['cob']);
                 $q->whereIn('p.cob_id', $cobs);
             });
+
+            $query->when($filter['department'], function ($q) use ($filter) {
+                $departments = is_array($filter['department']) ? $filter['department'] : explode(',', $filter['department']);
+                $q->whereIn('cob.department_id', $departments);
+            });
+            
+            $query->when($filter['group'], function ($q) use ($filter) {
+                $groups = is_array($filter['group']) ? $filter['group'] : explode(',', $filter['group']);
+                $q->whereIn('cob.group_id', $groups);
+            });
         }
 
         $users = $query->paginate($page_count)->withQueryString();
