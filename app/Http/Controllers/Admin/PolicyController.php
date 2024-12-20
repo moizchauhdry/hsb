@@ -24,6 +24,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Models\PolicyInstallmentPlan;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
@@ -33,68 +34,45 @@ class PolicyController extends Controller
     {        
         $page_count = $request->page_count ?? 10;
 
-        if (is_array($request->date_value)) {
-            $from_date = isset($request->date_value[0]) ? Carbon::parse($request->date_value[0])->format("Y-m-d") : NULL;
-            $to_date = isset($request->date_value[1]) ? Carbon::parse($request->date_value[1])->format("Y-m-d") : NULL;
-        } else {
-            $date_value = explode(',', $request->date_value);
-            $from_date = isset($date_value[0]) ? Carbon::parse($date_value[0])->format("Y-m-d") : NULL;
-            $to_date = isset($date_value[1]) ? Carbon::parse($date_value[1])->format("Y-m-d") : NULL;
-        }
-
         $filter = [
             'search' => $request->search,
-            
+
             'date_type' => $request->date_type,
-            'from_date' => $from_date,
-            'to_date' => $to_date,
+            'from_date' => $request->from_date,
+            'to_date' => $request->to_date,
 
             'policy_type' => $request->policy_type,
             'client' => $request->client,
             'agency' => $request->agency,
             'insurer' => $request->insurer,
             'cob' => $request->cob,
+            'department' => $request->department,
+            'group' => $request->group,
         ];
 
-        $policies = Policy::select('p.*')
+        $policies = Policy::query()
+            ->select(
+                'p.id as p_id',
+                'p.policy_no as policy_no',
+                'p.client_id as client_id',
+                'p.policy_period_end as expiry_date',
+                'client.name as client_name',
+                'agency.name as agency_name',
+                'cob.class_name as cob_name',
+                DB::raw('COUNT(DISTINCT pc.id) as claim_count'),
+            )
             ->policiesList($filter)
             ->when($filter['search'], function ($q) use ($filter) {
                 $q->where('p.id', $filter['search']);
                 $q->orWhere('p.policy_no', "LIKE", "%" . $filter['search'] . "%");
             })
+            ->groupBy('p.id')
             ->paginate($page_count)
-            ->withQueryString()
-            ->through(fn($policy) => [
-                'id' => $policy->id,
-                'data' => $policy,
-                'client_name' => getClientName($policy->client_id),
-                'insurer_name' => $policy->insurer->name ?? null,
-                'agency_name' => $policy->agency->name ?? null,
-                'department_name' => $policy->department->name ?? null,
-                'cob_name' => $policy->cob->class_name ?? null,
-                'date_of_issuance' => dateFormat($policy->date_of_issuance),
-                'policy_period_start' => dateFormat($policy->policy_period_start),
-                'policy_period_end' => dateFormat($policy->policy_period_end),
-
-            ]);
-
-
-        $clients = User::role('client')->get();
-        $insurers = Insurance::get();
-        $agencies = Agency::get();
-        $cobs = BusinessClass::get();
-
-        $data = [
-            'clients' => $clients,
-            'insurers' => $insurers,
-            'agencies' => $agencies,
-            'cobs' => $cobs,
-        ];
+            ->withQueryString();
 
         return Inertia::render('Policy/Index', [
             'policies' => $policies,
             'filter' => $filter,
-            'data' => $data,
         ]);
     }
 

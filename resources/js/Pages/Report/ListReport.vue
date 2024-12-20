@@ -7,13 +7,10 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SuccessButton from "@/Components/SuccessButton.vue";
 import Paginate from "@/Components/Paginate.vue";
 
-// const role = usePage().props.auth.user.roles[0];
-// const permission = usePage().props.can;
 const slug = usePage().props.slug;
 
 defineProps({
     policies: Array,
-    data: Array,
     filter: Array,
     grand_total: Array,
 });
@@ -57,8 +54,9 @@ const exportExcel = () => {
                     </div>
 
                     <div class="ms-auto">
-                        <ReportFilter v-bind="$props" :filter_route="'report'"></ReportFilter>
-                        <SuccessButton @click="exportExcel"><i class="bx bx-export text-lg mr-1"></i> Excel Export</SuccessButton>
+                        <ReportFilter :filter_route="'report'"></ReportFilter>
+                        <SuccessButton @click="exportExcel"><i class="bx bx-export text-lg mr-1"></i> Excel Export
+                        </SuccessButton>
                     </div>
                 </div>
 
@@ -120,8 +118,7 @@ const exportExcel = () => {
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-bordered table-sm text-uppercase"
-                                style="font-size:12px">
+                            <table class="table table-bordered table-sm text-uppercase" style="font-size:12px">
                                 <thead class="table-light">
                                     <tr>
                                         <th class="px-2">Sr #</th>
@@ -168,7 +165,8 @@ const exportExcel = () => {
                                 <tbody>
                                     <template v-for="(policy, index) in policies.data">
                                         <tr>
-                                            <td class="px-2">{{ (policies.current_page - 1) * policies.per_page + index + 1 }}</td>
+                                            <td class="px-2">{{ (policies.current_page - 1) * policies.per_page + index
+                                                + 1 }}</td>
                                             <td class="px-2">{{ policy?.data?.policy_no }}</td>
                                             <td class="px-2">{{ policy.client_name }}</td>
                                             <td class="px-2">{{ policy.insurer_name }}</td>
@@ -177,20 +175,25 @@ const exportExcel = () => {
                                             <td class="px-2">{{ policy?.data?.policy_type }}</td>
 
                                             <template v-if="slug == 'renewal' || slug == 'outstanding'">
-                                                <td :class="{ 'bg-info': filter['date_type'] === 'policy_period_start' }" class="px-2">{{ policy?.data?.policy_period_start }}</td>
-                                                <td :class="{ 'bg-info': filter['date_type'] === 'policy_period_end' }" class="px-2">{{ policy?.data?.policy_period_end }}</td>
-                                                <td :class="{ 'bg-info': filter['date_type'] === 'date_of_issuance' }" class="px-2">{{ policy?.data?.date_of_issuance }}</td>
+                                                <td :class="{ 'bg-info': filter['date_type'] === 'policy_period_start' }"
+                                                    class="px-2">{{ policy?.data?.policy_period_start }}</td>
+                                                <td :class="{ 'bg-info': filter['date_type'] === 'policy_period_end' }"
+                                                    class="px-2">{{ policy?.data?.policy_period_end }}</td>
+                                                <td :class="{ 'bg-info': filter['date_type'] === 'date_of_issuance' }"
+                                                    class="px-2">{{ policy?.data?.date_of_issuance }}</td>
                                             </template>
 
                                             <template
                                                 v-if="slug == 'commission-recovery' || slug == 'commission-outstanding-recovery'">
-                                                <td class="px-2">{{ format_number(policy?.data?.brokerage_amount) }}</td>
+                                                <td class="px-2">{{ format_number(policy?.data?.brokerage_amount) }}
+                                                </td>
                                                 <td class="px-2">{{ policy?.data?.brokerage_paid_date }}</td>
                                             </template>
 
                                             <template v-if="slug == 'commission-recovery'">
                                                 <td class="px-2">{{ policy?.data?.brokerage_percentage }}%</td>
-                                                <td class="px-2">{{ format_number(policy?.data?.brokerage_received_amount) }}</td>
+                                                <td class="px-2">{{
+                                                    format_number(policy?.data?.brokerage_received_amount) }}</td>
                                                 <td class="px-2">{{ policy?.data?.brokerage_status }}</td>
                                             </template>
 
@@ -200,12 +203,14 @@ const exportExcel = () => {
 
                                             <td class="px-2">{{ format_number(policy?.data?.sum_insured) }}</td>
                                             <td class="px-2">{{ format_number(policy?.data?.gross_premium) }}</td>
-                                            
+
                                             <template v-if="slug == 'outstanding'">
-                                                <td class="px-2">{{ format_number(policy?.data?.gross_premium_received) }}</td>
-                                                <td class="px-2">{{ format_number(policy?.data?.gross_premium_outstanding) }}</td>
+                                                <td class="px-2">{{ format_number(policy?.data?.gross_premium_received)
+                                                    }}</td>
+                                                <td class="px-2">{{
+                                                    format_number(policy?.data?.gross_premium_outstanding) }}</td>
                                             </template>
-                                            
+
                                             <td class="px-2">{{ format_number(policy?.data?.net_premium) }}</td>
                                         </tr>
                                     </template>
