@@ -11,9 +11,9 @@ import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import Multiselect from "@vueform/multiselect";
 import DarkButton from "@/Components/DarkButton.vue";
+import moment from 'moment';
 
 const props = defineProps({
-    data: Array,
     filter_route: {
         type: String,
         required: true
@@ -86,7 +86,8 @@ var saved_filters = "";
 const form = useForm({
     date_type: "",
     date_value: "",
-
+    from_date: "",
+    to_date: "",
     policy_type: [],
     client: [],
     agency: [],
@@ -107,17 +108,21 @@ const create = () => {
     fetchDepartments();
 
     saved_filters = localStorage.getItem('filters');
-
     if (saved_filters) {
         saved_filters = JSON.parse(saved_filters);
         form.date_type = saved_filters.date_type
         form.date_value = saved_filters.date_value
 
+        form.from_date = saved_filters.from_date
+        form.to_date = saved_filters.to_date
+
         form.policy_type = saved_filters.policy_type
         form.client = saved_filters.client
         form.agency = saved_filters.agency
-        form.cob = saved_filters.cob
         form.insurer = saved_filters.insurer
+        form.cob = saved_filters.cob
+        form.department = saved_filters.department
+        form.group = saved_filters.group
     }
 };
 
@@ -126,11 +131,16 @@ const submit = () => {
         date_type: form.date_type,
         date_value: form.date_value,
 
+        from_date: form.from_date,
+        to_date: form.to_date,
+
         policy_type: form.policy_type,
         client: form.client,
         agency: form.agency,
-        cob: form.cob,
         insurer: form.insurer,
+        cob: form.cob,
+        department: form.department,
+        group: form.group,
     };
 
     const queryParams = new URLSearchParams(filters).toString();
@@ -169,7 +179,6 @@ const closeModal = () => {
 
 const format_date = (date) => {
     let parsedDate = moment(date);
-    // let newDate = parsedDate.add(5, 'hours');
     let formattedDate = parsedDate.format('YYYY-MM-DD');
     return formattedDate;
 }
@@ -183,6 +192,16 @@ watch(() => form.department, (new_department) => {
 watch(() => form.group, (new_group) => {
     if (new_group && new_group.length > 0) {
         fetchCobs(form.group);
+    }
+});
+
+watch(() => form.date_value, (newValue) => {
+    if (form.date_value != null) {
+        form.from_date = format_date(form.date_value[0]);
+        form.to_date = format_date(form.date_value[1]);
+    } else {
+        form.from_date = "";
+        form.to_date = "";
     }
 });
 

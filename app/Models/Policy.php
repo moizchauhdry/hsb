@@ -77,6 +77,8 @@ class Policy extends Model
         $query->leftJoin('users as client', 'client.id', '=', 'p.client_id');
         $query->leftJoin('agencies as agency', 'agency.id', '=', 'p.agency_id');
         $query->leftJoin('business_classes as cob', 'cob.id', '=', 'p.cob_id');
+        $query->leftJoin('departments as d', 'd.id', '=', 'cob.department_id');
+        $query->leftJoin('groups as g', 'g.id', '=', 'cob.group_id');
 
         if ($filter) {
             $query->when($filter['date_type'], function ($q) use ($filter) {
@@ -120,6 +122,16 @@ class Policy extends Model
             $query->when($filter['cob'], function ($q) use ($filter) {
                 $cobs = is_array($filter['cob']) ? $filter['cob'] : explode(',', $filter['cob']);
                 $q->whereIn('p.cob_id', $cobs);
+            });
+            
+            $query->when($filter['department'], function ($q) use ($filter) {
+                $departments = is_array($filter['department']) ? $filter['department'] : explode(',', $filter['department']);
+                $q->whereIn('cob.department_id', $departments);
+            });
+            
+            $query->when($filter['group'], function ($q) use ($filter) {
+                $groups = is_array($filter['group']) ? $filter['group'] : explode(',', $filter['group']);
+                $q->whereIn('cob.group_id', $groups);
             });
         }
 

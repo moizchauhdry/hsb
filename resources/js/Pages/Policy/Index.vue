@@ -83,7 +83,7 @@ const confirmDelete = (policyId) => {
                     <div class="ms-auto" style="display: flex; justify-content: space-between; align-items: center;">
                         <CreateEdit v-bind="$props" ref="create_edit_ref"></CreateEdit>
                         <Import v-bind="$props" v-if="permission.excel_import"></Import>
-                        <ReportFilter v-bind="$props" :filter_route="'policy'"></ReportFilter>
+                        <ReportFilter :filter_route="'policy'"></ReportFilter>
                     </div>
                 </div>
 
