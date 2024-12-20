@@ -86,8 +86,10 @@ var saved_filters = "";
 const form = useForm({
     date_type: "",
     date_value: "",
+
     from_date: "",
     to_date: "",
+    
     policy_type: [],
     client: [],
     agency: [],
@@ -110,6 +112,7 @@ const create = () => {
     saved_filters = localStorage.getItem('filters');
     if (saved_filters) {
         saved_filters = JSON.parse(saved_filters);
+
         form.date_type = saved_filters.date_type
         form.date_value = saved_filters.date_value
 

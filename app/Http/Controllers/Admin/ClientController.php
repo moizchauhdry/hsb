@@ -19,26 +19,14 @@ class ClientController extends Controller
 {
     public function index(Request $request)
     {
-        try {
-            if (is_array($request->date_value)) {
-                $from_date = isset($request->date_value[0]) ? Carbon::parse($request->date_value[0])->format("Y-m-d") : NULL;
-                $to_date = isset($request->date_value[1]) ? Carbon::parse($request->date_value[1])->format("Y-m-d") : NULL;
-            } else {
-                $date_value = explode(',', $request->date_value);
-                $from_date = isset($date_value[0]) ? Carbon::parse($date_value[0])->format("Y-m-d") : NULL;
-                $to_date = isset($date_value[1]) ? Carbon::parse($date_value[1])->format("Y-m-d") : NULL;
-            }
-        } catch (\Throwable $th) {
-            //throw $th;
-        }
+        $page_count = $request->page_count ?? 10;
 
         $filter = [
             'search' => $request->search ?? "",
-            'page_count' => $request->page_count ?? "",
 
             'date_type' => $request->date_type ?? "",
-            'from_date' => $from_date ?? "",
-            'to_date' => $to_date ?? "",
+            'from_date' => $request->from_date ?? "",
+            'to_date' => $request->to_date ?? "",
 
             'policy_type' => $request->policy_type ?? "",
             'client' => $request->client ?? "",
@@ -75,9 +63,13 @@ class ClientController extends Controller
                     ->orWhere('users.email', 'LIKE', '%' . $filter['search'] . '%');
             });
 
-            $query->when(!empty($filter['date_type']) && !empty($filter['from_date']) && !empty($filter['to_date']), function ($q) use ($filter) {
-                $q->where('p.' . $filter['date_type'], ">=", $filter['from_date']);
-                $q->where('p.' . $filter['date_type'], "<=", $filter['to_date']);
+            $query->when($filter['date_type'], function ($q) use ($filter) {
+                if ($filter['from_date']) {
+                    $q->where('p.' . $filter['date_type'], ">=", $filter['from_date']);
+                }
+                if ($filter['to_date']) {
+                    $q->where('p.' . $filter['date_type'], "<=", $filter['to_date']);
+                }
             });
 
             $query->when($filter['policy_type'], function ($q) use ($filter) {
@@ -106,8 +98,7 @@ class ClientController extends Controller
             });
         }
 
-        $users = $query->paginate($filter['page_count'])
-            ->withQueryString();
+        $users = $query->paginate($page_count)->withQueryString();
 
         $roles = Role::select('id', 'name')->get();
 
