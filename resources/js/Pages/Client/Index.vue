@@ -6,10 +6,12 @@ import Paginate from "@/Components/Paginate.vue";
 import Search from "@/Components/Search.vue";
 import CreateEdit from "./CreateEdit.vue";
 import IconButton from "@/Components/IconButton.vue";
+import Filter from "./Filter.vue";
 
-defineProps({
+const props = defineProps({
     users: Object,
     roles: Object,
+    filter: Array,
 });
 
 
@@ -18,6 +20,24 @@ const edit = (id) => {
     user_create_edit_ref.value.edit(id)
 };
 
+
+const generateFilterUrl = (client_id) => {
+    var filters = {
+        client: client_id,
+        date_type: props.filter['date_type'],
+        from_date: props.filter['from_date'],
+        to_date: props.filter['to_date'],
+        policy_type: props.filter['policy_type'],
+        agency: props.filter['agency'],
+        insurer: props.filter['insurer'],
+        department: props.filter['department'],
+        group: props.filter['group'],
+        cob: props.filter['cob'],
+    };
+
+    const queryParams = new URLSearchParams(filters).toString();
+    return `${route("policy.index")}?${queryParams}`;
+};
 </script>
 
 
@@ -44,6 +64,7 @@ const edit = (id) => {
                     </div>
                     <div class="ms-auto">
                         <CreateEdit ref="user_create_edit_ref" v-bind="$props"></CreateEdit>
+                        <Filter></Filter>
                     </div>
                 </div>
 
@@ -74,8 +95,7 @@ const edit = (id) => {
                                             <td>{{ (users.current_page - 1) * users.per_page + index + 1 }}</td>
                                             <td>{{ user.user_name }}</td>
                                             <td>
-                                                <a :href="`${route('policy.index')}?client=${user.user_id}`"
-                                                    target="_blank">
+                                                <a :href="generateFilterUrl(user.user_id)" target="_blank">
                                                     <span class="badge bg-dark">
                                                         {{ user.policy_count }} <i class="bx bx-link-external"></i>
                                                     </span>
@@ -85,7 +105,8 @@ const edit = (id) => {
                                                 <a :href="`${route('claim.index')}?client=${user.user_id}`"
                                                     target="_blank">
                                                     <span class="badge bg-dark">
-                                                        {{ user.policy_claim_count }} <i class="bx bx-link-external"></i>
+                                                        {{ user.policy_claim_count }} <i
+                                                            class="bx bx-link-external"></i>
                                                     </span>
                                                 </a>
                                             </td>
