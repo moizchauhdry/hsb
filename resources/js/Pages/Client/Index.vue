@@ -83,8 +83,8 @@ const generateFilterUrl = (client_id) => {
                                         <th style="min-width: 250px;">Client Name</th>
                                         <th style="min-width: 80px;">Policies</th>
                                         <th style="min-width: 80px;">Claims</th>
-                                        <th style="min-width: 200px;">Insurers</th>
                                         <th style="min-width: 200px;">Class of Business</th>
+                                        <th style="min-width: 200px;">Insurers</th>
                                         <th style="min-width: 180px;">Created At</th>
                                         <th>Action</th>
                                     </tr>
