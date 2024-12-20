@@ -66,7 +66,7 @@ class PolicyController extends Controller
                 $q->where('p.id', $filter['search']);
                 $q->orWhere('p.policy_no', "LIKE", "%" . $filter['search'] . "%");
             })
-            ->groupBy('p.id')
+            ->groupBy('p.id','p.policy_no')
             ->paginate($page_count)
             ->withQueryString();
 
