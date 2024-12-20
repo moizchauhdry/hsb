@@ -81,7 +81,7 @@ class Policy extends Model
         $query->leftJoin('groups as g', 'g.id', '=', 'cob.group_id');
 
         if ($filter) {
-            $query->when($filter['date_type'], function ($q) use ($filter) {
+            $query->when(!empty($filter['date_type']), function ($q) use ($filter) {
                 if ($filter['from_date']) {
                     $q->where('p.' . $filter['date_type'], ">=", $filter['from_date']);
                 }

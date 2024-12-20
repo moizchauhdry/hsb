@@ -2,7 +2,7 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, Link, usePage, useForm } from "@inertiajs/vue3";
 import { ref } from "vue";
-import ReportFilter from "@/Pages/Report/ReportFilter.vue";
+import PolicyFilter from "@/Pages/Policy/PolicyFilter.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SuccessButton from "@/Components/SuccessButton.vue";
 import Paginate from "@/Components/Paginate.vue";
@@ -54,7 +54,7 @@ const exportExcel = () => {
                     </div>
 
                     <div class="ms-auto">
-                        <ReportFilter :filter_route="'report'"></ReportFilter>
+                        <PolicyFilter :filter_route="'report'"></PolicyFilter>
                         <SuccessButton @click="exportExcel"><i class="bx bx-export text-lg mr-1"></i> Excel Export
                         </SuccessButton>
                     </div>

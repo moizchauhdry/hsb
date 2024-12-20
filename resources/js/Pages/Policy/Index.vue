@@ -4,10 +4,10 @@ import { Inertia } from '@inertiajs/inertia'
 import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
 import CreateEdit from "./CreateEdit.vue";
 import Import from "./Import/Import.vue";
+import PolicyFilter from "./PolicyFilter.vue";
 import { ref } from "vue";
 import Paginate from "@/Components/Paginate.vue";
 import Swal from 'sweetalert2';
-import ReportFilter from "../Report/ReportFilter.vue";
 import Search from "@/Components/Search.vue";
 import IconButton from "@/Components/IconButton.vue";
 
@@ -83,7 +83,7 @@ const confirmDelete = (policyId) => {
                     <div class="ms-auto" style="display: flex; justify-content: space-between; align-items: center;">
                         <CreateEdit v-bind="$props" ref="create_edit_ref"></CreateEdit>
                         <Import v-bind="$props" v-if="permission.excel_import"></Import>
-                        <ReportFilter :filter_route="'policy'"></ReportFilter>
+                        <PolicyFilter :filter_route="'policy'"></PolicyFilter>
                     </div>
                 </div>
 
