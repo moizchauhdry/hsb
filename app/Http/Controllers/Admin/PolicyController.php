@@ -31,7 +31,7 @@ use Illuminate\Support\Facades\Session;
 class PolicyController extends Controller
 {
     public function index(Request $request)
-    {        
+    {
         $page_count = $request->page_count ?? 10;
 
         $filter = [
@@ -66,7 +66,7 @@ class PolicyController extends Controller
                 $q->where('p.id', $filter['search']);
                 $q->orWhere('p.policy_no', "LIKE", "%" . $filter['search'] . "%");
             })
-            ->groupBy('p.id','p.policy_no')
+            ->groupBy('p.id', 'p.policy_no', 'p.client_id', 'p.policy_period_end')
             ->paginate($page_count)
             ->withQueryString();
 
