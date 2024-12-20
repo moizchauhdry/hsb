@@ -8,6 +8,7 @@ use App\Models\BusinessClass;
 use App\Models\User;
 use App\Models\UserClient;
 use App\Models\UserCob;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
@@ -18,35 +19,94 @@ class ClientController extends Controller
 {
     public function index(Request $request)
     {
+        try {
+            if (is_array($request->date_value)) {
+                $from_date = isset($request->date_value[0]) ? Carbon::parse($request->date_value[0])->format("Y-m-d") : NULL;
+                $to_date = isset($request->date_value[1]) ? Carbon::parse($request->date_value[1])->format("Y-m-d") : NULL;
+            } else {
+                $date_value = explode(',', $request->date_value);
+                $from_date = isset($date_value[0]) ? Carbon::parse($date_value[0])->format("Y-m-d") : NULL;
+                $to_date = isset($date_value[1]) ? Carbon::parse($date_value[1])->format("Y-m-d") : NULL;
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+
         $filter = [
-            'search' => $request->search,
-            'page_count' => $request->page_count,
+            'search' => $request->search ?? "",
+            'page_count' => $request->page_count ?? "",
+
+            'date_type' => $request->date_type ?? "",
+            'from_date' => $from_date ?? "",
+            'to_date' => $to_date ?? "",
+
+            'policy_type' => $request->policy_type ?? "",
+            'client' => $request->client ?? "",
+            'agency' => $request->agency ?? "",
+            'insurer' => $request->insurer ?? "",
+            'department' => $request->department ?? "",
+            'group' => $request->group ?? "",
+            'cob' => $request->cob ?? "",
         ];
 
-        $users = User::query()
+        $query = User::query()
             ->select([
                 'users.id as user_id',
                 'users.name as user_name',
                 'users.code as user_code',
                 'users.created_at as user_created_at',
-                DB::raw('COUNT(DISTINCT policies.id) as policy_count'),
+                DB::raw('COUNT(DISTINCT p.id) as policy_count'),
                 DB::raw('COUNT(DISTINCT policy_claims.id) as policy_claim_count'),
                 DB::raw('GROUP_CONCAT(DISTINCT business_classes.class_name SEPARATOR ", ") as cobs'),
                 DB::raw('GROUP_CONCAT(DISTINCT insurances.name SEPARATOR ", ") as insurers'),
             ])
-            ->leftJoin('policies', 'users.id', '=', 'policies.client_id')
-            ->leftJoin('policy_claims', 'policy_claims.policy_id', '=', 'policies.id')
-            ->leftJoin('business_classes', 'policies.cob_id', '=', 'business_classes.id')
-            ->leftJoin('insurances', 'policies.insurer_id', '=', 'insurances.id')
+            ->leftJoin('policies as p', 'users.id', '=', 'p.client_id')
+            ->leftJoin('policy_claims', 'policy_claims.policy_id', '=', 'p.id')
+            ->leftJoin('business_classes', 'p.cob_id', '=', 'business_classes.id')
+            ->leftJoin('insurances', 'p.insurer_id', '=', 'insurances.id')
             ->role('client')
-            ->groupBy('users.id', 'users.name', 'users.email', 'users.code','users.created_at')
-            ->orderBy('users.id', 'desc')
-            ->when($filter['search'], function ($q) use ($filter) {
+            ->groupBy('users.id', 'users.name', 'users.email', 'users.code', 'users.created_at')
+            ->orderBy('users.id', 'desc');
+
+        if ($filter) {
+            $query->when($filter['search'], function ($q) use ($filter) {
                 $q->where('users.code', $filter['search'])
                     ->orWhere('users.name', 'LIKE', '%' . $filter['search'] . '%')
                     ->orWhere('users.email', 'LIKE', '%' . $filter['search'] . '%');
-            })
-            ->paginate($filter['page_count'])
+            });
+
+            $query->when(!empty($filter['date_type']) && !empty($filter['from_date']) && !empty($filter['to_date']), function ($q) use ($filter) {
+                $q->where('p.' . $filter['date_type'], ">=", $filter['from_date']);
+                $q->where('p.' . $filter['date_type'], "<=", $filter['to_date']);
+            });
+
+            $query->when($filter['policy_type'], function ($q) use ($filter) {
+                $types = is_array($filter['policy_type']) ? $filter['policy_type'] : explode(',', $filter['policy_type']);
+                $q->whereIn('p.policy_type', $types);
+            });
+
+            $query->when(!empty($filter['client']), function ($q) use ($filter) {
+                $clients = is_array($filter['client']) ? $filter['client'] : explode(',', $filter['client']);
+                $q->whereIn('p.client_id', $clients);
+            });
+
+            $query->when(!empty($filter['agency']), function ($q) use ($filter) {
+                $agencies = is_array($filter['agency']) ? $filter['agency'] : explode(',', $filter['agency']);
+                $q->whereIn('p.agency_id', $agencies);
+            });
+
+            $query->when(!empty($filter['insurer']), function ($q) use ($filter) {
+                $insurers = is_array($filter['insurer']) ? $filter['insurer'] : explode(',', $filter['insurer']);
+                $q->whereIn('p.insurer_id', $insurers);
+            });
+
+            $query->when($filter['cob'], function ($q) use ($filter) {
+                $cobs = is_array($filter['cob']) ? $filter['cob'] : explode(',', $filter['cob']);
+                $q->whereIn('p.cob_id', $cobs);
+            });
+        }
+
+        $users = $query->paginate($filter['page_count'])
             ->withQueryString();
 
         $roles = Role::select('id', 'name')->get();
@@ -54,6 +114,7 @@ class ClientController extends Controller
         return Inertia::render('Client/Index', [
             'users' => $users,
             'roles' => $roles,
+            'filter' => $filter,
         ]);
     }
 
