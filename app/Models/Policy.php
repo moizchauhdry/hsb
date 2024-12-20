@@ -73,6 +73,11 @@ class Policy extends Model
                 });
         }
 
+        $query->leftJoin('policy_claims as pc', 'pc.policy_id', '=', 'p.id');
+        $query->leftJoin('users as client', 'client.id', '=', 'p.client_id');
+        $query->leftJoin('agencies as agency', 'agency.id', '=', 'p.agency_id');
+        $query->leftJoin('business_classes as cob', 'cob.id', '=', 'p.cob_id');
+
         if ($filter) {
             $query->when($filter['date_type'], function ($q) use ($filter) {
                 if ($filter['from_date']) {
