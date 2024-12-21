@@ -76,11 +76,10 @@ const error_logs_count = usePage().props.error_logs.data.length;
                                     <tr>
                                         <th class="px-2">Sr #</th>
                                         <th class="px-2">ID</th>
-                                        <th class="px-2">Channel</th>
-                                        <th class="px-2">Log Type</th>
-                                        <th class="px-2">Message</th>
-                                        <th class="px-2">Level Name</th>
-                                        <th class="px-2">Created at</th>
+                                        <th class="px-2">No of Policies</th>
+                                        <th class="px-2">Found Discrepancies</th>
+                                        <th class="px-2">Time/Date</th>
+                                        <th class="px-2">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -89,11 +88,11 @@ const error_logs_count = usePage().props.error_logs.data.length;
                                             <td class="px-2">{{ (error_logs.current_page - 1) * error_logs.per_page +
                                                 index + 1 }}</td>
                                             <td class="px-2">{{ log.id }}</td>
-                                            <td class="px-2">{{ log.channel }}</td>
-                                            <td class="px-2">{{ log.type }}</td>
-                                            <td class="px-2">{{ log.message }}</td>
-                                            <td class="px-2">{{ log.level_name }}</td>
+                                            <td class="px-2">{{ log.total_records }}</td>
+                                            <td class="px-2">{{ log.failed_records }}</td>
                                             <td class="px-2">{{ log.created_at }}</td>
+                                            <td class="px-2"><span class="badge bg-success">{{ (log.total_records - log.failed_records) }} / {{ log.total_records}} uploaded successfully</span> <span class="bx bx-info-circle cursor-pointer" @click="selectLog(log)"></span>
+                                            </td>
                                         </tr>
                                     </template>
                                 </tbody>
@@ -105,9 +104,86 @@ const error_logs_count = usePage().props.error_logs.data.length;
                             <Paginate :links="error_logs.links" />
                         </div>
                     </div>
+
+                    <div v-if="selectedLog" class="mt-4">
+                        <h5 class="pl-4">Validation Results for Batch ID: {{ selectedLog.id }}</h5>
+
+                        <!-- make three section for errors count -->
+
+                        <div class="row p-4">
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Total Policies: {{ selectedLog.total_records }}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Policies with Discrepancies: <span class="text-danger">{{ selectedLog.errors.length }}</span></h5>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Valid Policies: <span class="text-success">{{ selectedLog.total_records - selectedLog.errors.length }}</span></h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="table-responsive p-4">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Error Message</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(error, index) in selectedLog.errors" :key="index">
+                                        <td>{{ index + 1 }}</td>
+                                        <td>{{ error.error_message }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                 </div>
 
             </div>
         </div>
     </AuthenticatedLayout>
 </template>
+<script>
+export default {
+    props: ['error_logs', 'import_completed_count'],
+    data() {
+        return {
+            selectedLog: null, // Tracks the selected log for error details
+        };
+    },
+    computed: {
+        totalPolicies() {
+            return this.error_logs.data.reduce((sum, log) => sum + log.total_records, 0);
+        },
+        policiesWithDiscrepancies() {
+            return this.error_logs.data.reduce((sum, log) => sum + log.failed_records, 0);
+        },
+        validPolicies() {
+            return this.totalPolicies - this.policiesWithDiscrepancies;
+        },
+    },
+    methods: {
+        selectLog(log) {
+            this.selectedLog = log; // Set the selected log for error details view
+        },
+    },
+};
+</script>
