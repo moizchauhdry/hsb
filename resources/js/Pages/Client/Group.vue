@@ -36,6 +36,15 @@ const generateFilterUrl = (group_code) => {
     const queryParams = new URLSearchParams(filters).toString();
     return `${route("client.index")}?${queryParams}`;
 };
+
+const generateFilterUrl2 = (client_ids) => {
+    var filters = {
+        client: client_ids,
+    };
+
+    const queryParams = new URLSearchParams(filters).toString();
+    return `${route("policy.index")}?${queryParams}`;
+};
 </script>
 
 
@@ -79,7 +88,8 @@ const generateFilterUrl = (group_code) => {
                                     <tr>
                                         <th style="min-width: 50px;">SR.</th>
                                         <th style="min-width: 250px;">Client Name</th>
-                                        <th style="min-width: 80px;">Clients</th>
+                                        <th style="min-width: 80px;">Subsidiaries</th>
+                                        <th style="min-width: 80px;">Policies</th>
                                         <!-- <th>Action</th> -->
                                     </tr>
                                 </thead>
@@ -96,10 +106,17 @@ const generateFilterUrl = (group_code) => {
                                                 </a>
                                             </td>
                                             <td>
+                                                <a :href="generateFilterUrl2(group.client_ids)" target="_blank">
+                                                    <span class="badge bg-dark">
+                                                        {{ group.policy_count }} <i class="bx bx-link-external"></i>
+                                                    </span>
+                                                </a>
+                                            </td>
+                                            <!-- <td>
                                                 <IconButton @click="edit(group.group_id)" title="Edit">
                                                     <i class="bx bx-edit bx-text-md"></i>
                                                 </IconButton>
-                                            </td>
+                                            </td> -->
                                         </tr>
                                     </template>
                                 </tbody>

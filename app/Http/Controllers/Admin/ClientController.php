@@ -112,7 +112,7 @@ class ClientController extends Controller
 
             $query->when($filter['client_group_code'], function ($q) use ($filter) {
                 $client_groups = is_array($filter['client_group_code']) ? $filter['client_group_code'] : explode(',', $filter['client_group_code']);
-                $q->whereIn('users.client_group_id', $client_groups);
+                $q->whereIn('users.client_group_code', $client_groups);
             });
         }
 
@@ -320,15 +320,12 @@ class ClientController extends Controller
                 'group.id as group_id',
                 'group.code as group_code',
                 'group.name as group_name',
-                // 'users.name as user_name',
-                // 'users.code as user_code',
-                // 'users.created_at as user_created_at',
                 DB::raw('COUNT(DISTINCT client.id) as client_count'),
-                // DB::raw('COUNT(DISTINCT policy_claims.id) as policy_claim_count'),
-                // DB::raw('GROUP_CONCAT(DISTINCT cob.class_name SEPARATOR ", ") as cobs'),
-                // DB::raw('GROUP_CONCAT(DISTINCT insurances.name SEPARATOR ", ") as insurers'),
+                DB::raw('COUNT(DISTINCT policy.id) as policy_count'),
+                DB::raw('GROUP_CONCAT(DISTINCT client.id) as client_ids'),
             ])
-        ->leftJoin('users as client', 'client.client_group_id', '=', 'group.code')
+        ->leftJoin('users as client', 'client.client_group_code', '=', 'group.code')
+        ->leftJoin('policies as policy', 'policy.client_id', '=', 'client.id')
         ->groupBy('group.id','group.code', 'group.name')
         ->orderBy('group.id', 'desc');
 
