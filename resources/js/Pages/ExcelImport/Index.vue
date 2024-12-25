@@ -5,6 +5,7 @@ import { ref, onBeforeUnmount } from "vue"; // Import ref and onBeforeUnmount
 import Paginate from "@/Components/Paginate.vue";
 import Import from "../Policy/Import/Import.vue";
 import { Inertia } from "@inertiajs/inertia"; // Import Inertia
+import Modal from "@/Components/Modal.vue";
 
 defineProps({
     error_logs: Array,
@@ -138,20 +139,52 @@ const error_logs_count = usePage().props.error_logs.data.length;
 
 
                         <div class="table-responsive p-4">
-                            <table class="table table-bordered">
+                            <table class="table table-bordered table-sm">
                                 <thead>
                                     <tr>
                                         <th>#</th>
+                                        <th>Policy No</th>
                                         <th>Error Message</th>
+                                        <th>Discrepancies</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(error, index) in selectedLog.errors" :key="index">
-                                        <td>{{ index + 1 }}</td>
+                                     <tr v-for="(error, index) in paginatedErrors" :key="index">
+                                        <td>{{ (currentPage - 1) * perPage + index + 1 }}</td>
+                                        <td>{{ error.policy_no }}</td>
                                         <td>{{ error.error_message }}</td>
+                                        <td>
+                                            <button
+                                                v-if="error.multiple_errors && Array.isArray(error.multiple_errors)"
+                                                class="btn btn-link p-0"
+                                                @click="showMultipleErrors(error.multiple_errors)"
+                                            >
+                                                {{ error.multiple_errors.length }}
+                                            </button>
+                                            <span v-else>0</span>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
+                        </div>
+                        <!-- Pagination Controls -->
+                         <!-- content right -->
+                        <div class="pagination-controls p-2 d-flex justify-content-end">
+                            <button
+                                class="btn btn-sm btn-secondary me-2"
+                                :disabled="currentPage === 1"
+                                @click="changePage(currentPage - 1)"
+                            >
+                                Previous
+                            </button>
+                            <span>Page {{ currentPage }} of {{ totalPages }}</span>
+                            <button
+                                class="btn btn-sm btn-secondary ms-2"
+                                :disabled="currentPage === totalPages"
+                                @click="changePage(currentPage + 1)"
+                            >
+                                Next
+                            </button>
                         </div>
                     </div>
 
@@ -159,6 +192,30 @@ const error_logs_count = usePage().props.error_logs.data.length;
 
             </div>
         </div>
+        <!-- Modal -->
+        <Modal :show="modalVisible" @close="closeModal">
+            <div class="p-6">
+                <h2 class="text-lg font-medium text-gray-900">Policy Discrepancies</h2>
+
+                <p class="mt-1 text-sm text-gray-600">
+                    The following discrepancies were found in the selected log:
+                </p>
+                <hr />
+
+                <div class="mt-4">
+                    <ul>
+                        <li v-for="(error, index) in modalErrors" :key="index" class="text-sm text-gray-700">
+                            <strong>{{ error.type }}:</strong> {{ error.message }}
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="mt-6 flex justify-end">
+                    <SecondaryButton @click="closeModal"> Close </SecondaryButton>
+                </div>
+            </div>
+        </Modal>
+
     </AuthenticatedLayout>
 </template>
 <script>
@@ -167,6 +224,10 @@ export default {
     data() {
         return {
             selectedLog: null, // Tracks the selected log for error details
+            modalVisible: false, // Tracks modal visibility
+            modalErrors: [], // Stores errors to display in the modal
+            currentPage: 1, // Tracks the current page for the table
+            perPage: 5, // Number of items per page
         };
     },
     computed: {
@@ -176,13 +237,54 @@ export default {
         policiesWithDiscrepancies() {
             return this.error_logs.data.reduce((sum, log) => sum + log.failed_records, 0);
         },
+
         validPolicies() {
             return this.totalPolicies - this.policiesWithDiscrepancies;
+        },
+        paginatedErrors() {
+            if (!this.selectedLog || !this.selectedLog.errors) {
+                return [];
+            }
+            const start = (this.currentPage - 1) * this.perPage;
+            const end = start + this.perPage;
+            return this.selectedLog.errors.slice(start, end);
+        },
+        totalPages() {
+            if (!this.selectedLog || !this.selectedLog.errors) {
+                return 1;
+            }
+            return Math.ceil(this.selectedLog.errors.length / this.perPage);
         },
     },
     methods: {
         selectLog(log) {
+            log.errors.forEach((error) => {
+                if (typeof error.multiple_errors === 'string') {
+                    try {
+                        error.multiple_errors = JSON.parse(error.multiple_errors);
+                    } catch (e) {
+                        console.error('Error parsing multiple_errors:', e);
+                        error.multiple_errors = [];
+                    }
+                }
+            });
             this.selectedLog = log; // Set the selected log for error details view
+            this.currentPage = 1;
+        },
+        showMultipleErrors(multipleErrors) {
+             if (multipleErrors && Array.isArray(multipleErrors)) {
+                this.modalErrors = multipleErrors; // Set the errors to display in the modal
+            } else {
+                this.modalErrors = []; // Default to an empty array
+            }
+            this.modalVisible = true; // Show the modal
+        },
+        closeModal() {
+            this.modalVisible = false; // Close the modal
+            this.modalErrors = []; // Clear the errors
+        },
+        changePage(page) {
+            this.currentPage = page;
         },
     },
 };
