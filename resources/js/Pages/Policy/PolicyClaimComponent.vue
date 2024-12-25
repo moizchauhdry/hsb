@@ -33,18 +33,18 @@ const claimUpload = (id, policy_id) => {
 <template>
 
     <ClaimNote v-bind="$props" ref="claim_note_ref" v-if="permission.policy_claim"></ClaimNote>
+
     <ClaimUpload v-bind="$props" ref="claim_upload_ref" v-if="permission.policy_claim">
     </ClaimUpload>
 
     <ClaimCreateEdit v-bind="$props" ref="claim_create_edit_ref" :create_mode="true">
     </ClaimCreateEdit>
 
-
-    <div class="table-responsive" v-if="permission.policy_claim">
+    <div class="table-responsive mt-2" v-if="permission.policy_claim">
         <table class="table table-bordered text-uppercase" v-if="policy_claims.data.length > 0">
             <tbody>
                 <tr>
-                    <th colspan="10" class="bg-primary text-white">
+                    <th colspan="10" class="bg-warning text-white">
                         Policy Claims
                     </th>
                 </tr>

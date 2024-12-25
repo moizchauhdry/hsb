@@ -16,11 +16,11 @@ defineProps({
 <template>
     <Uploads v-bind="$props" v-if="permission.policy_upload"></Uploads>
 
-    <div class="table-responsive" v-if="permission.policy_upload">
+    <div class="table-responsive mt-2" v-if="permission.policy_upload">
         <table class="table table-bordered text-uppercase" v-if="policyUploads.data.length > 0">
             <tbody>
                 <tr>
-                    <th colspan="5" class="bg-primary text-white">
+                    <th colspan="5" class="bg-warning text-white">
                         Policy Uploads
                     </th>
                 </tr>

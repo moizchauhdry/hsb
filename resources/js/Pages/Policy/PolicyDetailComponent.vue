@@ -1,16 +1,19 @@
-<script>
-export default {
-    props: {
-        policy: Object,
-    },
-}
+<script setup>
+import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
+
+const { props } = usePage();
+const permission = props.can;
+
+defineProps({
+    policy: Object,
+});
 </script>
 <template>
-    <!-- <div class="table-responsive" v-if="permission.policy_detail"> -->
+    <div class="table-responsive" v-if="permission.policy_detail">
         <table class="table table-bordered text-uppercase">
             <tbody>
                 <tr>
-                    <th colspan="4" class="bg-primary text-white">
+                    <th colspan="4" class="bg-warning text-white">
                         Policy Detail
                     </th>
                 </tr>
@@ -104,5 +107,5 @@ export default {
 
             </tbody>
         </table>
-    <!-- </div> -->
+    </div>
 </template>

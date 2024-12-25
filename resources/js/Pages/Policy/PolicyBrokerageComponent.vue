@@ -1,7 +1,18 @@
 <script>
+import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
+
 export default {
     props: {
         policy: Object,
+    },
+    data() {
+        return {
+            permission: null,
+        };
+    },
+    created() {
+        const { props } = usePage();
+        this.permission = props.can;
     },
     methods: {
         format_number(number) {
@@ -15,11 +26,11 @@ export default {
 </script>
 
 <template>
-    <!-- <div class="table-responsive" v-if="permission.policy_brokerage_amount"> -->
+    <div class="table-responsive" v-if="permission.policy_brokerage_amount">
         <table class="table table-bordered text-uppercase">
             <tbody>
                 <tr>
-                    <th colspan="4" class="bg-primary text-white">
+                    <th colspan="4" class="bg-warning text-white">
                         Brokerage Amount
                     </th>
                 </tr>
@@ -43,5 +54,5 @@ export default {
                 </tr>
             </tbody>
         </table>
-    <!-- </div> -->
+    </div>
 </template>

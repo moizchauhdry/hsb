@@ -102,37 +102,37 @@ const tabs = ref([
     {
         id: 'policy_detail_component',
         title: 'Policy Detail',
-        icon: 'bx bx-home font-18 me-1',
+        icon: 'bx bx-label font-18 me-1',
         component: PolicyDetailComponent,
     },
     {
         id: 'policy_amount_component',
         title: 'Policy Amount',
-        icon: 'bx bx-box font-18 me-1',
+        icon: 'bx bx-receipt font-18 me-1',
         component: PolicyAmountComponent,
     },
     {
         id: 'policy_brokerage_component',
         title: 'Brokerage Amount',
-        icon: 'bx bx-box font-18 me-1',
+        icon: 'bx bx-book-alt font-18 me-1',
         component: PolicyBrokerageComponent,
     },
     {
         id: 'policy_claims_component',
         title: 'Policy Claims',
-        icon: 'bx bx-box font-18 me-1',
+        icon: 'bx bx-list-ul font-18 me-1',
         component: PolicyClaimComponent,
     },
     {
         id: 'policy_note_component',
         title: 'Policy Notes',
-        icon: 'bx bx-box font-18 me-1',
+        icon: 'bx bx-note font-18 me-1',
         component: PolicyNoteComponent,
     },
     {
         id: 'policy_upload_component',
         title: 'Policy Uploads',
-        icon: 'bx bx-box font-18 me-1',
+        icon: 'bx bx-upload font-18 me-1',
         component: PolicyUploadComponent,
     },
 ]);
@@ -163,8 +163,8 @@ const setActiveTab = (tabId) => {
                         </nav>
                     </div>
                     <div class="ms-auto">
-                        <Link :href="route('policy.index',)" class="ml-5">
-                            <SecondaryButton>Back</SecondaryButton>
+                        <Link :href="route('policy.index')" class="ml-5">
+                            <SecondaryButton><i class="bx bx-arrow-back mr-1"></i>Back</SecondaryButton>
                         </Link>
                     </div>
                 </div>
