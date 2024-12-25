@@ -1,5 +1,0 @@
-<<<<<<< HEAD:public/build/assets/IconButton-d32bb35d.js
-import{o,c as n,l as r}from"./app-1f90dc38.js";const s=["type"],c={__name:"IconButton",props:{type:{type:String,default:"button"}},setup(t){return(e,i)=>(o(),n("button",{type:t.type,class:"inline-flex items-center px-2 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150"},[r(e.$slots,"default")],8,s))}};export{c as _};
-=======
-import{o,c as n,p as r}from"./app-3b6c74d7.js";const s=["type"],c={__name:"IconButton",props:{type:{type:String,default:"button"}},setup(t){return(e,i)=>(o(),n("button",{type:t.type,class:"inline-flex items-center px-2 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150"},[r(e.$slots,"default")],8,s))}};export{c as _};
->>>>>>> develop:public/build/assets/IconButton-5930dca9.js
