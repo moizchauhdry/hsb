@@ -222,7 +222,7 @@ class PolicyController extends Controller
 
             $policy_claims = PolicyClaim::where('policy_id', $policy->id)
                 ->orderBy('id', 'desc')
-                ->paginate(5)
+                ->paginate(25)
                 ->withQueryString()
                 ->through(fn($claim) => [
                     'data' => $claim,
@@ -231,7 +231,7 @@ class PolicyController extends Controller
                 ]);
 
             $policyUploads = PolicyUpload::where('policy_id', $policy->id)
-                ->paginate(5)
+                ->paginate(25)
                 ->withQueryString()
                 ->through(fn($policyUpload) => [
                     'id' => $policyUpload->id,

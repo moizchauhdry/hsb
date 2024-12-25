@@ -1,23 +1,15 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
-import InputError from "@/Components/InputError.vue";
 import { ref } from "vue";
-import VueDatePicker from "@vuepic/vue-datepicker";
-import "@vuepic/vue-datepicker/dist/main.css";
-import Uploads from "./Uploads.vue";
-import AdditionalNotes from "./AdditionalNotes.vue";
-import ClaimCreateEdit from "./ClaimCreateEdit.vue";
-import ClaimNote from "./Claim/Notes.vue";
-import ClaimUpload from "./Claim/Upload.vue";
+
 import SecondaryButton from "@/Components/SecondaryButton.vue";
-import Paginate from "@/Components/Paginate.vue";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
-
-const { props } = usePage();
-const permission = props.can;
-
-const isOpen = ref(new Array(props.policyNotes.length).fill(false)); // Array to store isOpen states
+import PolicyDetailComponent from "./PolicyDetailComponent.vue";
+import PolicyAmountComponent from "./PolicyAmountComponent.vue";
+import PolicyBrokerageComponent from "./PolicyBrokerageComponent.vue";
+import PolicyClaimComponent from "./PolicyClaimComponent.vue";
+import PolicyNoteComponent from "./PolicyNoteComponent.vue";
+import PolicyUploadComponent from "./PolicyUploadComponent.vue";
 
 defineProps({
     policy: Object,
@@ -26,111 +18,127 @@ defineProps({
     policy_claims: Array,
     policyUploads: Array,
     assetUrl: Object,
-    desiredSingleOpenBehavior: {
-        type: Boolean,
-        default: false,
-    },
+    // desiredSingleOpenBehavior: {
+    //     type: Boolean,
+    //     default: false,
+    // },
 });
 
-const edit_mode = ref(false);
+// const edit_mode = ref(false);
 
-const toggleAccordion = (index) => {
-    // Toggle the isOpen state for the clicked item only
-    isOpen.value[index] = !isOpen.value[index];
+// const toggleAccordion = (index) => {
+//     isOpen.value[index] = !isOpen.value[index];
+//     if (props.desiredSingleOpenBehavior) {
+//         isOpen.value.fill(false, 0, index);
+//         isOpen.value.fill(false, index + 1);
+//     }
+// };
 
-    // Optionally close other accordion items (if single-open behavior is desired)
-    if (props.desiredSingleOpenBehavior) {
-        isOpen.value.fill(false, 0, index); // Close previous items
-        isOpen.value.fill(false, index + 1); // Close subsequent items
-    }
-};
+// const forms = [];
 
-const forms = [];
+// if (props.policyInstallment && props.policyInstallment.length > 0) {
+//     for (let i = 0; i < Number(props.policy.installment_plan); i++) {
+//         const formFields = i < props.policyInstallment.length ? {
+//             due_date: props.policyInstallment[i].due_date || "",
+//             gross_premium: props.policyInstallment[i].gross_premium || "",
+//             net_premium: props.policyInstallment[i].net_premium || "",
+//             payment_status: props.policyInstallment[i].payment_status || "",
+//             edit_mode: true,
+//         } : {
+//             due_date: "",
+//             gross_premium: "",
+//             net_premium: "",
+//             payment_status: "",
+//             edit_mode: false,
+//         };
+//         const form = useForm(formFields);
+//         forms.push(form);
+//     }
+// } else {
+//     for (let i = 0; i < Number(props.policy.installment_plan); i++) {
+//         const initialState = {
+//             due_date: "",
+//             gross_premium: "",
+//             net_premium: "",
+//             payment_status: "",
+//             edit_mode: false,
+//         };
+//         const form = useForm(initialState);
+//         forms.push(form);
+//     }
+// }
 
-if (props.policyInstallment && props.policyInstallment.length > 0) {
-    for (let i = 0; i < Number(props.policy.installment_plan); i++) {
-        const formFields = i < props.policyInstallment.length ? {
-            due_date: props.policyInstallment[i].due_date || "",
-            gross_premium: props.policyInstallment[i].gross_premium || "",
-            net_premium: props.policyInstallment[i].net_premium || "",
-            payment_status: props.policyInstallment[i].payment_status || "",
-            edit_mode: true,
-        } : {
-            due_date: "",
-            gross_premium: "",
-            net_premium: "",
-            payment_status: "",
-            edit_mode: false,
-        };
-        const form = useForm(formFields);
-        forms.push(form);
-    }
-} else {
-    for (let i = 0; i < Number(props.policy.installment_plan); i++) {
-        const initialState = {
-            due_date: "",
-            gross_premium: "",
-            net_premium: "",
-            payment_status: "",
-            edit_mode: false,
-        };
-        const form = useForm(initialState);
-        forms.push(form);
-    }
-}
 
-const claim_note_ref = ref(null);
-const claimNote = (id, policy_id) => {
-    claim_note_ref.value.claimNote(id, policy_id)
-};
+// const submit = () => {
+//     if (forms && forms.length > 0) {
+//         forms.forEach(proxyData => {
 
-const claim_upload_ref = ref(null);
-const claimUpload = (id, policy_id) => {
-    claim_upload_ref.value.claimUpload(id, policy_id)
-};
+//             if (!proxyData) return;
+//             const data = { ...proxyData };
 
-const claim_create_edit_ref = ref(null);
-const claimEdit = (id) => {
-    claim_create_edit_ref.value.claimEdit(id)
-};
+//             if (data.due_date !== '' && data.gross_premium !== '' && data.net_premium !== '' && data.payment_status !== '') {
 
-const submit = () => {
-    if (forms && forms.length > 0) {
-        forms.forEach(proxyData => {
+//                 const formFields = {
+//                     policy_id: JSON.parse(JSON.stringify((props.policy.id))) ?? "",
+//                     due_date: data.due_date || "",
+//                     gross_premium: data.gross_premium || "",
+//                     net_premium: data.net_premium || "",
+//                     payment_status: data.payment_status || "",
+//                 };
 
-            if (!proxyData) return;
-            const data = { ...proxyData };
+//                 const form = useForm(formFields);
+//                 form.post(route("policy.installmentPlan"), {
+//                     preserveScroll: true,
+//                     onError: () => error(),
+//                     onFinish: () => { },
+//                 });
+//             }
+//         });
+//     }
+// };
 
-            if (data.due_date !== '' && data.gross_premium !== '' && data.net_premium !== '' && data.payment_status !== '') {
+const activeTab = ref('policy_detail_component');
+const tabs = ref([
+    {
+        id: 'policy_detail_component',
+        title: 'Policy Detail',
+        icon: 'bx bx-home font-18 me-1',
+        component: PolicyDetailComponent,
+    },
+    {
+        id: 'policy_amount_component',
+        title: 'Policy Amount',
+        icon: 'bx bx-box font-18 me-1',
+        component: PolicyAmountComponent,
+    },
+    {
+        id: 'policy_brokerage_component',
+        title: 'Brokerage Amount',
+        icon: 'bx bx-box font-18 me-1',
+        component: PolicyBrokerageComponent,
+    },
+    {
+        id: 'policy_claims_component',
+        title: 'Policy Claims',
+        icon: 'bx bx-box font-18 me-1',
+        component: PolicyClaimComponent,
+    },
+    {
+        id: 'policy_note_component',
+        title: 'Policy Notes',
+        icon: 'bx bx-box font-18 me-1',
+        component: PolicyNoteComponent,
+    },
+    {
+        id: 'policy_upload_component',
+        title: 'Policy Uploads',
+        icon: 'bx bx-box font-18 me-1',
+        component: PolicyUploadComponent,
+    },
+]);
 
-                const formFields = {
-                    policy_id: JSON.parse(JSON.stringify((props.policy.id))) ?? "",
-                    due_date: data.due_date || "",
-                    gross_premium: data.gross_premium || "",
-                    net_premium: data.net_premium || "",
-                    payment_status: data.payment_status || "",
-                };
-
-                const form = useForm(formFields);
-                form.post(route("policy.installmentPlan"), {
-                    preserveScroll: true,
-                    onError: () => error(),
-                    onFinish: () => { },
-                });
-            }
-        });
-    }
-};
-
-const error = () => {
-    // alert('error');
-};
-
-const format_number = (number) => {
-    return new Intl.NumberFormat('en-US', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-    }).format(number);
+const setActiveTab = (tabId) => {
+    activeTab.value = tabId;
 };
 </script>
 
@@ -155,328 +163,37 @@ const format_number = (number) => {
                         </nav>
                     </div>
                     <div class="ms-auto">
-                        <Uploads v-bind="$props" v-if="permission.policy_upload"></Uploads>
-                        <AdditionalNotes v-bind="$props" v-if="permission.policy_note"></AdditionalNotes>
-
-                        <ClaimCreateEdit v-bind="$props" ref="claim_create_edit_ref" :create_mode="true"
-                            v-if="permission.policy_claim"></ClaimCreateEdit>
-
                         <Link :href="route('policy.index',)" class="ml-5">
-                        <SecondaryButton>Back</SecondaryButton>
+                            <SecondaryButton>Back</SecondaryButton>
                         </Link>
-
-                        <ClaimNote v-bind="$props" ref="claim_note_ref" v-if="permission.policy_claim"></ClaimNote>
-                        <ClaimUpload v-bind="$props" ref="claim_upload_ref" v-if="permission.policy_claim">
-                        </ClaimUpload>
                     </div>
                 </div>
 
                 <div class="card">
                     <div class="card-body">
 
-                        <div class="table-responsive" v-if="permission.policy_detail">
-                            <table class="table table-bordered text-uppercase">
-                                <tbody>
-                                    <tr>
-                                        <th colspan="4" class="bg-primary text-white">
-                                            Policy Detail
-                                        </th>
-                                    </tr>
-                                    <tr>
-                                        <th>POLICY ID</th>
-                                        <td>{{ policy.id }}</td>
-                                        <th>USER ID</th>
-                                        <td>{{ policy.user_id }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Policy No</th>
-                                        <td>{{ policy.policy_no }}</td>
-                                        <th>Base Document No</th>
-                                        <td>{{ policy.base_doc_no }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Insurer Name</th>
-                                        <td>{{ policy?.insurer?.name }}</td>
-                                        <th>Insurance type</th>
-                                        <td>
-                                            <span v-if="policy.insurance_type == 'takaful'">Takaful</span>
-                                            <span v-if="policy.insurance_type == 'conventional'">Conventional</span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Client Name</th>
-                                        <td>{{ policy?.client?.name }}</td>
-                                        <th>Lead type</th>
-                                        <td>
-                                            <span v-if="policy.lead_type == 'direct'">Direct 100%</span>
-                                            <span v-if="policy.lead_type == 'our'">Our lead</span>
-                                            <span v-if="policy.lead_type == 'other'">Other lead</span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-
-                                        <th>Leader Name</th>
-                                        <td>{{ policy.leader_name }}</td>
-                                        <th>Leader Policy No</th>
-                                        <td>{{ policy.leader_policy_no }}</td>
-
-                                        <!-- <th v-if="policy.lead_type == 1 || policy.lead_type == 3">Co Insurance</th>
-                                        <td v-if="policy.lead_type == 1 || policy.lead_type == 3">{{
-                                            policy.co_insurance }}</td> -->
-                                    </tr>
-
-                                    <tr>
-                                        <th>Agency Name / Agency Code</th>
-                                        <td>{{ policy?.agency?.name }} / {{ policy.agency_code }}</td>
-
-                                        <th>Child Agency Name</th>
-                                        <td>{{ policy.child_agency_name }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Class of Business</th>
-                                        <td>{{ policy?.cob?.class_name }}</td>
-
-                                        <th>Department Name</th>
-                                        <td>{{ policy?.department?.name }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Inception Date</th>
-                                        <td>{{ policy.policy_period_start }}</td>
-
-                                        <th>Expiry Date</th>
-                                        <td>{{ policy.policy_period_end }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Policy Type</th>
-                                        <td>{{ policy.policy_type }}</td>
-                                        <th>Installment Plan </th>
-                                        <td> {{ policy.installment_plan }} </td>
-                                    </tr>
-
-                                    <tr>
-                                        <th>Issuance Date</th>
-                                        <td>{{ policy.date_of_issuance }}</td>
-                                        <th> Cover Note No </th>
-                                        <td> {{ policy.cover_note_no }} </td>
-                                    </tr>
-
-                                    <tr>
-                                        <th> Excel Import </th>
-                                        <td> {{ policy.excel_import }} </td>
-
-                                        <template v-if="policy.excel_import">
-                                            <th>Excel Import Date</th>
-                                            <td> {{ policy.excel_import_at }} </td>
-                                        </template>
-                                    </tr>
-
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="table-responsive" v-if="permission.policy_amount">
-                            <table class="table table-bordered text-uppercase">
-                                <tbody>
-                                    <tr>
-                                        <th colspan="4" class="bg-primary text-white">
-                                            Policy Amount
-                                        </th>
-                                    </tr>
-                                    <tr>
-                                        <th>Sum insured </th>
-                                        <td> PKR {{ format_number(policy.sum_insured) }} </td>
-
-                                        <th>Rate Percentage</th>
-                                        <td> {{ policy.rate_percentage }} % </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Gross Premium </th>
-                                        <td> PKR {{ format_number(policy.gross_premium) }} </td>
-
-                                        <th>Gross Premium 100%</th>
-                                        <td> PKR {{ format_number(policy.gross_premium_100) }} </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Net Premium 100%</th>
-                                        <td> PKR {{ format_number(policy.net_premium_100) }} </td>
-
-                                        <th>Net Premium </th>
-                                        <td> PKR {{ format_number(policy.net_premium) }} </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Gross Premium Received</th>
-                                        <td> PKR {{ format_number(policy.gross_premium_received) }} </td>
-
-                                        <th>Gross Premium Outstanding</th>
-                                        <td> PKR {{ format_number(policy.gross_premium_outstanding) }} </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Outstanding 100%</th>
-                                        <td> PKR {{ format_number(policy.outstanding_100) }} </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="table-responsive" v-if="permission.policy_brokerage_amount">
-                            <table class="table table-bordered text-uppercase">
-                                <tbody>
-                                    <tr>
-                                        <th colspan="4" class="bg-primary text-white">
-                                            Brokerage Amount
-                                        </th>
-                                    </tr>
-                                    <tr>
-                                        <th>Brokerage/Commissioned Amount</th>
-                                        <td>PKR {{ format_number(policy.brokerage_amount) }} </td>
-
-                                        <th>Brokerage Percentage </th>
-                                        <td>PKR {{ policy.brokerage_percentage }} % </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Brokerage Received Amount</th>
-                                        <td>PKR {{ format_number(policy.brokerage_received_amount) }} </td>
-
-                                        <th>Brokerage Paid Date</th>
-                                        <td>{{ policy.brokerage_paid_date }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Brokerage Status</th>
-                                        <td>{{ policy.brokerage_status }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="table-responsive" v-if="permission.policy_note">
-                            <table class="table table-bordered text-uppercase" v-if="policyNotes.length > 0">
-                            <tbody>
-                                <tr>
-                                    <th colspan="4" class="bg-primary text-white">
-                                        Policy Notes
-                                    </th>
-                                </tr>
-                                <tr>
-                                    <th>Sr No.</th>
-                                    <th>Note</th>
-                                </tr>
-                                <template v-for="policyNote, index in policyNotes" :key="policyNote.id">
-                                    <tr>
-                                        <td>{{ ++index }}</td>
-                                        <td>{{ policyNote.additional_notes }}</td>
-                                    </tr>
-                                </template>
-                            </tbody>
-                        </table>
-                        </div>
-
-                        <div class="table-responsive" v-if="permission.policy_claim">
-                            <table class="table table-bordered text-uppercase" v-if="policy_claims.data.length > 0">
-                                <tbody>
-                                    <tr>
-                                        <th colspan="10" class="bg-primary text-white">
-                                            Policy Claims
-                                        </th>
-                                    </tr>
-                                    <tr>
-                                        <th>Sr #</th>
-                                        <th>Claim ID</th>
-                                        <th>Policy ID</th>
-                                        <th>Claim Date</th>
-                                        <th>Surveyor Name</th>
-                                        <th>Surveyor Contact</th>
-                                        <th>Intimation Date</th>
-                                        <th>Description</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
-                                    </tr>
-                                    <template v-for="claim, index in policy_claims.data" :key="claim.id">
-                                        <tr>
-                                            <td>{{ (policy_claims.current_page - 1) * policy_claims.per_page + index +
-                                                1}}</td>
-                                            <td>{{ claim.data.id }}</td>
-                                            <td>{{ claim.data.policy_id }}</td>
-                                            <td>{{ claim.claim_at }}</td>
-                                            <td>{{ claim.data.survivor_name }}</td>
-                                            <td>{{ claim.data.contact_no }}</td>
-                                            <td>{{ claim.intimation_at }}</td>
-                                            <td>{{ claim.data.detail }}</td>
-                                            <td><span class="badge bg-primary">{{ claim.data.status }}</span></td>
-                                            <td>
-                                                <SecondaryButton class="mr-1" @click="claimEdit(claim.data.id)"
-                                                    title="Edit" data-bs-toggle="modal"
-                                                    data-bs-target="#EditLargeModal">
-                                                    <i class='bx bx-edit'></i>
-                                                </SecondaryButton>
-
-                                                <SecondaryButton class="mr-1"
-                                                    @click="claimNote(claim.data.id, claim.data.policy_id)" title="Note"
-                                                    data-bs-toggle="modal" data-bs-target="#notesLargeModal">
-                                                    <i class='bx bxs-note'></i>
-                                                </SecondaryButton>
-
-                                                <SecondaryButton class="mr-1"
-                                                    @click="claimUpload(claim.data.id, claim.data.policy_id)"
-                                                    title="Uploads" data-bs-toggle="modal"
-                                                    data-bs-target="#notesUploadLargeModal">
-                                                    <i class='bx bx-cloud-upload'></i>
-                                                </SecondaryButton>
-                                            </td>
-                                        </tr>
-                                    </template>
-
-                                    <tr>
-                                        <td colspan="5">
-                                            <Paginate :links="policy_claims.links" :scroll="true" />
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="table-responsive" v-if="permission.policy_upload">
-                            <table class="table table-bordered text-uppercase" v-if="policyUploads.data.length > 0">
-                                <tbody>
-                                    <tr>
-                                        <th colspan="5" class="bg-primary text-white">
-                                            Policy Uploads
-                                        </th>
-                                    </tr>
-                                    <tr>
-                                        <th>Sr No.</th>
-                                        <th>Type</th>
-                                        <th>File</th>
-                                        <th>Action</th>
-                                    </tr>
-                                    <template v-for="policyUpload, index in policyUploads.data" :key="policyUpload.id">
-                                        <tr>
-                                            <td>{{ ++index }}</td>
-                                            <td>{{ policyUpload.type }}</td>
-                                            <td>
-                                                <img :src="props.assetUrl + '/' + policyUpload.upload" alt=""
-                                                    style="width: 70px;">
-                                            </td>
-                                            <td>
-                                                <a :href="props.assetUrl + '/' + policyUpload.upload" download>
-                                                    <PrimaryButton>
-                                                        <i class='bx bxs-down-arrow-square mr-1'></i> Download
-                                                    </PrimaryButton>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    </template>
-
-                                    <tr>
-                                        <td>
-                                            <Paginate :links="policyUploads.links" :scroll="true" />
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <ul class="nav nav-tabs nav-warning" role="tablist">
+                            <li class="nav-item" role="presentation" v-for="tab in tabs" :key="tab.id">
+                                <a class="nav-link" :class="{ active: activeTab === tab.id }"
+                                    @click.prevent="setActiveTab(tab.id)" href="#" role="tab">
+                                    <div class="d-flex align-items-center">
+                                        <div class="tab-icon">
+                                            <i :class="tab.icon"></i>
+                                        </div>
+                                        <div class="tab-title">{{ tab.title }}</div>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="tab-content py-3">
+                            <div class="tab-pane fade" :class="{ 'show active': activeTab === tab.id }" role="tabpanel"
+                                v-for="tab in tabs" :key="tab.id">
+                                <component :is="tab.component" v-bind="$props" />
+                            </div>
                         </div>
 
                         <!-- INSTALLMENT PLAN-->
-                        <div class="table-responsive" style="display: none">
+                        <!-- <div class="table-responsive" style="display: none">
                             <div class="container-fluid">
                                 <div class="border mb-4" id="partner">
                                     <div style="background-color: #037DE2">
@@ -863,7 +580,7 @@ const format_number = (number) => {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
@@ -871,3 +588,16 @@ const format_number = (number) => {
         <!--end page wrapper -->
     </AuthenticatedLayout>
 </template>
+
+<style>
+/* Transition effect */
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}
+</style>
