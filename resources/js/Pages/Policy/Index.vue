@@ -4,18 +4,16 @@ import { Inertia } from '@inertiajs/inertia'
 import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
 import CreateEdit from "./CreateEdit.vue";
 import Import from "./Import/Import.vue";
+import PolicyFilter from "./PolicyFilter.vue";
 import { ref } from "vue";
 import Paginate from "@/Components/Paginate.vue";
 import Swal from 'sweetalert2';
-import ReportFilter from "../Report/ReportFilter.vue";
 import Search from "@/Components/Search.vue";
 import IconButton from "@/Components/IconButton.vue";
 
 defineProps({
     policies: Array,
-    policy: Object,
     filter: Object,
-    data: Array,
 });
 
 const permission = usePage().props.can;
@@ -85,7 +83,7 @@ const confirmDelete = (policyId) => {
                     <div class="ms-auto" style="display: flex; justify-content: space-between; align-items: center;">
                         <CreateEdit v-bind="$props" ref="create_edit_ref"></CreateEdit>
                         <Import v-bind="$props" v-if="permission.excel_import"></Import>
-                        <ReportFilter v-bind="$props" :filter_route="'policy'"></ReportFilter>
+                        <PolicyFilter :filter_route="'policy'"></PolicyFilter>
                     </div>
                 </div>
 
@@ -99,11 +97,12 @@ const confirmDelete = (policyId) => {
                                 <thead class="table-light">
                                     <tr>
                                         <th>Sr.</th>
-                                        <th>Policy No</th>
+                                        <th style="min-width: 250px">Policy No</th>
                                         <th style="min-width: 200px">Client Name</th>
                                         <th style="min-width: 200px">Agency Name</th>
                                         <th style="min-width: 120px">COB Name</th>
                                         <th style="min-width: 120px;">Expiry Date</th>
+                                        <th style="min-width: 80px;">Claims</th>
                                         <th style="min-width: 150px">Action</th>
                                     </tr>
                                 </thead>
@@ -114,28 +113,37 @@ const confirmDelete = (policyId) => {
                                                 {{ (policies.current_page - 1) * policies.per_page + index + 1 }}
                                             </td>
                                             <td>
-                                                <a :href="route('policy.detail', policy.id)" target="_blank"> {{
-                                                    policy.data.policy_no }} <i class="bx bx-link-external"></i>
+                                                <a :href="route('policy.detail', policy.p_id)" target="_blank"> {{
+                                                    policy.policy_no }} <i class="bx bx-link-external"></i>
                                                 </a>
                                             </td>
                                             <td>{{ policy.client_name }}</td>
                                             <td>{{ policy.agency_name }}</td>
                                             <td><span class="badge bg-secondary">{{ policy.cob_name }}</span></td>
-                                            <td>{{ policy.data.policy_period_end }}</td>
+                                            <td>{{ policy.expiry_date }}</td>
                                             <td>
-                                                <IconButton class="m-1" @click="edit(policy.id)"
+                                                <a :href="`${route('claim.index')}?policy_id=${policy.p_id}`"
+                                                    target="_blank">
+                                                    <span class="badge bg-dark">
+                                                        {{ policy.claim_count }} <i
+                                                            class="bx bx-link-external"></i>
+                                                    </span>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <IconButton class="m-1" @click="edit(policy.p_id)"
                                                     v-if="permission.policy_update">
                                                     <i class="bx bx-edit bx-text-md"></i>
                                                 </IconButton>
 
-                                                <Link :href="route('policy.detail', policy.id)" class="m-1"
+                                                <Link :href="route('policy.detail', policy.p_id)" class="m-1"
                                                     v-if="permission.policy_detail">
                                                 <IconButton>
                                                     <i class="bx bxs-collection bx-text-md"></i>
                                                 </IconButton>
                                                 </Link>
 
-                                                <IconButton class="m-1" @click="confirmDelete(policy.id)"
+                                                <IconButton class="m-1" @click="confirmDelete(policy.p_id)"
                                                     v-if="permission.policy_delete">
                                                     <i class='bx bxs-trash bx-text-md text-danger'></i>
                                                 </IconButton>

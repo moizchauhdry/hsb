@@ -23,6 +23,7 @@ class ClaimController extends Controller
         $filter = [
             'search' => $request->search,
             'client' => $request->client,
+            'policy_id' => $request->policy_id,
             'date_type' => $request->date_type,
             'month' => $current_month,
             'month_name' => getMonthName($current_month),

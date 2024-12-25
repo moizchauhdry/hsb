@@ -19,27 +19,20 @@ class ReportController extends Controller
     {
         $page_count = $request->page_count ?? 10;
 
-        if (is_array($request->date_value)) {
-            $from_date = isset($request->date_value[0]) ? Carbon::parse($request->date_value[0])->format("Y-m-d") : NULL;
-            $to_date = isset($request->date_value[1]) ? Carbon::parse($request->date_value[1])->format("Y-m-d") : NULL;
-        } else {
-            $date_value = explode(',', $request->date_value);
-            $from_date = isset($date_value[0]) ? Carbon::parse($date_value[0])->format("Y-m-d") : NULL;
-            $to_date = isset($date_value[1]) ? Carbon::parse($date_value[1])->format("Y-m-d") : NULL;
-        }
-
         $filter = [
             'search' => $request->search,
-            
+
             'date_type' => $request->date_type,
-            'from_date' => $from_date,
-            'to_date' => $to_date,
+            'from_date' => $request->from_date,
+            'to_date' => $request->to_date,
 
             'policy_type' => $request->policy_type,
             'client' => $request->client,
             'agency' => $request->agency,
             'insurer' => $request->insurer,
             'cob' => $request->cob,
+            'department' => $request->department,
+            'group' => $request->group,
         ];
 
         session(['filter' => $filter]);
@@ -64,21 +57,8 @@ class ReportController extends Controller
                 'cob_name' => $policy->cob->class_name ?? null,
             ]);
 
-        $clients = User::role('client')->get();
-        $insurers = Insurance::get();
-        $agencies = Agency::get();
-        $cobs = BusinessClass::get();
-
-        $data = [
-            'clients' => $clients,
-            'insurers' => $insurers,
-            'agencies' => $agencies,
-            'cobs' => $cobs,
-        ];
-
         return Inertia::render('Report/ListReport', [
             'policies' => $policies,
-            'data' => $data,
             'filter' => $filter,
             'grand_total' => $grand_total,
             'slug' => $slug,
