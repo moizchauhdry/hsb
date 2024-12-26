@@ -144,7 +144,7 @@ const error_logs_count = usePage().props.error_logs.data.length;
                                     <tr>
                                         <th>#</th>
                                         <th>Policy No</th>
-                                        <th>Error Message</th>
+                                        <!-- <th>Error Message</th> -->
                                         <th>Discrepancies</th>
                                     </tr>
                                 </thead>
@@ -152,7 +152,7 @@ const error_logs_count = usePage().props.error_logs.data.length;
                                      <tr v-for="(error, index) in paginatedErrors" :key="index">
                                         <td>{{ (currentPage - 1) * perPage + index + 1 }}</td>
                                         <td>{{ error.policy_no }}</td>
-                                        <td>{{ error.error_message }}</td>
+                                        <!-- <td>{{ error.error_message }}</td> -->
                                         <td>
                                             <button
                                                 v-if="error.multiple_errors && Array.isArray(error.multiple_errors)"
