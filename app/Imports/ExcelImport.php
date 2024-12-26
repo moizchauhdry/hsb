@@ -43,6 +43,7 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
             $this->batch = Batch::create([
                 'total_records' => $totalRecords,
                 'failed_records' => 0,
+                'status' => 'In progress',
             ]);
         }
         $this->validationService = new PolicyValidationService();
@@ -242,7 +243,7 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
             AfterImport::class => function (AfterImport $event) {
                 // Log::channel('database')->info('Excel import completed successfully.', ['type' => 'excel_import', 'import_completed' => true]);
                 $failedRecordsCount = BatchError::where('batch_id', $this->batch->id)->count();
-                $this->batch->update(['failed_records' => $failedRecordsCount]);
+                $this->batch->update(['failed_records' => $failedRecordsCount, 'status' => 'Completed', 'success_record' => $this->batch->total_records - $failedRecordsCount]);
             },
             ImportFailed::class => function (ImportFailed $event) {
                 Log::channel('database')->error('failed excel import.', ['type' => 'excel_import', 'import_completed' => true]);

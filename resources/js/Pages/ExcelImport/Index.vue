@@ -6,6 +6,7 @@ import Paginate from "@/Components/Paginate.vue";
 import Import from "../Policy/Import/Import.vue";
 import { Inertia } from "@inertiajs/inertia"; // Import Inertia
 import Modal from "@/Components/Modal.vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
 
 defineProps({
     error_logs: Array,
@@ -80,6 +81,7 @@ const error_logs_count = usePage().props.error_logs.data.length;
                                         <th class="px-2">No of Policies</th>
                                         <th class="px-2">Found Discrepancies</th>
                                         <th class="px-2">Time/Date</th>
+                                        <th class="px-2">Status</th>
                                         <th class="px-2">Action</th>
                                     </tr>
                                 </thead>
@@ -92,7 +94,8 @@ const error_logs_count = usePage().props.error_logs.data.length;
                                             <td class="px-2">{{ log.total_records }}</td>
                                             <td class="px-2">{{ log.failed_records }}</td>
                                             <td class="px-2">{{ log.created_at }}</td>
-                                            <td class="px-2"><span class="badge bg-success">{{ (log.total_records - log.failed_records) }} / {{ log.total_records}} uploaded successfully</span> <span class="bx bx-info-circle cursor-pointer" @click="selectLog(log)"></span>
+                                            <td class="px-2">{{ log.status }}</td>
+                                            <td class="px-2"><span class="badge bg-success">{{ (log.success_record) }} / {{ log.total_records}} uploaded successfully</span> <span class="bx bx-info-circle cursor-pointer" @click="selectLog(log)"></span>
                                             </td>
                                         </tr>
                                     </template>

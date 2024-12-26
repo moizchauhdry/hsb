@@ -446,6 +446,7 @@ class PolicyController extends Controller
             $batch = Batch::create([
                 'total_records' => $totalRows,
                 'failed_records' => 0,
+                'status' => 'In progress',
             ]);
 
             if ($type == "1") {
