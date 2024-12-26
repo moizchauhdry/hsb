@@ -200,7 +200,7 @@ const error_logs_count = usePage().props.error_logs.data.length;
                 <p class="mt-1 text-sm text-gray-600">
                     The following discrepancies were found in the selected log:
                 </p>
-                <hr />
+                <hr>
 
                 <div class="mt-4">
                     <ul>
