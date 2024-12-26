@@ -54,6 +54,10 @@ class PolicyClaim extends Model
                 $q->whereMonth('pc.' . $filter['date_type'], $filter['month']);
             });
 
+            $query->when($filter['policy_id'], function ($q) use ($filter) {
+                $q->where('p.id', $filter['policy_id']);
+            });
+
             $query->when($filter['client'], function ($q) use ($filter) {
                 $q->where('p.client_id', $filter['client']);
             });

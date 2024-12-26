@@ -54,6 +54,8 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/selected-client/{id}', [ClientController::class, 'selectedClient'])->name('client.selected-client')->middleware('permission:client_update');
         Route::post('/assign-client', [ClientController::class, 'assignClient'])->name('client.assign-client')->middleware('permission:client_update');
+
+        Route::any('/groups/list', [ClientController::class, 'groupIndex'])->name('client.group.index')->middleware('permission:client_list');
     });
 
     Route::prefix('cobs')->group(function () {
