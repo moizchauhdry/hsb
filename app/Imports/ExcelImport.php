@@ -192,6 +192,7 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
                     } else {
                         Policy::create($policy_data);
                     }
+                    $this->batch->increment('success_record');
                 }
             } catch (\Exception $e) {
 
