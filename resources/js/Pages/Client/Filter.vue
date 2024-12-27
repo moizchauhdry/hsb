@@ -151,8 +151,14 @@ const submit = () => {
     const queryParams = new URLSearchParams(filters).toString();
 
     var urlWithFilters;
+    
+    if (props.filter_route === 'group') {
+        urlWithFilters = `${route("client.group.index", slug)}?${queryParams}`;
+    }
 
-    urlWithFilters = `${route("client.index")}?${queryParams}`;
+    if (props.filter_route === 'client') {
+        urlWithFilters = `${route("client.index")}?${queryParams}`;
+    }
 
     form.post(urlWithFilters, {
         preserveScroll: true,
