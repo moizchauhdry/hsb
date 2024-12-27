@@ -70,8 +70,7 @@ const generateFilterUrl2 = (client_ids) => {
                         </nav>
                     </div>
                     <div class="ms-auto">
-                        <!-- <CreateEdit ref="user_create_edit_ref" v-bind="$props"></CreateEdit> -->
-                        <!-- <Filter></Filter> -->
+                        <Filter :filter_route="'group'"></Filter>
                     </div>
                 </div>
 

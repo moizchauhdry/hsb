@@ -64,7 +64,7 @@ const generateFilterUrl = (client_id) => {
                     </div>
                     <div class="ms-auto">
                         <CreateEdit ref="user_create_edit_ref" v-bind="$props"></CreateEdit>
-                        <Filter></Filter>
+                        <Filter :filter_route="'client'"></Filter>
                     </div>
                 </div>
 
