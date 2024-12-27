@@ -2,7 +2,7 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, Link, usePage, useForm } from "@inertiajs/vue3";
 import { ref } from "vue";
-import PolicyFilter from "@/Pages/Policy/PolicyFilter.vue";
+import PolicyFilter from "@/Pages/Policy/Partial/PolicyFilter.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SuccessButton from "@/Components/SuccessButton.vue";
 import Paginate from "@/Components/Paginate.vue";

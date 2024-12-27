@@ -4,12 +4,15 @@ import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
 import { ref } from "vue";
 
 import SecondaryButton from "@/Components/SecondaryButton.vue";
-import PolicyDetailComponent from "./PolicyDetailComponent.vue";
-import PolicyAmountComponent from "./PolicyAmountComponent.vue";
-import PolicyBrokerageComponent from "./PolicyBrokerageComponent.vue";
-import PolicyClaimComponent from "./PolicyClaimComponent.vue";
-import PolicyNoteComponent from "./PolicyNoteComponent.vue";
-import PolicyUploadComponent from "./PolicyUploadComponent.vue";
+import PolicyDetailComponent from "./Detail/PolicyDetailComponent.vue";
+import PolicyAmountComponent from "./Detail/PolicyAmountComponent.vue";
+import PolicyBrokerageComponent from "./Detail/PolicyBrokerageComponent.vue";
+import PolicyClaimComponent from "./Detail/PolicyClaimComponent.vue";
+import PolicyNoteComponent from "./Detail/PolicyNoteComponent.vue";
+import PolicyUploadComponent from "./Detail/PolicyUploadComponent.vue";
+import EndorsementComponent from "./Detail/EndorsementComponent.vue";
+import RenewalComponent from "./Detail/RenewalComponent.vue";
+import LeaderComponent from "./Detail/LeaderComponent.vue";
 
 defineProps({
     policy: Object,
@@ -17,6 +20,9 @@ defineProps({
     policyNotes: Object,
     policy_claims: Array,
     policyUploads: Array,
+    endorsements: Array,
+    renewals: Array,
+    leads: Array,
     assetUrl: Object,
     // desiredSingleOpenBehavior: {
     //     type: Boolean,
@@ -134,6 +140,24 @@ const tabs = ref([
         title: 'Policy Uploads',
         icon: 'bx bx-upload font-18 me-1',
         component: PolicyUploadComponent,
+    },
+    {
+        id: 'endorsement_component',
+        title: 'Endorsements',
+        icon: 'bx bx-note font-18 me-1',
+        component: EndorsementComponent,
+    },
+    {
+        id: 'renewal_component',
+        title: 'Renewals',
+        icon: 'bx bx-note font-18 me-1',
+        component: RenewalComponent,
+    },
+    {
+        id: 'policy_leads',
+        title: 'Policy Leads',
+        icon: 'bx bx-note font-18 me-1',
+        component: LeaderComponent,
     },
 ]);
 

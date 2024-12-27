@@ -8,9 +8,9 @@ import SecondaryButton from "@/Components/SecondaryButton.vue";
 import Paginate from "@/Components/Paginate.vue";
 import Filter from "./Filter.vue";
 
-import ClaimCreateEdit from "../ClaimCreateEdit.vue";
-import ClaimNote from "./Notes.vue";
-import ClaimUpload from "./Upload.vue";
+import CreateEdit from "../Claim/CreateEdit.vue";
+import Note from "../Claim/Note.vue";
+import Upload from "../Claim/Upload.vue";
 
 import moment from 'moment';
 import Search from "@/Components/Search.vue";
@@ -64,9 +64,9 @@ const getDateFormat = (date) => {
                         </nav>
                     </div>
                     <div class="ms-auto">
-                        <ClaimCreateEdit v-bind="$props" ref="claim_create_edit_ref"></ClaimCreateEdit>
-                        <ClaimNote ref="claim_note_ref"></ClaimNote>
-                        <ClaimUpload ref="claim_upload_ref"></ClaimUpload>
+                        <CreateEdit v-bind="$props" ref="claim_create_edit_ref"></CreateEdit>
+                        <Note ref="claim_note_ref"></Note>
+                        <Upload ref="claim_upload_ref"></Upload>
                     </div>
 
                     <div class="ms-auto" style="display: flex; justify-content: space-between; align-items: center;">

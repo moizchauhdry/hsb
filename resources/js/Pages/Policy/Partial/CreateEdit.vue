@@ -8,8 +8,9 @@ import axios from 'axios';
 import SuccessButton from "@/Components/SuccessButton.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 
-defineProps({
+const props = defineProps({
     policy: Object,
+    create: Boolean,
 });
 
 const permission = usePage().props.can;
@@ -263,8 +264,9 @@ watch(() => form.gross_premium, calculatePremium);
 <template>
     <div class="col">
 
-        <PrimaryButton @click="create" class="mr-1" v-if="permission.policy_create"> <i class="bx bx-plus text-lg"></i>
-            Add Policy</PrimaryButton>
+        <PrimaryButton @click="create" class="mr-1" v-if="permission.policy_create && props.create">
+            <i class="bx bx-plus text-lg"></i> Add Policy
+        </PrimaryButton>
 
         <div class="modal fade show" id="exampleLargeModal" tabindex="-1" aria-hidden="true" style="display: block;"
             v-if="modal">
@@ -518,7 +520,8 @@ watch(() => form.gross_premium, calculatePremium);
                                                                     <input type="number" class="form-control"
                                                                         id="percentage" v-model="form.rate_percentage"
                                                                         readonly>
-                                                                    <InputError :message="form.errors.rate_percentage" />
+                                                                    <InputError
+                                                                        :message="form.errors.rate_percentage" />
                                                                 </td>
                                                             </tr>
 
@@ -641,8 +644,8 @@ watch(() => form.gross_premium, calculatePremium);
                                                     v-if="[1, 2].includes(form.current_step)">Next<i
                                                         class='bx bx-right-arrow-alt ms-2'></i></button>
 
-                                                <button class="btn btn-success px-4"
-                                                    v-if="form.current_step == 3">Save & Submit</button>
+                                                <button class="btn btn-success px-4" v-if="form.current_step == 3">Save
+                                                    & Submit</button>
                                             </div>
                                         </div>
                                     </div>

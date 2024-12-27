@@ -213,44 +213,92 @@ class PolicyController extends Controller
 
     public function detail($id)
     {
-        try {
-            $policy = Policy::with(['agency', 'insurer', 'client', 'cob', 'department'])->find($id);
+        $policy = Policy::with(['agency', 'insurer', 'client', 'cob', 'department'])->find($id);
 
-            $policyInstallment = $policy->policyInstallment;
+        // $policyInstallment = $policy->policyInstallment;
 
-            $policyNotes = PolicyNote::where('policy_id', $policy->id)->get();
+        $policyNotes = PolicyNote::where('policy_id', $policy->id)->get();
 
-            $policy_claims = PolicyClaim::where('policy_id', $policy->id)
-                ->orderBy('id', 'desc')
-                ->paginate(25)
-                ->withQueryString()
-                ->through(fn($claim) => [
-                    'data' => $claim,
-                    'claim_at' => getDateTimeFormat($claim->claim_at),
-                    'intimation_at' => getDateTimeFormat($claim->intimation_at),
-                ]);
-
-            $policyUploads = PolicyUpload::where('policy_id', $policy->id)
-                ->paginate(25)
-                ->withQueryString()
-                ->through(fn($policyUpload) => [
-                    'id' => $policyUpload->id,
-                    'upload' => $policyUpload->upload,
-                    'type' => $policyUpload->type
-                ]);
-
-            return Inertia::render('Policy/Detail', [
-                'policy' => $policy,
-                'policyInstallment' => $policyInstallment,
-                'policyNotes' => $policyNotes,
-                'policy_claims' => $policy_claims,
-                'policyUploads' => $policyUploads,
-                'assetUrl' => asset('storage')
+        $policy_claims = PolicyClaim::where('policy_id', $policy->id)
+            ->orderBy('id', 'desc')
+            ->paginate(25)
+            ->withQueryString()
+            ->through(fn($claim) => [
+                'data' => $claim,
+                'claim_at' => getDateTimeFormat($claim->claim_at),
+                'intimation_at' => getDateTimeFormat($claim->intimation_at),
             ]);
-        } catch (ModelNotFoundException $e) {
-            // Handle case when policy with the given ID doesn't exist
-            return response()->json(['error' => 'Policy not found'], 404);
-        }
+
+        $policyUploads = PolicyUpload::where('policy_id', $policy->id)
+            ->paginate(25)
+            ->withQueryString()
+            ->through(fn($policyUpload) => [
+                'id' => $policyUpload->id,
+                'upload' => $policyUpload->upload,
+                'type' => $policyUpload->type
+            ]);
+
+        $endorsements = Policy::query()
+            ->select(
+                'p.id as p_id',
+                'p.policy_no as policy_no',
+                'p.client_id as client_id',
+                'p.policy_period_end as expiry_date',
+                'client.name as client_name',
+                'agency.name as agency_name',
+                'cob.class_name as cob_name',
+                DB::raw('COUNT(DISTINCT pc.id) as claim_count'),
+            )->policiesList($filter = [])
+            ->where('base_doc_no', $policy->policy_no)
+            // ->where('policy_type', 'endorsement')
+            ->groupBy('p.id', 'p.policy_no', 'p.client_id', 'p.policy_period_end', 'client.name', 'agency.name', 'cob.class_name')
+            ->paginate(25)
+            ->withQueryString();
+
+        $renewals = Policy::query()
+            ->select(
+                'p.id as p_id',
+                'p.policy_no as policy_no',
+                'p.client_id as client_id',
+                'p.policy_period_end as expiry_date',
+                'client.name as client_name',
+                'agency.name as agency_name',
+                'cob.class_name as cob_name',
+                DB::raw('COUNT(DISTINCT pc.id) as claim_count'),
+            )->policiesList($filter = [])
+            ->where('base_doc_no', $policy->policy_no)
+            // ->where('policy_type', 'renewal')
+            ->groupBy('p.id', 'p.policy_no', 'p.client_id', 'p.policy_period_end', 'client.name', 'agency.name', 'cob.class_name')
+            ->paginate(25)
+            ->withQueryString();
+
+        $leads = Policy::query()
+            ->select(
+                'p.id as p_id',
+                'p.policy_no as policy_no',
+                'p.client_id as client_id',
+                'p.policy_period_end as expiry_date',
+                'client.name as client_name',
+                'agency.name as agency_name',
+                'cob.class_name as cob_name',
+                DB::raw('COUNT(DISTINCT pc.id) as claim_count'),
+            )->policiesList($filter = [])
+            // ->where('policy_type', 'renewal')
+            ->groupBy('p.id', 'p.policy_no', 'p.client_id', 'p.policy_period_end', 'client.name', 'agency.name', 'cob.class_name')
+            ->paginate(25)
+            ->withQueryString();
+
+        return Inertia::render('Policy/Detail', [
+            'policy' => $policy,
+            // 'policyInstallment' => $policyInstallment,
+            'policyNotes' => $policyNotes,
+            'policy_claims' => $policy_claims,
+            'policyUploads' => $policyUploads,
+            'endorsements' => $endorsements,
+            'renewals' => $renewals,
+            'leads' => $leads,
+            'assetUrl' => asset('storage')
+        ]);
     }
 
     public function delete(Request $request)

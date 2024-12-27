@@ -1,10 +1,10 @@
 <script setup>
 import { ref } from "vue";
 import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
-import ClaimCreateEdit from "./ClaimCreateEdit.vue";
-import ClaimNote from "./Claim/Notes.vue";
-import ClaimUpload from "./Claim/Upload.vue";
 import Paginate from "@/Components/Paginate.vue";
+import CreateEdit from "../Claim/CreateEdit.vue";
+import Note from "../Claim/Note.vue";
+import Upload from "../Claim/Upload.vue";
 
 const { props } = usePage();
 const permission = props.can;
@@ -32,13 +32,13 @@ const claimUpload = (id, policy_id) => {
 </script>
 <template>
 
-    <ClaimNote v-bind="$props" ref="claim_note_ref" v-if="permission.policy_claim"></ClaimNote>
+    <CreateEdit v-bind="$props" ref="claim_create_edit_ref" :create_mode="true">
+    </CreateEdit>
 
-    <ClaimUpload v-bind="$props" ref="claim_upload_ref" v-if="permission.policy_claim">
-    </ClaimUpload>
+    <Note v-bind="$props" ref="claim_note_ref" v-if="permission.policy_claim"></Note>
 
-    <ClaimCreateEdit v-bind="$props" ref="claim_create_edit_ref" :create_mode="true">
-    </ClaimCreateEdit>
+    <Upload v-bind="$props" ref="claim_upload_ref" v-if="permission.policy_claim">
+    </Upload>
 
     <div class="table-responsive mt-2" v-if="permission.policy_claim">
         <table class="table table-bordered text-uppercase" v-if="policy_claims.data.length > 0">
