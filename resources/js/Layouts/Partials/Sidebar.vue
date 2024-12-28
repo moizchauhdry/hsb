@@ -116,11 +116,21 @@ watch(
             </template>
 
             <!-- <template v-if="permission.renewal_list"> -->
-                <li :class="{ 'mm-active': route().current('renewal.index') }">
-                    <Link :href="route('renewal.index')">
+                <li :class="{ 'mm-active': route().current('renewal.client.index') }">
+                    <Link :href="route('renewal.client.index')">
                     <div class="parent-icon"><i class='bx bx-poll'></i>
                     </div>
                     <div class="menu-title">Renewals</div>
+                    </Link>
+                </li>
+            <!-- </template>w -->
+
+            <!-- <template v-if="permission.renewal_list"> -->
+                <li :class="{ 'mm-active': route().current('endorsement.index') }">
+                    <Link :href="route('endorsement.index')">
+                    <div class="parent-icon"><i class='bx bx-poll'></i>
+                    </div>
+                    <div class="menu-title">Endorsements</div>
                     </Link>
                 </li>
             <!-- </template>w -->

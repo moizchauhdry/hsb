@@ -66,6 +66,7 @@ const confirmDelete = (policyId) => {
                     <th style="min-width: 120px">COB Name</th>
                     <th style="min-width: 120px;">Expiry Date</th>
                     <th style="min-width: 80px;">Claims</th>
+                    <th style="min-width: 80px;">Type</th>
                     <th style="min-width: 150px">Action</th>
                 </tr>
             </thead>
@@ -90,6 +91,11 @@ const confirmDelete = (policyId) => {
                                     {{ policy.claim_count }} <i class="bx bx-link-external"></i>
                                 </span>
                             </a>
+                        </td>
+                        <td>
+                            <span class="badge bg-info">
+                                {{ policy.policy_type }}
+                            </span>
                         </td>
                         <td>
                             <IconButton class="m-1" @click="edit(policy.p_id)" v-if="permission.policy_update">

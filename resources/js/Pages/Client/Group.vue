@@ -4,20 +4,13 @@ import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
 import { ref } from "vue";
 import Paginate from "@/Components/Paginate.vue";
 import Search from "@/Components/Search.vue";
-import CreateEdit from "./CreateEdit.vue";
-import IconButton from "@/Components/IconButton.vue";
 import Filter from "./Filter.vue";
 
 const props = defineProps({
     groups: Object,
     filter: Array,
+    page_type: String,
 });
-
-
-const user_create_edit_ref = ref(null);
-const edit = (id) => {
-    user_create_edit_ref.value.edit(id)
-};
 
 const generateFilterUrl = (group_code) => {
     var filters = {
@@ -44,6 +37,16 @@ const generateFilterUrl2 = (client_ids) => {
 
     const queryParams = new URLSearchParams(filters).toString();
     return `${route("policy.index")}?${queryParams}`;
+};
+
+const generateFilterUrl3 = (client_ids) => {
+    var filters = {
+        client: client_ids,
+        policy_type: "renewal",
+    };
+
+    const queryParams = new URLSearchParams(filters).toString();
+    return `${route("renewal.index")}?${queryParams}`;
 };
 </script>
 
@@ -88,8 +91,8 @@ const generateFilterUrl2 = (client_ids) => {
                                         <th style="min-width: 50px;">SR.</th>
                                         <th style="min-width: 250px;">Client Name</th>
                                         <th style="min-width: 80px;">Subsidiaries</th>
-                                        <th style="min-width: 80px;">Policies</th>
-                                        <!-- <th>Action</th> -->
+                                        <th style="min-width: 80px;" v-if="props.page_type == 'policies'">Policies</th>
+                                        <th style="min-width: 80px;" v-if="props.page_type == 'renewal'">Renewals</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -104,18 +107,20 @@ const generateFilterUrl2 = (client_ids) => {
                                                     </span>
                                                 </a>
                                             </td>
-                                            <td>
+                                            <td v-if="props.page_type == 'policies'">
                                                 <a :href="generateFilterUrl2(group.client_ids)" target="_blank">
                                                     <span class="badge bg-dark">
                                                         {{ group.policy_count }} <i class="bx bx-link-external"></i>
                                                     </span>
                                                 </a>
                                             </td>
-                                            <!-- <td>
-                                                <IconButton @click="edit(group.group_id)" title="Edit">
-                                                    <i class="bx bx-edit bx-text-md"></i>
-                                                </IconButton>
-                                            </td> -->
+                                            <td v-if="props.page_type == 'renewal'">
+                                                <a :href="generateFilterUrl3(group.client_ids)" target="_blank">
+                                                    <span class="badge bg-dark">
+                                                        {{ group.renewal_count }} <i class="bx bx-link-external"></i>
+                                                    </span>
+                                                </a>
+                                            </td>
                                         </tr>
                                     </template>
                                 </tbody>

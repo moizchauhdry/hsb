@@ -90,19 +90,19 @@ class Policy extends Model
                 }
             });
 
-            if ($slug == 'renewal') {
-                if ($filter['policy_type']) {
-                    $types = is_array($filter['policy_type']) ? $filter['policy_type'] : explode(',', $filter['policy_type']);
-                    $query->whereIn('p.policy_type', $types);
-                } else {
-                    $query->where('p.policy_type', 'renewal');
-                }
-            } else {
-                $query->when($filter['policy_type'], function ($q) use ($filter) {
-                    $types = is_array($filter['policy_type']) ? $filter['policy_type'] : explode(',', $filter['policy_type']);
-                    $q->whereIn('p.policy_type', $types);
-                });
-            }
+            // if ($slug == 'renewal') {
+            //     if ($filter['policy_type']) {
+            //         $types = is_array($filter['policy_type']) ? $filter['policy_type'] : explode(',', $filter['policy_type']);
+            //         $query->whereIn('p.policy_type', $types);
+            //     } else {
+            //         $query->where('p.policy_type', 'renewal');
+            //     }
+            // } else {
+            //     $query->when($filter['policy_type'], function ($q) use ($filter) {
+            //         $types = is_array($filter['policy_type']) ? $filter['policy_type'] : explode(',', $filter['policy_type']);
+            //         $q->whereIn('p.policy_type', $types);
+            //     });
+            // }
 
             $query->when(!empty($filter['client']), function ($q) use ($filter) {
                 $clients = is_array($filter['client']) ? $filter['client'] : explode(',', $filter['client']);
