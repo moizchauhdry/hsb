@@ -104,6 +104,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/store/claim-upload', [ClaimController::class, 'storeClaimUpload'])->name('claim.store.claim-upload')->middleware('permission:policy_claim');
     });
 
+    Route::prefix('renewal')->group(function () {
+        Route::any('/', [RenewalController::class, 'index'])->name('renewal.index')->middleware('permission:renewal_list');
+    });
+
     Route::prefix('roles')->group(function () {
         Route::get('/', [RoleController::class, 'index'])->name('role.index')->middleware('permission:role_list');
         Route::post('/create', [RoleController::class, 'create'])->name('role.create')->middleware('permission:role_create');

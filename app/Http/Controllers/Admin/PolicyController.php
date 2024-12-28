@@ -250,7 +250,7 @@ class PolicyController extends Controller
                 DB::raw('COUNT(DISTINCT pc.id) as claim_count'),
             )->policiesList($filter = [])
             ->where('base_doc_no', $policy->policy_no)
-            // ->where('policy_type', 'endorsement')
+            ->where('policy_type', 'endorsement')
             ->groupBy('p.id', 'p.policy_no', 'p.client_id', 'p.policy_period_end', 'client.name', 'agency.name', 'cob.class_name')
             ->paginate(25)
             ->withQueryString();
@@ -267,7 +267,7 @@ class PolicyController extends Controller
                 DB::raw('COUNT(DISTINCT pc.id) as claim_count'),
             )->policiesList($filter = [])
             ->where('base_doc_no', $policy->policy_no)
-            // ->where('policy_type', 'renewal')
+            ->where('policy_type', 'renewal')
             ->groupBy('p.id', 'p.policy_no', 'p.client_id', 'p.policy_period_end', 'client.name', 'agency.name', 'cob.class_name')
             ->paginate(25)
             ->withQueryString();

@@ -115,6 +115,16 @@ watch(
                 </li>
             </template>
 
+            <!-- <template v-if="permission.renewal_list"> -->
+                <li :class="{ 'mm-active': route().current('renewal.index') }">
+                    <Link :href="route('renewal.index')">
+                    <div class="parent-icon"><i class='bx bx-poll'></i>
+                    </div>
+                    <div class="menu-title">Renewals</div>
+                    </Link>
+                </li>
+            <!-- </template>w -->
+
             <template v-if="permission.insurer_list || permission.agency_list || permission.cob_list">
                 <li
                     :class="{ 'mm-active': route().current('insurance.index') || route().current('agency.index') || route().current('cob.index') }">
