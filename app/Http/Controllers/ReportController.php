@@ -3,12 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ReportExport;
-use App\Models\Agency;
-use App\Models\BusinessClass;
-use App\Models\Insurance;
 use App\Models\Policy;
-use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
@@ -17,27 +12,7 @@ class ReportController extends Controller
 {
     public function index(Request $request, $slug)
     {
-        $page_count = $request->page_count ?? 10;
-
-        $filter = [
-            'search' => $request->search,
-
-            'date_type' => $request->date_type,
-            'from_date' => $request->from_date,
-            'to_date' => $request->to_date,
-
-            'policy_type' => $request->policy_type,
-            'client' => $request->client,
-            'agency' => $request->agency,
-            'insurer' => $request->insurer,
-            'cob' => $request->cob,
-            'department' => $request->department,
-            'group' => $request->group,
-        ];
-
-        session(['filter' => $filter]);
-
-        $query = Policy::policiesList($filter, $slug);
+        $query = Policy::policiesList($request->all(), $slug);
 
         $grand_total = [
             'sum_insured' => $query->sum('sum_insured'),
@@ -59,7 +34,7 @@ class ReportController extends Controller
 
         return Inertia::render('Report/ListReport', [
             'policies' => $policies,
-            'filter' => $filter,
+            'filter' => session('filter'),
             'grand_total' => $grand_total,
             'slug' => $slug,
         ]);

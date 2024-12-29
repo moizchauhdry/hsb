@@ -34,47 +34,13 @@ class PolicyController extends Controller
     {
         $page_count = $request->page_count ?? 10;
 
-        $filter = [
-            'search' => $request->search,
-
-            'date_type' => $request->date_type,
-            'from_date' => $request->from_date,
-            'to_date' => $request->to_date,
-
-            'policy_type' => $request->policy_type,
-            'client' => $request->client,
-            'agency' => $request->agency,
-            'insurer' => $request->insurer,
-            'cob' => $request->cob,
-            'department' => $request->department,
-            'group' => $request->group,
-        ];
-
-        $policies = Policy::query()
-            ->select(
-                'p.id as p_id',
-                'p.policy_no as policy_no',
-                'p.client_id as client_id',
-                'p.policy_period_end as expiry_date',
-                'p.policy_type as policy_type',
-                'client.name as client_name',
-                'agency.name as agency_name',
-                'cob.class_name as cob_name',
-                DB::raw('COUNT(DISTINCT pc.id) as claim_count'),
-            )
-            ->policiesList($filter)
-            ->whereIn('policy_type', ['new', 'other'])
-            ->when($filter['search'], function ($q) use ($filter) {
-                $q->where('p.id', $filter['search']);
-                $q->orWhere('p.policy_no', "LIKE", "%" . $filter['search'] . "%");
-            })
-            ->groupBy('p.id', 'p.policy_no', 'p.client_id', 'p.policy_period_end', 'client.name', 'agency.name', 'cob.class_name')
+        $policies = Policy::policiesList($request->all(), 'policies')
             ->paginate($page_count)
             ->withQueryString();
 
         return Inertia::render('Policy/Index', [
             'policies' => $policies,
-            'filter' => $filter,
+            'filter' => [],
         ]);
     }
 
@@ -240,55 +206,20 @@ class PolicyController extends Controller
                 'type' => $policyUpload->type
             ]);
 
-        $endorsements = Policy::query()
-            ->select(
-                'p.id as p_id',
-                'p.policy_no as policy_no',
-                'p.client_id as client_id',
-                'p.policy_period_end as expiry_date',
-                'client.name as client_name',
-                'agency.name as agency_name',
-                'cob.class_name as cob_name',
-                DB::raw('COUNT(DISTINCT pc.id) as claim_count'),
-            )->policiesList($filter = [])
+        $endorsements = Policy::policiesList([], 'endorsements')
             ->where('base_doc_no', $policy->policy_no)
-            ->where('policy_type', 'endorsement')
-            ->groupBy('p.id', 'p.policy_no', 'p.client_id', 'p.policy_period_end', 'client.name', 'agency.name', 'cob.class_name')
             ->paginate(25)
             ->withQueryString();
 
-        $renewals = Policy::query()
-            ->select(
-                'p.id as p_id',
-                'p.policy_no as policy_no',
-                'p.client_id as client_id',
-                'p.policy_period_end as expiry_date',
-                'client.name as client_name',
-                'agency.name as agency_name',
-                'cob.class_name as cob_name',
-                DB::raw('COUNT(DISTINCT pc.id) as claim_count'),
-            )->policiesList($filter = [])
-            ->where('base_doc_no', $policy->policy_no)
-            ->where('policy_type', 'renewal')
-            ->groupBy('p.id', 'p.policy_no', 'p.client_id', 'p.policy_period_end', 'client.name', 'agency.name', 'cob.class_name')
-            ->paginate(25)
-            ->withQueryString();
-
-        $leads = Policy::query()
-            ->select(
-                'p.id as p_id',
-                'p.policy_no as policy_no',
-                'p.client_id as client_id',
-                'p.policy_period_end as expiry_date',
-                'client.name as client_name',
-                'agency.name as agency_name',
-                'cob.class_name as cob_name',
-                DB::raw('COUNT(DISTINCT pc.id) as claim_count'),
-            )->policiesList($filter = [])
-            // ->where('policy_type', 'renewal')
-            ->groupBy('p.id', 'p.policy_no', 'p.client_id', 'p.policy_period_end', 'client.name', 'agency.name', 'cob.class_name')
-            ->paginate(25)
-            ->withQueryString();
+        $renewals = Policy::policiesList([], 'renewals')
+        ->where('base_doc_no', $policy->policy_no)
+        ->paginate(25)
+        ->withQueryString();
+        
+        $leads = Policy::policiesList([], 'leads')
+        ->where('leader_policy_no', $policy->policy_no)
+        ->paginate(25)
+        ->withQueryString();
 
         return Inertia::render('Policy/Detail', [
             'policy' => $policy,

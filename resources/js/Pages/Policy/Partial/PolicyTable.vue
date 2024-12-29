@@ -71,8 +71,8 @@ const confirmDelete = (policyId) => {
                 </tr>
             </thead>
             <tbody>
-                <template v-for="(policy, index) in policies.data">
-                    <tr>
+                <template v-if="policies.data.length > 0">
+                    <tr v-for="(policy, index) in policies.data">
                         <td>
                             {{ (policies.current_page - 1) * policies.per_page + index + 1 }}
                         </td>
@@ -93,9 +93,8 @@ const confirmDelete = (policyId) => {
                             </a>
                         </td>
                         <td>
-                            <span class="badge bg-info">
-                                {{ policy.policy_type }}
-                            </span>
+                            <span class="badge bg-info mr-1">{{ policy.policy_type }}</span>
+                            <span class="badge bg-info">{{ policy.lead_type }}</span>
                         </td>
                         <td>
                             <IconButton class="m-1" @click="edit(policy.p_id)" v-if="permission.policy_update">
@@ -113,6 +112,11 @@ const confirmDelete = (policyId) => {
                                 <i class='bx bxs-trash bx-text-md text-danger'></i>
                             </IconButton>
                         </td>
+                    </tr>
+                </template>
+                <template v-else>
+                    <tr>
+                        <td colspan="10" class="text-center">No Record Found</td>
                     </tr>
                 </template>
             </tbody>
