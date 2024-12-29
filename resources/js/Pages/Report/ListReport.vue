@@ -61,7 +61,7 @@ const exportExcel = () => {
                 </div>
 
 
-                <div class="row row-cols-1 row-cols-md-2 row-cols-xxl-4">
+                <div class="row row-cols-1 row-cols-md-3 row-cols-xxl-3">
                     <div class="col">
                         <div class="card radius-10">
                             <div class="card-body">
@@ -70,8 +70,7 @@ const exportExcel = () => {
                                         <p class="mb-0 text-secondary">Total Sum Insured</p>
                                         <h4 class="my-1">{{ format_number(grand_total.sum_insured) }}</h4>
                                     </div>
-                                    <div class="widgets-icons bg-light-info text-info ms-auto"><i
-                                            class='bx bx-dollar'></i>
+                                    <div class="widgets-icons bg-light-info text-info ms-auto">
                                     </div>
                                 </div>
                             </div>
@@ -85,8 +84,7 @@ const exportExcel = () => {
                                         <p class="mb-0 text-secondary">Total Gross Premium</p>
                                         <h4 class="my-1">{{ format_number(grand_total.gross_premium) }}</h4>
                                     </div>
-                                    <div class="widgets-icons bg-light-warning text-warning ms-auto"><i
-                                            class='bx bx-dollar'></i>
+                                    <div class="widgets-icons bg-light-warning text-warning ms-auto">
                                     </div>
                                 </div>
                             </div>
@@ -100,8 +98,7 @@ const exportExcel = () => {
                                         <p class="mb-0 text-secondary">Total Net Premium</p>
                                         <h4 class="my-1">{{ format_number(grand_total.net_premium) }}</h4>
                                     </div>
-                                    <div class="widgets-icons bg-light-success text-success ms-auto"><i
-                                            class='bx bx-dollar'></i>
+                                    <div class="widgets-icons bg-light-success text-success ms-auto">
                                     </div>
                                 </div>
                             </div>
