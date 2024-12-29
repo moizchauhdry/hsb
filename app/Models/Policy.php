@@ -82,7 +82,7 @@ class Policy extends Model
             // 'p.policy_no as policy_no',
             // 'p.client_id as client_id',
             'p.policy_period_end as expiry_date',
-            // 'p.policy_type as policy_type',
+            'prs.name as renewal_status',
             'client.name as client_name',
             'agency.name as agency_name',
             'cob.class_name as cob_name',
@@ -109,6 +109,7 @@ class Policy extends Model
         $query->leftJoin('business_classes as cob', 'cob.id', '=', 'p.cob_id');
         $query->leftJoin('departments as d', 'd.id', '=', 'cob.department_id');
         $query->leftJoin('groups as g', 'g.id', '=', 'cob.group_id');
+        $query->join('policy_renewal_statuses as prs', 'prs.id', '=', 'p.renewal_status_id');
 
         if ($page_type == 'policies') {
             $query->whereIn('policy_type', ['new', 'other']);

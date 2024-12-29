@@ -93,8 +93,9 @@ const confirmDelete = (policyId) => {
                             </a>
                         </td>
                         <td>
-                            <span class="badge bg-info mr-1">{{ policy.policy_type }}</span>
-                            <span class="badge bg-info">{{ policy.lead_type }}</span>
+                            <span class="badge bg-success mr-1">{{ policy.policy_type }}</span>
+                            <span class="badge bg-warning mr-1">{{ policy.lead_type }}</span>
+                            <span class="badge bg-info" v-if="policy.policy_type == 'renewal'">{{ policy.renewal_status }}</span>
                         </td>
                         <td>
                             <IconButton class="m-1" @click="edit(policy.p_id)" v-if="permission.policy_update">
