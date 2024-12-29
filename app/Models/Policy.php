@@ -56,7 +56,7 @@ class Policy extends Model
     // *************************** ****** ***********************
     // *************************** SCOPES ***********************
     // *************************** ****** ***********************
-    public function scopePoliciesList($query, $request, $page_type = null)
+    public function scopePoliciesList($query, $request, $page_type = null, $report = false)
     {
         $role = Auth::user()->roles[0];
 
@@ -75,19 +75,6 @@ class Policy extends Model
         ];
 
         session(['filter' => $filter]);
-
-        $query->select(
-            'p.*',
-            'p.id as p_id',
-            // 'p.policy_no as policy_no',
-            // 'p.client_id as client_id',
-            'p.policy_period_end as expiry_date',
-            'prs.name as renewal_status',
-            'client.name as client_name',
-            'agency.name as agency_name',
-            'cob.class_name as cob_name',
-            DB::raw('COUNT(DISTINCT pc.id) as claim_count'),
-        );
 
         $query->from('policies as p');
 
@@ -109,7 +96,7 @@ class Policy extends Model
         $query->leftJoin('business_classes as cob', 'cob.id', '=', 'p.cob_id');
         $query->leftJoin('departments as d', 'd.id', '=', 'cob.department_id');
         $query->leftJoin('groups as g', 'g.id', '=', 'cob.group_id');
-        $query->join('policy_renewal_statuses as prs', 'prs.id', '=', 'p.renewal_status_id');
+        $query->join('policy_renewal_statuses as renewal_status', 'renewal_status.id', '=', 'p.renewal_status_id');
 
         if ($page_type == 'policies') {
             $query->whereIn('policy_type', ['new', 'other']);
@@ -187,7 +174,38 @@ class Policy extends Model
             });
         }
 
-        $query->groupBy('p.id', 'p.policy_no', 'p.client_id', 'p.policy_period_end', 'client.name', 'agency.name', 'cob.class_name');
+        if ($report == false) {
+            $query->select(
+                'p.id as p_id',
+                'p.policy_no as policy_no',
+                'p.client_id as client_id',
+                'p.policy_period_end as expiry_date',
+                'p.policy_type as policy_type',
+                'p.lead_type as policy_lead_type',
+                'renewal_status.name as renewal_status',
+                'client.name as client_name',
+                'agency.name as agency_name',
+                'cob.class_name as cob_name',
+                DB::raw('COUNT(DISTINCT pc.id) as claim_count'),
+            );
+
+            $query->groupBy(
+                'p.id',
+                'p.policy_no',
+                'p.client_id',
+                'p.policy_period_end',
+                'p.policy_type',
+                'p.lead_type',
+                'renewal_status.name',
+                'client.name',
+                'agency.name',
+                'cob.class_name'
+            );
+        }
+
+        if ($report == true) {
+            $query->select('p.*');
+        }
 
         $query->orderBy('p.id', 'desc');
 
