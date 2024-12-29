@@ -11,6 +11,8 @@ use App\Http\Controllers\Admin\InsuranceController;
 use App\Http\Controllers\Admin\BusinessClassController;
 use App\Http\Controllers\Admin\ClaimController;
 use App\Http\Controllers\Admin\ClientController;
+use App\Http\Controllers\Admin\EndorsementController;
+use App\Http\Controllers\Admin\RenewalController;
 use App\Http\Controllers\ExcelImportController;
 use App\Http\Controllers\ReportController;
 
@@ -102,6 +104,16 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/fetch/claim-uploads/{claim_id}/{policy_id}', [ClaimController::class, 'fetchClaimUploads'])->name('claim.fetch.claim-uploads')->middleware('permission:policy_claim');
         Route::post('/store/claim-upload', [ClaimController::class, 'storeClaimUpload'])->name('claim.store.claim-upload')->middleware('permission:policy_claim');
+    });
+
+    Route::prefix('renewals')->group(function () {
+        Route::any('/', [RenewalController::class, 'index'])->name('renewal.index');
+        Route::any('/clients', [RenewalController::class, 'clientList'])->name('renewal.client.index');
+    });
+
+    Route::prefix('endorsements')->group(function () {
+        Route::any('/', [EndorsementController::class, 'index'])->name('endorsement.index');
+        // ->middleware('permission:renewal_list');
     });
 
     Route::prefix('roles')->group(function () {

@@ -90,6 +90,12 @@ class PermissionSeeder extends Seeder
             // Setting 110
             ['name' => 'setting', 'guard_name' => 'web', 'order' => 110, 'level' => 1],
             ['name' => 'excel_import', 'guard_name' => 'web', 'order' => 111, 'level' => 2],
+
+            // Renewal 120
+            ['name' => 'renewal', 'guard_name' => 'web', 'order' => 120, 'level' => 1],
+            ['name' => 'renewal_list', 'guard_name' => 'web', 'order' => 121, 'level' => 2],
+            ['name' => 'renewal_create', 'guard_name' => 'web', 'order' => 122, 'level' => 2],
+            ['name' => 'renewal_update', 'guard_name' => 'web', 'order' => 123, 'level' => 2],
         ];
 
         foreach ($permissions as $permission) {

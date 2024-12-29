@@ -4,12 +4,14 @@ import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
 import { ref } from "vue";
 
 import SecondaryButton from "@/Components/SecondaryButton.vue";
-import PolicyDetailComponent from "./PolicyDetailComponent.vue";
-import PolicyAmountComponent from "./PolicyAmountComponent.vue";
-import PolicyBrokerageComponent from "./PolicyBrokerageComponent.vue";
-import PolicyClaimComponent from "./PolicyClaimComponent.vue";
-import PolicyNoteComponent from "./PolicyNoteComponent.vue";
-import PolicyUploadComponent from "./PolicyUploadComponent.vue";
+import PolicyDetailComponent from "./Detail/PolicyDetailComponent.vue";
+import PolicyAmountComponent from "./Detail/PolicyAmountComponent.vue";
+import PolicyBrokerageComponent from "./Detail/PolicyBrokerageComponent.vue";
+import PolicyClaimComponent from "./Detail/PolicyClaimComponent.vue";
+import PolicyNoteComponent from "./Detail/PolicyNoteComponent.vue";
+import PolicyUploadComponent from "./Detail/PolicyUploadComponent.vue";
+import EndorsementComponent from "./Detail/EndorsementComponent.vue";
+import LeaderComponent from "./Detail/LeaderComponent.vue";
 
 defineProps({
     policy: Object,
@@ -17,85 +19,12 @@ defineProps({
     policyNotes: Object,
     policy_claims: Array,
     policyUploads: Array,
+    endorsements: Array,
+    renewals: Array,
+    leads: Array,
     assetUrl: Object,
-    // desiredSingleOpenBehavior: {
-    //     type: Boolean,
-    //     default: false,
-    // },
 });
 
-// const edit_mode = ref(false);
-
-// const toggleAccordion = (index) => {
-//     isOpen.value[index] = !isOpen.value[index];
-//     if (props.desiredSingleOpenBehavior) {
-//         isOpen.value.fill(false, 0, index);
-//         isOpen.value.fill(false, index + 1);
-//     }
-// };
-
-// const forms = [];
-
-// if (props.policyInstallment && props.policyInstallment.length > 0) {
-//     for (let i = 0; i < Number(props.policy.installment_plan); i++) {
-//         const formFields = i < props.policyInstallment.length ? {
-//             due_date: props.policyInstallment[i].due_date || "",
-//             gross_premium: props.policyInstallment[i].gross_premium || "",
-//             net_premium: props.policyInstallment[i].net_premium || "",
-//             payment_status: props.policyInstallment[i].payment_status || "",
-//             edit_mode: true,
-//         } : {
-//             due_date: "",
-//             gross_premium: "",
-//             net_premium: "",
-//             payment_status: "",
-//             edit_mode: false,
-//         };
-//         const form = useForm(formFields);
-//         forms.push(form);
-//     }
-// } else {
-//     for (let i = 0; i < Number(props.policy.installment_plan); i++) {
-//         const initialState = {
-//             due_date: "",
-//             gross_premium: "",
-//             net_premium: "",
-//             payment_status: "",
-//             edit_mode: false,
-//         };
-//         const form = useForm(initialState);
-//         forms.push(form);
-//     }
-// }
-
-
-// const submit = () => {
-//     if (forms && forms.length > 0) {
-//         forms.forEach(proxyData => {
-
-//             if (!proxyData) return;
-//             const data = { ...proxyData };
-
-//             if (data.due_date !== '' && data.gross_premium !== '' && data.net_premium !== '' && data.payment_status !== '') {
-
-//                 const formFields = {
-//                     policy_id: JSON.parse(JSON.stringify((props.policy.id))) ?? "",
-//                     due_date: data.due_date || "",
-//                     gross_premium: data.gross_premium || "",
-//                     net_premium: data.net_premium || "",
-//                     payment_status: data.payment_status || "",
-//                 };
-
-//                 const form = useForm(formFields);
-//                 form.post(route("policy.installmentPlan"), {
-//                     preserveScroll: true,
-//                     onError: () => error(),
-//                     onFinish: () => { },
-//                 });
-//             }
-//         });
-//     }
-// };
 
 const activeTab = ref('policy_detail_component');
 const tabs = ref([
@@ -135,6 +64,18 @@ const tabs = ref([
         icon: 'bx bx-upload font-18 me-1',
         component: PolicyUploadComponent,
     },
+    {
+        id: 'endorsement_component',
+        title: 'Endorsements',
+        icon: 'bx bx-note font-18 me-1',
+        component: EndorsementComponent,
+    },
+    {
+        id: 'co_insurer',
+        title: 'Coinsurer',
+        icon: 'bx bx-note font-18 me-1',
+        component: LeaderComponent,
+    },
 ]);
 
 const setActiveTab = (tabId) => {
@@ -164,7 +105,7 @@ const setActiveTab = (tabId) => {
                     </div>
                     <div class="ms-auto">
                         <Link :href="route('policy.index')" class="ml-5">
-                            <SecondaryButton><i class="bx bx-arrow-back mr-1"></i>Back</SecondaryButton>
+                        <SecondaryButton><i class="bx bx-arrow-back mr-1"></i>Back</SecondaryButton>
                         </Link>
                     </div>
                 </div>
@@ -601,3 +542,83 @@ const setActiveTab = (tabId) => {
     opacity: 0;
 }
 </style>
+
+<!-- props -->
+<!-- 
+// desiredSingleOpenBehavior: {
+    //     type: Boolean,
+    //     default: false,
+    // },
+
+    
+// const edit_mode = ref(false);
+
+// const toggleAccordion = (index) => {
+//     isOpen.value[index] = !isOpen.value[index];
+//     if (props.desiredSingleOpenBehavior) {
+//         isOpen.value.fill(false, 0, index);
+//         isOpen.value.fill(false, index + 1);
+//     }
+// };
+
+// const forms = [];
+
+// if (props.policyInstallment && props.policyInstallment.length > 0) {
+//     for (let i = 0; i < Number(props.policy.installment_plan); i++) {
+//         const formFields = i < props.policyInstallment.length ? {
+//             due_date: props.policyInstallment[i].due_date || "",
+//             gross_premium: props.policyInstallment[i].gross_premium || "",
+//             net_premium: props.policyInstallment[i].net_premium || "",
+//             payment_status: props.policyInstallment[i].payment_status || "",
+//             edit_mode: true,
+//         } : {
+//             due_date: "",
+//             gross_premium: "",
+//             net_premium: "",
+//             payment_status: "",
+//             edit_mode: false,
+//         };
+//         const form = useForm(formFields);
+//         forms.push(form);
+//     }
+// } else {
+//     for (let i = 0; i < Number(props.policy.installment_plan); i++) {
+//         const initialState = {
+//             due_date: "",
+//             gross_premium: "",
+//             net_premium: "",
+//             payment_status: "",
+//             edit_mode: false,
+//         };
+//         const form = useForm(initialState);
+//         forms.push(form);
+//     }
+// }
+
+// const submit = () => {
+//     if (forms && forms.length > 0) {
+//         forms.forEach(proxyData => {
+
+//             if (!proxyData) return;
+//             const data = { ...proxyData };
+
+//             if (data.due_date !== '' && data.gross_premium !== '' && data.net_premium !== '' && data.payment_status !== '') {
+
+//                 const formFields = {
+//                     policy_id: JSON.parse(JSON.stringify((props.policy.id))) ?? "",
+//                     due_date: data.due_date || "",
+//                     gross_premium: data.gross_premium || "",
+//                     net_premium: data.net_premium || "",
+//                     payment_status: data.payment_status || "",
+//                 };
+
+//                 const form = useForm(formFields);
+//                 form.post(route("policy.installmentPlan"), {
+//                     preserveScroll: true,
+//                     onError: () => error(),
+//                     onFinish: () => { },
+//                 });
+//             }
+//         });
+//     }
+// }; -->

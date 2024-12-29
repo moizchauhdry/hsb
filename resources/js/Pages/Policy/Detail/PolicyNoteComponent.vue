@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
 import Paginate from "@/Components/Paginate.vue";
-import AdditionalNotes from "./AdditionalNotes.vue";
+import AdditionalNotes from "../Partial/AdditionalNotes.vue";
 
 const { props } = usePage();
 const permission = props.can;

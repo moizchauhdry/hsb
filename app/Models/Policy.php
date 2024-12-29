@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class Policy extends Model
 {
@@ -55,9 +56,38 @@ class Policy extends Model
     // *************************** ****** ***********************
     // *************************** SCOPES ***********************
     // *************************** ****** ***********************
-    public function scopePoliciesList($query, $filter, $slug = null)
+    public function scopePoliciesList($query, $request, $page_type = null)
     {
         $role = Auth::user()->roles[0];
+
+        $filter = [
+            'search' => $request['search'] ?? "",
+            'date_type' => $request['date_type'] ?? "",
+            'from_date' => $request['from_date'] ?? "",
+            'to_date' => $request['to_date'] ?? "",
+            'policy_type' => $request['policy_type'] ?? "",
+            'client' => $request['client'] ?? "",
+            'agency' => $request['agency'] ?? "",
+            'insurer' => $request['insurer'] ?? "",
+            'cob' => $request['cob'] ?? "",
+            'department' => $request['department'] ?? "",
+            'group' => $request['group'] ?? "",
+        ];
+
+        session(['filter' => $filter]);
+
+        $query->select(
+            'p.*',
+            'p.id as p_id',
+            // 'p.policy_no as policy_no',
+            // 'p.client_id as client_id',
+            'p.policy_period_end as expiry_date',
+            'prs.name as renewal_status',
+            'client.name as client_name',
+            'agency.name as agency_name',
+            'cob.class_name as cob_name',
+            DB::raw('COUNT(DISTINCT pc.id) as claim_count'),
+        );
 
         $query->from('policies as p');
 
@@ -79,8 +109,30 @@ class Policy extends Model
         $query->leftJoin('business_classes as cob', 'cob.id', '=', 'p.cob_id');
         $query->leftJoin('departments as d', 'd.id', '=', 'cob.department_id');
         $query->leftJoin('groups as g', 'g.id', '=', 'cob.group_id');
+        $query->join('policy_renewal_statuses as prs', 'prs.id', '=', 'p.renewal_status_id');
+
+        if ($page_type == 'policies') {
+            $query->whereIn('policy_type', ['new', 'other']);
+        }
+
+        if ($page_type == 'renewals') {
+            $query->where('policy_type', 'renewal');
+        }
+
+        if ($page_type == 'endorsements') {
+            $query->where('policy_type', 'endorsements');
+        }
+
+        if ($page_type == 'leads') {
+            $query->whereIn('lead_type', ['other', 'our']);
+        }
 
         if ($filter) {
+            $query->when($filter['search'], function ($q) use ($filter) {
+                $q->where('p.id', $filter['search']);
+                $q->orWhere('p.policy_no', "LIKE", "%" . $filter['search'] . "%");
+            });
+
             $query->when(!empty($filter['date_type']), function ($q) use ($filter) {
                 if ($filter['from_date']) {
                     $q->where('p.' . $filter['date_type'], ">=", $filter['from_date']);
@@ -90,19 +142,19 @@ class Policy extends Model
                 }
             });
 
-            if ($slug == 'renewal') {
-                if ($filter['policy_type']) {
-                    $types = is_array($filter['policy_type']) ? $filter['policy_type'] : explode(',', $filter['policy_type']);
-                    $query->whereIn('p.policy_type', $types);
-                } else {
-                    $query->where('p.policy_type', 'renewal');
-                }
-            } else {
-                $query->when($filter['policy_type'], function ($q) use ($filter) {
-                    $types = is_array($filter['policy_type']) ? $filter['policy_type'] : explode(',', $filter['policy_type']);
-                    $q->whereIn('p.policy_type', $types);
-                });
-            }
+            // if ($slug == 'renewal') {
+            //     if ($filter['policy_type']) {
+            //         $types = is_array($filter['policy_type']) ? $filter['policy_type'] : explode(',', $filter['policy_type']);
+            //         $query->whereIn('p.policy_type', $types);
+            //     } else {
+            //         $query->where('p.policy_type', 'renewal');
+            //     }
+            // } else {
+            //     $query->when($filter['policy_type'], function ($q) use ($filter) {
+            //         $types = is_array($filter['policy_type']) ? $filter['policy_type'] : explode(',', $filter['policy_type']);
+            //         $q->whereIn('p.policy_type', $types);
+            //     });
+            // }
 
             $query->when(!empty($filter['client']), function ($q) use ($filter) {
                 $clients = is_array($filter['client']) ? $filter['client'] : explode(',', $filter['client']);
@@ -123,17 +175,19 @@ class Policy extends Model
                 $cobs = is_array($filter['cob']) ? $filter['cob'] : explode(',', $filter['cob']);
                 $q->whereIn('p.cob_id', $cobs);
             });
-            
+
             $query->when($filter['department'], function ($q) use ($filter) {
                 $departments = is_array($filter['department']) ? $filter['department'] : explode(',', $filter['department']);
                 $q->whereIn('cob.department_id', $departments);
             });
-            
+
             $query->when($filter['group'], function ($q) use ($filter) {
                 $groups = is_array($filter['group']) ? $filter['group'] : explode(',', $filter['group']);
                 $q->whereIn('cob.group_id', $groups);
             });
         }
+
+        $query->groupBy('p.id', 'p.policy_no', 'p.client_id', 'p.policy_period_end', 'client.name', 'agency.name', 'cob.class_name');
 
         $query->orderBy('p.id', 'desc');
 

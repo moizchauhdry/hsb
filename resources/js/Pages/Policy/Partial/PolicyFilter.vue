@@ -244,14 +244,14 @@ watch(() => form.date_value, (newValue) => {
 
                         <hr style="margin-top: 30px">
 
-                        <div class="col-md-6">
+                        <!-- <div class="col-md-6">
                             <InputLabel for="" value="Policy Type" class="mb-1" />
                             <Multiselect v-model="form.policy_type" :options="policy_types" :searchable="true"
                                 mode="tags">
                             </Multiselect>
-                        </div>
+                        </div> -->
 
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <InputLabel for="" value="Insurer" class="mb-1" />
                             <Multiselect v-model="form.insurer" :options="insurers" :searchable="true" mode="tags">
                             </Multiselect>
@@ -268,8 +268,6 @@ watch(() => form.date_value, (newValue) => {
                             <Multiselect v-model="form.client" :options="clients" :searchable="true" mode="tags">
                             </Multiselect>
                         </div>
-
-                        <hr style="margin-top: 30px">
 
                         <div class="col-md-12">
                             <InputLabel for="" value="Department" class="mb-1" />
