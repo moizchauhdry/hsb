@@ -77,9 +77,10 @@ const confirmDelete = (policyId) => {
                             {{ (policies.current_page - 1) * policies.per_page + index + 1 }}
                         </td>
                         <td>
-                            <a :href="route('policy.detail', policy.p_id)" target="_blank"> {{
-                                policy.policy_no }} <i class="bx bx-link-external"></i>
-                            </a>
+                            <a :href="route('policy.detail', policy.p_id)" target="_blank">
+                                {{policy.policy_no }} <i class="bx bx-link-external"></i>
+                            </a> <br>
+                            <small>{{  policy.base_doc_no}}</small>
                         </td>
                         <td>{{ policy.client_name }}</td>
                         <td>{{ policy.agency_name }}</td>
@@ -95,7 +96,8 @@ const confirmDelete = (policyId) => {
                         <td>
                             <span class="badge bg-success mr-1">{{ policy.policy_type }}</span>
                             <span class="badge bg-warning mr-1">{{ policy.lead_type }}</span>
-                            <span class="badge bg-info" v-if="policy.policy_type == 'renewal'">{{ policy.renewal_status }}</span>
+                            <span class="badge bg-info" v-if="policy.policy_type == 'renewal'">{{ policy.renewal_status
+                                }}</span>
                         </td>
                         <td>
                             <IconButton class="m-1" @click="edit(policy.p_id)" v-if="permission.policy_update">
