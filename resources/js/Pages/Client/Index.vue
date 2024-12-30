@@ -24,15 +24,15 @@ const edit = (id) => {
 const generateFilterUrl = (client_id) => {
     var filters = {
         client: client_id,
-        date_type: props.filter['date_type'],
-        from_date: props.filter['from_date'],
-        to_date: props.filter['to_date'],
-        policy_type: props.filter['policy_type'],
-        agency: props.filter['agency'],
-        insurer: props.filter['insurer'],
-        department: props.filter['department'],
-        group: props.filter['group'],
-        cob: props.filter['cob'],
+        date_type: props.filter['date_type'] ?? "", 
+        from_date: props.filter['from_date'] ?? "", 
+        to_date: props.filter['to_date'] ?? "", 
+        policy_type: props.filter['policy_type'] ?? "", 
+        agency: props.filter['agency'] ?? "", 
+        insurer: props.filter['insurer'] ?? "", 
+        department: props.filter['department'] ?? "", 
+        group: props.filter['group'] ?? "", 
+        cob: props.filter['cob'] ?? "", 
     };
 
     const queryParams = new URLSearchParams(filters).toString();
