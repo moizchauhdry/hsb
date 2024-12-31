@@ -243,7 +243,7 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
                     Policy::create($policy_data);
                 }
             }
-
+            
             if ($this->excel_type == 2) {
                 $policy = Policy::where('policy_no', $row['policy_no'])->first();
                 if ($policy) {

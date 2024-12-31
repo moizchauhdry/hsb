@@ -417,9 +417,9 @@ class PolicyController extends Controller
 
             $error_logs = ErrorLog::where('type', 'excel_import')->delete();
 
-            if ($type == "1") {
+            // if ($type == "1") {
                 Excel::queueImport(new ExcelImport($type), $file);
-            }
+            // }
 
             // Session::put('excel_import', true);
             Log::channel('database')->info('Start Importing .. Please Wait', ['type' => 'excel_import']);

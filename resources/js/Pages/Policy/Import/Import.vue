@@ -20,7 +20,7 @@ const handleFileChange = (event) => {
 
 const form = useForm({
     file: null,
-    type: 1,
+    type: "",
 });
 
 const create = () => {
