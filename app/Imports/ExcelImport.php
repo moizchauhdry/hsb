@@ -188,52 +188,101 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
                 $policy_data['client_id'] = $client_id;
             }
 
-            $policy_data = [
-                'policy_no' => $row['policy_no'],
+            // $policy_data = [
+            //     'policy_no' => $row['policy_no'],
 
-                'client_id' => $client_id,
-                'insurer_id' => $insurer_id,
-                'cob_id' => $cob_id,
-                'department_id' => $department_id,
-                'agency_id' => $agency_id,
-                'agency_code' => $agency_code,
+            //     'client_id' => $client_id,
+            //     'insurer_id' => $insurer_id,
+            //     'cob_id' => $cob_id,
+            //     'department_id' => $department_id,
+            //     'agency_id' => $agency_id,
+            //     'agency_code' => $agency_code,
 
+            //     'child_agency_name' => $row['child_agency_name'] ?? null,
+            //     'leader_name' => $row['leader_name'] ?? null,
+            //     'leader_policy_no' => $row['leader_policy_no'] ?? null,
+
+            //     'lead_type' => $this->getLeadType($row),
+
+            //     'date_of_issuance' => $date_of_issuance,
+            //     'policy_period_start' => $policy_period_start,
+            //     'policy_period_end' => $policy_period_end,
+
+            //     'sum_insured' => $sum_insured,
+            //     'gross_premium_100' => $gross_premium_100,
+            //     'gross_premium' => $gross_premium,
+            //     'net_premium_100' => $net_premium_100,
+            //     'net_premium' => $net_premium,
+            //     'rate_percentage' => $rate_percentage,
+            //     'gp_collected' => $gp_collected,
+
+            //     'brokerage_percentage' => $brokerage_percentage,
+            //     'brokerage_amount' => $brokerage_amount,
+            //     'brokerage_received_amount' => $brokerage_received_amount,
+
+            //     'base_doc_no' => $row['base_doc_no'] ?? null,
+            //     'policy_type' => $this->getPolicyType($row)['policy_type'],
+            //     'policy_type_other' => $this->getPolicyType($row)['policy_type_other'],
+            //     'insurance_type' => $row['insurance_type'] ?? null,
+            //     'branch' => $row['branch'] ?? NULL,
+
+            //     'receipt_no' => $row['receipt_no'] ?? NULL,
+            //     // 'receipt_date' => $row['receipt_date'],
+            //     'receipt_amount' => $row['receipt_amount'] ?? NULL,
+
+            //     'excel_import' => true,
+            //     'excel_import_at' => Carbon::now(),
+            //     'user_id' => auth()->id(),
+            // ];
+
+            $policy_data = array_filter([
+                'policy_no' => $row['policy_no'] ?? null,
+            
+                'client_id' => $client_id ?? null,
+                'insurer_id' => $insurer_id ?? null,
+                'cob_id' => $cob_id ?? null,
+                'department_id' => $department_id ?? null,
+                'agency_id' => $agency_id ?? null,
+                'agency_code' => $agency_code ?? null,
+            
                 'child_agency_name' => $row['child_agency_name'] ?? null,
                 'leader_name' => $row['leader_name'] ?? null,
                 'leader_policy_no' => $row['leader_policy_no'] ?? null,
-
-                'lead_type' => $this->getLeadType($row),
-
-                'date_of_issuance' => $date_of_issuance,
-                'policy_period_start' => $policy_period_start,
-                'policy_period_end' => $policy_period_end,
-
-                'sum_insured' => $sum_insured,
-                'gross_premium_100' => $gross_premium_100,
-                'gross_premium' => $gross_premium,
-                'net_premium_100' => $net_premium_100,
-                'net_premium' => $net_premium,
-                'rate_percentage' => $rate_percentage,
-                'gp_collected' => $gp_collected,
-
-                'brokerage_percentage' => $brokerage_percentage,
-                'brokerage_amount' => $brokerage_amount,
-                'brokerage_received_amount' => $brokerage_received_amount,
-
+            
+                'lead_type' => $this->getLeadType($row) ?? null,
+            
+                'date_of_issuance' => $date_of_issuance ?? null,
+                'policy_period_start' => $policy_period_start ?? null,
+                'policy_period_end' => $policy_period_end ?? null,
+            
+                'sum_insured' => $sum_insured ?? null,
+                'gross_premium_100' => $gross_premium_100 ?? null,
+                'gross_premium' => $gross_premium ?? null,
+                'net_premium_100' => $net_premium_100 ?? null,
+                'net_premium' => $net_premium ?? null,
+                'rate_percentage' => $rate_percentage ?? null,
+                'gp_collected' => $gp_collected ?? null,
+            
+                'brokerage_percentage' => $brokerage_percentage ?? null,
+                'brokerage_amount' => $brokerage_amount ?? null,
+                'brokerage_received_amount' => $brokerage_received_amount ?? null,
+            
                 'base_doc_no' => $row['base_doc_no'] ?? null,
-                'policy_type' => $this->getPolicyType($row)['policy_type'],
-                'policy_type_other' => $this->getPolicyType($row)['policy_type_other'],
+                'policy_type' => $this->getPolicyType($row)['policy_type'] ?? null,
+                'policy_type_other' => $this->getPolicyType($row)['policy_type_other'] ?? null,
                 'insurance_type' => $row['insurance_type'] ?? null,
-                'branch' => $row['branch'] ?? NULL,
-
-                'receipt_no' => $row['receipt_no'] ?? NULL,
-                // 'receipt_date' => $row['receipt_date'],
-                'receipt_amount' => $row['receipt_amount'] ?? NULL,
-
+                'branch' => $row['branch'] ?? null,
+            
+                'receipt_no' => $row['receipt_no'] ?? null,
+                'receipt_amount' => $row['receipt_amount'] ?? null,
+            
                 'excel_import' => true,
                 'excel_import_at' => Carbon::now(),
                 'user_id' => auth()->id(),
-            ];
+            ], function ($value) {
+                return $value !== null;
+            });
+            
 
             if ($this->excel_type == 1) {
                 $policy = Policy::where('policy_no', $row['policy_no'])->where('policy_type', $row['policy_type'])->first();
