@@ -267,14 +267,14 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
                 'brokerage_amount' => $brokerage_amount,
                 'brokerage_received_amount' => $brokerage_received_amount,
             
-                'base_doc_no' => $row['base_doc_no'],
+                'base_doc_no' => $row['base_doc_no'] ?? null,
                 'policy_type' => $this->getPolicyType($row)['policy_type'],
                 'policy_type_other' => $this->getPolicyType($row)['policy_type_other'],
-                'insurance_type' => $row['insurance_type'],
+                'insurance_type' => $row['insurance_type'] ?? null,
                 'branch' => $row['branch'],
             
-                'receipt_no' => $row['receipt_no'],
-                'receipt_amount' => $row['receipt_amount'],
+                'receipt_no' => $row['receipt_no'] ?? null,
+                'receipt_amount' => $row['receipt_amount'] ?? null,
             
                 'excel_import' => true,
                 'excel_import_at' => Carbon::now(),
