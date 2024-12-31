@@ -107,7 +107,7 @@ const confirmDelete = (policyId) => {
                             <Link :href="route('policy.detail', policy.p_id)" class="m-1"
                                 v-if="permission.policy_detail && detail">
                             <IconButton>
-                                <i class="bx bxs-collection bx-text-md"></i>
+                                <i class="bx bxs-show bx-text-md"></i>
                             </IconButton>
                             </Link>
 
