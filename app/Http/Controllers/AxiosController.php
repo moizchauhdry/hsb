@@ -63,8 +63,8 @@ class AxiosController extends Controller
         $policy_types = [
             ['value' => 'new', 'label' => 'New'],
             ['value' => 'renewal', 'label' => 'Renewal'],
-            ['value' => 'endorsement', 'label' => 'Endorsement'],
-            ['value' => 'other', 'label' => 'Other'],
+            // ['value' => 'endorsement', 'label' => 'Endorsement'],
+            ['value' => 'cover', 'label' => 'Cover Note'],
         ];
 
         $data = [
@@ -120,7 +120,8 @@ class AxiosController extends Controller
     {        
         $cobs = BusinessClass::query()
         ->select('id as value', 'class_name as label')
-        ->whereIn('group_id', $request->group_ids)
+        // ->whereIn('group_id', $request->group_ids)
+        ->whereIn('department_id', $request->department_ids)
         ->orderBy('id', 'asc')
         ->get()
         ->toArray();

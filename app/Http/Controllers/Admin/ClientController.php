@@ -46,7 +46,8 @@ class ClientController extends Controller
                 'users.name as user_name',
                 'users.code as user_code',
                 'users.created_at as user_created_at',
-                DB::raw('COUNT(DISTINCT p.id) as policy_count'),
+                // DB::raw('COUNT(DISTINCT p.id) as policy_count'),
+                DB::raw("COUNT(DISTINCT CASE WHEN p.policy_type IN ('new', 'renewal', 'cover') THEN p.id ELSE NULL END) as policy_count"),
                 DB::raw('COUNT(DISTINCT policy_claims.id) as policy_claim_count'),
                 DB::raw('GROUP_CONCAT(DISTINCT cob.class_name SEPARATOR ", ") as cobs'),
                 DB::raw('GROUP_CONCAT(DISTINCT insurances.name SEPARATOR ", ") as insurers'),
@@ -57,7 +58,7 @@ class ClientController extends Controller
             ->leftJoin('insurances', 'p.insurer_id', '=', 'insurances.id')
             ->role('client')
             ->groupBy('users.id', 'users.name', 'users.email', 'users.code', 'users.created_at')
-            ->orderBy('users.id', 'desc');
+            ->orderBy('policy_count', 'desc');
 
         if ($filter) {
             $query->when($filter['search'], function ($q) use ($filter) {

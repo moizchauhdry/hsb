@@ -25,6 +25,13 @@ use Maatwebsite\Excel\Events\ImportFailed;
 
 class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, WithMultipleSheets, ShouldQueue, WithEvents
 {
+    protected $excel_type;
+
+    function __construct($type)
+    {
+        $this->excel_type = $type;
+    }
+
     /**
      * @param Collection $collection
      */
@@ -175,6 +182,14 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
 
             $policy_data = [
                 'policy_no' => $row['policy_no'],
+            ];
+
+            if (!empty($client_id)) {
+                $policy_data['client_id'] = $client_id;
+            }
+
+            $policy_data = [
+                'policy_no' => $row['policy_no'],
 
                 'client_id' => $client_id,
                 'insurer_id' => $insurer_id,
@@ -220,11 +235,18 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
                 'user_id' => auth()->id(),
             ];
 
-            $policy = Policy::where('policy_no', $row['policy_no'])->first();
-            if ($policy) {
+            if ($this->excel_type == 1) {
+                $policy = Policy::where('policy_no', $row['policy_no'])->where('policy_type', $row['policy_type'])->first();
+                if ($policy) {
+                    $policy->update($policy_data);
+                } else {
+                    Policy::create($policy_data);
+                }
+            }
+
+            if ($this->excel_type == 2) {
+                $policy = Policy::where('policy_no', $row['policy_no'])->first();
                 $policy->update($policy_data);
-            } else {
-                Policy::create($policy_data);
             }
         }
     }
@@ -239,7 +261,7 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
         return [
             // 'Report' => new PolicyImport(), // Replace 'Sheet1' with your sheet's name
             // 0 => new PolicyImport(),
-            0 => new ExcelImport(),
+            0 => new ExcelImport($this->excel_type),
         ];
     }
 
@@ -285,12 +307,14 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
             $policy_type_row = $row['policy_type'];
 
             if ($policy_type_row) {
-                if ($policy_type_row == "NEW") {
+                if ($policy_type_row == "New") {
                     $policy_type = 'new';
                 } else if ($policy_type_row == "Renewed") {
                     $policy_type = 'renewal';
                 } else if ($policy_type_row == "New Cover") {
                     $policy_type = 'cover';
+                } else if ($policy_type_row == "Endorsement") {
+                    $policy_type = 'endorsement';
                 }
             }
         }

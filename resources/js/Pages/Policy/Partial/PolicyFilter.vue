@@ -65,17 +65,17 @@ const fetchDepartments = () => {
         });
 };
 
-const groups = ref([]);
-const fetchGroups = (department_ids) => {
-    axios.post(`/axios/fetch/groups`, { department_ids: department_ids })
-        .then(({ data }) => {
-            groups.value = data.groups;
-        });
-};
+// const cobs = ref([]);
+// const fetchCobs = (group_ids) => {
+//     axios.post(`/axios/fetch/cobs/v2`, { group_ids: group_ids })
+//         .then(({ data }) => {
+//             cobs.value = data.cobs;
+//         });
+// };
 
 const cobs = ref([]);
-const fetchCobs = (group_ids) => {
-    axios.post(`/axios/fetch/cobs/v2`, { group_ids: group_ids })
+const fetchCobs = (department_ids) => {
+    axios.post(`/axios/fetch/cobs/v2`, { department_ids: department_ids })
         .then(({ data }) => {
             cobs.value = data.cobs;
         });
@@ -89,7 +89,7 @@ const form = useForm({
 
     from_date: "",
     to_date: "",
-    
+
     policy_type: [],
     client: [],
     agency: [],
@@ -188,15 +188,16 @@ const format_date = (date) => {
 
 watch(() => form.department, (new_department) => {
     if (new_department && new_department.length > 0) {
-        fetchGroups(form.department);
+        // fetchGroups(form.department);
+        fetchCobs(form.department);
     }
 });
 
-watch(() => form.group, (new_group) => {
-    if (new_group && new_group.length > 0) {
-        fetchCobs(form.group);
-    }
-});
+// watch(() => form.group, (new_group) => {
+//     if (new_group && new_group.length > 0) {
+//         fetchCobs(form.group);
+//     }
+// });
 
 watch(() => form.date_value, (newValue) => {
     if (form.date_value != null) {
@@ -244,12 +245,12 @@ watch(() => form.date_value, (newValue) => {
 
                         <hr style="margin-top: 30px">
 
-                        <!-- <div class="col-md-6">
+                        <div class="col-md-6">
                             <InputLabel for="" value="Policy Type" class="mb-1" />
                             <Multiselect v-model="form.policy_type" :options="policy_types" :searchable="true"
                                 mode="tags">
                             </Multiselect>
-                        </div> -->
+                        </div>
 
                         <div class="col-md-12">
                             <InputLabel for="" value="Insurer" class="mb-1" />
@@ -276,11 +277,11 @@ watch(() => form.date_value, (newValue) => {
                             </Multiselect>
                         </div>
 
-                        <div class="col-md-12">
+                        <!-- <div class="col-md-12">
                             <InputLabel for="" value="Group" class="mb-1" />
                             <Multiselect v-model="form.group" :options="groups" :searchable="true" mode="tags">
                             </Multiselect>
-                        </div>
+                        </div> -->
 
                         <div class="col-md-12">
                             <InputLabel for="" value="Class of Business" class="mb-1" />

@@ -99,7 +99,7 @@ class Policy extends Model
         $query->join('policy_renewal_statuses as renewal_status', 'renewal_status.id', '=', 'p.renewal_status_id');
 
         if ($page_type == 'policies') {
-            $query->whereIn('policy_type', ['new', 'other']);
+            $query->whereIn('policy_type', ['new', 'cover', 'renewal']);
         }
 
         if ($page_type == 'renewals') {
@@ -142,6 +142,11 @@ class Policy extends Model
             //         $q->whereIn('p.policy_type', $types);
             //     });
             // }
+
+            $query->when($filter['policy_type'], function ($q) use ($filter) {
+                $types = is_array($filter['policy_type']) ? $filter['policy_type'] : explode(',', $filter['policy_type']);
+                $q->whereIn('p.policy_type', $types);
+            });
 
             $query->when(!empty($filter['client']), function ($q) use ($filter) {
                 $clients = is_array($filter['client']) ? $filter['client'] : explode(',', $filter['client']);
@@ -207,7 +212,7 @@ class Policy extends Model
             $query->select('p.*');
         }
 
-        $query->orderBy('p.id', 'desc');
+        $query->orderBy('p.policy_period_end', 'desc');
 
         return $query;
     }
