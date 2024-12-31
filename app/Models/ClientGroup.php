@@ -35,7 +35,8 @@ class ClientGroup extends Model
                 'group.code as group_code',
                 'group.name as group_name',
                 DB::raw('COUNT(DISTINCT client.id) as client_count'),
-                DB::raw('COUNT(DISTINCT p.id) as policy_count'),
+                // DB::raw('COUNT(DISTINCT p.id) as policy_count'),
+                DB::raw("COUNT(DISTINCT CASE WHEN p.policy_type IN ('new', 'renewal', 'cover') THEN p.id ELSE NULL END) as policy_count"),
                 DB::raw('GROUP_CONCAT(DISTINCT client.id) as client_ids'),
                 DB::raw("SUM(CASE WHEN p.policy_type = 'renewal' THEN 1 ELSE 0 END) as renewal_count"),
             ])
@@ -43,7 +44,7 @@ class ClientGroup extends Model
             ->leftJoin('policies as p', 'p.client_id', '=', 'client.id')
             ->leftJoin('business_classes as cob', 'p.cob_id', '=', 'cob.id')
             ->groupBy('group.id', 'group.code', 'group.name')
-            ->orderBy('group.id', 'desc');
+            ->orderBy('policy_count', 'desc');
 
         if ($filter) {
             $query->when($filter['search'], function ($q) use ($filter) {

@@ -73,7 +73,7 @@ const close = () => {
 
                             <select id="input21" class="form-select" v-model="form.type">
                                 <option value="1">Policy Import</option>
-                                <!-- <option value="2">Client Import</option> -->
+                                <option value="2">Commission Statement</option>
                             </select>
                             <InputError :message="form.errors.type" />
                         </div>
