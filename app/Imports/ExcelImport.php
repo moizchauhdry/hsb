@@ -38,7 +38,7 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
 
         foreach ($rows as $row) {
 
-            if ($row['insurer_code'] && $row['insurer_name']) {
+            if (isset($row['insurer_code']) && isset($row['insurer_name'])) {
                 $insurer_date = [
                     'code' => $row['insurer_code'],
                     'name' => $row['insurer_name']
@@ -49,7 +49,7 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
                 }
             }
 
-            if ($row['cob_code'] && $row['cob_name']) {
+            if (isset($row['cob_code']) && isset($row['cob_name'])) {
                 $cob_data = [
                     'code' => $row['cob_code'],
                     'class_name' => $row['cob_name']
@@ -60,7 +60,7 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
                 }
             }
 
-            if ($row['department_code'] && $row['department_name']) {
+            if (isset($row['department_code']) && isset($row['department_name'])) {
                 $department_data = [
                     'code' => $row['department_code'],
                     'name' => $row['department_name']
@@ -71,7 +71,7 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
                 }
             }
 
-            if ($row['client_code'] && $row['client_name']) {
+            if (isset($row['client_code']) && isset($row['client_name'])) {
                 $client_data = [
                     'code' => $row['client_code'],
                     'name' => $row['client_name']
@@ -93,12 +93,84 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
             }
 
             $agency_code = NULL;
-            if ($row['agency_code']) {
+            if (isset($row['agency_code'])) {
                 $agency = Agency::where('code', $row['agency_code'])->first();
                 if ($agency) {
                     $agency_id = $agency->id;
                     $agency_code = $agency->code;
                 }
+            }
+
+
+            $date_of_issuance = NULL;
+            if (isset($row['date_of_issuance'])) {
+                $date_of_issuance = Carbon::parse($row['date_of_issuance'])->format('Y-m-d');
+            }
+
+            $policy_period_start = NULL;
+            if (isset($row['policy_period_start'])) {
+                $policy_period_start = Carbon::parse($row['policy_period_start'])->format('Y-m-d');
+            }
+
+            $policy_period_end = NULL;
+            if (isset($row['policy_period_end'])) {
+                $policy_period_end = Carbon::parse($row['policy_period_end'])->format('Y-m-d');
+            }
+
+
+            $sum_insured = NULL;
+            if (isset($row['sum_insured'])) {
+                $sum_insured = (int) str_replace(',', '', $row['sum_insured']);
+            }
+
+            $gross_premium_100 = NULL;
+            if (isset($row['gross_premium_100'])) {
+                $gross_premium_100 = (int) str_replace(',', '', $row['gross_premium_100']);
+            }
+
+            $gross_premium = NULL;
+            if (isset($row['gross_premium'])) {
+                $gross_premium = (int) str_replace(',', '', $row['gross_premium']);
+            }
+
+            $net_premium_100 = NULL;
+            if (isset($row['net_premium_100'])) {
+                $net_premium_100 = (int) str_replace(',', '', $row['net_premium_100']);
+            }
+
+            $net_premium_100 = NULL;
+            if (isset($row['net_premium_100'])) {
+                $net_premium_100 = (int) str_replace(',', '', $row['net_premium_100']);
+            }
+
+            $net_premium = NULL;
+            if (isset($row['net_premium'])) {
+                $net_premium = (int) str_replace(',', '', $row['net_premium']);
+            }
+
+            $rate_percentage = NULL;
+            if (isset($row['rate_percentage'])) {
+                $rate_percentage = (int) str_replace(',', '', $row['rate_percentage']);
+            }
+
+            $gp_collected = NULL;
+            if (isset($row['gp_collected'])) {
+                $gp_collected = (int) str_replace(',', '', $row['gp_collected']);
+            }
+
+            $brokerage_percentage = NULL;
+            if (isset($row['brokerage_percentage'])) {
+                $brokerage_percentage = (int) str_replace(',', '', $row['brokerage_percentage']);
+            }
+
+            $brokerage_amount = NULL;
+            if (isset($row['brokerage_amount'])) {
+                $brokerage_amount = (int) str_replace(',', '', $row['brokerage_amount']);
+            }
+
+            $brokerage_received_amount = NULL;
+            if (isset($row['brokerage_received_amount'])) {
+                $brokerage_received_amount = (int) str_replace(',', '', $row['brokerage_received_amount']);
             }
 
             $policy_data = [
@@ -111,32 +183,32 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
                 'agency_id' => $agency_id,
                 'agency_code' => $agency_code,
 
-                'child_agency_name' => $row['child_agency_name'],
-                'leader_name' => $row['leader_name'],
-                'leader_policy_no' => $row['leader_policy_no'],
+                'child_agency_name' => $row['child_agency_name'] ?? null,
+                'leader_name' => $row['leader_name'] ?? null,
+                'leader_policy_no' => $row['leader_policy_no'] ?? null,
 
                 'lead_type' => $this->getLeadType($row),
 
-                'date_of_issuance' => !empty($row['date_of_issuance']) ? Date::excelToDateTimeObject($row['date_of_issuance'])->format('Y-m-d') : null,
-                'policy_period_start' => !empty($row['policy_period_start']) ? Date::excelToDateTimeObject($row['policy_period_start'])->format('Y-m-d') : null,
-                'policy_period_end' => !empty($row['policy_period_end']) ? Date::excelToDateTimeObject($row['policy_period_end'])->format('Y-m-d') : null,
+                'date_of_issuance' => $date_of_issuance,
+                'policy_period_start' => $policy_period_start,
+                'policy_period_end' => $policy_period_end,
 
-                'sum_insured' => (int) str_replace(',', '', $row['sum_insured']),
-                'gross_premium_100' => (int) str_replace(',', '', $row['gross_premium_100']),
-                'gross_premium' => (int) str_replace(',', '', $row['gross_premium']),
-                'net_premium_100' => (int) str_replace(',', '', $row['net_premium_100']),
-                'net_premium' => (int) str_replace(',', '', $row['net_premium']),
-                'rate_percentage' => (int) str_replace(',', '', $row['rate_percentage']),
-                'gp_collected' => (int) str_replace(',', '', $row['gp_collected']),
+                'sum_insured' => $sum_insured,
+                'gross_premium_100' => $gross_premium_100,
+                'gross_premium' => $gross_premium,
+                'net_premium_100' => $net_premium_100,
+                'net_premium' => $net_premium,
+                'rate_percentage' => $rate_percentage,
+                'gp_collected' => $gp_collected,
 
-                'brokerage_percentage' => (int) str_replace(',', '', $row['brokerage_percentage']),
-                'brokerage_amount' => (int) str_replace(',', '', $row['brokerage_amount']),
-                'brokerage_received_amount' => (int) str_replace(',', '', $row['brokerage_received_amount']),
+                'brokerage_percentage' => $brokerage_percentage,
+                'brokerage_amount' => $brokerage_amount,
+                'brokerage_received_amount' => $brokerage_received_amount,
 
-                'base_doc_no' => $row['base_doc_no'],
+                'base_doc_no' => $row['base_doc_no'] ?? null,
                 'policy_type' => $this->getPolicyType($row)['policy_type'],
                 'policy_type_other' => $this->getPolicyType($row)['policy_type_other'],
-                'insurance_type' => $row['insurance_type'],
+                'insurance_type' => $row['insurance_type'] ?? null,
                 'branch' => $row['branch'] ?? NULL,
 
                 'receipt_no' => $row['receipt_no'] ?? NULL,
@@ -186,16 +258,20 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
 
     public function getLeadType($row)
     {
-        $lead_type = $row['lead_type'];
+        $lead_type = $res = null;
 
-        if ($lead_type == "Direct ( 100%)") {
-            $res = 'direct';
-        } else if ($lead_type == "Other Lead") {
-            $res = 'other';
-        } else if ($lead_type == "Our Lead") {
-            $res = 'our';
-        } else {
-            $res = NULL;
+        if (isset($row['lead_type'])) {
+            $lead_type = $row['lead_type'];
+
+            if ($lead_type == "Direct ( 100%)") {
+                $res = 'direct';
+            } else if ($lead_type == "Other Lead") {
+                $res = 'other';
+            } else if ($lead_type == "Our Lead") {
+                $res = 'our';
+            } else {
+                $res = NULL;
+            }
         }
 
         return $res;
@@ -203,17 +279,19 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
 
     public function getPolicyType($row)
     {
-        $policy_type_row = $row['policy_type'];
         $policy_type = $policy_type_other = NULL;
 
-        if ($policy_type_row) {
-            if ($policy_type_row == "NEW") {
-                $policy_type = 'new';
-            } else if ($policy_type_row == "RENEWAL") {
-                $policy_type = 'renewal';
-            } else {
-                $policy_type = "other";
-                $policy_type_other = $policy_type_row;
+        if (isset($row['policy_type'])) {
+            $policy_type_row = $row['policy_type'];
+
+            if ($policy_type_row) {
+                if ($policy_type_row == "NEW") {
+                    $policy_type = 'new';
+                } else if ($policy_type_row == "Renewed") {
+                    $policy_type = 'renewal';
+                } else if ($policy_type_row == "New Cover") {
+                    $policy_type = 'cover';
+                }
             }
         }
 
