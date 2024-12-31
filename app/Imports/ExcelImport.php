@@ -237,24 +237,24 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
 
             $policy_data = array_filter([
                 'policy_no' => $row['policy_no'],
-            
+
                 'client_id' => $client_id,
                 'insurer_id' => $insurer_id,
                 'cob_id' => $cob_id,
                 'department_id' => $department_id,
                 'agency_id' => $agency_id,
                 'agency_code' => $agency_code,
-            
-                'child_agency_name' => $row['child_agency_name'],
-                'leader_name' => $row['leader_name'],
-                'leader_policy_no' => $row['leader_policy_no'],
-            
+
+                'child_agency_name' => $row['child_agency_name'] ?? null,
+                'leader_name' => $row['leader_name'] ?? null,
+                'leader_policy_no' => $row['leader_policy_no'] ?? null,
+
                 'lead_type' => $this->getLeadType($row),
-            
+
                 'date_of_issuance' => $date_of_issuance,
                 'policy_period_start' => $policy_period_start,
                 'policy_period_end' => $policy_period_end,
-            
+
                 'sum_insured' => $sum_insured,
                 'gross_premium_100' => $gross_premium_100,
                 'gross_premium' => $gross_premium,
@@ -262,27 +262,27 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
                 'net_premium' => $net_premium,
                 'rate_percentage' => $rate_percentage,
                 'gp_collected' => $gp_collected,
-            
+
                 'brokerage_percentage' => $brokerage_percentage,
                 'brokerage_amount' => $brokerage_amount,
                 'brokerage_received_amount' => $brokerage_received_amount,
-            
+
                 'base_doc_no' => $row['base_doc_no'] ?? null,
-                'policy_type' => $this->getPolicyType($row)['policy_type'],
-                'policy_type_other' => $this->getPolicyType($row)['policy_type_other'],
+                'policy_type' => $this->getPolicyType($row)['policy_type'] ?? null,
+                'policy_type_other' => $this->getPolicyType($row)['policy_type_other'] ?? null,
                 'insurance_type' => $row['insurance_type'] ?? null,
-                'branch' => $row['branch'],
-            
+                'branch' => $row['branch'] ?? null,
+
                 'receipt_no' => $row['receipt_no'] ?? null,
                 'receipt_amount' => $row['receipt_amount'] ?? null,
-            
+
                 'excel_import' => true,
                 'excel_import_at' => Carbon::now(),
                 'user_id' => auth()->id(),
             ], function ($value) {
                 return $value !== null;
             });
-            
+
 
             if ($this->excel_type == 1) {
                 $policy = Policy::where('policy_no', $row['policy_no'])->where('policy_type', $row['policy_type'])->first();
@@ -292,7 +292,7 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
                     Policy::create($policy_data);
                 }
             }
-            
+
             if ($this->excel_type == 2) {
                 $policy = Policy::where('policy_no', $row['policy_no'])->first();
                 if ($policy) {
