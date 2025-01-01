@@ -146,6 +146,8 @@ const submit = () => {
         group: form.group,
     };
 
+    console.log(props.filter_route);
+
     const queryParams = new URLSearchParams(filters).toString();
 
     var urlWithFilters;
@@ -154,7 +156,7 @@ const submit = () => {
         urlWithFilters = `${route("report.index", slug)}?${queryParams}`;
     }
 
-    if (props.filter_route === 'policy') {
+    if (props.filter_route === 'policy' || props.filter_route === 'policies' || props.filter_route === 'renewals' || props.filter_route === 'endorsement') {
         urlWithFilters = `${route("policy.index")}?${queryParams}`;
     }
 
@@ -216,7 +218,7 @@ watch(() => form.date_value, (newValue) => {
     </DarkButton>
 
     <Modal :show="modal" @close="closeModal">
-        <form @submit.prevent="edit ? update() : submit()">
+        <form @submit.prevent="submit()">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-900">Search Filters</h2>
 
