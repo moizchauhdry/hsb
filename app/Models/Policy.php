@@ -96,7 +96,7 @@ class Policy extends Model
         $query->leftJoin('business_classes as cob', 'cob.id', '=', 'p.cob_id');
         $query->leftJoin('departments as d', 'd.id', '=', 'cob.department_id');
         $query->leftJoin('groups as g', 'g.id', '=', 'cob.group_id');
-        $query->join('policy_renewal_statuses as renewal_status', 'renewal_status.id', '=', 'p.renewal_status_id');
+        $query->leftJoin('policy_renewal_statuses as renewal_status', 'renewal_status.id', '=', 'p.renewal_status_id');
 
         if ($page_type == 'policies') {
             $query->whereIn('policy_type', ['new', 'cover', 'renewal']);
@@ -107,7 +107,7 @@ class Policy extends Model
         }
 
         if ($page_type == 'endorsements') {
-            $query->where('policy_type', 'endorsements');
+            $query->where('policy_type', 'endorsement');
         }
 
         if ($page_type == 'leads') {
