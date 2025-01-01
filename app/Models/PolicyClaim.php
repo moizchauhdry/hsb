@@ -44,6 +44,7 @@ class PolicyClaim extends Model
         if ($filter) {
             $query->when($filter['search'], function ($q) use ($filter) {
                 $q->where('pc.id', $filter['search']);
+                $q->orWhere('pc.claim_no', "LIKE", "%" . $filter['search'] . "%");
                 $q->orWhere('pc.policy_id', $filter['search']);
                 $q->orWhere('p.policy_no', "LIKE", "%" . $filter['search'] . "%");
                 $q->orWhere('u.name', "LIKE", "%" . $filter['search'] . "%");

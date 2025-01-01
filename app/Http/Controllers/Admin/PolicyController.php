@@ -41,6 +41,7 @@ class PolicyController extends Controller
         return Inertia::render('Policy/Index', [
             'policies' => $policies,
             'filter' => [],
+            'filter_route' => 'policies',
         ]);
     }
 

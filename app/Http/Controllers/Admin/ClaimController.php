@@ -113,9 +113,13 @@ class ClaimController extends Controller
     public function fetchClaimNotes($claim_id, $policy_id)
     {
         $claim_notes = PolicyClaimNote::query()
-            ->where('policy_claim_id', $claim_id)
-            ->where('policy_id', $policy_id)
-            ->orderBy('id', 'desc')
+            ->select('note.*','claim.claim_no as claim_no','u.name as user_name')
+            ->from('policy_claim_notes as note')
+            ->join('policy_claims as claim', 'claim.id', 'note.policy_claim_id')
+            ->join('users as u', 'u.id', 'note.created_by')
+            ->where('note.policy_claim_id', $claim_id)
+            ->where('note.policy_id', $policy_id)
+            ->orderBy('note.id', 'desc')
             ->get()
             ->toArray();
 
@@ -136,6 +140,7 @@ class ClaimController extends Controller
             'policy_id' => $request->policy_id,
             'policy_claim_id' => $request->policy_claim_id,
             'note' => $request->note,
+            'created_by' => auth()->id(),
         ];
 
         $policy_claim_note = PolicyClaimNote::create($data);

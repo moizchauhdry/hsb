@@ -6,6 +6,7 @@ import { ref } from "vue";
 import Modal from "@/Components/Modal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import SuccessButton from "@/Components/SuccessButton.vue";
+import moment from 'moment';
 
 // const { props } = usePage();
 
@@ -54,6 +55,12 @@ const fetchClaimNotes = (id, policy_id) => {
     });
 };
 
+const getDateFormat = (date) => {
+    let parsedDate = moment(date);
+    let formattedDate = parsedDate.format('DD-MM-YYYY');
+    return formattedDate;
+}
+
 defineExpose({ claimNote: (id, policy_id) => claimNote(id, policy_id) });
 </script>
 
@@ -90,19 +97,21 @@ defineExpose({ claimNote: (id, policy_id) => claimNote(id, policy_id) });
                 <table id="example" class="table table-striped table-bordered" style="width:100%">
                   <thead>
                     <tr>
-                      <th>Sr #</th>
                       <th>Note #</th>
-                      <th>Policy/Claim ID</th>
-                      <th>Notes</th>
+                      <th>Claim No</th>
+                      <th>Description</th>
+                      <th>Created At</th>
+                      <th>Created By</th>
                     </tr>
                   </thead>
                   <tbody>
                     <template v-for="(claim_note, index) in claim_notes" :key="claim_note.id">
                       <tr>
-                        <td>{{ ++index }}</td>
                         <td>{{ claim_note.id }}</td>
-                        <td>{{ claim_note.policy_id }}/{{ claim_note.policy_claim_id }}</td>
+                        <td>{{ claim_note.claim_no }}</td>
                         <td>{{ claim_note.note }}</td>
+                        <td>{{ getDateFormat(claim_note.created_at) }}</td>
+                        <td>{{ claim_note.user_name }}</td>
                       </tr>
                     </template>
                   </tbody>

@@ -146,6 +146,8 @@ const submit = () => {
         group: form.group,
     };
 
+    console.log(props.filter_route);
+
     const queryParams = new URLSearchParams(filters).toString();
 
     var urlWithFilters;
@@ -154,7 +156,7 @@ const submit = () => {
         urlWithFilters = `${route("report.index", slug)}?${queryParams}`;
     }
 
-    if (props.filter_route === 'policy') {
+    if (props.filter_route === 'policy' || props.filter_route === 'policies' || props.filter_route === 'renewals' || props.filter_route === 'endorsement') {
         urlWithFilters = `${route("policy.index")}?${queryParams}`;
     }
 
@@ -216,7 +218,7 @@ watch(() => form.date_value, (newValue) => {
     </DarkButton>
 
     <Modal :show="modal" @close="closeModal">
-        <form @submit.prevent="edit ? update() : submit()">
+        <form @submit.prevent="submit()">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-900">Search Filters</h2>
 
@@ -229,11 +231,16 @@ watch(() => form.date_value, (newValue) => {
                         <div class="col-md-6">
                             <InputLabel for="" value="Date Type" class="mb-1" />
                             <select v-model="form.date_type" class="form-control">
-                                <option value="">All</option>
-                                <option value="date_of_issuance">Issuance Date</option>
-                                <option value="policy_period_start">Inception Date</option>
-                                <option value="policy_period_end">Expiry Date</option>
-                                <option value="created_at">Created At</option>
+                                <template v-if="props.filter_route == 'policies' || props.filter_route == 'endorsement'">
+                                    <option value="">All</option>
+                                    <option value="date_of_issuance">Issuance Date</option>
+                                    <option value="policy_period_start">Inception Date</option>
+                                    <option value="policy_period_end">Expiry Date</option>
+                                    <option value="created_at">Created At</option>
+                                </template>
+                                <template v-if="props.filter_route == 'renewals'">
+                                    <option value="policy_period_end">Expiry Date</option>
+                                </template>
                             </select>
                         </div>
 
@@ -245,7 +252,7 @@ watch(() => form.date_value, (newValue) => {
 
                         <hr style="margin-top: 30px">
 
-                        <div class="col-md-6">
+                        <div class="col-md-6" v-if="props.filter_route == 'policies'">
                             <InputLabel for="" value="Policy Type" class="mb-1" />
                             <Multiselect v-model="form.policy_type" :options="policy_types" :searchable="true"
                                 mode="tags">

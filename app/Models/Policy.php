@@ -183,6 +183,7 @@ class Policy extends Model
             $query->select(
                 'p.id as p_id',
                 'p.policy_no as policy_no',
+                'p.base_doc_no as base_doc_no',
                 'p.client_id as client_id',
                 'p.policy_period_end as expiry_date',
                 'p.policy_type as policy_type',

@@ -31,17 +31,18 @@ class EndorsementController extends Controller
         ];
 
         $policies = Policy::query()
-            ->select(
-                'p.id as p_id',
-                'p.policy_no as policy_no',
-                'p.client_id as client_id',
-                'p.policy_period_end as expiry_date',
-                'p.policy_type as policy_type',
-                'client.name as client_name',
-                'agency.name as agency_name',
-                'cob.class_name as cob_name',
-                DB::raw('COUNT(DISTINCT pc.id) as claim_count'),
-            )
+            // ->select(
+            //     'p.id as p_id',
+            //     'p.policy_no as policy_no',
+            //     'p.base_doc_no as base_doc_no',
+            //     'p.client_id as client_id',
+            //     'p.policy_period_end as expiry_date',
+            //     'p.policy_type as policy_type',
+            //     'client.name as client_name',
+            //     'agency.name as agency_name',
+            //     'cob.class_name as cob_name',
+            //     DB::raw('COUNT(DISTINCT pc.id) as claim_count'),
+            // )
             ->policiesList($filter)
             ->whereIn('policy_type', ['endorsement'])
             ->when($filter['search'], function ($q) use ($filter) {
@@ -55,6 +56,7 @@ class EndorsementController extends Controller
         return Inertia::render('Policy/Index', [
             'policies' => $policies,
             'filter' => $filter,
+            'filter_route' => 'endorsement',
         ]);
     }
 }
