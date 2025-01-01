@@ -46,8 +46,8 @@ class ClientController extends Controller
                 'users.name as user_name',
                 'users.code as user_code',
                 'users.created_at as user_created_at',
-                // DB::raw('COUNT(DISTINCT p.id) as policy_count'),
-                DB::raw("COUNT(DISTINCT CASE WHEN p.policy_type IN ('new', 'renewal', 'cover') THEN p.id ELSE NULL END) as policy_count"),
+                DB::raw('COUNT(DISTINCT p.id) as policy_count'),
+                // DB::raw("COUNT(DISTINCT CASE WHEN p.policy_type IN ('new', 'renewal', 'cover') THEN p.id ELSE NULL END) as policy_count"),
                 DB::raw('COUNT(DISTINCT policy_claims.id) as policy_claim_count'),
                 DB::raw('GROUP_CONCAT(DISTINCT cob.class_name SEPARATOR ", ") as cobs'),
                 DB::raw('GROUP_CONCAT(DISTINCT insurances.name SEPARATOR ", ") as insurers'),
@@ -57,10 +57,12 @@ class ClientController extends Controller
             ->leftJoin('business_classes as cob', 'p.cob_id', '=', 'cob.id')
             ->leftJoin('insurances', 'p.insurer_id', '=', 'insurances.id')
             ->role('client')
+            ->whereIn('p.policy_type', ['new', 'renewal', 'cover'])
             ->groupBy('users.id', 'users.name', 'users.email', 'users.code', 'users.created_at')
             ->orderBy('policy_count', 'desc');
 
         if ($filter) {
+            
             $query->when($filter['search'], function ($q) use ($filter) {
                 $q->where('users.code', $filter['search'])
                     ->orWhere('users.name', 'LIKE', '%' . $filter['search'] . '%')
@@ -111,9 +113,15 @@ class ClientController extends Controller
                 $q->whereIn('cob.group_id', $groups);
             });
 
-            $query->when($filter['client_group_code'], function ($q) use ($filter) {
-                $client_groups = is_array($filter['client_group_code']) ? $filter['client_group_code'] : explode(',', $filter['client_group_code']);
-                $q->whereIn('users.client_group_code', $client_groups);
+            $query->when($filter['client_group_code'] !== null, function ($q) use ($filter) {
+                if ($filter['client_group_code'] === 0 || $filter['client_group_code'] === '0') {
+                    $q->where('users.client_group_code', 0);
+                } else {
+                    $client_groups = is_array($filter['client_group_code']) 
+                        ? $filter['client_group_code'] 
+                        : explode(',', $filter['client_group_code']);
+                    $q->whereIn('users.client_group_code', $client_groups);
+                }
             });
         }
 
