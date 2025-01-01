@@ -198,6 +198,7 @@ class Policy extends Model
             $query->groupBy(
                 'p.id',
                 'p.policy_no',
+                'p.base_doc_no',
                 'p.client_id',
                 'p.policy_period_end',
                 'p.policy_type',
