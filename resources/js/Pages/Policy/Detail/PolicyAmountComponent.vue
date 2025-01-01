@@ -30,42 +30,36 @@ export default {
         <table class="table table-bordered text-uppercase">
             <tbody>
                 <tr>
-                    <th colspan="4" class="bg-warning text-white">
+                    <th colspan="2" class="bg-warning text-white">
                         Policy Amount
                     </th>
                 </tr>
+
                 <tr>
                     <th>Sum insured </th>
                     <td> PKR {{ format_number(policy.sum_insured) }} </td>
-
-                    <th>Rate Percentage</th>
-                    <td> {{ policy.rate_percentage }} % </td>
                 </tr>
-                <tr>
-                    <th>Gross Premium </th>
-                    <td> PKR {{ format_number(policy.gross_premium) }} </td>
 
-                    <th>Gross Premium 100%</th>
-                    <td> PKR {{ format_number(policy.gross_premium_100) }} </td>
-                </tr>
                 <tr>
-                    <th>Net Premium 100%</th>
-                    <td> PKR {{ format_number(policy.net_premium_100) }} </td>
-
                     <th>Net Premium </th>
                     <td> PKR {{ format_number(policy.net_premium) }} </td>
                 </tr>
-                <tr>
-                    <th>Gross Premium Received</th>
-                    <td> PKR {{ format_number(policy.gross_premium_received) }} </td>
 
-                    <th>Gross Premium Outstanding</th>
-                    <td> PKR {{ format_number(policy.gross_premium_outstanding) }} </td>
-                </tr>
                 <tr>
-                    <th>Outstanding 100%</th>
-                    <td> PKR {{ format_number(policy.outstanding_100) }} </td>
+                    <th>Gross Premium </th>
+                    <td> PKR {{ format_number(policy.gross_premium) }} </td>
                 </tr>
+
+                <tr>
+                    <th>GP Collected</th>
+                    <td> PKR {{ format_number(policy.gp_collected) }} </td>
+                </tr>
+
+                <tr>
+                    <th>Gross Premium Outstanding</th>
+                    <td> PKR {{ format_number(policy.gross_premium - policy.gp_collected) }} </td>
+                </tr>
+
             </tbody>
         </table>
     </div>

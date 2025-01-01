@@ -85,7 +85,7 @@ const getDateFormat = (date) => {
                                 <thead class="table-light">
                                     <tr>
                                         <th class="px-2">Sr #</th>
-                                        <th class="px-2">Claim ID</th>
+                                        <th class="px-2">Claim No</th>
                                         <th class="px-2">Policy</th>
                                         <th class="px-2">Claim Date</th>
                                         <th class="px-2">Intimation Date</th>
@@ -101,7 +101,7 @@ const getDateFormat = (date) => {
                                         <tr>
                                             <td class="px-2">{{ (claims.current_page - 1) * claims.per_page + index + 1
                                                 }}</td>
-                                            <td class="px-2">{{ claim.id }}</td>
+                                            <td class="px-2">{{ claim.claim_no }}</td>
                                             <td class="px-2">
                                                 <a :href="route('policy.detail', claim.policy_id)" target="_blank"> {{
                                                     claim.policy_no }} <i class="bx bx-link-external"></i>

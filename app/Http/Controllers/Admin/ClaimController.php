@@ -59,6 +59,7 @@ class ClaimController extends Controller
             'intimation_at' => ['required'],
             'survivor_name' => ['required'],
             'contact_no' => ['required'],
+            'claim_no' => ['required'],
         ]);
 
         $data = [
@@ -69,6 +70,7 @@ class ClaimController extends Controller
             'intimation_at' => setDateFormat($request->intimation_at),
             'survivor_name' => $request->survivor_name,
             'contact_no' => $request->contact_no,
+            'claim_no' => $request->claim_no,
         ];
 
         PolicyClaim::create($data);

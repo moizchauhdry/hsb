@@ -50,8 +50,7 @@ const claimUpload = (id, policy_id) => {
                 </tr>
                 <tr>
                     <th>Sr #</th>
-                    <th>Claim ID</th>
-                    <th>Policy ID</th>
+                    <th>Claim No</th>
                     <th>Claim Date</th>
                     <th>Surveyor Name</th>
                     <th>Surveyor Contact</th>
@@ -64,8 +63,7 @@ const claimUpload = (id, policy_id) => {
                     <tr>
                         <td>{{ (policy_claims.current_page - 1) * policy_claims.per_page + index +
                             1 }}</td>
-                        <td>{{ claim.data.id }}</td>
-                        <td>{{ claim.data.policy_id }}</td>
+                        <td>{{ claim.data.claim_no }}</td>
                         <td>{{ claim.claim_at }}</td>
                         <td>{{ claim.data.survivor_name }}</td>
                         <td>{{ claim.data.contact_no }}</td>

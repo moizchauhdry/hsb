@@ -30,6 +30,7 @@ const form = useForm({
     intimation_at: "",
     survivor_name: "",
     contact_no: "",
+    claim_no: "",
 });
 
 const create = () => {
@@ -126,13 +127,18 @@ defineExpose({ claimEdit: (id) => claimEdit(id) });
                             </select>
                             <InputError :message="form.errors.status" />
                         </div>
-
+                        <div class="col-md-6">
+                            <InputLabel for="" value="Claim No" class="mb-1" />
+                            <input type="text" class="form-control" v-model="form.claim_no">
+                            <InputError :message="form.errors.claim_no" />
+                        </div>
                         <div class="col-md-6">
                             <InputLabel for="" value="Claim Date" class="mb-1" />
                             <VueDatePicker v-model="form.claim_at" :enable-time-picker="true" :show-time="true">
                             </VueDatePicker>
                             <InputError :message="form.errors.claim_at" />
                         </div>
+                        
                         <div class="col-md-6">
                             <InputLabel for="" value="Intimation Date" class="mb-1" />
                             <VueDatePicker v-model="form.intimation_at" :enable-time-picker="true" :show-time="true">

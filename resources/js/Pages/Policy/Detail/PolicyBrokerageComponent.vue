@@ -30,28 +30,34 @@ export default {
         <table class="table table-bordered text-uppercase">
             <tbody>
                 <tr>
-                    <th colspan="4" class="bg-warning text-white">
+                    <th colspan="2" class="bg-warning text-white">
                         Brokerage Amount
                     </th>
                 </tr>
                 <tr>
                     <th>Brokerage/Commissioned Amount</th>
                     <td>PKR {{ format_number(policy.brokerage_amount) }} </td>
-
+                </tr>
+                <tr>
                     <th>Brokerage Percentage </th>
                     <td>PKR {{ policy.brokerage_percentage }} % </td>
                 </tr>
                 <tr>
                     <th>Brokerage Received Amount</th>
                     <td>PKR {{ format_number(policy.brokerage_received_amount) }} </td>
-
+                </tr>
+                <tr>
+                    <th>Brokerage Outstanding Balance</th>
+                    <td>PKR {{ format_number(policy.brokerage_amount - policy.brokerage_received_amount) }} </td>
+                </tr>
+                <tr>
                     <th>Brokerage Paid Date</th>
                     <td>{{ policy.brokerage_paid_date }}</td>
                 </tr>
-                <tr>
+                <!-- <tr>
                     <th>Brokerage Status</th>
                     <td>{{ policy.brokerage_status }}</td>
-                </tr>
+                </tr> -->
             </tbody>
         </table>
     </div>
