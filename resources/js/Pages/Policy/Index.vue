@@ -8,9 +8,13 @@ import Paginate from "@/Components/Paginate.vue";
 import Search from "@/Components/Search.vue";
 import PolicyTable from "./Partial/PolicyTable.vue";
 
-defineProps({
+const props = defineProps({
     policies: Array,
     filter: Object,
+    filter_route: {
+        type: String,
+        required: true
+    }
 });
 
 const permission = usePage().props.can;
@@ -44,7 +48,7 @@ const permission = usePage().props.can;
                     <div class="ms-auto" style="display: flex; justify-content: space-between; align-items: center;">
                         <CreateEdit v-bind="$props" ref="create_edit_ref" :create="true"></CreateEdit>
                         <Import v-bind="$props" v-if="permission.excel_import"></Import>
-                        <PolicyFilter :filter_route="'policy'"></PolicyFilter>
+                        <PolicyFilter :filter_route="props.filter_route"></PolicyFilter>
                     </div>
                 </div>
 

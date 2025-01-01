@@ -8,6 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class PolicyClaimNote extends Model
 {
     use HasFactory;
-
     protected $guarded = [];
 }

@@ -80,7 +80,8 @@ const confirmDelete = (policyId) => {
                             <a :href="route('policy.detail', policy.p_id)" target="_blank">
                                 {{ policy.policy_no }} <i class="bx bx-link-external"></i>
                             </a> <br>
-                            <small>{{ policy.base_doc_no }}</small>
+                            
+                            <small v-if="policy.policy_type == 'endorsement'">{{ policy.base_doc_no }}</small>
                         </td>
                         <td>{{ policy.client_name }}</td>
                         <td>{{ policy.agency_name }}</td>

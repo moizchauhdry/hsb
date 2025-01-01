@@ -229,11 +229,16 @@ watch(() => form.date_value, (newValue) => {
                         <div class="col-md-6">
                             <InputLabel for="" value="Date Type" class="mb-1" />
                             <select v-model="form.date_type" class="form-control">
-                                <option value="">All</option>
-                                <option value="date_of_issuance">Issuance Date</option>
-                                <option value="policy_period_start">Inception Date</option>
-                                <option value="policy_period_end">Expiry Date</option>
-                                <option value="created_at">Created At</option>
+                                <template v-if="props.filter_route == 'policies' || props.filter_route == 'endorsement'">
+                                    <option value="">All</option>
+                                    <option value="date_of_issuance">Issuance Date</option>
+                                    <option value="policy_period_start">Inception Date</option>
+                                    <option value="policy_period_end">Expiry Date</option>
+                                    <option value="created_at">Created At</option>
+                                </template>
+                                <template v-if="props.filter_route == 'renewals'">
+                                    <option value="policy_period_end">Expiry Date</option>
+                                </template>
                             </select>
                         </div>
 
@@ -245,7 +250,7 @@ watch(() => form.date_value, (newValue) => {
 
                         <hr style="margin-top: 30px">
 
-                        <div class="col-md-6">
+                        <div class="col-md-6" v-if="props.filter_route == 'policies'">
                             <InputLabel for="" value="Policy Type" class="mb-1" />
                             <Multiselect v-model="form.policy_type" :options="policy_types" :searchable="true"
                                 mode="tags">
