@@ -26,12 +26,28 @@ class ReportExport implements FromView, WithStyles
 
     public function view(): View
     {
-        $query = Policy::policiesList($this->filter, $this->slug);
+        $report = true;
+        $query = Policy::policiesList($this->filter, 'reports', $report);
+        $policies = $query->get();
+
+        $grand_total = [
+            'sum_insured' => $policies->sum('sum_insured'),
+            'net_premium' => $policies->sum('net_premium'),
+
+            'gross_premium' => $policies->sum('gross_premium'),
+            'gross_premium_collected' => $policies->sum('gp_collected'),
+            'gross_premium_outstanding' => $policies->sum('gross_premium') - $policies->sum('gp_collected'),
+
+            'brokerage_amount' => $policies->sum('brokerage_amount'),
+            'brokerage_received_amount' => $policies->sum('brokerage_received_amount'),
+            'brokerage_amount_outstanding' => $policies->sum('brokerage_amount') - $policies->sum('brokerage_received_amount'),
+        ];
 
         return view('exports.report-export', [
-            'policies' => $query->get(),
+            'policies' => $policies,
             'filter' => $this->filter,
             'slug' => $this->slug,
+            'grand_total' => $grand_total,
         ]);
     }
 

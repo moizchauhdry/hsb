@@ -114,6 +114,10 @@ class Policy extends Model
             $query->whereIn('lead_type', ['other', 'our']);
         }
 
+        if ($page_type == 'reports') {
+            $query->whereIn('policy_type', ['new', 'renewal']); // 1. RENEWED : 2. RENEWAL => NEAR TO EXPIRY DATE
+        }
+
         if ($filter) {
             $query->when($filter['search'], function ($q) use ($filter) {
                 $q->where('p.id', $filter['search']);
@@ -221,13 +225,14 @@ class Policy extends Model
                 'agency.name',
                 'cob.class_name'
             );
+
+            $query->orderBy('p.policy_period_end', 'desc');
         }
 
         if ($report == true) {
             $query->select('p.*');
+            $query->orderBy('p.date_of_issuance', 'desc');
         }
-
-        $query->orderBy('p.policy_period_end', 'desc');
 
         return $query;
     }

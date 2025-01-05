@@ -13,12 +13,19 @@ class ReportController extends Controller
     public function index(Request $request, $slug)
     {
         $report = true;
-        $query = Policy::policiesList($request->all(), $slug, $report);
+        $query = Policy::policiesList($request->all(), 'reports', $report);
 
         $grand_total = [
             'sum_insured' => $query->sum('sum_insured'),
-            'gross_premium' => $query->sum('gross_premium'),
             'net_premium' => $query->sum('net_premium'),
+
+            'gross_premium' => $query->sum('gross_premium'),
+            'gross_premium_collected' => $query->sum('gp_collected'),
+            'gross_premium_outstanding' => $query->sum('gross_premium') - $query->sum('gp_collected'),
+
+            'brokerage_amount' => $query->sum('brokerage_amount'),
+            'brokerage_received_amount' => $query->sum('brokerage_received_amount'),
+            'brokerage_amount_outstanding' => $query->sum('brokerage_amount') - $query->sum('brokerage_received_amount'),
         ];
 
         $policies = $query
