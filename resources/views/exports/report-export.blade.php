@@ -22,25 +22,65 @@
                 <th>Agency</th>
                 <th>Class of Business</th>
                 <th>Sum Insured</th>
-                <th>Gross Premium</th>
                 <th>Net Premium</th>
+                <th>Gross Premium</th>
+
+                @if ($slug == "gross")
+                <th class="px-2">Gross Premium Collected</th>
+                <th class="px-2">Gross Premium Outstanding</th>
+                @endif
+
+                @if ($slug == "commission")
+                <th class="px-2">Brokerage Commission Amount</th>
+                <th class="px-2">Brokerage Received Amount</th>
+                <th class="px-2">Brokerage Outstanding Amount</th>
+                @endif
             </tr>
         </thead>
         <tbody>
             @foreach ($policies as $policy)
             <tr>
                 <td>{{ $loop->iteration }}</td>
-                <td>{{ $policy->orignal_endorsment }}</td>
+                <td>{{ $policy->policy_type }}</td>
                 <td>{{ $policy->client->name ?? "" }}</td>
                 <td>{{ $policy->policy_no }}</td>
                 <td>{{ $policy->insurance->name ?? "" }}</td>
                 <td>{{ $policy->agency->name ?? "" }}</td>
                 <td>{{ $policy->business_class->class_name ?? "" }}</td>
-                <td>{{ $policy->sum_insured }}</td>
-                <td>{{ $policy->gross_premium }}</td>
-                <td>{{ $policy->net_premium }}</td>
+
+                <td class="px-2">{{ format_number($policy->sum_insured) }}</td>
+                <td class="px-2">{{ format_number($policy->net_premium) }}</td>
+                <td class="px-2">{{ format_number($policy->gross_premium) }}</td>
+
+                @if ($slug == "gross")
+                <td class="px-2">{{ format_number($policy->gross_premium_collected)}}</td>
+                <td class="px-2">{{format_number($policy->gross_premium_outstanding) }}</td>
+                @endif
+
+                @if ($slug == "commission")
+                <td class="px-2">{{ format_number($policy->brokerage_amount) }}</td>
+                <td class="px-2">{{format_number($policy->brokerage_received_amount) }}</td>
+                <td class="px-2">{{ format_number($policy->brokerage_amount_outstanding) }}</td>
+                @endif
             </tr>
             @endforeach
+            <tr style="font-size: 14px">
+                <td colspan="7" style="text-align: right">Grand Total</td>
+                <td>{{format_number($grand_total['sum_insured'])}}</td>
+                <td>{{format_number($grand_total['net_premium'])}}</td>
+                <td>{{format_number($grand_total['gross_premium'])}}</td>
+
+                @if ($slug == "gross")
+                <td class="px-2">{{ format_number($grand_total['gross_premium_collected'])}}</td>
+                <td class="px-2">{{format_number($grand_total['gross_premium_outstanding']) }}</td>
+                @endif
+
+                @if ($slug == "commission")
+                <td class="px-2">{{ format_number($grand_total['brokerage_amount']) }}</td>
+                <td class="px-2">{{format_number($grand_total['brokerage_received_amount']) }}</td>
+                <td class="px-2">{{ format_number($grand_total['brokerage_amount_outstanding']) }}</td>
+                @endif
+            </tr>
         </tbody>
     </table>
 </body>

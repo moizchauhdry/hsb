@@ -152,15 +152,15 @@ watch(
                         <Link :href="route('report.index', 'renewal')"><i class='bx bx-radio-circle'></i>Renewal
                         Report</Link>
                     </li> -->
-                    <li :class="{ 'mm-active': route().current('report.index', 'outstanding') }"
+                    <li :class="{ 'mm-active': route().current('report.index', 'gross') }"
                         v-if="permission.outstanding_report">
-                        <Link :href="route('report.index', 'outstanding')"><i class='bx bx-radio-circle'></i>Outstanding
+                        <Link :href="route('report.index', 'gross')"><i class='bx bx-radio-circle'></i>Outstanding
                         Premium
                         </Link>
                     </li>
-                    <li :class="{ 'mm-active': route().current('report.index', 'commission-recovery') }"
+                    <li :class="{ 'mm-active': route().current('report.index', 'commission') }"
                         v-if="permission.commission_recovery_report">
-                        <Link :href="route('report.index', 'commission-recovery')">
+                        <Link :href="route('report.index', 'commission')">
                         <i class='bx bx-radio-circle'></i>Commissions Report
                         </Link>
                     </li>

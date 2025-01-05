@@ -62,48 +62,142 @@ const exportExcel = () => {
 
 
                 <div class="row row-cols-1 row-cols-md-3 row-cols-xxl-3">
-                    <div class="col">
-                        <div class="card radius-10">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center">
-                                    <div>
-                                        <p class="mb-0 text-secondary">Total Sum Insured</p>
-                                        <h4 class="my-1">{{ format_number(grand_total.sum_insured) }}</h4>
-                                    </div>
-                                    <div class="widgets-icons bg-light-info text-info ms-auto">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="card radius-10">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center">
-                                    <div>
-                                        <p class="mb-0 text-secondary">Total Gross Premium</p>
-                                        <h4 class="my-1">{{ format_number(grand_total.gross_premium) }}</h4>
-                                    </div>
-                                    <div class="widgets-icons bg-light-warning text-warning ms-auto">
+
+                    <template v-if="slug == 'sales'">
+                        <div class="col">
+                            <div class="card radius-10">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center">
+                                        <div>
+                                            <p class="mb-0 text-secondary">Total Sum Insured</p>
+                                            <h4 class="my-1"><small>PKR</small> {{
+                                                format_number(grand_total.sum_insured) }}
+                                            </h4>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col">
-                        <div class="card radius-10">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center">
-                                    <div>
-                                        <p class="mb-0 text-secondary">Total Net Premium</p>
-                                        <h4 class="my-1">{{ format_number(grand_total.net_premium) }}</h4>
-                                    </div>
-                                    <div class="widgets-icons bg-light-success text-success ms-auto">
+                        <div class="col">
+                            <div class="card radius-10">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center">
+                                        <div>
+                                            <p class="mb-0 text-secondary">Total Net Premium</p>
+                                            <h4 class="my-1"><small>PKR</small> {{
+                                                format_number(grand_total.net_premium) }}
+                                            </h4>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                        <div class="col">
+                            <div class="card radius-10">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center">
+                                        <div>
+                                            <p class="mb-0 text-secondary">Total Gross Premium</p>
+                                            <h4 class="my-1"><small>PKR</small> {{
+                                                format_number(grand_total.gross_premium)
+                                            }}</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+
+                    <template v-if="slug == 'gross'">
+                        <div class="col">
+                            <div class="card radius-10">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center">
+                                        <div>
+                                            <p class="mb-0 text-secondary">Gross Premium Amount</p>
+                                            <h4 class="my-1"><small>PKR</small> {{
+                                                format_number(grand_total.gross_premium) }}
+                                            </h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card radius-10">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center">
+                                        <div>
+                                            <p class="mb-0 text-secondary">Gross Premium Collected</p>
+                                            <h4 class="my-1"><small>PKR</small> {{
+                                                format_number(grand_total.gross_premium_collected) }}
+                                            </h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card radius-10">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center">
+                                        <div>
+                                            <p class="mb-0 text-secondary">Gross Premium Outstanding</p>
+                                            <h4 class="my-1"><small>PKR</small> {{
+                                                format_number(grand_total.gross_premium_outstanding)
+                                                }}</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+
+
+                    <template v-if="slug == 'commission'">
+                        <div class="col">
+                            <div class="card radius-10">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center">
+                                        <div>
+                                            <p class="mb-0 text-secondary">Brokerage Commission Amount</p>
+                                            <h4 class="my-1"><small>PKR</small> {{
+                                                format_number(grand_total.brokerage_amount) }}
+                                            </h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card radius-10">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center">
+                                        <div>
+                                            <p class="mb-0 text-secondary">Brokerage Commission Received</p>
+                                            <h4 class="my-1"><small>PKR</small> {{
+                                                format_number(grand_total.brokerage_received_amount) }}
+                                            </h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card radius-10">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center">
+                                        <div>
+                                            <p class="mb-0 text-secondary">Brokerage Commission Outstanding</p>
+                                            <h4 class="my-1"><small>PKR</small> {{
+                                                format_number(grand_total.brokerage_amount_outstanding)
+                                            }}</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
 
                 </div>
 
@@ -126,37 +220,33 @@ const exportExcel = () => {
                                         <th class="px-2">Class of Business</th>
                                         <th class="px-2">Policy Type</th>
 
-                                        <template v-if="slug == 'renewal' || slug == 'outstanding'">
+                                        <!-- <template v-if="slug == 'renewal' || slug == 'outstanding'">
                                             <th class="px-2">Inception Date</th>
                                             <th class="px-2">Expiry Date</th>
                                             <th class="px-2">Issuance Date</th>
                                         </template>
 
-                                        <template
-                                            v-if="slug == 'commission-recovery' || slug == 'commission-outstanding-recovery'">
-                                            <th class="px-2">Brokerage amount</th>
-                                            <th class="px-2">Brokerage Paid Date </th>
-                                        </template>
-
-                                        <template v-if="slug == 'commission-recovery'">
-                                            <th class="px-2">Brokerage Percentage</th>
-                                            <th class="px-2">Brokerage Received Amount</th>
-                                            <th class="px-2">Brokerage Status</th>
-                                        </template>
-
                                         <template v-if="slug == 'commission-outstanding-recovery'">
-                                            <th class="px-2">Balance Amount</th>
-                                        </template>
+                                        </template> -->
 
                                         <th class="px-2">Sum Insured</th>
+                                        <th class="px-2">Net Premium</th>
                                         <th class="px-2">Gross Premium</th>
 
-                                        <template v-if="slug == 'outstanding'">
-                                            <th class="px-2">Gross Premium Received</th>
-                                            <th class="px-2">Gross Premium OutStanding</th>
+                                        <template v-if="slug == 'gross'">
+                                            <th class="px-2">Gross Premium Collected</th>
+                                            <th class="px-2">Gross Premium Outstanding</th>
                                         </template>
 
-                                        <th class="px-2">Net Premium</th>
+                                        <template v-if="slug == 'commission'">
+                                            <!-- <th class="px-2">Brokerage Percentage</th> -->
+                                            <th class="px-2">Brokerage Commission Amount</th>
+                                            <th class="px-2">Brokerage Received Amount</th>
+                                            <th class="px-2">Brokerage Outstanding Amount</th>
+                                            <!-- <th class="px-2">Brokerage Status</th> -->
+                                            <!-- <th class="px-2">Brokerage Paid Date </th> -->
+                                        </template>
+
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -171,44 +261,37 @@ const exportExcel = () => {
                                             <td class="px-2">{{ policy.cob_name }}</td>
                                             <td class="px-2">{{ policy?.data?.policy_type }}</td>
 
-                                            <template v-if="slug == 'renewal' || slug == 'outstanding'">
+                                            <!-- <template v-if="slug == 'renewal' || slug == 'outstanding'">
                                                 <td :class="{ 'bg-info': filter['date_type'] === 'policy_period_start' }"
                                                     class="px-2">{{ policy?.data?.policy_period_start }}</td>
                                                 <td :class="{ 'bg-info': filter['date_type'] === 'policy_period_end' }"
                                                     class="px-2">{{ policy?.data?.policy_period_end }}</td>
                                                 <td :class="{ 'bg-info': filter['date_type'] === 'date_of_issuance' }"
                                                     class="px-2">{{ policy?.data?.date_of_issuance }}</td>
-                                            </template>
+                                            </template> -->
 
-                                            <template
+                                            <!-- <template
                                                 v-if="slug == 'commission-recovery' || slug == 'commission-outstanding-recovery'">
-                                                <td class="px-2">{{ format_number(policy?.data?.brokerage_amount) }}
-                                                </td>
-                                                <td class="px-2">{{ policy?.data?.brokerage_paid_date }}</td>
-                                            </template>
-
-                                            <template v-if="slug == 'commission-recovery'">
-                                                <td class="px-2">{{ policy?.data?.brokerage_percentage }}%</td>
-                                                <td class="px-2">{{
-                                                    format_number(policy?.data?.brokerage_received_amount) }}</td>
-                                                <td class="px-2">{{ policy?.data?.brokerage_status }}</td>
-                                            </template>
-
-                                            <template v-if="slug == 'commission-outstanding-recovery'">
-                                                <td class="px-2">{{ policy?.data?.balance_amount }}</td>
-                                            </template>
+                                            </template> -->
 
                                             <td class="px-2">{{ format_number(policy?.data?.sum_insured) }}</td>
+                                            <td class="px-2">{{ format_number(policy?.data?.net_premium) }}</td>
                                             <td class="px-2">{{ format_number(policy?.data?.gross_premium) }}</td>
 
-                                            <template v-if="slug == 'outstanding'">
-                                                <td class="px-2">{{ format_number(policy?.data?.gross_premium_received)
-                                                    }}</td>
-                                                <td class="px-2">{{
-                                                    format_number(policy?.data?.gross_premium_outstanding) }}</td>
+                                            <template v-if="slug == 'gross'">
+                                                <td class="px-2">{{ format_number(policy?.data?.gross_premium_collected)}}</td>
+                                                <td class="px-2">{{format_number(policy?.data?.gross_premium_outstanding) }}</td>
                                             </template>
 
-                                            <td class="px-2">{{ format_number(policy?.data?.net_premium) }}</td>
+                                            <template v-if="slug == 'commission'">
+                                                <!-- <td class="px-2">{{ policy?.data?.brokerage_paid_date }}</td> -->
+                                                <!-- <td class="px-2">{{ policy?.data?.brokerage_percentage }}%</td> -->
+                                                <!-- <td class="px-2">{{ policy?.data?.brokerage_status }}</td> -->
+                                                <td class="px-2">{{ format_number(policy?.data?.brokerage_amount) }}</td>
+                                                <td class="px-2">{{format_number(policy?.data?.brokerage_received_amount) }}</td>
+                                                <td class="px-2">{{ policy?.data?.brokerage_amount_outstanding }}</td>
+                                            </template>
+
                                         </tr>
                                     </template>
 

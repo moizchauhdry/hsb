@@ -114,6 +114,10 @@ class Policy extends Model
             $query->whereIn('lead_type', ['other', 'our']);
         }
 
+        if ($page_type == 'reports') {
+            $query->whereIn('policy_type', ['new', 'renewal']); // 1. RENEWED : 2. RENEWAL => NEAR TO EXPIRY DATE
+        }
+
         if ($filter) {
             $query->when($filter['search'], function ($q) use ($filter) {
                 $q->where('p.id', $filter['search']);
@@ -191,7 +195,9 @@ class Policy extends Model
                 'p.sum_insured as sum_insured',
                 'p.net_premium as net_premium',
                 'p.gp_collected as gp_collected',
-                DB::raw('(p.gross_premium - p.gp_collected) as commission_outstanding'),
+                'p.brokerage_amount as brokerage_amount',
+                'p.brokerage_received_amount as brokerage_received_amount',
+                DB::raw('(p.gross_premium - p.gp_collected) as gp_collected_outstanding'),
 
                 'renewal_status.name as renewal_status',
                 'client.name as client_name',
@@ -212,18 +218,21 @@ class Policy extends Model
                 'p.net_premium',
                 'p.gp_collected',
                 'p.gross_premium',
+                'p.brokerage_amount',
+                'p.brokerage_received_amount',
                 'renewal_status.name',
                 'client.name',
                 'agency.name',
                 'cob.class_name'
             );
+
+            $query->orderBy('p.policy_period_end', 'desc');
         }
 
         if ($report == true) {
             $query->select('p.*');
+            $query->orderBy('p.date_of_issuance', 'desc');
         }
-
-        $query->orderBy('p.policy_period_end', 'desc');
 
         return $query;
     }

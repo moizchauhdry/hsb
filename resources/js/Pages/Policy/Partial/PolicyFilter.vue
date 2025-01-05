@@ -241,6 +241,9 @@ watch(() => form.date_value, (newValue) => {
                                 <template v-if="props.filter_route == 'renewals'">
                                     <option value="policy_period_end">Expiry Date</option>
                                 </template>
+                                <template v-if="props.filter_route == 'report'">
+                                    <option value="date_of_issuance">Date of Issuance</option>
+                                </template>
                             </select>
                         </div>
 
