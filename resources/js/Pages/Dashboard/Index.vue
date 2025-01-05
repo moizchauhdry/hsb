@@ -10,8 +10,10 @@ defineProps({
 
 const main_data = usePage().props.data;
 const revenue_data = usePage().props.data.revenue_data;
-const commission_collected = usePage().props.data.commission_collected;
-const commission_outstanding = usePage().props.data.commission_outstanding;
+
+const gross_premium_amount = usePage().props.data.gross_premium_amount;
+const gross_premium_collected = usePage().props.data.gross_premium_collected;
+const gross_premium_outstanding = usePage().props.data.gross_premium_outstanding;
 
 onMounted(() => {
 
@@ -126,24 +128,35 @@ onMounted(() => {
     gradient1.addColorStop(1, 'rgba(0, 0, 255, 0.5)'); // Darker blue with more opacity at the bottom
 
     const gradient2 = ctx4.createLinearGradient(0, 0, 0, 400);
-    gradient2.addColorStop(0, 'rgba(255, 0, 0, 1)'); // Darker red at the top
-    gradient2.addColorStop(1, 'rgba(255, 0, 0, 0.5)'); // Darker red with more opacity at the bottom
+    gradient2.addColorStop(0, 'rgba(0, 128, 0, 1)'); // Darker green at the top
+    gradient2.addColorStop(1, 'rgba(0, 128, 0, 0.5)'); // Darker green with more opacity at the bottom
+
+
+    const gradient3 = ctx4.createLinearGradient(0, 0, 0, 400);
+    gradient3.addColorStop(0, 'rgba(255, 0, 0, 1)'); // Darker red at the top
+    gradient3.addColorStop(1, 'rgba(255, 0, 0, 0.5)'); // Darker red with more opacity at the bottom
 
     const chart4 = new Chart(ctx4, {
         type: 'bar',
         data: {
             datasets: [
                 {
-                    label: 'Net Commission Collected',
-                    data: commission_collected, // Array of values
+                    label: 'Gross Premium',
+                    data: gross_premium_amount, // Array of values
                     backgroundColor: gradient1,
                     stack: 'Stack 0',
                 },
                 {
-                    label: 'Net Commission Outstanding',
-                    data: commission_outstanding, // Array of values
+                    label: 'Gross Premium Collected',
+                    data: gross_premium_collected, // Array of values
                     backgroundColor: gradient2,
                     stack: 'Stack 1',
+                },
+                {
+                    label: 'Gross Premium Outstanding',
+                    data: gross_premium_outstanding, // Array of values
+                    backgroundColor: gradient3,
+                    stack: 'Stack 2',
                 },
             ]
         },
@@ -153,7 +166,7 @@ onMounted(() => {
             plugins: {
                 title: {
                     display: true,
-                    text: 'Commission Overview', // Main title of the graph
+                    text: 'Gross Premium Overview', // Main title of the graph
                     font: {
                         size: 20,
                     },
@@ -225,7 +238,8 @@ const format_number = (number) => {
                                     </div>
                                     <div class="chart-container-9">
                                         <div class="piechart-legend">
-                                            <h2 class="mb-1">{{ format_number(data.policies_count) }}</h2>
+                                            <h2 class="mb-1">{{ format_number(data.policies_count + data.renewals_count)
+                                                }}</h2>
                                             <h6 class="mb-0">Total Policies</h6>
                                         </div>
                                         <canvas id="chart-1"></canvas>
@@ -243,21 +257,21 @@ const format_number = (number) => {
                                             </td>
                                         </tr>
                                         <tr>
+                                            <td><i class='bx bxs-square-rounded me-2 text-danger'></i>Renewed</td>
+                                            <td>
+                                                <!-- <div>{{ data.renewals_count }}</div> -->
+                                            </td>
+                                            <td>
+                                                <div class="fw-bold">{{ format_number(data.renewals_count) }}</div>
+                                            </td>
+                                        </tr>
+                                        <tr>
                                             <td><i class='bx bxs-square-rounded me-2 text-primary'></i>Endorsements</td>
                                             <td>
                                                 <!-- <div>{{ data.endorsements_count }}</div> -->
                                             </td>
                                             <td>
                                                 <div class="fw-bold">{{ format_number(data.endorsements_count) }}</div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><i class='bx bxs-square-rounded me-2 text-danger'></i>Renewals</td>
-                                            <td>
-                                                <!-- <div>{{ data.renewals_count }}</div> -->
-                                            </td>
-                                            <td>
-                                                <div class="fw-bold">{{ format_number(data.renewals_count) }}</div>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -302,7 +316,7 @@ const format_number = (number) => {
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="col-xxl-4 col-xl-4">
                                 <div class="card radius-10">
                                     <div class="card-body">
@@ -324,7 +338,7 @@ const format_number = (number) => {
                                         <div class="d-flex align-items-center">
                                             <div>
                                                 <p class="mb-0 text-secondary">Revenue</p>
-                                                <h4 class="my-1">{{ format_number(data.total_revenue) }}</h4>
+                                                <h4 class="my-1">PKR {{ format_number(data.total_revenue) }}</h4>
                                             </div>
                                             <div class="widgets-icons bg-light-info text-info ms-auto"><i
                                                     class='bx bx-list-ul'></i>
@@ -339,7 +353,7 @@ const format_number = (number) => {
                                         <div class="d-flex align-items-center">
                                             <div>
                                                 <p class="mb-0 text-secondary">Net Commission Collected</p>
-                                                <h4 class="my-1">{{ format_number(data.total_commission_collected) }}
+                                                <h4 class="my-1">PKR {{ format_number(data.total_commission_collected) }}
                                                 </h4>
                                             </div>
                                             <div class="widgets-icons bg-light-info text-info ms-auto"><i
@@ -354,8 +368,8 @@ const format_number = (number) => {
                                     <div class="card-body">
                                         <div class="d-flex align-items-center">
                                             <div>
-                                                <p class="mb-0 text-secondary">Net Commission Outstanding</p>
-                                                <h4 class="my-1">{{ format_number(data.total_commission_outstanding) }}
+                                                <p class="mb-0 text-secondary">Gross Premium Outstanding</p>
+                                                <h4 class="my-1">PKR {{ format_number(data.gp_collected_outstanding) }}
                                                 </h4>
                                             </div>
                                             <div class="widgets-icons bg-light-info text-info ms-auto"><i
@@ -371,7 +385,7 @@ const format_number = (number) => {
                                         <div class="d-flex align-items-center">
                                             <div>
                                                 <p class="mb-0 text-secondary">Sum Insured</p>
-                                                <h4 class="my-1">{{ format_number(data.total_sum_insured) }}</h4>
+                                                <h4 class="my-1">PKR {{ format_number(data.total_sum_insured) }}</h4>
                                             </div>
                                             <div class="widgets-icons bg-light-info text-info ms-auto"><i
                                                     class='bx bx-list-ul'></i>
@@ -380,7 +394,7 @@ const format_number = (number) => {
                                     </div>
                                 </div>
                             </div>
-                           
+
                         </div>
                     </div>
                 </div>
@@ -404,7 +418,7 @@ const format_number = (number) => {
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
         </div>

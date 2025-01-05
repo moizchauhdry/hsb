@@ -29,10 +29,10 @@ class DashboardController extends Controller
         $policies = Policy::policiesList([], 'policies')->get();
         $policies_count = count($policies);
 
-        $total_revenue = $policies->sum('net_premium');
+        $total_revenue = $policies->sum('brokerage_amount');
         $total_sum_insured = $policies->sum('sum_insured');
-        $total_commission_collected = $policies->sum('gp_collected');
-        $total_commission_outstanding = $policies->sum('commission_outstanding');
+        $total_commission_collected = $policies->sum('brokerage_received_amount');
+        $gp_collected_outstanding = $policies->sum('gp_collected_outstanding');
 
         $endorsements = Policy::policiesList([], 'endorsements')->get();
         $endorsements_count = count($endorsements);
@@ -66,7 +66,7 @@ class DashboardController extends Controller
         // }
 
         $monthly_revenue = DB::table('policies')
-            ->select(DB::raw('SUM(sum_insured) as total'), DB::raw('MONTH(date_of_issuance) as month'))
+            ->select(DB::raw('SUM(brokerage_amount) as total'), DB::raw('MONTH(date_of_issuance) as month'))
             ->groupBy('month')
             ->get()
             ->pluck('total', 'month')
@@ -77,30 +77,46 @@ class DashboardController extends Controller
             $revenue_data[] = $monthly_revenue[$i] ?? 0;
         }
 
-        $commission_collected = DB::table('policies')
+        $gross_premium_amount = DB::table('policies')
             ->select(
-                DB::raw('SUM(gp_collected) as commission_collected'),
-                DB::raw('CONCAT(MONTHNAME(date_of_issuance), " ", YEAR(date_of_issuance)) as month_name'),
-                DB::raw('MONTH(date_of_issuance) as month')
-                )
-            ->whereNotNull('date_of_issuance')
-            ->groupBy('month_name','month')
-            ->orderBy('month','asc')            
-            ->get()
-            ->pluck('commission_collected', 'month_name')
-            ->toArray();
-
-        $commission_outstanding = DB::table('policies')
-            ->select(
-                DB::raw('SUM(gross_premium - gp_collected) as commission_outstanding'),
+                DB::raw('IFNULL(SUM(gross_premium), 0) as gross_premium_amount'),
                 DB::raw('CONCAT(MONTHNAME(date_of_issuance), " ", YEAR(date_of_issuance)) as month_name'),
                 DB::raw('MONTH(date_of_issuance) as month')
             )
+            ->where('policy_type', ['new', 'renewal'])
             ->whereNotNull('date_of_issuance')
-            ->groupBy('month_name','month')
-            ->orderBy('month','asc')            
+            ->groupBy('month_name', 'month')
+            ->orderBy('month', 'asc')
             ->get()
-            ->pluck('commission_outstanding', 'month_name')
+            ->pluck('gross_premium_amount', 'month_name')
+            ->toArray();
+
+        $gross_premium_collected = DB::table('policies')
+            ->select(
+                DB::raw('IFNULL(SUM(gp_collected), 0) as gross_premium_collected'),
+                DB::raw('CONCAT(MONTHNAME(date_of_issuance), " ", YEAR(date_of_issuance)) as month_name'),
+                DB::raw('MONTH(date_of_issuance) as month')
+            )
+            ->where('policy_type', ['new', 'renewal'])
+            ->whereNotNull('date_of_issuance')
+            ->groupBy('month_name', 'month')
+            ->orderBy('month', 'asc')
+            ->get()
+            ->pluck('gross_premium_collected', 'month_name')
+            ->toArray();
+
+        $gross_premium_outstanding = DB::table('policies')
+            ->select(
+                DB::raw('IFNULL(SUM(gross_premium - gp_collected), 0) as gross_premium_outstanding'),
+                DB::raw('CONCAT(MONTHNAME(date_of_issuance), " ", YEAR(date_of_issuance)) as month_name'),
+                DB::raw('MONTH(date_of_issuance) as month')
+            )
+            ->where('policy_type', ['new', 'renewal'])
+            ->whereNotNull('date_of_issuance')
+            ->groupBy('month_name', 'month')
+            ->orderBy('month', 'asc')
+            ->get()
+            ->pluck('gross_premium_outstanding', 'month_name')
             ->toArray();
 
 
@@ -117,11 +133,13 @@ class DashboardController extends Controller
             'total_revenue' => $total_revenue,
             'total_sum_insured' => $total_sum_insured,
             'total_commission_collected' => $total_commission_collected,
-            'total_commission_outstanding' => $total_commission_outstanding,
+            'gp_collected_outstanding' => $gp_collected_outstanding,
 
             'revenue_data' => $revenue_data,
-            'commission_collected' => $commission_collected,
-            'commission_outstanding' => $commission_outstanding,
+
+            'gross_premium_amount' => $gross_premium_amount,
+            'gross_premium_collected' => $gross_premium_collected,
+            'gross_premium_outstanding' => $gross_premium_outstanding,
         ];
 
         // dd($data);
