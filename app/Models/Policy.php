@@ -188,6 +188,11 @@ class Policy extends Model
                 'p.policy_period_end as expiry_date',
                 'p.policy_type as policy_type',
                 'p.lead_type as policy_lead_type',
+                'p.sum_insured as sum_insured',
+                'p.net_premium as net_premium',
+                'p.gp_collected as gp_collected',
+                DB::raw('(p.gross_premium - p.gp_collected) as commission_outstanding'),
+
                 'renewal_status.name as renewal_status',
                 'client.name as client_name',
                 'agency.name as agency_name',

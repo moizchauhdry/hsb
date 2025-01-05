@@ -1,9 +1,207 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Head } from "@inertiajs/vue3";
+import { Head, usePage } from "@inertiajs/vue3";
+import Chart from 'chart.js/auto';
+import { onMounted } from "vue";
+
 defineProps({
     data: Array,
 });
+
+const main_data = usePage().props.data;
+const revenue_data = usePage().props.data.revenue_data;
+const commission_collected = usePage().props.data.commission_collected;
+const commission_outstanding = usePage().props.data.commission_outstanding;
+
+onMounted(() => {
+
+    const ctx1 = document.getElementById("chart-1").getContext('2d');
+    var chart1 = new Chart(ctx1, {
+        type: 'doughnut',
+        data: {
+            labels: ["Endorsements", "Renewals", "Policies"],
+            datasets: [{
+                backgroundColor: [
+                    (() => {
+                        let gradient = ctx1.createLinearGradient(0, 0, 0, 300);
+                        gradient.addColorStop(0, '#008cff');
+                        gradient.addColorStop(1, '#8e54e9');
+                        return gradient;
+                    })(),
+                    (() => {
+                        let gradient = ctx1.createLinearGradient(0, 0, 0, 300);
+                        gradient.addColorStop(0, '#ee0979');
+                        gradient.addColorStop(1, '#ff6a00');
+                        return gradient;
+                    })(),
+                    (() => {
+                        let gradient = ctx1.createLinearGradient(0, 0, 0, 300);
+                        gradient.addColorStop(0, '#42e695');
+                        gradient.addColorStop(1, '#3bb2b8');
+                        return gradient;
+                    })()
+                ],
+                hoverBackgroundColor: [
+                    (() => {
+                        let gradient = ctx1.createLinearGradient(0, 0, 0, 300);
+                        gradient.addColorStop(0, '#008cff');
+                        gradient.addColorStop(1, '#8e54e9');
+                        return gradient;
+                    })(),
+                    (() => {
+                        let gradient = ctx1.createLinearGradient(0, 0, 0, 300);
+                        gradient.addColorStop(0, '#ee0979');
+                        gradient.addColorStop(1, '#ff6a00');
+                        return gradient;
+                    })(),
+                    (() => {
+                        let gradient = ctx1.createLinearGradient(0, 0, 0, 300);
+                        gradient.addColorStop(0, '#42e695');
+                        gradient.addColorStop(1, '#3bb2b8');
+                        return gradient;
+                    })()
+                ],
+                data: [main_data.policies_count, main_data.renewals_count, main_data.endorsements_count],
+                borderWidth: [4, 4, 4]
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            cutout: 110,
+            plugins: {
+                legend: {
+                    display: false,
+                }
+            }
+        }
+    });
+
+    const ctx3 = document.getElementById('chart-3');
+    const chart3 = new Chart(ctx3, {
+        type: 'line',
+        data: {
+            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            datasets: [{
+                label: 'Total Amount (PKR)',
+                backgroundColor: 'rgba(255, 99, 132, 0.2)', // Light background color
+                borderColor: 'rgba(255, 0, 0, 1)', // Darker red line color
+                data: revenue_data,
+                fill: true, // Optional: Makes the area under the line filled
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Monthly Revenue Overview', // Add the title of the chart
+                    font: {
+                        size: 20,
+                    },
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: '',
+                    },
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Amount (PKR)',
+                    },
+                },
+            },
+        }
+    });
+
+
+    const ctx4 = document.getElementById('chart-4').getContext('2d');
+
+    const gradient1 = ctx4.createLinearGradient(0, 0, 0, 400);
+    gradient1.addColorStop(0, 'rgba(0, 0, 255, 1)'); // Darker blue at the top
+    gradient1.addColorStop(1, 'rgba(0, 0, 255, 0.5)'); // Darker blue with more opacity at the bottom
+
+    const gradient2 = ctx4.createLinearGradient(0, 0, 0, 400);
+    gradient2.addColorStop(0, 'rgba(255, 0, 0, 1)'); // Darker red at the top
+    gradient2.addColorStop(1, 'rgba(255, 0, 0, 0.5)'); // Darker red with more opacity at the bottom
+
+    const chart4 = new Chart(ctx4, {
+        type: 'bar',
+        data: {
+            datasets: [
+                {
+                    label: 'Net Commission Collected',
+                    data: commission_collected, // Array of values
+                    backgroundColor: gradient1,
+                    stack: 'Stack 0',
+                },
+                {
+                    label: 'Net Commission Outstanding',
+                    data: commission_outstanding, // Array of values
+                    backgroundColor: gradient2,
+                    stack: 'Stack 1',
+                },
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Commission Overview', // Main title of the graph
+                    font: {
+                        size: 20,
+                    },
+                },
+                tooltip: {
+                    enabled: true, // Enable tooltips
+                },
+                datalabels: {
+                    anchor: 'end',
+                    align: 'top',
+                    formatter: (value) => value, // Show the exact amount on each bar
+                    color: '#000',
+                    font: {
+                        size: 12,
+                        weight: 'bold',
+                    },
+                },
+            },
+            scales: {
+                x: {
+                    stacked: true,
+                    title: {
+                        display: true,
+                        text: '',
+                    },
+                },
+                y: {
+                    stacked: true,
+                    title: {
+                        display: true,
+                        text: 'Amount (PKR)',
+                    },
+                },
+            },
+        },
+        // plugins: [ChartDataLabels], // Include the Chart.js DataLabels plugin
+    });
+
+});
+
+
+const format_number = (number) => {
+    return new Intl.NumberFormat('en-US', {
+        // minimumFractionDigits: 2,
+        // maximumFractionDigits: 2
+    }).format(number);
+};
+
 </script>
 
 <template>
@@ -14,547 +212,198 @@ defineProps({
         <!--start page wrapper -->
         <div class="page-wrapper">
             <div class="page-content">
-                <div class="row row-cols-1 row-cols-md-2 row-cols-xxl-4">
-                    <div class="col">
-                        <div class="card radius-10">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center">
-                                    <div>
-                                        <p class="mb-0 text-secondary">Total Clients</p>
-                                        <h4 class="my-1">{{ data.clients }}</h4>
-                                    </div>
-                                    <div class="widgets-icons bg-light-warning text-warning ms-auto"><i
-                                            class="bx bxs-group"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="card radius-10">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center">
-                                    <div>
-                                        <p class="mb-0 text-secondary">Class of Business</p>
-                                        <h4 class="my-1">{{ data.cob }}</h4>
-                                    </div>
-                                    <div class="widgets-icons bg-light-danger text-danger ms-auto"><i
-                                            class="bx bx-layer"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="card radius-10">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center">
-                                    <div>
-                                        <p class="mb-0 text-secondary">Total Policies</p>
-                                        <h4 class="my-1">{{ data.policies }}</h4>
-                                    </div>
-                                    <div class="widgets-icons bg-light-success text-success ms-auto"><i
-                                            class="bx bx-poll"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="card radius-10">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center">
-                                    <div>
-                                        <p class="mb-0 text-secondary">Total Claims</p>
-                                        <h4 class="my-1">{{ data.claims }}</h4>
-                                    </div>
-                                    <div class="widgets-icons bg-light-info text-info ms-auto"><i
-                                            class='bx bx-list-ul'></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
-                   
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="col-md-12 d-flex">
+                            <div class="card radius-10 overflow-hidden w-100">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div>
+                                            <h6 class="mb-0">Policies</h6>
+                                        </div>
+                                    </div>
+                                    <div class="chart-container-9">
+                                        <div class="piechart-legend">
+                                            <h2 class="mb-1">{{ format_number(data.policies_count) }}</h2>
+                                            <h6 class="mb-0">Total Policies</h6>
+                                        </div>
+                                        <canvas id="chart-1"></canvas>
+                                    </div>
+                                </div>
+                                <table class="table mb-0">
+                                    <tbody>
+                                        <tr>
+                                            <td><i class='bx bxs-square-rounded me-2 text-success'></i>Policies</td>
+                                            <td>
+                                                <!-- <div>{{ data.policies_count }}</div> -->
+                                            </td>
+                                            <td>
+                                                <div class="fw-bold">{{ format_number(data.policies_count) }}</div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><i class='bx bxs-square-rounded me-2 text-primary'></i>Endorsements</td>
+                                            <td>
+                                                <!-- <div>{{ data.endorsements_count }}</div> -->
+                                            </td>
+                                            <td>
+                                                <div class="fw-bold">{{ format_number(data.endorsements_count) }}</div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><i class='bx bxs-square-rounded me-2 text-danger'></i>Renewals</td>
+                                            <td>
+                                                <!-- <div>{{ data.renewals_count }}</div> -->
+                                            </td>
+                                            <td>
+                                                <div class="fw-bold">{{ format_number(data.renewals_count) }}</div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card radius-10">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div>
+                                                <p class="mb-0 text-secondary">Classes of Business</p>
+                                                <h6 class="my-1">Groups: {{ format_number(data.cob_groups_count) }} <i
+                                                        class="bx bx-caret-right"></i> Classes: {{
+                                                            format_number(data.cobs_count) }}</h6>
+                                            </div>
+                                            <div class="widgets-icons bg-light-danger text-danger ms-auto"><i
+                                                    class="bx bx-layer"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card radius-10">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div>
+                                                <p class="mb-0 text-secondary">Total Clients</p>
+                                                <h6 class="my-1">Clients: {{ format_number(data.client_groups_count) }}
+                                                    <i class="bx bx-caret-right"></i> Subsidiaries: {{
+                                                        format_number(data.clients_count) }}
+                                                </h6>
+                                            </div>
+                                            <div class="widgets-icons bg-light-success text-success ms-auto"><i
+                                                    class="bx bx-poll"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card radius-10">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div>
+                                                <p class="mb-0 text-secondary">Revenue</p>
+                                                <h4 class="my-1">{{ format_number(data.total_revenue) }}</h4>
+                                            </div>
+                                            <div class="widgets-icons bg-light-info text-info ms-auto"><i
+                                                    class='bx bx-list-ul'></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card radius-10">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div>
+                                                <p class="mb-0 text-secondary">Net Commission Collected</p>
+                                                <h4 class="my-1">{{ format_number(data.total_commission_collected) }}
+                                                </h4>
+                                            </div>
+                                            <div class="widgets-icons bg-light-info text-info ms-auto"><i
+                                                    class='bx bx-list-ul'></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card radius-10">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div>
+                                                <p class="mb-0 text-secondary">Net Commission Outstanding</p>
+                                                <h4 class="my-1">{{ format_number(data.total_commission_outstanding) }}
+                                                </h4>
+                                            </div>
+                                            <div class="widgets-icons bg-light-info text-info ms-auto"><i
+                                                    class='bx bx-list-ul'></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card radius-10">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div>
+                                                <p class="mb-0 text-secondary">Sum Insured</p>
+                                                <h4 class="my-1">{{ format_number(data.total_sum_insured) }}</h4>
+                                            </div>
+                                            <div class="widgets-icons bg-light-info text-info ms-auto"><i
+                                                    class='bx bx-list-ul'></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card radius-10">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div>
+                                                <p class="mb-0 text-secondary">Total Claims</p>
+                                                <h4 class="my-1">{{ format_number(data.policy_claim_count) }}</h4>
+                                            </div>
+                                            <div class="widgets-icons bg-light-info text-info ms-auto"><i
+                                                    class='bx bx-list-ul'></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- <div class="row">
-                    <div class="col-12 col-lg-8 d-flex">
-                        <div class="card radius-10 w-100">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card radius-10">
                             <div class="card-body">
-                                <div class="d-flex align-items-center mb-3">
-                                    <div>
-                                        <h6 class="mb-0">Sales Overview</h6>
-                                    </div>
-                                    <div class="dropdown ms-auto">
-                                        <a class="dropdown-toggle dropdown-toggle-nocaret" href="#"
-                                            data-bs-toggle="dropdown"><i
-                                                class='bx bx-dots-horizontal-rounded font-22 text-option'></i>
-                                        </a>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="javascript:;">Action</a>
-                                            </li>
-                                            <li><a class="dropdown-item" href="javascript:;">Another action</a>
-                                            </li>
-                                            <li>
-                                                <hr class="dropdown-divider">
-                                            </li>
-                                            <li><a class="dropdown-item" href="javascript:;">Something else here</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="chart-container-9">
-                                    <canvas id="chart1"></canvas>
-                                </div>
-                            </div>
-                            <div
-                                class="row row-cols-1 row-cols-md-3 row-cols-xl-3 g-0 row-group text-center border-top">
-                                <div class="col">
-                                    <div class="p-3">
-                                        <h5 class="mb-0">24.15M</h5>
-                                        <small class="mb-0">Overall Visitor <span> <i
-                                                    class="bx bx-up-arrow-alt align-middle"></i> 2.43%</span></small>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="p-3">
-                                        <h5 class="mb-0">12:38</h5>
-                                        <small class="mb-0">Visitor Duration <span> <i
-                                                    class="bx bx-up-arrow-alt align-middle"></i> 12.65%</span></small>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="p-3">
-                                        <h5 class="mb-0">639.82</h5>
-                                        <small class="mb-0">Pages/Visit <span> <i
-                                                    class="bx bx-up-arrow-alt align-middle"></i> 5.62%</span></small>
-                                    </div>
+                                <div style="height: 400px;">
+                                    <canvas id="chart-3"></canvas>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-lg-4 d-flex">
-                        <div class="card radius-10 w-100">
+                    <div class="col-md-6">
+                        <div class="card radius-10">
                             <div class="card-body">
-                                <div class="d-flex align-items-center">
-                                    <div>
-                                        <h6 class="mb-0">Trending Products</h6>
-                                    </div>
-                                    <div class="dropdown ms-auto">
-                                        <a class="dropdown-toggle dropdown-toggle-nocaret" href="#"
-                                            data-bs-toggle="dropdown"><i
-                                                class='bx bx-dots-horizontal-rounded font-22 text-option'></i>
-                                        </a>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="javascript:;">Action</a>
-                                            </li>
-                                            <li><a class="dropdown-item" href="javascript:;">Another action</a>
-                                            </li>
-                                            <li>
-                                                <hr class="dropdown-divider">
-                                            </li>
-                                            <li><a class="dropdown-item" href="javascript:;">Something else here</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="chart-container-13 mt-3">
-                                    <canvas id="chart2"></canvas>
-                                </div>
-                            </div>
-                            <ul class="list-group list-group-flush">
-                                <li
-                                    class="list-group-item d-flex bg-transparent justify-content-between align-items-center border-top">
-                                    T-Shirts <span class="badge bg-danger rounded-pill">10</span>
-                                </li>
-                                <li
-                                    class="list-group-item d-flex bg-transparent justify-content-between align-items-center">
-                                    Shoes <span class="badge bg-primary rounded-pill">65</span>
-                                </li>
-                                <li
-                                    class="list-group-item d-flex bg-transparent justify-content-between align-items-center">
-                                    Lingerie <span class="badge bg-warning text-dark rounded-pill">14</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div> -->
-
-
-                <!-- <div class="row">
-                    <div class="col-12 col-lg-4 d-flex">
-                        <div class="card radius-10 overflow-hidden w-100">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center mb-3">
-                                    <div>
-                                        <h6 class="mb-0">Last 30 Days</h6>
-                                    </div>
-                                    <div class="dropdown ms-auto">
-                                        <a class="dropdown-toggle dropdown-toggle-nocaret" href="#"
-                                            data-bs-toggle="dropdown"><i
-                                                class='bx bx-dots-horizontal-rounded font-22 text-option'></i>
-                                        </a>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="javascript:;">Action</a>
-                                            </li>
-                                            <li><a class="dropdown-item" href="javascript:;">Another action</a>
-                                            </li>
-                                            <li>
-                                                <hr class="dropdown-divider">
-                                            </li>
-                                            <li><a class="dropdown-item" href="javascript:;">Something else here</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="chart-container-4">
-                                    <canvas id="chart3"></canvas>
-                                </div>
-                            </div>
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item border-top">
-                                    <div class="d-flex align-items-center justify-content-between p-2">
-                                        <div class="">
-                                            <h4 class="mb-0">58.6K</h4>
-                                            <p class="mb-0">Page Views</p>
-                                        </div>
-                                        <div class="">
-                                            <div id="chart4"></div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="list-group-item">
-                                    <div class="d-flex align-items-center justify-content-between p-2">
-                                        <div class="">
-                                            <p class="mb-0">Total Clicks</p>
-                                            <h4 class="mb-0">48.2K</h4>
-                                        </div>
-                                        <div class="">
-                                            <div id="chart5"></div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="list-group-item">
-                                    <div class="d-flex align-items-center justify-content-between p-2">
-                                        <div class="">
-                                            <p class="mb-0">Total Comments</p>
-                                            <h4 class="mb-0">8,456</h4>
-                                        </div>
-                                        <div class="">
-                                            <div id="chart6"></div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="list-group-item">
-                                    <div class="d-flex align-items-center justify-content-between p-2">
-                                        <div class="">
-                                            <p class="mb-0">Total Returns</p>
-                                            <h4 class="mb-0">298</h4>
-                                        </div>
-                                        <div class="">
-                                            <div id="chart7"></div>
-                                        </div>
-                                    </div>
-                                </li>
-
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-12 col-lg-4 d-flex">
-                        <div class="card radius-10 w-100">
-                            <div class="card-body">
-                                <div class="row g-3">
-                                    <div class="col-12 col-lg-6">
-                                        <div class="card radius-10 shadow-none border mb-0">
-                                            <div class="card-body">
-                                                <div class="text-center">
-                                                    <div class="w_chart chart8 mb-1" data-percent="78">
-                                                        <span class="w_percent"></span>
-                                                    </div>
-                                                    <p class="mb-0 text-secondary">New Visits</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-lg-6">
-                                        <div class="card radius-10 shadow-none border mb-0">
-                                            <div class="card-body">
-                                                <div class="text-center">
-                                                    <div class="w_chart chart9 mb-1" data-percent="65">
-                                                        <span class="w_percent"></span>
-                                                    </div>
-                                                    <p class="mb-0 text-secondary">Bounce Rate</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-lg-6">
-                                        <div class="card radius-10 shadow-none border mb-0">
-                                            <div class="card-body">
-                                                <div class="text-center">
-                                                    <div class="w_chart chart10 mb-1" data-percent="75">
-                                                        <span class="w_percent"></span>
-                                                    </div>
-                                                    <p class="mb-0 text-secondary">Server Load</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-lg-6">
-                                        <div class="card radius-10 shadow-none border mb-0">
-                                            <div class="card-body">
-                                                <div class="text-center">
-                                                    <div class="w_chart chart11 mb-1" data-percent="55">
-                                                        <span class="w_percent"></span>
-                                                    </div>
-                                                    <p class="mb-0 text-secondary">Used RAM</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-lg-6">
-                                        <div class="card radius-10 shadow-none border mb-0">
-                                            <div class="card-body">
-                                                <div class="text-center">
-                                                    <div class="w_chart chart12 mb-1" data-percent="68">
-                                                        <span class="w_percent"></span>
-                                                    </div>
-                                                    <p class="mb-0 text-secondary">Web Traffic</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-lg-6">
-                                        <div class="card radius-10 shadow-none border mb-0">
-                                            <div class="card-body">
-                                                <div class="text-center">
-                                                    <div class="w_chart chart13 mb-1" data-percent="85">
-                                                        <span class="w_percent"></span>
-                                                    </div>
-                                                    <p class="mb-0 text-secondary">Page Views</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div style="height: 400px;">
+                                    <canvas id="chart-4"></canvas>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-lg-4 d-flex">
-                        <div class="card radius-10 w-100">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center mb-3">
-                                    <div>
-                                        <h6 class="mb-0">Realtime Visitors</h6>
-                                    </div>
-                                    <div class="dropdown ms-auto">
-                                        <a class="dropdown-toggle dropdown-toggle-nocaret" href="#"
-                                            data-bs-toggle="dropdown"><i
-                                                class='bx bx-dots-horizontal-rounded font-22 text-option'></i>
-                                        </a>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="javascript:;">Action</a>
-                                            </li>
-                                            <li><a class="dropdown-item" href="javascript:;">Another action</a>
-                                            </li>
-                                            <li>
-                                                <hr class="dropdown-divider">
-                                            </li>
-                                            <li><a class="dropdown-item" href="javascript:;">Something else here</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div id="geographic-map-2"></div>
-                                <div class="table-responsive">
-                                    <table class="table align-middle mb-0">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>Country</th>
-                                                <th>Visits</th>
-                                                <th>Clicks</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td><i class="flag-icon flag-icon-us me-2"></i>United States</td>
-                                                <td>8795</td>
-                                                <td>145</td>
-                                            </tr>
-                                            <tr>
-                                                <td><i class="flag-icon flag-icon-ca me-2"></i>Japan</td>
-                                                <td>9856</td>
-                                                <td>356</td>
-                                            </tr>
-                                            <tr>
-                                                <td><i class="flag-icon flag-icon-au me-2"></i>Australia</td>
-                                                <td>5748</td>
-                                                <td>524</td>
-                                            </tr>
-                                            <tr>
-                                                <td><i class="flag-icon flag-icon-in me-2"></i>India</td>
-                                                <td>8547</td>
-                                                <td>127</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div> -->
-
-
-                <!-- <div class="card radius-10">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center mb-3">
-                            <div>
-                                <h6 class="mb-0">Recent Orders</h6>
-                            </div>
-                            <div class="dropdown ms-auto">
-                                <a class="dropdown-toggle dropdown-toggle-nocaret" href="#" data-bs-toggle="dropdown"><i
-                                        class='bx bx-dots-horizontal-rounded font-22 text-option'></i>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="javascript:;">Action</a>
-                                    </li>
-                                    <li><a class="dropdown-item" href="javascript:;">Another action</a>
-                                    </li>
-                                    <li>
-                                        <hr class="dropdown-divider">
-                                    </li>
-                                    <li><a class="dropdown-item" href="javascript:;">Something else here</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table align-middle mb-0">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Product</th>
-                                        <th>Photo</th>
-                                        <th>Product ID</th>
-                                        <th>Status</th>
-                                        <th>Amount</th>
-                                        <th>Date</th>
-                                        <th>Shipping</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Iphone 5</td>
-                                        <td><img src="../../../images/products/01.png" class="product-img-2"
-                                                alt="product img">
-                                        </td>
-                                        <td>#9405822</td>
-                                        <td><span class="badge bg-light-success text-success w-100">Paid</span></td>
-                                        <td>$1250.00</td>
-                                        <td>03 Feb 2020</td>
-                                        <td>
-                                            <div class="progress" style="height: 4px;">
-                                                <div class="progress-bar bg-success" role="progressbar"
-                                                    style="width: 100%">
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>Earphone GL</td>
-                                        <td><img src="../../../images/products/02.png" class="product-img-2"
-                                                alt="product img">
-                                        </td>
-                                        <td>#8304620</td>
-                                        <td><span class="badge bg-light-warning text-warning w-100">Pending</span></td>
-                                        <td>$1500.00</td>
-                                        <td>05 Feb 2020</td>
-                                        <td>
-                                            <div class="progress" style="height: 4px;">
-                                                <div class="progress-bar bg-warning" role="progressbar"
-                                                    style="width: 60%">
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>HD Hand Camera</td>
-                                        <td><img src="../../../images/products/03.png" class="product-img-2"
-                                                alt="product img">
-                                        </td>
-                                        <td>#4736890</td>
-                                        <td><span class="badge bg-light-danger text-danger w-100">Failed</span></td>
-                                        <td>$1400.00</td>
-                                        <td>06 Feb 2020</td>
-                                        <td>
-                                            <div class="progress" style="height: 4px;">
-                                                <div class="progress-bar bg-danger" role="progressbar"
-                                                    style="width: 70%">
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>Clasic Shoes</td>
-                                        <td><img src="../../../images/products/04.png" class="product-img-2"
-                                                alt="product img">
-                                        </td>
-                                        <td>#8543765</td>
-                                        <td><span class="badge bg-light-success text-success w-100">Paid</span></td>
-                                        <td>$1200.00</td>
-                                        <td>14 Feb 2020</td>
-                                        <td>
-                                            <div class="progress" style="height: 4px;">
-                                                <div class="progress-bar bg-success" role="progressbar"
-                                                    style="width: 100%">
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Sitting Chair</td>
-                                        <td><img src="../../../images/products/06.png" class="product-img-2"
-                                                alt="product img">
-                                        </td>
-                                        <td>#9629240</td>
-                                        <td><span class="badge bg-light-warning text-warning w-100">Pending</span></td>
-                                        <td>$1500.00</td>
-                                        <td>18 Feb 2020</td>
-                                        <td>
-                                            <div class="progress" style="height: 4px;">
-                                                <div class="progress-bar bg-warning" role="progressbar"
-                                                    style="width: 60%">
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Hand Watch</td>
-                                        <td><img src="../../../images/products/05.png" class="product-img-2"
-                                                alt="product img">
-                                        </td>
-                                        <td>#8506790</td>
-                                        <td><span class="badge bg-light-danger text-danger w-100">Failed</span></td>
-                                        <td>$1800.00</td>
-                                        <td>21 Feb 2020</td>
-                                        <td>
-                                            <div class="progress" style="height: 4px;">
-                                                <div class="progress-bar bg-danger" role="progressbar"
-                                                    style="width: 40%">
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div> -->
+                    
+                </div>
             </div>
         </div>
         <!--end page wrapper -->
