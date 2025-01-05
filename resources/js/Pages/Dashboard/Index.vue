@@ -267,33 +267,16 @@ const format_number = (number) => {
                     </div>
                     <div class="col-md-8">
                         <div class="row">
-                            <div class="col-md-6">
-                                <div class="card radius-10">
-                                    <div class="card-body">
-                                        <div class="d-flex align-items-center">
-                                            <div>
-                                                <p class="mb-0 text-secondary">Classes of Business</p>
-                                                <h6 class="my-1">Groups: {{ format_number(data.cob_groups_count) }} <i
-                                                        class="bx bx-caret-right"></i> Classes: {{
-                                                            format_number(data.cobs_count) }}</h6>
-                                            </div>
-                                            <div class="widgets-icons bg-light-danger text-danger ms-auto"><i
-                                                    class="bx bx-layer"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
+                            <div class="col-xxl-6 col-xl-12">
                                 <div class="card radius-10">
                                     <div class="card-body">
                                         <div class="d-flex align-items-center">
                                             <div>
                                                 <p class="mb-0 text-secondary">Total Clients</p>
-                                                <h6 class="my-1">Clients: {{ format_number(data.client_groups_count) }}
+                                                <h4 class="my-1">Clients: {{ format_number(data.client_groups_count) }}
                                                     <i class="bx bx-caret-right"></i> Subsidiaries: {{
                                                         format_number(data.clients_count) }}
-                                                </h6>
+                                                </h4>
                                             </div>
                                             <div class="widgets-icons bg-light-success text-success ms-auto"><i
                                                     class="bx bx-poll"></i>
@@ -302,7 +285,40 @@ const format_number = (number) => {
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-xxl-6 col-xl-8">
+                                <div class="card radius-10">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div>
+                                                <p class="mb-0 text-secondary">Classes of Business</p>
+                                                <h4 class="my-1">Groups: {{ format_number(data.cob_groups_count) }} <i
+                                                        class="bx bx-caret-right"></i> Classes: {{
+                                                            format_number(data.cobs_count) }}</h4>
+                                            </div>
+                                            <div class="widgets-icons bg-light-danger text-danger ms-auto"><i
+                                                    class="bx bx-layer"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-xxl-4 col-xl-4">
+                                <div class="card radius-10">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div>
+                                                <p class="mb-0 text-secondary">Total Claims</p>
+                                                <h4 class="my-1">{{ format_number(data.policy_claim_count) }}</h4>
+                                            </div>
+                                            <div class="widgets-icons bg-light-info text-info ms-auto"><i
+                                                    class='bx bx-list-ul'></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xxl-4 col-xl-6">
                                 <div class="card radius-10">
                                     <div class="card-body">
                                         <div class="d-flex align-items-center">
@@ -317,7 +333,7 @@ const format_number = (number) => {
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-xxl-4 col-xl-6">
                                 <div class="card radius-10">
                                     <div class="card-body">
                                         <div class="d-flex align-items-center">
@@ -333,7 +349,7 @@ const format_number = (number) => {
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-xxl-4 col-xl-6">
                                 <div class="card radius-10">
                                     <div class="card-body">
                                         <div class="d-flex align-items-center">
@@ -349,7 +365,7 @@ const format_number = (number) => {
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-xxl-4 col-xl-6">
                                 <div class="card radius-10">
                                     <div class="card-body">
                                         <div class="d-flex align-items-center">
@@ -364,27 +380,13 @@ const format_number = (number) => {
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="card radius-10">
-                                    <div class="card-body">
-                                        <div class="d-flex align-items-center">
-                                            <div>
-                                                <p class="mb-0 text-secondary">Total Claims</p>
-                                                <h4 class="my-1">{{ format_number(data.policy_claim_count) }}</h4>
-                                            </div>
-                                            <div class="widgets-icons bg-light-info text-info ms-auto"><i
-                                                    class='bx bx-list-ul'></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                           
                         </div>
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-xxl-6 col-xl-12">
                         <div class="card radius-10">
                             <div class="card-body">
                                 <div style="height: 400px;">
@@ -393,7 +395,7 @@ const format_number = (number) => {
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-xxl-6 col-xl-12">
                         <div class="card radius-10">
                             <div class="card-body">
                                 <div style="height: 400px;">
