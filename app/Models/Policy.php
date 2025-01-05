@@ -211,6 +211,7 @@ class Policy extends Model
                 'p.sum_insured',
                 'p.net_premium',
                 'p.gp_collected',
+                'p.gross_premium',
                 'renewal_status.name',
                 'client.name',
                 'agency.name',
