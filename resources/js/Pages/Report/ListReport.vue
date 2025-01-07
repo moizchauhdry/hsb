@@ -10,7 +10,7 @@ import Paginate from "@/Components/Paginate.vue";
 const slug = usePage().props.slug;
 
 defineProps({
-    policies: Array,
+    payments: Array,
     filter: Array,
     grand_total: Array,
 });
@@ -214,10 +214,10 @@ const exportExcel = () => {
                                     <tr>
                                         <th class="px-2">Sr #</th>
                                         <th class="px-2">Policy Number</th>
-                                        <th class="px-2">Client Name</th>
-                                        <th class="px-2">Insurer Name</th>
-                                        <th class="px-2">Agency Name</th>
-                                        <th class="px-2">Class of Business</th>
+                                        <!-- <th class="px-2">Client Name</th> -->
+                                        <!-- <th class="px-2">Insurer Name</th> -->
+                                        <!-- <th class="px-2">Agency Name</th> -->
+                                        <!-- <th class="px-2">Class of Business</th> -->
                                         <th class="px-2">Policy Type</th>
 
                                         <!-- <template v-if="slug == 'renewal' || slug == 'outstanding'">
@@ -250,68 +250,57 @@ const exportExcel = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <template v-for="(policy, index) in policies.data">
+                                    <template v-for="(payment, index) in payments.data">
                                         <tr>
-                                            <td class="px-2">{{ (policies.current_page - 1) * policies.per_page + index
+                                            <td class="px-2">{{ (payments.current_page - 1) * payments.per_page + index
                                                 + 1 }}</td>
-                                            <td class="px-2">{{ policy?.data?.policy_no }}</td>
-                                            <td class="px-2">{{ policy.client_name }}</td>
-                                            <td class="px-2">{{ policy.insurer_name }}</td>
-                                            <td class="px-2">{{ policy.agency_name }}</td>
-                                            <td class="px-2">{{ policy.cob_name }}</td>
-                                            <td class="px-2">{{ policy?.data?.policy_type }}</td>
+                                            <td class="px-2">{{ payment.policy_no }}</td>
+                                            <!-- <td class="px-2">{{ payment.client_name }}</td> -->
+                                            <!-- <td class="px-2">{{ payment.insurer_name }}</td> -->
+                                            <!-- <td class="px-2">{{ payment.agency_name }}</td> -->
+                                            <!-- <td class="px-2">{{ payment.cob_name }}</td> -->
+                                            <td class="px-2">{{ payment.policy_type }}</td>
 
                                             <!-- <template v-if="slug == 'renewal' || slug == 'outstanding'">
                                                 <td :class="{ 'bg-info': filter['date_type'] === 'policy_period_start' }"
-                                                    class="px-2">{{ policy?.data?.policy_period_start }}</td>
+                                                    class="px-2">{{ payment.policy_period_start }}</td>
                                                 <td :class="{ 'bg-info': filter['date_type'] === 'policy_period_end' }"
-                                                    class="px-2">{{ policy?.data?.policy_period_end }}</td>
+                                                    class="px-2">{{ payment.policy_period_end }}</td>
                                                 <td :class="{ 'bg-info': filter['date_type'] === 'date_of_issuance' }"
-                                                    class="px-2">{{ policy?.data?.date_of_issuance }}</td>
+                                                    class="px-2">{{ payment.date_of_issuance }}</td>
                                             </template> -->
 
                                             <!-- <template
                                                 v-if="slug == 'commission-recovery' || slug == 'commission-outstanding-recovery'">
                                             </template> -->
 
-                                            <td class="px-2">{{ format_number(policy?.data?.sum_insured) }}</td>
-                                            <td class="px-2">{{ format_number(policy?.data?.net_premium) }}</td>
-                                            <td class="px-2">{{ format_number(policy?.data?.gross_premium) }}</td>
+                                            <td class="px-2">{{ format_number(payment.sum_insured) }}</td>
+                                            <td class="px-2">{{ format_number(payment.net_premium) }}</td>
+                                            <td class="px-2">{{ format_number(payment.gross_premium) }}</td>
 
                                             <template v-if="slug == 'gross'">
-                                                <td class="px-2">{{ format_number(policy?.data?.gross_premium_collected)}}</td>
-                                                <td class="px-2">{{format_number(policy?.data?.gross_premium_outstanding) }}</td>
+                                                <td class="px-2">{{ format_number(payment.gross_premium_received)}}</td>
+                                                <td class="px-2">{{format_number(payment.gross_premium_outstanding) }}</td>
                                             </template>
 
                                             <template v-if="slug == 'commission'">
-                                                <!-- <td class="px-2">{{ policy?.data?.brokerage_paid_date }}</td> -->
-                                                <!-- <td class="px-2">{{ policy?.data?.brokerage_percentage }}%</td> -->
-                                                <!-- <td class="px-2">{{ policy?.data?.brokerage_status }}</td> -->
-                                                <td class="px-2">{{ format_number(policy?.data?.brokerage_amount) }}</td>
-                                                <td class="px-2">{{format_number(policy?.data?.brokerage_received_amount) }}</td>
-                                                <td class="px-2">{{ policy?.data?.brokerage_amount_outstanding }}</td>
+                                                <td class="px-2">{{ format_number(payment.brokerage_amount) }}</td>
+                                                <td class="px-2">{{format_number(payment.brokerage_amount_received) }}</td>
+                                                <td class="px-2">{{ format_number(payment.brokerage_amount_outstanding) }}</td>
                                             </template>
-
                                         </tr>
                                     </template>
 
-                                    <tr v-if="policies.data.length == 0">
+                                    <tr v-if="payments.data.length == 0">
                                         <td class="text-center" colspan="5">No record</td>
                                     </tr>
-
-                                    <!-- <tr>
-                                        <th colspan="10" class="text-right">Grand Total</th>
-                                        <th>{{ format_number(grand_total.sum_insured) }}</th>
-                                        <th>{{ format_number(grand_total.gross_premium) }}</th>
-                                        <th>{{ format_number(grand_total.net_premium) }}</th>
-                                    </tr> -->
                                 </tbody>
                             </table>
                         </div>
                     </div>
                     <div class="card-body">
                         <div class="float-right">
-                            <Paginate :links="policies.links" />
+                            <Paginate :links="payments.links" />
                         </div>
                     </div>
                 </div>
