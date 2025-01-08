@@ -34,7 +34,15 @@ const generateFilterUrl2 = (client_ids, renewal_ids) => {
     var filters = {
         client_ids: client_ids,
         renewal_ids: renewal_ids,
-        policy_type: "renewal",
+        date_type: props.filter['date_type'] ?? "",
+        from_date: props.filter['from_date'] ?? "",
+        to_date: props.filter['to_date'] ?? "",
+        // policy_type: props.filter['policy_type'] ?? "",
+        agency: props.filter['agency'] ?? "",
+        insurer: props.filter['insurer'] ?? "",
+        department: props.filter['department'] ?? "",
+        // group: props.filter['group'] ?? "",
+        cob: props.filter['cob'] ?? "",
     };
 
     const queryParams = new URLSearchParams(filters).toString();
@@ -60,7 +68,7 @@ const generateFilterUrl2 = (client_ids, renewal_ids) => {
                                 <li class="breadcrumb-item"><a href="javascript:;">
                                         <i class="bx bx-home-alt"></i></a>
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Client List</li>
+                                <li class="breadcrumb-item active" aria-current="page">Renewal List</li>
                             </ol>
                         </nav>
                     </div>
@@ -71,7 +79,7 @@ const generateFilterUrl2 = (client_ids, renewal_ids) => {
 
                 <div class="card">
                     <div class="card-header">
-                        <Search :route_name="route('renewal.client.index')" />
+                        <!-- <Search :route_name="route('renewal.client.index')" /> -->
                     </div>
 
                     <div class="card-body">

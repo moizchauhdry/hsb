@@ -20,6 +20,7 @@ use App\Models\PolicyClaimUpload;
 use App\Http\Controllers\Controller;
 use App\Imports\ExcelImport;
 use App\Models\ErrorLog;
+use App\Models\Payment;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\PolicyInstallmentPlan;
 use Illuminate\Support\Facades\Storage;
@@ -213,26 +214,44 @@ class PolicyController extends Controller
             ->withQueryString();
 
         $renewals = Policy::policiesList([], 'renewals')
-        ->where('base_doc_no', $policy->policy_no)
-        ->paginate(25)
-        ->withQueryString();
-        
+            ->where('base_doc_no', $policy->policy_no)
+            ->paginate(25)
+            ->withQueryString();
+
         $leads = Policy::policiesList([], 'leads')
-        ->where('leader_policy_no', $policy->policy_no)
-        ->paginate(25)
-        ->withQueryString();
+            ->where('leader_policy_no', $policy->policy_no)
+            ->paginate(25)
+            ->withQueryString();
+
+
+        $policy_amount_list = Payment::where('policy_id', $policy->id)->get();
+        $brokerage_amount_list = Payment::where('policy_id', $policy->id)->get();
+
+        $sum_brokerage_amount_received = Payment::where('policy_id', $policy->id)->sum('brokerage_amount_received');
+        // dd($sum_brokerage_amount_received);
 
         return Inertia::render('Policy/Detail', [
             'policy' => $policy,
-            // 'policyInstallment' => $policyInstallment,
             'policyNotes' => $policyNotes,
             'policy_claims' => $policy_claims,
             'policyUploads' => $policyUploads,
             'endorsements' => $endorsements,
             'renewals' => $renewals,
             'leads' => $leads,
-            'assetUrl' => asset('storage')
+            'assetUrl' => asset('storage'),
+            'policy_amount_list' => $policy_amount_list,
+            'brokerage_amount_list' => $brokerage_amount_list,
+            'sum_brokerage_amount_received' => $sum_brokerage_amount_received,
         ]);
+    }
+
+    public function detail2(Request $request)
+    {
+        $policy = Policy::where('policy_no', $request->base_doc_no)->first();
+        if (!$policy) {
+            \abort(403, 'Record not found');
+        }
+        return redirect()->route('policy.detail', $policy->id);
     }
 
     public function delete(Request $request)
@@ -419,7 +438,7 @@ class PolicyController extends Controller
             $error_logs = ErrorLog::where('type', 'excel_import')->delete();
 
             // if ($type == "1") {
-                Excel::queueImport(new ExcelImport($type), $file);
+            Excel::queueImport(new ExcelImport($type), $file);
             // }
 
             // Session::put('excel_import', true);

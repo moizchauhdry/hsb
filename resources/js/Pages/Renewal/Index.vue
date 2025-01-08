@@ -5,6 +5,7 @@ import Filter from "./Filter.vue";
 import Paginate from "@/Components/Paginate.vue";
 import Search from "@/Components/Search.vue";
 import PolicyTable from "../Policy/Partial/PolicyTable.vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
 
 const props = defineProps({
     policies: Array,
@@ -44,13 +45,16 @@ const permission = usePage().props.can;
                     </div>
 
                     <div class="ms-auto" style="display: flex; justify-content: space-between; align-items: center;">
-                        <Filter :filter_route="'renewal'"></Filter>
+                        <!-- <Filter :filter_route="'renewal'"></Filter> -->
+                        <Link :href="route('renewal.client.index')" class="ml-5">
+                        <SecondaryButton><i class="bx bx-arrow-back mr-1"></i>Back</SecondaryButton>
+                        </Link>
                     </div>
                 </div>
 
                 <div class="card">
                     <div class="card-header">
-                        <Search :route_name="route('renewal.index')" />
+                        <!-- <Search :route_name="route('renewal.index')" /> -->
                     </div>
                     <div class="card-body">
                         <PolicyTable v-bind="$props" :detail="true"></PolicyTable>

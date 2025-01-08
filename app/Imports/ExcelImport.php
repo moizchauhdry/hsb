@@ -100,8 +100,8 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
             }
 
             $agency_code = NULL;
-            if (isset($row['agency_code'])) {
-                $agency = Agency::where('code', $row['agency_code'])->first();
+            if (isset($row['agency_code_1'])) {
+                $agency = Agency::where('code', $row['agency_code_1'])->first();
                 if ($agency) {
                     $agency_id = $agency->id;
                     $agency_code = $agency->code;
@@ -285,7 +285,13 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
 
 
             if ($this->excel_type == 1) {
-                $policy = Policy::where('policy_no', $row['policy_no'])->where('policy_type', $row['policy_type'])->first();
+                $policy = Policy::query()
+                    ->where('policy_no', $row['policy_no'])
+                    ->where('policy_type',  $this->getPolicyType($row)['policy_type'])
+                    ->where('agency_code', $agency_code)
+                    ->where('gross_premium', $gross_premium)
+                    ->first();
+
                 if ($policy) {
                     $policy->update($policy_data);
                 } else {

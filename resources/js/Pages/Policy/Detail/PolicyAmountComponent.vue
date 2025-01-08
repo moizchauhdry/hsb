@@ -4,6 +4,7 @@ import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
 export default {
     props: {
         policy: Object,
+        policy_amount_list: Array,
     },
     data() {
         return {
@@ -60,6 +61,38 @@ export default {
                     <td> PKR {{ format_number(policy.gross_premium - policy.gp_collected) }} </td>
                 </tr>
 
+            </tbody>
+        </table>
+
+        <table class="table table-bordered text-uppercase">
+            <tr>
+                <th colspan="7" class="bg-warning text-white">
+                    Policy Amount List
+                </th>
+            </tr>
+            <tr>
+                <th>SR.</th>
+                <th>Policy No</th>
+                <th>Net Premium </th>
+                <th>Gross Premium </th>
+                <th>Gross Premium Received </th>
+                <th>Receipt Amount</th>
+                <th>Receipt Date</th>
+            </tr>
+
+            <tbody>
+                <template v-for="amount, index in policy_amount_list" :key="amount.id">
+
+                    <tr>
+                        <td> {{ ++index }}</td>
+                        <td> {{ amount.policy_no }}</td>
+                        <td> PKR {{ format_number(amount.net_premium) }} </td>
+                        <td> PKR {{ format_number(amount.gross_premium) }} </td>
+                        <td> PKR {{ format_number(amount.gross_premium_received) }} </td>
+                        <td> PKR {{ format_number(amount.receipt_amount) }} </td>
+                        <td> {{ amount.receipt_at }} </td>
+                    </tr>
+                </template>
             </tbody>
         </table>
     </div>
