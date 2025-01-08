@@ -45,23 +45,21 @@ class DashboardController extends Controller
             'policies.client_id as client_id',
             'policies.policy_period_end as expiry_date',
             'policies.policy_type as policy_type',
-            
+
             'payments.sum_insured as sum_insured',
             'payments.net_premium as net_premium',
             'payments.gross_premium as gross_premium',
             'payments.gross_premium_received as gross_premium_received',
-            DB::raw('(payments.gross_premium - payments.gross_premium_received) as gross_premium_outstanding'),
             'payments.brokerage_amount as brokerage_amount',
             'payments.brokerage_amount_received as brokerage_amount_received',
-            DB::raw('(payments.brokerage_amount - payments.brokerage_amount_received) as brokerage_amount_outstanding'),
         );
-
-        $payments = $query->orderBy('policies.date_of_issuance','desc')->get();
+        
+        $payments = $query->orderBy('policies.date_of_issuance', 'desc')->get();
 
         $total_revenue = $payments->sum('brokerage_amount');
         $total_sum_insured = $payments->sum('sum_insured');
-        $total_commission_collected = $payments->sum('brokerage_amount_received');
-        $gp_collected_outstanding = $payments->sum('gross_premium_outstanding');
+        $total_commission_collected = $payments->sum('brokerage_amount') - $payments->sum('brokerage_amount_received');
+        $gp_collected_outstanding = $payments->sum('gross_premium') - $payments->sum('gross_premium_received');
 
         $endorsements = Policy::policiesList([], 'endorsements')->get();
         $endorsements_count = count($endorsements);

@@ -15,7 +15,6 @@ class ReportController extends Controller
     public function index(Request $request, $slug)
     {
         $report = true;
-        // $query = Policy::policiesList($request->all(), 'reports', $report);
 
         $query = Payment::from('payments');
 
@@ -57,9 +56,6 @@ class ReportController extends Controller
         ];
 
         $payments = $query->orderBy('policies.date_of_issuance','desc')->paginate(25)->withQueryString();
-
-
-        // dd($payments);
 
         return Inertia::render('Report/ListReport', [
             'payments' => $payments,

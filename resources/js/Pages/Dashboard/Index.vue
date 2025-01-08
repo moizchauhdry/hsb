@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Head, usePage } from "@inertiajs/vue3";
+import { Link, Head, usePage } from "@inertiajs/vue3";
 import Chart from 'chart.js/auto';
 import { onMounted } from "vue";
 
@@ -283,11 +283,13 @@ const format_number = (number) => {
                         <div class="row">
                             <div class="col-xxl-6 col-xl-12">
                                 <div class="card radius-10">
+                                    <Link :href="route('client.index')">
                                     <div class="card-body">
                                         <div class="d-flex align-items-center">
                                             <div>
                                                 <p class="mb-0 text-secondary">Total Clients</p>
-                                                <h4 class="my-1">Clients: {{ format_number(data.client_groups_count) }}
+                                                <h4 class="my-1">Clients: {{ format_number(data.client_groups_count)
+                                                    }}
                                                     <i class="bx bx-caret-right"></i> Subsidiaries: {{
                                                         format_number(data.clients_count) }}
                                                 </h4>
@@ -297,101 +299,119 @@ const format_number = (number) => {
                                             </div>
                                         </div>
                                     </div>
+                                    </Link>
                                 </div>
                             </div>
                             <div class="col-xxl-6 col-xl-8">
                                 <div class="card radius-10">
+                                    <Link :href="route('cob.index')">
                                     <div class="card-body">
                                         <div class="d-flex align-items-center">
                                             <div>
                                                 <p class="mb-0 text-secondary">Classes of Business</p>
-                                                <h4 class="my-1">Groups: {{ format_number(data.cob_groups_count) }} <i
-                                                        class="bx bx-caret-right"></i> Classes: {{
-                                                            format_number(data.cobs_count) }}</h4>
+                                                <h4 class="my-1">Groups: {{ format_number(data.cob_groups_count) }}
+                                                    <i class="bx bx-caret-right"></i> Classes: {{
+                                                        format_number(data.cobs_count) }}
+                                                </h4>
                                             </div>
                                             <div class="widgets-icons bg-light-danger text-danger ms-auto"><i
                                                     class="bx bx-layer"></i>
                                             </div>
                                         </div>
                                     </div>
+                                    </Link>
                                 </div>
                             </div>
 
                             <div class="col-xxl-4 col-xl-4">
-                                <div class="card radius-10">
-                                    <div class="card-body">
-                                        <div class="d-flex align-items-center">
-                                            <div>
-                                                <p class="mb-0 text-secondary">Total Claims</p>
-                                                <h4 class="my-1">{{ format_number(data.policy_claim_count) }}</h4>
-                                            </div>
-                                            <div class="widgets-icons bg-light-info text-info ms-auto"><i
-                                                    class='bx bx-list-ul'></i>
+                                <Link :href="route('claim.index')">
+                                    <div class="card radius-10">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center">
+                                                <div>
+                                                    <p class="mb-0 text-secondary">Total Claims</p>
+                                                    <h4 class="my-1">{{ format_number(data.policy_claim_count) }}</h4>
+                                                </div>
+                                                <div class="widgets-icons bg-light-info text-info ms-auto"><i
+                                                        class='bx bx-list-ul'></i>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
+                                </Link>
+                            </div>
+                            <div class="col-xxl-4 col-xl-6">
+                                <div class="card radius-10">
+                                    <Link :href="route('report.index','commission')">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center">
+                                                <div>
+                                                    <p class="mb-0 text-secondary">Revenue</p>
+                                                    <h4 class="my-1">PKR {{ format_number(data.total_revenue) }}</h4>
+                                                </div>
+                                                <div class="widgets-icons bg-light-info text-info ms-auto"><i
+                                                        class='bx bx-list-ul'></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </Link>
                                 </div>
                             </div>
                             <div class="col-xxl-4 col-xl-6">
                                 <div class="card radius-10">
-                                    <div class="card-body">
-                                        <div class="d-flex align-items-center">
-                                            <div>
-                                                <p class="mb-0 text-secondary">Revenue</p>
-                                                <h4 class="my-1">PKR {{ format_number(data.total_revenue) }}</h4>
-                                            </div>
-                                            <div class="widgets-icons bg-light-info text-info ms-auto"><i
-                                                    class='bx bx-list-ul'></i>
+                                    <Link :href="route('report.index','commission')">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center">
+                                                <div>
+                                                    <p class="mb-0 text-secondary">Net Commission Collected</p>
+                                                    <h4 class="my-1">PKR {{
+                                                        format_number(data.total_commission_collected)
+                                                        }}
+                                                    </h4>
+                                                </div>
+                                                <div class="widgets-icons bg-light-info text-info ms-auto"><i
+                                                        class='bx bx-list-ul'></i>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </Link>
                                 </div>
                             </div>
                             <div class="col-xxl-4 col-xl-6">
                                 <div class="card radius-10">
-                                    <div class="card-body">
-                                        <div class="d-flex align-items-center">
-                                            <div>
-                                                <p class="mb-0 text-secondary">Net Commission Collected</p>
-                                                <h4 class="my-1">PKR {{ format_number(data.total_commission_collected) }}
-                                                </h4>
-                                            </div>
-                                            <div class="widgets-icons bg-light-info text-info ms-auto"><i
-                                                    class='bx bx-list-ul'></i>
+                                    <Link :href="route('report.index','gross')">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center">
+                                                <div>
+                                                    <p class="mb-0 text-secondary">Gross Premium Outstanding</p>
+                                                    <h4 class="my-1">PKR {{ format_number(data.gp_collected_outstanding)
+                                                        }}
+                                                    </h4>
+                                                </div>
+                                                <div class="widgets-icons bg-light-info text-info ms-auto"><i
+                                                        class='bx bx-list-ul'></i>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </Link>
                                 </div>
                             </div>
                             <div class="col-xxl-4 col-xl-6">
                                 <div class="card radius-10">
-                                    <div class="card-body">
-                                        <div class="d-flex align-items-center">
-                                            <div>
-                                                <p class="mb-0 text-secondary">Gross Premium Outstanding</p>
-                                                <h4 class="my-1">PKR {{ format_number(data.gp_collected_outstanding) }}
-                                                </h4>
-                                            </div>
-                                            <div class="widgets-icons bg-light-info text-info ms-auto"><i
-                                                    class='bx bx-list-ul'></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xxl-4 col-xl-6">
-                                <div class="card radius-10">
-                                    <div class="card-body">
-                                        <div class="d-flex align-items-center">
-                                            <div>
-                                                <p class="mb-0 text-secondary">Sum Insured</p>
-                                                <h4 class="my-1">PKR {{ format_number(data.total_sum_insured) }}</h4>
-                                            </div>
-                                            <div class="widgets-icons bg-light-info text-info ms-auto"><i
-                                                    class='bx bx-list-ul'></i>
+                                    <Link :href="route('report.index','sales')">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center">
+                                                <div>
+                                                    <p class="mb-0 text-secondary">Sum Insured</p>
+                                                    <h4 class="my-1">PKR {{ format_number(data.total_sum_insured) }}
+                                                    </h4>
+                                                </div>
+                                                <div class="widgets-icons bg-light-info text-info ms-auto"><i
+                                                        class='bx bx-list-ul'></i>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </Link>
                                 </div>
                             </div>
 
