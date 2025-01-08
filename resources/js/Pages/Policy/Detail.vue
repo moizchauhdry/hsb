@@ -15,6 +15,9 @@ import LeaderComponent from "./Detail/LeaderComponent.vue";
 
 defineProps({
     policy: Object,
+    policy_amount_list: Array,
+    brokerage_amount_list: Array,
+    sum_brokerage_amount_received: Object,
     policyInstallment: Array(),
     policyNotes: Object,
     policy_claims: Array,

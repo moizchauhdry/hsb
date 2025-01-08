@@ -20,6 +20,7 @@ use App\Models\PolicyClaimUpload;
 use App\Http\Controllers\Controller;
 use App\Imports\ExcelImport;
 use App\Models\ErrorLog;
+use App\Models\Payment;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\PolicyInstallmentPlan;
 use Illuminate\Support\Facades\Storage;
@@ -222,16 +223,25 @@ class PolicyController extends Controller
         ->paginate(25)
         ->withQueryString();
 
+
+        $policy_amount_list = Payment::where('policy_id', $policy->id)->get();
+        $brokerage_amount_list = Payment::where('policy_id', $policy->id)->get();
+
+        $sum_brokerage_amount_received = Payment::where('policy_id', $policy->id)->sum('brokerage_amount_received');
+        // dd($sum_brokerage_amount_received);
+
         return Inertia::render('Policy/Detail', [
             'policy' => $policy,
-            // 'policyInstallment' => $policyInstallment,
             'policyNotes' => $policyNotes,
             'policy_claims' => $policy_claims,
             'policyUploads' => $policyUploads,
             'endorsements' => $endorsements,
             'renewals' => $renewals,
             'leads' => $leads,
-            'assetUrl' => asset('storage')
+            'assetUrl' => asset('storage'),
+            'policy_amount_list' => $policy_amount_list,
+            'brokerage_amount_list' => $brokerage_amount_list,
+            'sum_brokerage_amount_received' => $sum_brokerage_amount_received,
         ]);
     }
 

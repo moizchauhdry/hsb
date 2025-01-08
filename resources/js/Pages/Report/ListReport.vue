@@ -78,7 +78,7 @@ const exportExcel = () => {
                                 </div>
                             </div>
                         </div>
-                        <div class="col">
+                        <!-- <div class="col">
                             <div class="card radius-10">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center">
@@ -91,7 +91,7 @@ const exportExcel = () => {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                         <div class="col">
                             <div class="card radius-10">
                                 <div class="card-body">

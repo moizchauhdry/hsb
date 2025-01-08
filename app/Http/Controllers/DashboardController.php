@@ -92,54 +92,52 @@ class DashboardController extends Controller
         //     $cob_count = UserCob::where('user_id', $user->id)->count('cob_id');
         // }
 
-        $monthly_revenue = DB::table('policies')
-            ->select(DB::raw('SUM(brokerage_amount) as total'), DB::raw('MONTH(date_of_issuance) as month'))
-            ->groupBy('month')
-            ->get()
-            ->pluck('total', 'month')
-            ->toArray();
+        $monthly_revenue = DB::table('payments')
+        ->select(DB::raw('SUM(brokerage_amount) as total'), DB::raw('MONTH(receipt_at) as month'))
+        ->whereYear('receipt_at', 2024) // Apply year filtering at the query level
+        ->groupBy('month')
+        ->pluck('total', 'month')
+        ->toArray();
+    
 
         $revenue_data = [];
         for ($i = 1; $i <= 12; $i++) {
             $revenue_data[] = $monthly_revenue[$i] ?? 0;
         }
 
-        $gross_premium_amount = DB::table('policies')
+        $gross_premium_amount = DB::table('payments')
             ->select(
                 DB::raw('IFNULL(SUM(gross_premium), 0) as gross_premium_amount'),
-                DB::raw('CONCAT(MONTHNAME(date_of_issuance), " ", YEAR(date_of_issuance)) as month_name'),
-                DB::raw('MONTH(date_of_issuance) as month')
+                DB::raw('CONCAT(MONTHNAME(receipt_at), " ", YEAR(receipt_at)) as month_name'),
+                DB::raw('MONTH(receipt_at) as month')
             )
-            ->where('policy_type', ['new', 'renewal'])
-            ->whereNotNull('date_of_issuance')
+            ->whereYear('receipt_at', 2024)
             ->groupBy('month_name', 'month')
             ->orderBy('month', 'asc')
             ->get()
             ->pluck('gross_premium_amount', 'month_name')
             ->toArray();
 
-        $gross_premium_collected = DB::table('policies')
+        $gross_premium_collected = DB::table('payments')
             ->select(
-                DB::raw('IFNULL(SUM(gp_collected), 0) as gross_premium_collected'),
-                DB::raw('CONCAT(MONTHNAME(date_of_issuance), " ", YEAR(date_of_issuance)) as month_name'),
-                DB::raw('MONTH(date_of_issuance) as month')
+                DB::raw('IFNULL(SUM(gross_premium_received), 0) as gross_premium_collected'),
+                DB::raw('CONCAT(MONTHNAME(receipt_at), " ", YEAR(receipt_at)) as month_name'),
+                DB::raw('MONTH(receipt_at) as month')
             )
-            ->where('policy_type', ['new', 'renewal'])
-            ->whereNotNull('date_of_issuance')
+            ->whereYear('receipt_at', 2024)
             ->groupBy('month_name', 'month')
             ->orderBy('month', 'asc')
             ->get()
             ->pluck('gross_premium_collected', 'month_name')
             ->toArray();
 
-        $gross_premium_outstanding = DB::table('policies')
+        $gross_premium_outstanding = DB::table('payments')
             ->select(
-                DB::raw('IFNULL(SUM(gross_premium - gp_collected), 0) as gross_premium_outstanding'),
-                DB::raw('CONCAT(MONTHNAME(date_of_issuance), " ", YEAR(date_of_issuance)) as month_name'),
-                DB::raw('MONTH(date_of_issuance) as month')
+                DB::raw('IFNULL(SUM(gross_premium - gross_premium_received), 0) as gross_premium_outstanding'),
+                DB::raw('CONCAT(MONTHNAME(receipt_at), " ", YEAR(receipt_at)) as month_name'),
+                DB::raw('MONTH(receipt_at) as month')
             )
-            ->where('policy_type', ['new', 'renewal'])
-            ->whereNotNull('date_of_issuance')
+            ->whereYear('receipt_at', 2024)
             ->groupBy('month_name', 'month')
             ->orderBy('month', 'asc')
             ->get()
