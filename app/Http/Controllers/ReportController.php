@@ -16,6 +16,8 @@ class ReportController extends Controller
     {
         $report = true;
 
+        $policies = Policy::policiesList([], 'policies')->get();
+
         $query = Payment::from('payments');
 
         $query->leftJoin('policies', 'policies.id', 'payments.policy_id');
@@ -43,7 +45,7 @@ class ReportController extends Controller
         );
 
         $grand_total = [
-            'sum_insured' => $query->sum('payments.sum_insured'),
+            'sum_insured' => $policies->sum('sum_insured'),
             'net_premium' => $query->sum('payments.net_premium'),
 
             'gross_premium' => $query->sum('payments.gross_premium'),
@@ -57,11 +59,13 @@ class ReportController extends Controller
 
         $payments = $query->orderBy('policies.date_of_issuance','desc')->paginate(25)->withQueryString();
 
+       
+
         return Inertia::render('Report/ListReport', [
             'payments' => $payments,
             'filter' => session('filter'),
             'grand_total' => $grand_total,
-            'slug' => $slug,
+            'slug' => $slug
         ]);
     }
 

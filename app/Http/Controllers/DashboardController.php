@@ -156,7 +156,7 @@ class DashboardController extends Controller
             'policy_claim_count' => $policy_claim_count,
 
             'total_revenue' => $total_revenue,
-            'total_sum_insured' => $total_sum_insured,
+            'total_sum_insured' => $policies->sum('sum_insured'),
             'total_commission_collected' => $total_commission_collected,
             'gp_collected_outstanding' => $gp_collected_outstanding,
 
