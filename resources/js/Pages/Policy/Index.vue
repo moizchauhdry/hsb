@@ -36,7 +36,7 @@ const permission = usePage().props.can;
                                 <li class="breadcrumb-item"><a href="javascript:;">
                                         <i class="bx bx-home-alt"></i></a>
                                 </li>
-                                <li class="breadcrumb-item active text-capitalize" aria-current="page">Policy List
+                                <li class="breadcrumb-item active text-capitalize" aria-current="page">{{props.filter_route}} List
                                 </li>
                             </ol>
                         </nav>

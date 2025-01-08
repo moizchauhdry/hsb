@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import Search from "@/Components/Search.vue";
 import IconButton from "@/Components/IconButton.vue";
 import CreateEdit from "./CreateEdit.vue";
+import axios from 'axios';
 
 const props = defineProps({
     policies: Array,
@@ -50,6 +51,29 @@ const confirmDelete = (policyId) => {
         }
     });
 };
+
+
+const sendPostRequest = (baseDocNo) => {
+   
+    const form = useForm({
+        base_doc_no: baseDocNo,
+    });
+
+    form.post(route('policy.detail-2'), {
+        preserveScroll: true,
+        onSuccess: () => {
+            Swal.fire('Updated!', 'The claim update successfully.', 'success')
+            close();
+        },
+        onError: (errors) => {
+            if (errors.status == false) {
+                Swal.fire('Error!', errors.message, 'error')
+            }
+        },
+        onFinish: () => { },
+    });
+
+};
 </script>
 
 <template>
@@ -80,8 +104,15 @@ const confirmDelete = (policyId) => {
                             <a :href="route('policy.detail', policy.p_id)" target="_blank">
                                 {{ policy.policy_no }} <i class="bx bx-link-external"></i>
                             </a> <br>
-                            
-                            <small v-if="policy.policy_type == 'endorsement'">{{ policy.base_doc_no }}</small>
+
+                            <!-- <a :href="route('policy.detail-2', policy.base_doc_no)">
+                                <small v-if="policy.policy_type == 'endorsement'">{{ policy.base_doc_no }}</small>
+                            </a> -->
+
+                            <button v-if="policy.policy_type == 'endorsement'"
+                                @click="sendPostRequest(policy.base_doc_no)">
+                                <small>{{ policy.base_doc_no }}</small>
+                            </button>
                         </td>
                         <td>{{ policy.client_name }}</td>
                         <td>{{ policy.agency_name }}</td>

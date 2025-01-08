@@ -214,14 +214,14 @@ class PolicyController extends Controller
             ->withQueryString();
 
         $renewals = Policy::policiesList([], 'renewals')
-        ->where('base_doc_no', $policy->policy_no)
-        ->paginate(25)
-        ->withQueryString();
-        
+            ->where('base_doc_no', $policy->policy_no)
+            ->paginate(25)
+            ->withQueryString();
+
         $leads = Policy::policiesList([], 'leads')
-        ->where('leader_policy_no', $policy->policy_no)
-        ->paginate(25)
-        ->withQueryString();
+            ->where('leader_policy_no', $policy->policy_no)
+            ->paginate(25)
+            ->withQueryString();
 
 
         $policy_amount_list = Payment::where('policy_id', $policy->id)->get();
@@ -243,6 +243,15 @@ class PolicyController extends Controller
             'brokerage_amount_list' => $brokerage_amount_list,
             'sum_brokerage_amount_received' => $sum_brokerage_amount_received,
         ]);
+    }
+
+    public function detail2(Request $request)
+    {
+        $policy = Policy::where('policy_no', $request->base_doc_no)->first();
+        if (!$policy) {
+            \abort(403, 'Record not found');
+        }
+        return redirect()->route('policy.detail', $policy->id);
     }
 
     public function delete(Request $request)
@@ -429,7 +438,7 @@ class PolicyController extends Controller
             $error_logs = ErrorLog::where('type', 'excel_import')->delete();
 
             // if ($type == "1") {
-                Excel::queueImport(new ExcelImport($type), $file);
+            Excel::queueImport(new ExcelImport($type), $file);
             // }
 
             // Session::put('excel_import', true);

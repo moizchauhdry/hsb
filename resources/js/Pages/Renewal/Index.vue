@@ -54,7 +54,7 @@ const permission = usePage().props.can;
 
                 <div class="card">
                     <div class="card-header">
-                        <Search :route_name="route('renewal.index')" />
+                        <!-- <Search :route_name="route('renewal.index')" /> -->
                     </div>
                     <div class="card-body">
                         <PolicyTable v-bind="$props" :detail="true"></PolicyTable>

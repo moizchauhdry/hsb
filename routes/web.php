@@ -82,7 +82,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/store', [PolicyController::class, 'store'])->name('policy.store')->middleware('permission:policy_create');
         Route::get('/edit/{id}', [PolicyController::class, 'edit'])->name('policy.edit')->middleware('permission:policy_update');
         Route::post('/update', [PolicyController::class, 'update'])->name('policy.update')->middleware('permission:policy_update');
+        
         Route::get('/detail/{id}', [PolicyController::class, 'detail'])->name('policy.detail')->middleware('permission:policy_detail');
+        Route::post('/detail-2', [PolicyController::class, 'detail2'])->name('policy.detail-2')->middleware('permission:policy_detail');
+        
         Route::delete('/delete', [PolicyController::class, 'delete'])->name('policy.delete')->middleware('permission:policy_delete');
         Route::post('/additional-notes', [PolicyController::class, 'additionalNotes'])->name('policy.additionalNotes')->middleware('permission:policy_note');
         Route::post('/uploads', [PolicyController::class, 'uploads'])->name('policy.uploads')->middleware('permission:policy_upload');
