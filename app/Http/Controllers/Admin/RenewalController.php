@@ -39,7 +39,7 @@ class RenewalController extends Controller
 
         $query = Policy::from('policies as p');
         $query->whereIn('p.id', $renewal_ids);
-        $query->whereIn('policy_type', ['new', 'renewal']);
+        // $query->whereIn('policy_type', ['new', 'renewal']);
 
         $query->leftJoin('policy_claims as pc', 'pc.policy_id', '=', 'p.id');
         $query->leftJoin('users as client', 'client.id', '=', 'p.client_id');
@@ -49,53 +49,53 @@ class RenewalController extends Controller
         $query->leftJoin('groups as g', 'g.id', '=', 'cob.group_id');
         $query->leftJoin('policy_renewal_statuses as renewal_status', 'renewal_status.id', '=', 'p.renewal_status_id');
 
-        if ($filter) {
-            $query->when($filter['search'], function ($q) use ($filter) {
-                $q->where('p.id', $filter['search']);
-                $q->orWhere('p.policy_no', "LIKE", "%" . $filter['search'] . "%");
-            });
+        // if ($filter) {
+        //     $query->when($filter['search'], function ($q) use ($filter) {
+        //         $q->where('p.id', $filter['search']);
+        //         $q->orWhere('p.policy_no', "LIKE", "%" . $filter['search'] . "%");
+        //     });
 
-            if ($filter['date_type'] && $filter['from_date'] && $filter['to_date']) {
-                $query->where('p.policy_period_end', ">=", $filter['from_date']);
-                $query->where('p.policy_period_end', "<=", $filter['to_date']);
-            } else {
-                $startOfNextMonth = Carbon::now()->addMonth()->startOfMonth()->toDateString();
-                $endOfNextMonth = Carbon::now()->addMonth()->endOfMonth()->toDateString();
+        //     if ($filter['date_type'] && $filter['from_date'] && $filter['to_date']) {
+        //         $query->where('p.policy_period_end', ">=", $filter['from_date']);
+        //         $query->where('p.policy_period_end', "<=", $filter['to_date']);
+        //     } else {
+        //         $startOfNextMonth = Carbon::now()->addMonth()->startOfMonth()->toDateString();
+        //         $endOfNextMonth = Carbon::now()->addMonth()->endOfMonth()->toDateString();
 
-                $query->where('p.policy_period_end', '>=', $startOfNextMonth);
-                $query->where('p.policy_period_end', '<=', $endOfNextMonth);
-            }
+        //         $query->where('p.policy_period_end', '>=', $startOfNextMonth);
+        //         $query->where('p.policy_period_end', '<=', $endOfNextMonth);
+        //     }
 
-            $query->when(!empty($filter['client_ids']), function ($q) use ($filter) {
-                $clients = is_array($filter['client_ids']) ? $filter['client_ids'] : explode(',', $filter['client_ids']);
-                $q->whereIn('p.client_id', $clients);
-            });
+        //     $query->when(!empty($filter['client_ids']), function ($q) use ($filter) {
+        //         $clients = is_array($filter['client_ids']) ? $filter['client_ids'] : explode(',', $filter['client_ids']);
+        //         $q->whereIn('p.client_id', $clients);
+        //     });
 
-            $query->when(!empty($filter['agency']), function ($q) use ($filter) {
-                $agencies = is_array($filter['agency']) ? $filter['agency'] : explode(',', $filter['agency']);
-                $q->whereIn('p.agency_id', $agencies);
-            });
+        //     $query->when(!empty($filter['agency']), function ($q) use ($filter) {
+        //         $agencies = is_array($filter['agency']) ? $filter['agency'] : explode(',', $filter['agency']);
+        //         $q->whereIn('p.agency_id', $agencies);
+        //     });
 
-            $query->when(!empty($filter['insurer']), function ($q) use ($filter) {
-                $insurers = is_array($filter['insurer']) ? $filter['insurer'] : explode(',', $filter['insurer']);
-                $q->whereIn('p.insurer_id', $insurers);
-            });
+        //     $query->when(!empty($filter['insurer']), function ($q) use ($filter) {
+        //         $insurers = is_array($filter['insurer']) ? $filter['insurer'] : explode(',', $filter['insurer']);
+        //         $q->whereIn('p.insurer_id', $insurers);
+        //     });
 
-            $query->when($filter['cob'], function ($q) use ($filter) {
-                $cobs = is_array($filter['cob']) ? $filter['cob'] : explode(',', $filter['cob']);
-                $q->whereIn('p.cob_id', $cobs);
-            });
+        //     $query->when($filter['cob'], function ($q) use ($filter) {
+        //         $cobs = is_array($filter['cob']) ? $filter['cob'] : explode(',', $filter['cob']);
+        //         $q->whereIn('p.cob_id', $cobs);
+        //     });
 
-            $query->when($filter['department'], function ($q) use ($filter) {
-                $departments = is_array($filter['department']) ? $filter['department'] : explode(',', $filter['department']);
-                $q->whereIn('cob.department_id', $departments);
-            });
+        //     $query->when($filter['department'], function ($q) use ($filter) {
+        //         $departments = is_array($filter['department']) ? $filter['department'] : explode(',', $filter['department']);
+        //         $q->whereIn('cob.department_id', $departments);
+        //     });
 
-            $query->when($filter['group'], function ($q) use ($filter) {
-                $groups = is_array($filter['group']) ? $filter['group'] : explode(',', $filter['group']);
-                $q->whereIn('cob.group_id', $groups);
-            });
-        }
+        //     $query->when($filter['group'], function ($q) use ($filter) {
+        //         $groups = is_array($filter['group']) ? $filter['group'] : explode(',', $filter['group']);
+        //         $q->whereIn('cob.group_id', $groups);
+        //     });
+        // }
 
         $query->select(
             'p.id as p_id',
