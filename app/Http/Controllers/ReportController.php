@@ -19,7 +19,7 @@ class ReportController extends Controller
 
         $query = Payment::from('payments');
 
-        $query->leftJoin('policies', 'policies.policy_no', 'payments.policy_no');
+        $query->leftJoin('policies', 'policies.id', 'payments.policy_id');
         $query->leftJoin('users as client', 'client.id', '=', 'policies.client_id');
         $query->leftJoin('agencies as agency', 'agency.id', '=', 'policies.agency_id');
         $query->leftJoin('business_classes as cob', 'cob.id', '=', 'policies.cob_id');
@@ -56,7 +56,8 @@ class ReportController extends Controller
             'brokerage_amount_outstanding' => $query->sum('payments.brokerage_amount') - $query->sum('payments.brokerage_amount_received'),
         ];
 
-        $payments = $query->paginate(25)->withQueryString();
+        $payments = $query->orderBy('policies.date_of_issuance','desc')->paginate(25)->withQueryString();
+
 
         // dd($payments);
 

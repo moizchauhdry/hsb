@@ -36,7 +36,7 @@ class RenewalController extends Controller
         session(['filter' => $filter]);
 
         $renewal_ids = is_array($filter['renewal_ids']) ? $filter['renewal_ids'] : explode(',', $filter['renewal_ids']);
-        
+
         $query = Policy::from('policies as p');
         $query->whereIn('p.id', $renewal_ids);
         $query->whereIn('policy_type', ['new', 'renewal']);
@@ -168,7 +168,7 @@ class RenewalController extends Controller
             ->leftJoin('users as client', 'client.client_group_code', '=', 'group.code')
             ->leftJoin('policies as p', 'p.client_id', '=', 'client.id')
             ->leftJoin('business_classes as cob', 'p.cob_id', '=', 'cob.id')
-            ->whereIn('p.policy_type', ['new', 'renewal'])
+            ->whereIn('p.policy_type', ['new', 'renewal', 'cover'])
             ->groupBy('group.id', 'group.code', 'group.name')
             ->orderBy('renewal_count', 'desc');
 
@@ -178,16 +178,19 @@ class RenewalController extends Controller
                 $q->where('group.code', $filter['search'])->orWhere('group.name', 'LIKE', '%' . $filter['search'] . '%');
             });
 
-            if ($filter['date_type'] && $filter['from_date'] && $filter['to_date']) {
-                $query->where('p.policy_period_end', ">=", $filter['from_date']);
-                $query->where('p.policy_period_end', "<=", $filter['to_date']);
-            } else {
-                $startOfNextMonth = Carbon::now()->addMonth()->startOfMonth()->toDateString();
-                $endOfNextMonth = Carbon::now()->addMonth()->endOfMonth()->toDateString();
+            $query->where('p.policy_period_end', ">=", "2024-01-01");
+            $query->where('p.policy_period_end', "<=", "2024-01-31");
 
-                $query->where('p.policy_period_end', '>=', $startOfNextMonth);
-                $query->where('p.policy_period_end', '<=', $endOfNextMonth);
-            }
+            // if ($filter['date_type'] && $filter['from_date'] && $filter['to_date']) {
+            //     $query->where('p.policy_period_end', ">=", $filter['from_date']);
+            //     $query->where('p.policy_period_end', "<=", $filter['to_date']);
+            // } else {
+            //     $startOfNextMonth = Carbon::now()->addMonth()->startOfMonth()->format('Y-m-d');
+            //     $endOfNextMonth = Carbon::now()->addMonth()->endOfMonth()->format('Y-m-d');
+
+            //     // $query->whereDate('p.policy_period_end', '>=', $startOfNextMonth);
+            //     // $query->whereDate('p.policy_period_end', '<=', $endOfNextMonth);
+            // }
 
             $query->when(!empty($filter['client']), function ($q) use ($filter) {
                 $clients = is_array($filter['client']) ? $filter['client'] : explode(',', $filter['client']);

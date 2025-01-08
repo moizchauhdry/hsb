@@ -7,6 +7,7 @@ use App\Models\BusinessClass;
 use App\Models\ClientGroup;
 use App\Models\CustomerAccount;
 use App\Models\Group;
+use App\Models\Payment;
 use App\Models\Policy;
 use App\Models\PolicyClaim;
 use App\Models\User;
@@ -29,10 +30,38 @@ class DashboardController extends Controller
         $policies = Policy::policiesList([], 'policies')->get();
         $policies_count = count($policies);
 
-        $total_revenue = $policies->sum('brokerage_amount');
-        $total_sum_insured = $policies->sum('sum_insured');
-        $total_commission_collected = $policies->sum('brokerage_received_amount');
-        $gp_collected_outstanding = $policies->sum('gp_collected_outstanding');
+        $query = Payment::from('payments');
+
+        $query->leftJoin('policies', 'policies.id', 'payments.policy_id');
+        $query->leftJoin('users as client', 'client.id', '=', 'policies.client_id');
+        $query->leftJoin('agencies as agency', 'agency.id', '=', 'policies.agency_id');
+        $query->leftJoin('business_classes as cob', 'cob.id', '=', 'policies.cob_id');
+        $query->leftJoin('departments as d', 'd.id', '=', 'cob.department_id');
+
+        $query->select(
+            'policies.id as p_id',
+            'policies.policy_no as policy_no',
+            'policies.base_doc_no as base_doc_no',
+            'policies.client_id as client_id',
+            'policies.policy_period_end as expiry_date',
+            'policies.policy_type as policy_type',
+            
+            'payments.sum_insured as sum_insured',
+            'payments.net_premium as net_premium',
+            'payments.gross_premium as gross_premium',
+            'payments.gross_premium_received as gross_premium_received',
+            DB::raw('(payments.gross_premium - payments.gross_premium_received) as gross_premium_outstanding'),
+            'payments.brokerage_amount as brokerage_amount',
+            'payments.brokerage_amount_received as brokerage_amount_received',
+            DB::raw('(payments.brokerage_amount - payments.brokerage_amount_received) as brokerage_amount_outstanding'),
+        );
+
+        $payments = $query->orderBy('policies.date_of_issuance','desc')->get();
+
+        $total_revenue = $payments->sum('brokerage_amount');
+        $total_sum_insured = $payments->sum('sum_insured');
+        $total_commission_collected = $payments->sum('brokerage_amount_received');
+        $gp_collected_outstanding = $payments->sum('gross_premium_outstanding');
 
         $endorsements = Policy::policiesList([], 'endorsements')->get();
         $endorsements_count = count($endorsements);

@@ -130,7 +130,7 @@ const exportExcel = () => {
                                         <div>
                                             <p class="mb-0 text-secondary">Gross Premium Collected</p>
                                             <h4 class="my-1"><small>PKR</small> {{
-                                                format_number(grand_total.gross_premium_collected) }}
+                                                format_number(grand_total.gross_premium_received) }}
                                             </h4>
                                         </div>
                                     </div>
@@ -176,7 +176,7 @@ const exportExcel = () => {
                                         <div>
                                             <p class="mb-0 text-secondary">Brokerage Commission Received</p>
                                             <h4 class="my-1"><small>PKR</small> {{
-                                                format_number(grand_total.brokerage_received_amount) }}
+                                                format_number(grand_total.brokerage_amount_received) }}
                                             </h4>
                                         </div>
                                     </div>
