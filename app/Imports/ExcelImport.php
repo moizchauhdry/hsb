@@ -173,7 +173,7 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
 
             $brokerage_amount = NULL;
             if (isset($row['brokerage_amount'])) {
-                $brokerage_amount = (int) str_replace(',', '', $row['brokerage_amount']);
+                $brokerage_amount = (int) $row['brokerage_amount'];
             }
 
             $brokerage_received_amount = NULL;
