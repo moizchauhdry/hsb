@@ -128,32 +128,32 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
             $sum_insured = NULL;
             if (isset($row['sum_insured'])) {
                 // $sum_insured = (int) str_replace(',', '', $row['sum_insured']);
-                $sum_insured = (int) $row['sum_insured'];
+                $sum_insured =  $row['sum_insured'];
             }
 
             $gross_premium_100 = NULL;
             if (isset($row['gross_premium_100'])) {
-                $gross_premium_100 = (int) $row['gross_premium_100'];
+                $gross_premium_100 =  $row['gross_premium_100'];
             }
 
             $gross_premium = NULL;
             if (isset($row['gross_premium'])) {
-                $gross_premium = (int) $row['gross_premium'];
+                $gross_premium =  $row['gross_premium'];
             }
 
             $net_premium_100 = NULL;
             if (isset($row['net_premium_100'])) {
-                $net_premium_100 = (int) $row['net_premium_100'];
+                $net_premium_100 =  $row['net_premium_100'];
             }
 
             $net_premium_100 = NULL;
             if (isset($row['net_premium_100'])) {
-                $net_premium_100 = (int) $row['net_premium_100'];
+                $net_premium_100 =  $row['net_premium_100'];
             }
 
             $net_premium = NULL;
             if (isset($row['net_premium'])) {
-                $net_premium = (int) $row['net_premium'];
+                $net_premium =  $row['net_premium'];
             }
 
             $rate_percentage = NULL;
@@ -173,7 +173,7 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
 
             $brokerage_amount = NULL;
             if (isset($row['brokerage_amount'])) {
-                $brokerage_amount = (int) $row['brokerage_amount'];
+                $brokerage_amount = $row['brokerage_amount'];
             }
 
             $brokerage_received_amount = NULL;
