@@ -283,7 +283,7 @@ const format_number = (number) => {
                         <div class="row">
                             <div class="col-xxl-6 col-xl-12">
                                 <div class="card radius-10">
-                                    <Link :href="route('client.index')">
+                                    <Link :href="route('client.group.index')">
                                     <div class="card-body">
                                         <div class="d-flex align-items-center">
                                             <div>

@@ -109,20 +109,58 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
             }
 
 
+            // $date_of_issuance = NULL;
+            // if (isset($row['date_of_issuance'])) {
+            //     $date_of_issuance = Carbon::parse($row['date_of_issuance'])->format('Y-m-d');
+            // }
+
+            // $policy_period_start = NULL;
+            // if (isset($row['policy_period_start'])) {
+            //     $policy_period_start = Carbon::parse($row['policy_period_start'])->format('Y-m-d');
+            // }
+
+            // $policy_period_end = NULL;
+            // if (isset($row['policy_period_end'])) {
+            //     $policy_period_end = Carbon::parse($row['policy_period_end'])->format('Y-m-d');
+            // }
+
             $date_of_issuance = NULL;
-            if (isset($row['date_of_issuance'])) {
-                $date_of_issuance = Carbon::parse($row['date_of_issuance'])->format('Y-m-d');
+
+            if (!empty($row['date_of_issuance'])) {
+                try {
+                    // Specify the format of the date in the input
+                    $date_of_issuance = Carbon::createFromFormat('d/m/Y', $row['date_of_issuance'])->format('Y-m-d');
+                } catch (\Exception $e) {
+                    // Handle the exception if the date is invalid
+                    $date_of_issuance = NULL;
+                }
             }
 
             $policy_period_start = NULL;
-            if (isset($row['policy_period_start'])) {
-                $policy_period_start = Carbon::parse($row['policy_period_start'])->format('Y-m-d');
+
+            if (!empty($row['policy_period_start'])) {
+                try {
+                    // Specify the format of the date in the input
+                    $policy_period_start = Carbon::createFromFormat('d/m/Y', $row['policy_period_start'])->format('Y-m-d');
+                } catch (\Exception $e) {
+                    // Handle the exception if the date is invalid
+                    $policy_period_start = NULL;
+                }
             }
 
+
             $policy_period_end = NULL;
-            if (isset($row['policy_period_end'])) {
-                $policy_period_end = Carbon::parse($row['policy_period_end'])->format('Y-m-d');
+
+            if (!empty($row['policy_period_end'])) {
+                try {
+                    // Specify the format of the date in the input
+                    $policy_period_end = Carbon::createFromFormat('d/m/Y', $row['policy_period_end'])->format('Y-m-d');
+                } catch (\Exception $e) {
+                    // Handle the exception if the date is invalid
+                    $policy_period_end = NULL;
+                }
             }
+
 
 
             $sum_insured = NULL;
@@ -158,17 +196,17 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
 
             $rate_percentage = NULL;
             if (isset($row['rate_percentage'])) {
-                $rate_percentage = (int) str_replace(',', '', $row['rate_percentage']);
+                $rate_percentage =  $row['rate_percentage'];
             }
 
             $gp_collected = NULL;
             if (isset($row['gp_collected'])) {
-                $gp_collected = (int) str_replace(',', '', $row['gp_collected']);
+                $gp_collected =  $row['gp_collected'];
             }
 
             $brokerage_percentage = NULL;
             if (isset($row['brokerage_percentage'])) {
-                $brokerage_percentage = (int) str_replace(',', '', $row['brokerage_percentage']);
+                $brokerage_percentage =  $row['brokerage_percentage'];
             }
 
             $brokerage_amount = NULL;
@@ -178,7 +216,7 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
 
             $brokerage_received_amount = NULL;
             if (isset($row['brokerage_received_amount'])) {
-                $brokerage_received_amount = (int) str_replace(',', '', $row['brokerage_received_amount']);
+                $brokerage_received_amount =  $row['brokerage_received_amount'];
             }
 
             $policy_data = [
@@ -188,53 +226,6 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
             if (!empty($client_id)) {
                 $policy_data['client_id'] = $client_id;
             }
-
-            // $policy_data = [
-            //     'policy_no' => $row['policy_no'],
-
-            //     'client_id' => $client_id,
-            //     'insurer_id' => $insurer_id,
-            //     'cob_id' => $cob_id,
-            //     'department_id' => $department_id,
-            //     'agency_id' => $agency_id,
-            //     'agency_code' => $agency_code,
-
-            //     'child_agency_name' => $row['child_agency_name'] ?? null,
-            //     'leader_name' => $row['leader_name'] ?? null,
-            //     'leader_policy_no' => $row['leader_policy_no'] ?? null,
-
-            //     'lead_type' => $this->getLeadType($row),
-
-            //     'date_of_issuance' => $date_of_issuance,
-            //     'policy_period_start' => $policy_period_start,
-            //     'policy_period_end' => $policy_period_end,
-
-            //     'sum_insured' => $sum_insured,
-            //     'gross_premium_100' => $gross_premium_100,
-            //     'gross_premium' => $gross_premium,
-            //     'net_premium_100' => $net_premium_100,
-            //     'net_premium' => $net_premium,
-            //     'rate_percentage' => $rate_percentage,
-            //     'gp_collected' => $gp_collected,
-
-            //     'brokerage_percentage' => $brokerage_percentage,
-            //     'brokerage_amount' => $brokerage_amount,
-            //     'brokerage_received_amount' => $brokerage_received_amount,
-
-            //     'base_doc_no' => $row['base_doc_no'] ?? null,
-            //     'policy_type' => $this->getPolicyType($row)['policy_type'],
-            //     'policy_type_other' => $this->getPolicyType($row)['policy_type_other'],
-            //     'insurance_type' => $row['insurance_type'] ?? null,
-            //     'branch' => $row['branch'] ?? NULL,
-
-            //     'receipt_no' => $row['receipt_no'] ?? NULL,
-            //     // 'receipt_date' => $row['receipt_date'],
-            //     'receipt_amount' => $row['receipt_amount'] ?? NULL,
-
-            //     'excel_import' => true,
-            //     'excel_import_at' => Carbon::now(),
-            //     'user_id' => auth()->id(),
-            // ];
 
             $policy_data = array_filter([
                 'policy_no' => $row['policy_no'],

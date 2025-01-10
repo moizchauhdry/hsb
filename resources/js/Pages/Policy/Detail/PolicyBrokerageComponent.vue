@@ -5,7 +5,10 @@ export default {
     props: {
         policy: Object,
         brokerage_amount_list: Array,
-        sum_brokerage_amount_received: Array,
+        payment_endorsement_list: Array,
+
+        calculations: Array,
+        endorsements: Array,
     },
     data() {
         return {
@@ -38,7 +41,7 @@ export default {
                 </tr>
                 <tr>
                     <th>Brokerage/Commissioned Amount</th>
-                    <td>PKR {{ format_number(policy.brokerage_amount) }} </td>
+                    <td>PKR {{ format_number(calculations.brokerage_amount_final) }} </td>
                 </tr>
                 <tr>
                     <th>Brokerage Percentage </th>
@@ -46,20 +49,61 @@ export default {
                 </tr>
                 <tr>
                     <th>Brokerage Received Amount</th>
-                    <td>PKR {{ format_number(sum_brokerage_amount_received) }} </td>
+                    <td>PKR {{ format_number(calculations.brokerage_amount_received_final) }} </td>
                 </tr>
                 <tr>
                     <th>Brokerage Outstanding Balance</th>
-                    <td>PKR {{ format_number(policy.brokerage_amount - sum_brokerage_amount_received) }} </td>
+                    <td>PKR {{ format_number(calculations.brokerage_outstanding_final_amount) }} </td>
                 </tr>
-                <!-- <tr>
-                    <th>Brokerage Paid Date</th>
-                    <td>{{ policy.brokerage_paid_date }}</td>
-                </tr> -->
-                <!-- <tr>
-                    <th>Brokerage Status</th>
-                    <td>{{ policy.brokerage_status }}</td>
-                </tr> -->
+            </tbody>
+        </table>
+
+        <table class="table table-bordered text-uppercase">
+            <tr>
+                <th colspan="8" class="bg-warning text-white">
+                    Brokerage Booked Amount List
+                </th>
+            </tr>
+            <tr>
+                <th>SR.</th>
+                <th>Policy No</th>
+                <th>Brokerage/Commissioned Amount </th>
+                <th>Brokerage Percentage </th>
+                <th>Brokerage Received Amount </th>
+            </tr>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td> {{ policy.policy_no }}</td>
+                    <td> PKR {{ format_number(policy.brokerage_amount) }} </td>
+                    <td> PKR {{ format_number(policy.brokerage_percentage) }} </td>
+                    <td> PKR {{ format_number(calculations.brokerage_amount_received_total) }} </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="table table-bordered text-uppercase">
+            <tr>
+                <th colspan="7" class="bg-warning text-white">
+                    Endorsement Amount List
+                </th>
+            </tr>
+            <tr>
+                <th>SR.</th>
+                <th>Policy No</th>
+                <th>Brokerage Amount </th>
+                <th>Brokerage Received Amount </th>
+            </tr>
+
+            <tbody>
+                <template v-for="e, index in payment_endorsement_list" :key="e.id">
+                    <tr>
+                        <td> {{ ++index }}</td>
+                        <td> {{ e.policy_no }}</td>
+                        <td> PKR {{ format_number(e.brokerage_amount) }} </td>
+                        <td> PKR {{ format_number(e.brokerage_amount_received) }} </td>
+                    </tr>
+                </template>
             </tbody>
         </table>
 

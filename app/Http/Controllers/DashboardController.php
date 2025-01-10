@@ -32,7 +32,7 @@ class DashboardController extends Controller
 
         $query = Payment::from('payments');
 
-        $query->leftJoin('policies', 'policies.id', 'payments.policy_id');
+        $query->join('policies', 'policies.id', 'payments.policy_id');
         $query->leftJoin('users as client', 'client.id', '=', 'policies.client_id');
         $query->leftJoin('agencies as agency', 'agency.id', '=', 'policies.agency_id');
         $query->leftJoin('business_classes as cob', 'cob.id', '=', 'policies.cob_id');
@@ -76,7 +76,7 @@ class DashboardController extends Controller
         $cobs = BusinessClass::get();
         $cobs_count = count($cobs);
 
-        $client_groups = ClientGroup::get();
+        $client_groups = ClientGroup::clientGroupList([])->get();
         $client_groups_count = count($client_groups);
 
         $clients = User::role('client')->get();

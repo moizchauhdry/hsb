@@ -13,6 +13,7 @@ defineProps({
     payments: Array,
     filter: Array,
     grand_total: Array,
+    miscellaneous_paid_amount:Object
 });
 
 const format_number = (number) => {
@@ -54,7 +55,7 @@ const exportExcel = () => {
                     </div>
 
                     <div class="ms-auto">
-                        <PolicyFilter :filter_route="'report'"></PolicyFilter>
+                        <!-- <PolicyFilter :filter_route="'report'"></PolicyFilter> -->
                         <SuccessButton @click="exportExcel"><i class="bx bx-export text-lg mr-1"></i> Excel Export
                         </SuccessButton>
                     </div>
@@ -192,6 +193,19 @@ const exportExcel = () => {
                                             <h4 class="my-1"><small>PKR</small> {{
                                                 format_number(grand_total.brokerage_amount_outstanding)
                                             }}</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card radius-10">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center">
+                                        <div>
+                                            <p class="mb-0 text-secondary">Miscellaneous Paid Amount</p>
+                                            <h4 class="my-1"><small>PKR</small> {{
+                                                format_number(miscellaneous_paid_amount)}}</h4>
                                         </div>
                                     </div>
                                 </div>

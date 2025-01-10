@@ -18,6 +18,8 @@ defineProps({
     policy_amount_list: Array,
     brokerage_amount_list: Array,
     sum_brokerage_amount_received: Object,
+    calculations: Array,
+    payment_endorsement_list:Array,
     policyInstallment: Array(),
     policyNotes: Object,
     policy_claims: Array,

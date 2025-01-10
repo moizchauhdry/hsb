@@ -213,6 +213,8 @@ class PolicyController extends Controller
             ->paginate(25)
             ->withQueryString();
 
+        $payment_endorsement_list = Payment::whereIn('policy_id', $endorsements->pluck('p_id')->toArray())->get();
+
         $renewals = Policy::policiesList([], 'renewals')
             ->where('base_doc_no', $policy->policy_no)
             ->paginate(25)
@@ -227,8 +229,24 @@ class PolicyController extends Controller
         $policy_amount_list = Payment::where('policy_id', $policy->id)->get();
         $brokerage_amount_list = Payment::where('policy_id', $policy->id)->get();
 
-        $sum_brokerage_amount_received = Payment::where('policy_id', $policy->id)->sum('brokerage_amount_received');
-        // dd($sum_brokerage_amount_received);
+        $calculations = [
+            'sum_insured_final_amount' => $policy->sum_insured + $endorsements->sum('sum_insured'),
+            'net_premium_final_amount' => $policy->net_premium + $endorsements->sum('net_premium'),
+            'gross_premium_final_amount' => $policy->gross_premium + $endorsements->sum('gross_premium'),
+
+            'gross_premium_received_final_amount' => $policy_amount_list->sum('gross_premium_received'),
+            'gross_premium_outstanding_final_amount' => ($policy->gross_premium + $endorsements->sum('gross_premium')) - $policy_amount_list->sum('gross_premium_received'),
+
+            'brokerage_amount_received_total' => $policy_amount_list->sum('brokerage_amount_received'),
+
+            'brokerage_amount_final' => $policy->brokerage_amount  + $payment_endorsement_list->sum('brokerage_amount'),
+            'brokerage_amount_received_final' => $policy_amount_list->sum('brokerage_amount_received') + $payment_endorsement_list->sum('brokerage_amount_received'),
+
+            'brokerage_outstanding_final_amount' => ($policy->brokerage_amount  + $payment_endorsement_list->sum('brokerage_amount')) - ($policy_amount_list->sum('brokerage_amount_received') + $payment_endorsement_list->sum('brokerage_amount_received')),
+
+        ];
+
+        // dd($policy->brokerage_amount, $payment_endorsement_list->sum('brokerage_amount'));
 
         return Inertia::render('Policy/Detail', [
             'policy' => $policy,
@@ -241,7 +259,8 @@ class PolicyController extends Controller
             'assetUrl' => asset('storage'),
             'policy_amount_list' => $policy_amount_list,
             'brokerage_amount_list' => $brokerage_amount_list,
-            'sum_brokerage_amount_received' => $sum_brokerage_amount_received,
+            'payment_endorsement_list' => $payment_endorsement_list,
+            'calculations' => $calculations,
         ]);
     }
 

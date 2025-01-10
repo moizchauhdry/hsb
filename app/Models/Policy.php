@@ -53,6 +53,11 @@ class Policy extends Model
         return $this->hasMany(PolicyInstallmentPlan::class, 'policy_id', 'id');
     }
 
+    public function payment()
+    {
+        return $this->belongsTo(Payment::class, 'policy_id', 'id');
+    }
+
     // *************************** ****** ***********************
     // *************************** SCOPES ***********************
     // *************************** ****** ***********************
@@ -194,6 +199,7 @@ class Policy extends Model
                 'p.lead_type as policy_lead_type',
                 'p.sum_insured as sum_insured',
                 'p.net_premium as net_premium',
+                'p.gross_premium as gross_premium',
                 'p.gp_collected as gp_collected',
                 'p.brokerage_amount as brokerage_amount',
                 'p.brokerage_received_amount as brokerage_received_amount',
