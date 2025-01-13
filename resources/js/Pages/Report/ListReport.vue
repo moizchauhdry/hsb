@@ -1,9 +1,7 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, Link, usePage, useForm } from "@inertiajs/vue3";
-import { ref } from "vue";
-import PolicyFilter from "@/Pages/Policy/Partial/PolicyFilter.vue";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
+import Filter from "./Filter.vue";
 import SuccessButton from "@/Components/SuccessButton.vue";
 import Paginate from "@/Components/Paginate.vue";
 
@@ -13,7 +11,7 @@ defineProps({
     payments: Array,
     filter: Array,
     grand_total: Array,
-    miscellaneous_paid_amount:Object
+    miscellaneous_paid_amount: Object
 });
 
 const format_number = (number) => {
@@ -55,7 +53,7 @@ const exportExcel = () => {
                     </div>
 
                     <div class="ms-auto">
-                        <!-- <PolicyFilter :filter_route="'report'"></PolicyFilter> -->
+                        <Filter></Filter>
                         <SuccessButton @click="exportExcel"><i class="bx bx-export text-lg mr-1"></i> Excel Export
                         </SuccessButton>
                     </div>
@@ -79,20 +77,6 @@ const exportExcel = () => {
                                 </div>
                             </div>
                         </div>
-                        <!-- <div class="col">
-                            <div class="card radius-10">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center">
-                                        <div>
-                                            <p class="mb-0 text-secondary">Total Net Premium</p>
-                                            <h4 class="my-1"><small>PKR</small> {{
-                                                format_number(grand_total.net_premium) }}
-                                            </h4>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> -->
                         <div class="col">
                             <div class="card radius-10">
                                 <div class="card-body">
@@ -205,7 +189,7 @@ const exportExcel = () => {
                                         <div>
                                             <p class="mb-0 text-secondary">Miscellaneous Paid Amount</p>
                                             <h4 class="my-1"><small>PKR</small> {{
-                                                format_number(miscellaneous_paid_amount)}}</h4>
+                                                format_number(miscellaneous_paid_amount) }}</h4>
                                         </div>
                                     </div>
                                 </div>
@@ -293,14 +277,18 @@ const exportExcel = () => {
                                             <td class="px-2">{{ format_number(payment.gross_premium) }}</td>
 
                                             <template v-if="slug == 'gross'">
-                                                <td class="px-2">{{ format_number(payment.gross_premium_received)}}</td>
-                                                <td class="px-2">{{format_number(payment.gross_premium_outstanding) }}</td>
+                                                <td class="px-2">{{ format_number(payment.gross_premium_received) }}
+                                                </td>
+                                                <td class="px-2">{{ format_number(payment.gross_premium_outstanding) }}
+                                                </td>
                                             </template>
 
                                             <template v-if="slug == 'commission'">
                                                 <td class="px-2">{{ format_number(payment.brokerage_amount) }}</td>
-                                                <td class="px-2">{{format_number(payment.brokerage_amount_received) }}</td>
-                                                <td class="px-2">{{ format_number(payment.brokerage_amount_outstanding) }}</td>
+                                                <td class="px-2">{{ format_number(payment.brokerage_amount_received) }}
+                                                </td>
+                                                <td class="px-2">{{ format_number(payment.brokerage_amount_outstanding)
+                                                    }}</td>
                                             </template>
                                         </tr>
                                     </template>

@@ -109,6 +109,11 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
             }
 
 
+            $brokerage_paid_date = NULL;
+            if (isset($row['month'])) {
+                $brokerage_paid_date = !empty($row['month']) ? Date::excelToDateTimeObject($row['month'])->format('Y-m-d') : null;
+            }
+
             $date_of_issuance = NULL;
             if (isset($row['date_of_issuance'])) {
                 // $date_of_issuance = Carbon::parse($row['date_of_issuance'])->format('Y-m-d');
@@ -258,6 +263,7 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
                 'rate_percentage' => $rate_percentage,
                 'gp_collected' => $gp_collected,
 
+                'brokerage_paid_date' => $brokerage_paid_date,
                 'brokerage_percentage' => $brokerage_percentage,
                 'brokerage_amount' => $brokerage_amount,
                 'brokerage_received_amount' => $brokerage_received_amount,
