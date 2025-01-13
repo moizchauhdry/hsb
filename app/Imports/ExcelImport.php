@@ -109,57 +109,60 @@ class ExcelImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
             }
 
 
-            // $date_of_issuance = NULL;
-            // if (isset($row['date_of_issuance'])) {
-            //     $date_of_issuance = Carbon::parse($row['date_of_issuance'])->format('Y-m-d');
-            // }
-
-            // $policy_period_start = NULL;
-            // if (isset($row['policy_period_start'])) {
-            //     $policy_period_start = Carbon::parse($row['policy_period_start'])->format('Y-m-d');
-            // }
-
-            // $policy_period_end = NULL;
-            // if (isset($row['policy_period_end'])) {
-            //     $policy_period_end = Carbon::parse($row['policy_period_end'])->format('Y-m-d');
-            // }
-
             $date_of_issuance = NULL;
-
-            if (!empty($row['date_of_issuance'])) {
-                try {
-                    // Specify the format of the date in the input
-                    $date_of_issuance = Carbon::createFromFormat('d/m/Y', $row['date_of_issuance'])->format('Y-m-d');
-                } catch (\Exception $e) {
-                    // Handle the exception if the date is invalid
-                    $date_of_issuance = NULL;
-                }
+            if (isset($row['date_of_issuance'])) {
+                // $date_of_issuance = Carbon::parse($row['date_of_issuance'])->format('Y-m-d');
+                $date_of_issuance = !empty($row['date_of_issuance']) ? Date::excelToDateTimeObject($row['date_of_issuance'])->format('Y-m-d') : null;
             }
 
             $policy_period_start = NULL;
-
-            if (!empty($row['policy_period_start'])) {
-                try {
-                    // Specify the format of the date in the input
-                    $policy_period_start = Carbon::createFromFormat('d/m/Y', $row['policy_period_start'])->format('Y-m-d');
-                } catch (\Exception $e) {
-                    // Handle the exception if the date is invalid
-                    $policy_period_start = NULL;
-                }
+            if (isset($row['policy_period_start'])) {
+                // $policy_period_start = Carbon::parse($row['policy_period_start'])->format('Y-m-d');
+                $policy_period_start = !empty($row['policy_period_start']) ? Date::excelToDateTimeObject($row['policy_period_start'])->format('Y-m-d') : null;
             }
-
 
             $policy_period_end = NULL;
-
-            if (!empty($row['policy_period_end'])) {
-                try {
-                    // Specify the format of the date in the input
-                    $policy_period_end = Carbon::createFromFormat('d/m/Y', $row['policy_period_end'])->format('Y-m-d');
-                } catch (\Exception $e) {
-                    // Handle the exception if the date is invalid
-                    $policy_period_end = NULL;
-                }
+            if (isset($row['policy_period_end'])) {
+                // $policy_period_end = Carbon::parse($row['policy_period_end'])->format('Y-m-d');
+                $policy_period_end = !empty($row['policy_period_end']) ? Date::excelToDateTimeObject($row['policy_period_end'])->format('Y-m-d') : null;
             }
+
+            // $date_of_issuance = NULL;
+
+            // if (!empty($row['date_of_issuance'])) {
+            //     try {
+            //         // Specify the format of the date in the input
+            //         $date_of_issuance = Carbon::createFromFormat('d/m/Y', $row['date_of_issuance'])->format('Y-m-d');
+            //     } catch (\Exception $e) {
+            //         // Handle the exception if the date is invalid
+            //         $date_of_issuance = NULL;
+            //     }
+            // }
+
+            // $policy_period_start = NULL;
+
+            // if (!empty($row['policy_period_start'])) {
+            //     try {
+            //         // Specify the format of the date in the input
+            //         $policy_period_start = Carbon::createFromFormat('d/m/Y', $row['policy_period_start'])->format('Y-m-d');
+            //     } catch (\Exception $e) {
+            //         // Handle the exception if the date is invalid
+            //         $policy_period_start = NULL;
+            //     }
+            // }
+
+
+            // $policy_period_end = NULL;
+
+            // if (!empty($row['policy_period_end'])) {
+            //     try {
+            //         // Specify the format of the date in the input
+            //         $policy_period_end = Carbon::createFromFormat('d/m/Y', $row['policy_period_end'])->format('Y-m-d');
+            //     } catch (\Exception $e) {
+            //         // Handle the exception if the date is invalid
+            //         $policy_period_end = NULL;
+            //     }
+            // }
 
 
 
