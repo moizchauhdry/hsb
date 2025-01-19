@@ -340,7 +340,7 @@ const format_number = (number) => {
                                     </div>
                                 </Link>
                             </div>
-                            <div class="col-xxl-4 col-xl-6">
+                            <div class="col-xxl-4 col-xl-6" v-if="data.role.id == 1 || data.role.id == 4">
                                 <div class="card radius-10">
                                     <Link :href="route('report.index','commission')">
                                         <div class="card-body">
@@ -357,7 +357,7 @@ const format_number = (number) => {
                                     </Link>
                                 </div>
                             </div>
-                            <div class="col-xxl-4 col-xl-6">
+                            <div class="col-xxl-4 col-xl-6" v-if="data.role.id == 1 || data.role.id == 4">
                                 <div class="card radius-10">
                                     <Link :href="route('report.index','commission')">
                                         <div class="card-body">
@@ -377,7 +377,7 @@ const format_number = (number) => {
                                     </Link>
                                 </div>
                             </div>
-                            <div class="col-xxl-4 col-xl-6">
+                            <div class="col-xxl-4 col-xl-6" v-if="data.role.id == 1 || data.role.id == 4"> 
                                 <div class="card radius-10">
                                     <Link :href="route('report.index','gross')">
                                         <div class="card-body">
@@ -396,7 +396,7 @@ const format_number = (number) => {
                                     </Link>
                                 </div>
                             </div>
-                            <div class="col-xxl-4 col-xl-6">
+                            <div class="col-xxl-4 col-xl-6" v-if="data.role.id == 1 || data.role.id == 4">
                                 <div class="card radius-10">
                                     <Link :href="route('report.index','sales')">
                                         <div class="card-body">
@@ -419,7 +419,7 @@ const format_number = (number) => {
                     </div>
                 </div>
 
-                <div class="row">
+                <div class="row" v-if="data.role.id == 1 || data.role.id == 4">
                     <div class="col-xxl-6 col-xl-12">
                         <div class="card radius-10">
                             <div class="card-body">
