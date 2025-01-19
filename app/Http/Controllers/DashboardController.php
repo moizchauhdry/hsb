@@ -146,6 +146,8 @@ class DashboardController extends Controller
 
 
         $data = [
+            'role' => $role,
+
             'policies_count' => $policies_count,
             'renewals_count' => $renewals_count,
             'endorsements_count' => $endorsements_count,
@@ -166,8 +168,6 @@ class DashboardController extends Controller
             'gross_premium_collected' => $gross_premium_collected,
             'gross_premium_outstanding' => $gross_premium_outstanding,
         ];
-
-        // dd($data);
 
         return Inertia::render('Dashboard/Index', [
             'data' => $data,
