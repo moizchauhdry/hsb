@@ -15,6 +15,8 @@ const gross_premium_amount = usePage().props.data.gross_premium_amount;
 const gross_premium_collected = usePage().props.data.gross_premium_collected;
 const gross_premium_outstanding = usePage().props.data.gross_premium_outstanding;
 
+const permission = usePage().props.can;
+
 onMounted(() => {
 
     const ctx1 = document.getElementById("chart-1").getContext('2d');
@@ -227,7 +229,7 @@ const format_number = (number) => {
             <div class="page-content">
 
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-4" v-if="permission.policies_graph">
                         <div class="col-md-12 d-flex">
                             <div class="card radius-10 overflow-hidden w-100">
                                 <div class="card-body">
@@ -281,7 +283,7 @@ const format_number = (number) => {
                     </div>
                     <div class="col-md-8">
                         <div class="row">
-                            <div class="col-xxl-6 col-xl-12">
+                            <div class="col-xxl-6 col-xl-12" v-if="permission.total_clients_card">
                                 <div class="card radius-10">
                                     <Link :href="route('client.group.index')">
                                     <div class="card-body">
@@ -302,7 +304,7 @@ const format_number = (number) => {
                                     </Link>
                                 </div>
                             </div>
-                            <div class="col-xxl-6 col-xl-8">
+                            <div class="col-xxl-6 col-xl-8" v-if="permission.total_cobs_card">
                                 <div class="card radius-10">
                                     <Link :href="route('cob.index')">
                                     <div class="card-body">
@@ -323,7 +325,7 @@ const format_number = (number) => {
                                 </div>
                             </div>
 
-                            <div class="col-xxl-4 col-xl-4">
+                            <div class="col-xxl-4 col-xl-4" v-if="permission.total_claims_card">
                                 <Link :href="route('claim.index')">
                                     <div class="card radius-10">
                                         <div class="card-body">
@@ -340,7 +342,8 @@ const format_number = (number) => {
                                     </div>
                                 </Link>
                             </div>
-                            <div class="col-xxl-4 col-xl-6" v-if="data.role.id == 1 || data.role.id == 4">
+                            
+                            <div class="col-xxl-4 col-xl-6" v-if="permission.revenue_card">
                                 <div class="card radius-10">
                                     <Link :href="route('report.index','commission')">
                                         <div class="card-body">
@@ -357,7 +360,7 @@ const format_number = (number) => {
                                     </Link>
                                 </div>
                             </div>
-                            <div class="col-xxl-4 col-xl-6" v-if="data.role.id == 1 || data.role.id == 4">
+                            <div class="col-xxl-4 col-xl-6" v-if="permission.net_commission_collected_card">
                                 <div class="card radius-10">
                                     <Link :href="route('report.index','commission')">
                                         <div class="card-body">
@@ -377,7 +380,7 @@ const format_number = (number) => {
                                     </Link>
                                 </div>
                             </div>
-                            <div class="col-xxl-4 col-xl-6" v-if="data.role.id == 1 || data.role.id == 4"> 
+                            <div class="col-xxl-4 col-xl-6" v-if="permission.gross_premium_outstanding_card"> 
                                 <div class="card radius-10">
                                     <Link :href="route('report.index','gross')">
                                         <div class="card-body">
@@ -396,7 +399,7 @@ const format_number = (number) => {
                                     </Link>
                                 </div>
                             </div>
-                            <div class="col-xxl-4 col-xl-6" v-if="data.role.id == 1 || data.role.id == 4">
+                            <div class="col-xxl-4 col-xl-6" v-if="permission.sum_insured_card">
                                 <div class="card radius-10">
                                     <Link :href="route('report.index','sales')">
                                         <div class="card-body">
@@ -419,8 +422,8 @@ const format_number = (number) => {
                     </div>
                 </div>
 
-                <div class="row" v-if="data.role.id == 1 || data.role.id == 4">
-                    <div class="col-xxl-6 col-xl-12">
+                <div class="row">
+                    <div class="col-xxl-6 col-xl-12" v-if="permission.monthly_revenue_graph">
                         <div class="card radius-10">
                             <div class="card-body">
                                 <div style="height: 400px;">
@@ -429,7 +432,7 @@ const format_number = (number) => {
                             </div>
                         </div>
                     </div>
-                    <div class="col-xxl-6 col-xl-12">
+                    <div class="col-xxl-6 col-xl-12" v-if="permission.gross_premium_graph">
                         <div class="card radius-10">
                             <div class="card-body">
                                 <div style="height: 400px;">

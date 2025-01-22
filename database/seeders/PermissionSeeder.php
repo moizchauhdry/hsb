@@ -22,6 +22,18 @@ class PermissionSeeder extends Seeder
             ['name' =>  'dashboard', 'guard_name' => 'web', 'order' => 10, 'level' =>  1],
             ['name' =>  'analytics', 'guard_name' => 'web', 'order' => 11, 'level' =>  2],
 
+            ['name' =>  'total_clients_card', 'guard_name' => 'web', 'order' => 12, 'level' =>  2],
+            ['name' =>  'total_cobs_card', 'guard_name' => 'web', 'order' => 12, 'level' =>  2],
+            ['name' =>  'total_claims_card', 'guard_name' => 'web', 'order' => 12, 'level' =>  2],
+            ['name' =>  'revenue_card', 'guard_name' => 'web', 'order' => 12, 'level' =>  2],
+            ['name' =>  'net_commission_collected_card', 'guard_name' => 'web', 'order' => 12, 'level' =>  2],
+            ['name' =>  'gross_premium_outstanding_card', 'guard_name' => 'web', 'order' => 12, 'level' =>  2],
+            ['name' =>  'sum_insured_card', 'guard_name' => 'web', 'order' => 12, 'level' =>  2],
+
+            ['name' =>  'policies_graph', 'guard_name' => 'web', 'order' => 13, 'level' =>  2],
+            ['name' =>  'monthly_revenue_graph', 'guard_name' => 'web', 'order' => 13, 'level' =>  2],
+            ['name' =>  'gross_premium_graph', 'guard_name' => 'web', 'order' => 13, 'level' =>  2],
+
             // Role 20
             ['name' => 'role', 'guard_name' => 'web', 'order' => 20, 'level' => 1],
             ['name' => 'role_list', 'guard_name' => 'web', 'order' => 21, 'level' => 2],
