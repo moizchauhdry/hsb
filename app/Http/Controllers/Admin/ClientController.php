@@ -264,6 +264,8 @@ class ClientController extends Controller
 
     public function selectedCob($id)
     {
+        dd($id);
+        
         $items = UserCob::query()
             ->where('user_id', $id)
             ->pluck('cob_id')->toArray();

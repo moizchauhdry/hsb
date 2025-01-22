@@ -43,6 +43,11 @@ Route::middleware('auth')->group(function () {
         Route::post('/create', [UserController::class, 'create'])->name('user.create')->middleware('permission:user_create');
         Route::get('/edit/{id}', [UserController::class, 'edit'])->name('user.edit')->middleware('permission:user_update');
         Route::post('/update', [UserController::class, 'update'])->name('user.update')->middleware('permission:user_update');
+
+        Route::get('/selected-cob/{id}', [UserController::class, 'selectedCob'])->name('user.selected-cob')->middleware('permission:user_update');
+        Route::post('/assign-cob', [UserController::class, 'assignCob'])->name('user.assign-cob')->middleware('permission:user_update');
+        Route::get('/selected-client/{id}', [UserController::class, 'selectedClient'])->name('user.selected-client')->middleware('permission:user_update');
+        Route::post('/assign-client', [UserController::class, 'assignClient'])->name('user.assign-client')->middleware('permission:user_update');
     });
 
     Route::prefix('clients')->group(function () {
@@ -50,13 +55,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/create', [ClientController::class, 'create'])->name('client.create')->middleware('permission:client_create');
         Route::get('/edit/{id}', [ClientController::class, 'edit'])->name('client.edit')->middleware('permission:client_update');
         Route::post('/update', [ClientController::class, 'update'])->name('client.update')->middleware('permission:client_update');
-
-        Route::get('/selected-cob/{id}', [ClientController::class, 'selectedCob'])->name('client.selected-cob')->middleware('permission:client_update');
-        Route::post('/assign-cob', [ClientController::class, 'assignCob'])->name('client.assign-cob')->middleware('permission:client_update');
-
-        Route::get('/selected-client/{id}', [ClientController::class, 'selectedClient'])->name('client.selected-client')->middleware('permission:client_update');
-        Route::post('/assign-client', [ClientController::class, 'assignClient'])->name('client.assign-client')->middleware('permission:client_update');
-
         Route::any('/groups/list', [ClientController::class, 'groupIndex'])->name('client.group.index')->middleware('permission:client_list');
     });
 
@@ -82,10 +80,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/store', [PolicyController::class, 'store'])->name('policy.store')->middleware('permission:policy_create');
         Route::get('/edit/{id}', [PolicyController::class, 'edit'])->name('policy.edit')->middleware('permission:policy_update');
         Route::post('/update', [PolicyController::class, 'update'])->name('policy.update')->middleware('permission:policy_update');
-        
+
         Route::get('/detail/{id}', [PolicyController::class, 'detail'])->name('policy.detail')->middleware('permission:policy_detail');
         Route::post('/detail-2', [PolicyController::class, 'detail2'])->name('policy.detail-2')->middleware('permission:policy_detail');
-        
+
         Route::delete('/delete', [PolicyController::class, 'delete'])->name('policy.delete')->middleware('permission:policy_delete');
         Route::post('/additional-notes', [PolicyController::class, 'additionalNotes'])->name('policy.additionalNotes')->middleware('permission:policy_note');
         Route::post('/uploads', [PolicyController::class, 'uploads'])->name('policy.uploads')->middleware('permission:policy_upload');
