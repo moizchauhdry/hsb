@@ -61,23 +61,23 @@ class Policy extends Model
     // *************************** ****** ***********************
     // *************************** SCOPES ***********************
     // *************************** ****** ***********************
-    public function scopePoliciesList($query, $request, $page_type = null, $report = false)
+    public function scopePoliciesList($query, $filter, $page_type = null, $report = false)
     {
         $role = Auth::user()->roles[0];
 
-        $filter = [
-            'search' => $request['search'] ?? "",
-            'date_type' => $request['date_type'] ?? "",
-            'from_date' => $request['from_date'] ?? "",
-            'to_date' => $request['to_date'] ?? "",
-            'policy_type' => $request['policy_type'] ?? "",
-            'client' => $request['client'] ?? "",
-            'agency' => $request['agency'] ?? "",
-            'insurer' => $request['insurer'] ?? "",
-            'cob' => $request['cob'] ?? "",
-            'department' => $request['department'] ?? "",
-            'group' => $request['group'] ?? "",
-        ];
+        // $filter = [
+        //     'search' => $request['search'] ?? "",
+        //     'date_type' => $request['date_type'] ?? "",
+        //     'from_date' => $request['from_date'] ?? "",
+        //     'to_date' => $request['to_date'] ?? "",
+        //     'policy_type' => $request['policy_type'] ?? "",
+        //     'client' => $request['client'] ?? "",
+        //     'agency' => $request['agency'] ?? "",
+        //     'insurer' => $request['insurer'] ?? "",
+        //     'cob' => $request['cob'] ?? "",
+        //     'department' => $request['department'] ?? "",
+        //     'group' => $request['group'] ?? "",
+        // ];
 
         session(['filter' => $filter]);
 
@@ -138,53 +138,32 @@ class Policy extends Model
                 }
             });
 
-            // if ($slug == 'renewal') {
-            //     if ($filter['policy_type']) {
-            //         $types = is_array($filter['policy_type']) ? $filter['policy_type'] : explode(',', $filter['policy_type']);
-            //         $query->whereIn('p.policy_type', $types);
-            //     } else {
-            //         $query->where('p.policy_type', 'renewal');
-            //     }
-            // } else {
-            //     $query->when($filter['policy_type'], function ($q) use ($filter) {
-            //         $types = is_array($filter['policy_type']) ? $filter['policy_type'] : explode(',', $filter['policy_type']);
-            //         $q->whereIn('p.policy_type', $types);
-            //     });
-            // }
-
-            $query->when($filter['policy_type'], function ($q) use ($filter) {
-                $types = is_array($filter['policy_type']) ? $filter['policy_type'] : explode(',', $filter['policy_type']);
-                $q->whereIn('p.policy_type', $types);
+            $query->when(!empty($filter['policy_type']), function ($q) use ($filter) {
+                $q->whereIn('p.policy_type', $filter['policy_type']);
             });
 
             $query->when(!empty($filter['client']), function ($q) use ($filter) {
-                $clients = is_array($filter['client']) ? $filter['client'] : explode(',', $filter['client']);
-                $q->whereIn('p.client_id', $clients);
+                $q->whereIn('p.client_id', $filter['client']);
             });
 
             $query->when(!empty($filter['agency']), function ($q) use ($filter) {
-                $agencies = is_array($filter['agency']) ? $filter['agency'] : explode(',', $filter['agency']);
-                $q->whereIn('p.agency_id', $agencies);
+                $q->whereIn('p.agency_id', $filter['agency']);
             });
 
             $query->when(!empty($filter['insurer']), function ($q) use ($filter) {
-                $insurers = is_array($filter['insurer']) ? $filter['insurer'] : explode(',', $filter['insurer']);
-                $q->whereIn('p.insurer_id', $insurers);
+                $q->whereIn('p.insurer_id', $filter['insurer']);
             });
 
             $query->when($filter['cob'], function ($q) use ($filter) {
-                $cobs = is_array($filter['cob']) ? $filter['cob'] : explode(',', $filter['cob']);
-                $q->whereIn('p.cob_id', $cobs);
+                $q->whereIn('p.cob_id', $filter['cob']);
             });
 
             $query->when($filter['department'], function ($q) use ($filter) {
-                $departments = is_array($filter['department']) ? $filter['department'] : explode(',', $filter['department']);
-                $q->whereIn('cob.department_id', $departments);
+                $q->whereIn('cob.department_id', $filter['department']);
             });
 
             $query->when($filter['group'], function ($q) use ($filter) {
-                $groups = is_array($filter['group']) ? $filter['group'] : explode(',', $filter['group']);
-                $q->whereIn('cob.group_id', $groups);
+                $q->whereIn('cob.group_id', $filter['group']);
             });
         }
 

@@ -78,11 +78,8 @@ var saved_filters = "";
 
 const form = useForm({
     date_type: "",
-    // date_value: "",
-
     from_date: "",
     to_date: "",
-
     policy_type: [],
     client: [],
     agency: [],
@@ -105,7 +102,6 @@ const create = () => {
     saved_filters = props.filters;
 
     form.date_type = saved_filters?.date_type
-    // form.date_value = saved_filters?.date_value
     form.from_date = saved_filters?.from_date
     form.to_date = saved_filters?.to_date
     form.policy_type = saved_filters?.policy_type
@@ -120,11 +116,8 @@ const create = () => {
 const submit = () => {
     var filters = {
         date_type: form.date_type,
-        // date_value: form.date_value,
-
         from_date: form.from_date,
         to_date: form.to_date,
-
         policy_type: form.policy_type,
         client: form.client,
         agency: form.agency,
@@ -134,23 +127,10 @@ const submit = () => {
         group: form.group,
     };
 
-    console.log(props.filter_route);
-
     const queryParams = new URLSearchParams(filters).toString();
 
     var urlWithFilters;
-
-    if (props.filter_route === 'report') {
-        urlWithFilters = `${route("report.index", slug)}?${queryParams}`;
-    }
-
-    if (props.filter_route === 'policy' || props.filter_route === 'policies' || props.filter_route === 'renewals') {
-        urlWithFilters = `${route("policy.index")}?${queryParams}`;
-    }
-
-    if (props.filter_route === 'endorsement') {
-        urlWithFilters = `${route("endorsement.index")}?${queryParams}`;
-    }
+    urlWithFilters = `${route("endorsement.index")}?${queryParams}`;
 
     form.post(urlWithFilters, {
         preserveScroll: true,
@@ -182,16 +162,9 @@ const format_date = (date) => {
 
 watch(() => form.department, (new_department) => {
     if (new_department && new_department.length > 0) {
-        // fetchGroups(form.department);
         fetchCobs(form.department);
     }
 });
-
-// watch(() => form.group, (new_group) => {
-//     if (new_group && new_group.length > 0) {
-//         fetchCobs(form.group);
-//     }
-// });
 
 watch(() => form.date_value, (newValue) => {
     if (form.date_value != null) {
@@ -223,20 +196,11 @@ watch(() => form.date_value, (newValue) => {
                         <div class="col-md-6">
                             <InputLabel for="" value="Date Type" class="mb-1" />
                             <select v-model="form.date_type" class="form-control">
-                                <template
-                                    v-if="props.filter_route == 'policies' || props.filter_route == 'endorsement'">
-                                    <option value="">All</option>
-                                    <option value="date_of_issuance">Issuance Date</option>
-                                    <option value="policy_period_start">Inception Date</option>
-                                    <option value="policy_period_end">Expiry Date</option>
-                                    <option value="created_at">Created At</option>
-                                </template>
-                                <template v-if="props.filter_route == 'renewals'">
-                                    <option value="policy_period_end">Expiry Date</option>
-                                </template>
-                                <template v-if="props.filter_route == 'report'">
-                                    <option value="date_of_issuance">Date of Issuance</option>
-                                </template>
+                                <option value="">All</option>
+                                <option value="date_of_issuance">Issuance Date</option>
+                                <option value="policy_period_start">Inception Date</option>
+                                <option value="policy_period_end">Expiry Date</option>
+                                <option value="created_at">Created At</option>
                             </select>
                         </div>
 
@@ -279,12 +243,6 @@ watch(() => form.date_value, (newValue) => {
                                 mode="tags">
                             </Multiselect>
                         </div>
-
-                        <!-- <div class="col-md-12">
-                            <InputLabel for="" value="Group" class="mb-1" />
-                            <Multiselect v-model="form.group" :options="groups" :searchable="true" mode="tags">
-                            </Multiselect>
-                        </div> -->
 
                         <div class="col-md-12">
                             <InputLabel for="" value="Class of Business" class="mb-1" />
