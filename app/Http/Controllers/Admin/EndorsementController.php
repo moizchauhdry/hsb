@@ -23,17 +23,17 @@ class EndorsementController extends Controller
         if ($request->client) {
             $client = is_array($request->client) ? $request->client : explode(',', $request->client);
         }
-        
+
         $agency = [];
         if ($request->agency) {
             $agency = is_array($request->agency) ? $request->agency : explode(',', $request->agency);
         }
-        
+
         $insurer = [];
         if ($request->insurer) {
             $insurer = is_array($request->insurer) ? $request->insurer : explode(',', $request->insurer);
         }
-        
+
         $department = [];
         if ($request->department) {
             $department = is_array($request->department) ? $request->department : explode(',', $request->department);
@@ -66,6 +66,7 @@ class EndorsementController extends Controller
         $policies = Policy::query()
             ->policiesList($filter)
             ->whereIn('policy_type', ['endorsement'])
+            // ->where('p.sum_insured', 0)
             ->when($filter['search'], function ($q) use ($filter) {
                 $q->where('p.id', $filter['search']);
                 $q->orWhere('p.policy_no', "LIKE", "%" . $filter['search'] . "%");

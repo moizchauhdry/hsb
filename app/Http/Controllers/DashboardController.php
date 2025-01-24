@@ -30,15 +30,27 @@ class DashboardController extends Controller
         $policies = Policy::policiesList([], 'policies')->get();
         $policies_count = count($policies);
 
-        $query = Payment::from('payments');
+        $payment_query = Payment::from('payments');
 
-        $query->join('policies', 'policies.id', 'payments.policy_id');
-        $query->leftJoin('users as client', 'client.id', '=', 'policies.client_id');
-        $query->leftJoin('agencies as agency', 'agency.id', '=', 'policies.agency_id');
-        $query->leftJoin('business_classes as cob', 'cob.id', '=', 'policies.cob_id');
-        $query->leftJoin('departments as d', 'd.id', '=', 'cob.department_id');
+        $payment_query->join('policies', 'policies.id', 'payments.policy_id');
+        $payment_query->leftJoin('users as client', 'client.id', '=', 'policies.client_id');
+        $payment_query->leftJoin('agencies as agency', 'agency.id', '=', 'policies.agency_id');
+        $payment_query->leftJoin('business_classes as cob', 'cob.id', '=', 'policies.cob_id');
+        $payment_query->leftJoin('departments as d', 'd.id', '=', 'cob.department_id');
 
-        $query->select(
+        if ($role->id != 1) {
+            $payment_query->leftJoin('user_cobs as uc', function ($join) {
+                $join->on('uc.cob_id', '=', 'policies.cob_id')->where('uc.user_id', auth()->id());
+            })
+                ->leftJoin('user_clients as ucl', function ($join) {
+                    $join->on('ucl.client_id', '=', 'policies.client_id')->where('ucl.user_id', auth()->id());
+                })
+                ->where(function ($q) {
+                    $q->whereNotNull('uc.id')->orWhereNotNull('ucl.id');
+                });
+        }
+
+        $payment_query->select(
             'policies.id as p_id',
             'policies.policy_no as policy_no',
             'policies.base_doc_no as base_doc_no',
@@ -54,7 +66,7 @@ class DashboardController extends Controller
             'payments.brokerage_amount_received as brokerage_amount_received',
         );
 
-        $payments = $query->orderBy('policies.date_of_issuance', 'desc')->get();
+        $payments = $payment_query->orderBy('policies.date_of_issuance', 'desc')->get();
 
         $total_revenue = $payments->sum('brokerage_amount');
         $total_sum_insured = $payments->sum('sum_insured');
@@ -100,8 +112,6 @@ class DashboardController extends Controller
         }
 
         $clients_count = count($clients_query->get());
-
-        $client_group_codes = $clients_query->where('client_group_code', '!=', NULL)->pluck('client_group_code')->toArray();
         $client_groups = ClientGroup::clientGroupList([])->get();
         $client_groups_count = count($client_groups);
 
