@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ClientGroup extends Model
@@ -13,6 +14,9 @@ class ClientGroup extends Model
 
     public function scopeClientGroupList($query, $request)
     {
+        $user = Auth::user();
+        $role = $user->roles[0];
+
         $filter = [
             'search' => $request['search'] ?? "",
 
@@ -46,6 +50,15 @@ class ClientGroup extends Model
             ->whereIn('p.policy_type', ['new', 'renewal', 'cover'])
             ->groupBy('group.id', 'group.code', 'group.name')
             ->orderBy('policy_count', 'desc');
+
+
+        if ($role->id != 1) {
+            $query->join('user_clients', function ($join) {
+                $join->on('user_clients.client_id', '=', 'client.id')->where('user_clients.user_id', auth()->id());
+            })->where(function ($q) {
+                $q->whereNotNull('user_clients.id');
+            });
+        }
 
         if ($filter) {
             $query->when($filter['search'], function ($q) use ($filter) {

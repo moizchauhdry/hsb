@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\ClientGroup;
 use App\Models\Policy;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
@@ -16,6 +17,8 @@ class RenewalController extends Controller
     public function index(Request $request)
     {
         // dd($request->all());
+
+        $role = Auth::user()->roles[0];
 
         $page_count = $request->page_count ?? 10;
 
@@ -39,7 +42,6 @@ class RenewalController extends Controller
 
         $query = Policy::from('policies as p');
         $query->whereIn('p.id', $renewal_ids);
-        // $query->whereIn('policy_type', ['new', 'renewal']);
 
         $query->leftJoin('policy_claims as pc', 'pc.policy_id', '=', 'p.id');
         $query->leftJoin('users as client', 'client.id', '=', 'p.client_id');
@@ -49,53 +51,17 @@ class RenewalController extends Controller
         $query->leftJoin('groups as g', 'g.id', '=', 'cob.group_id');
         $query->leftJoin('policy_renewal_statuses as renewal_status', 'renewal_status.id', '=', 'p.renewal_status_id');
 
-        // if ($filter) {
-        //     $query->when($filter['search'], function ($q) use ($filter) {
-        //         $q->where('p.id', $filter['search']);
-        //         $q->orWhere('p.policy_no', "LIKE", "%" . $filter['search'] . "%");
-        //     });
-
-        //     if ($filter['date_type'] && $filter['from_date'] && $filter['to_date']) {
-        //         $query->where('p.policy_period_end', ">=", $filter['from_date']);
-        //         $query->where('p.policy_period_end', "<=", $filter['to_date']);
-        //     } else {
-        //         $startOfNextMonth = Carbon::now()->addMonth()->startOfMonth()->toDateString();
-        //         $endOfNextMonth = Carbon::now()->addMonth()->endOfMonth()->toDateString();
-
-        //         $query->where('p.policy_period_end', '>=', $startOfNextMonth);
-        //         $query->where('p.policy_period_end', '<=', $endOfNextMonth);
-        //     }
-
-        //     $query->when(!empty($filter['client_ids']), function ($q) use ($filter) {
-        //         $clients = is_array($filter['client_ids']) ? $filter['client_ids'] : explode(',', $filter['client_ids']);
-        //         $q->whereIn('p.client_id', $clients);
-        //     });
-
-        //     $query->when(!empty($filter['agency']), function ($q) use ($filter) {
-        //         $agencies = is_array($filter['agency']) ? $filter['agency'] : explode(',', $filter['agency']);
-        //         $q->whereIn('p.agency_id', $agencies);
-        //     });
-
-        //     $query->when(!empty($filter['insurer']), function ($q) use ($filter) {
-        //         $insurers = is_array($filter['insurer']) ? $filter['insurer'] : explode(',', $filter['insurer']);
-        //         $q->whereIn('p.insurer_id', $insurers);
-        //     });
-
-        //     $query->when($filter['cob'], function ($q) use ($filter) {
-        //         $cobs = is_array($filter['cob']) ? $filter['cob'] : explode(',', $filter['cob']);
-        //         $q->whereIn('p.cob_id', $cobs);
-        //     });
-
-        //     $query->when($filter['department'], function ($q) use ($filter) {
-        //         $departments = is_array($filter['department']) ? $filter['department'] : explode(',', $filter['department']);
-        //         $q->whereIn('cob.department_id', $departments);
-        //     });
-
-        //     $query->when($filter['group'], function ($q) use ($filter) {
-        //         $groups = is_array($filter['group']) ? $filter['group'] : explode(',', $filter['group']);
-        //         $q->whereIn('cob.group_id', $groups);
-        //     });
-        // }
+        if ($role->id != 1) {
+            $query->leftJoin('user_cobs as uc', function ($join) {
+                $join->on('uc.cob_id', '=', 'p.cob_id')->where('uc.user_id', auth()->id());
+            })
+                ->leftJoin('user_clients as ucl', function ($join) {
+                    $join->on('ucl.client_id', '=', 'p.client_id')->where('ucl.user_id', auth()->id());
+                })
+                ->where(function ($q) {
+                    $q->whereNotNull('uc.id')->orWhereNotNull('ucl.id');
+                });
+        }
 
         $query->select(
             'p.id as p_id',
@@ -136,23 +102,60 @@ class RenewalController extends Controller
 
     public function clientList(Request $request)
     {
-        // dd($request->all());
+        $role = Auth::user()->roles[0];
 
         $page_count = $request->page_count ?? 10;
 
+        $policy_type = [];
+        if ($request->policy_type) {
+            $policy_type = is_array($request->policy_type) ? $request->policy_type : explode(',', $request->policy_type);
+        }
+
+        $client_ids = [];
+        if ($request->client_ids) {
+            $client_ids = is_array($request->client_ids) ? $request->client_ids : explode(',', $request->client_ids);
+        }
+
+        $agency = [];
+        if ($request->agency) {
+            $agency = is_array($request->agency) ? $request->agency : explode(',', $request->agency);
+        }
+
+        $insurer = [];
+        if ($request->insurer) {
+            $insurer = is_array($request->insurer) ? $request->insurer : explode(',', $request->insurer);
+        }
+
+        $department = [];
+        if ($request->department) {
+            $department = is_array($request->department) ? $request->department : explode(',', $request->department);
+        }
+
+        $group = [];
+        if ($request->group) {
+            $group = is_array($request->group) ? $request->group : explode(',', $request->group);
+        }
+
+        $cob = [];
+        if ($request->cob) {
+            $cob = is_array($request->cob) ? $request->cob : explode(',', $request->cob);
+        }
+
         $filter = [
-            'search' => $request['search'] ?? "",
-            'date_type' => $request['date_type'] ?? "",
-            'from_date' => $request['from_date'] ?? "",
-            'to_date' => $request['to_date'] ?? "",
-            'policy_type' => $request['policy_type'] ?? "",
-            'client' => $request['client'] ?? "",
-            'agency' => $request['agency'] ?? "",
-            'insurer' => $request['insurer'] ?? "",
-            'department' => $request['department'] ?? "",
-            'group' => $request['group'] ?? "",
-            'cob' => $request['cob'] ?? "",
+            'search' => $request->search ?? "",
+            'date_type' => $request->date_type ?? "",
+            'from_date' => $request->from_date ?? "",
+            'to_date' => $request->to_date ?? "",
+            'policy_type' => $policy_type,
+            'client_ids' => $client_ids,
+            'agency' => $agency,
+            'insurer' => $insurer,
+            'department' => $department,
+            'group' => $group,
+            'cob' => $cob,
         ];
+
+        // dd($filter,  $request->all());
 
         $query = ClientGroup::query()
             ->from('client_groups as group')
@@ -172,6 +175,18 @@ class RenewalController extends Controller
             ->groupBy('group.id', 'group.code', 'group.name')
             ->orderBy('renewal_count', 'desc');
 
+        if ($role->id != 1) {
+            $query->leftJoin('user_cobs as uc', function ($join) {
+                $join->on('uc.cob_id', '=', 'p.cob_id')->where('uc.user_id', auth()->id());
+            })
+                ->leftJoin('user_clients as ucl', function ($join) {
+                    $join->on('ucl.client_id', '=', 'p.client_id')->where('ucl.user_id', auth()->id());
+                })
+                ->where(function ($q) {
+                    $q->whereNotNull('uc.id')->orWhereNotNull('ucl.id');
+                });
+        }
+
 
         if ($filter) {
             $query->when($filter['search'], function ($q) use ($filter) {
@@ -189,34 +204,28 @@ class RenewalController extends Controller
                 $query->whereDate('p.policy_period_end', '<=', $endOfNextMonth);
             }
 
-            $query->when(!empty($filter['client']), function ($q) use ($filter) {
-                $clients = is_array($filter['client']) ? $filter['client'] : explode(',', $filter['client']);
-                $q->whereIn('p.client_id', $clients);
+            $query->when(!empty($filter['client_ids']), function ($q) use ($filter) {
+                $q->whereIn('p.client_id', $filter['client_ids']);
             });
 
             $query->when(!empty($filter['agency']), function ($q) use ($filter) {
-                $agencies = is_array($filter['agency']) ? $filter['agency'] : explode(',', $filter['agency']);
-                $q->whereIn('p.agency_id', $agencies);
+                $q->whereIn('p.agency_id', $filter['agency']);
             });
 
             $query->when(!empty($filter['insurer']), function ($q) use ($filter) {
-                $insurers = is_array($filter['insurer']) ? $filter['insurer'] : explode(',', $filter['insurer']);
-                $q->whereIn('p.insurer_id', $insurers);
+                $q->whereIn('p.insurer_id', $filter['insurer']);
             });
 
             $query->when($filter['cob'], function ($q) use ($filter) {
-                $cobs = is_array($filter['cob']) ? $filter['cob'] : explode(',', $filter['cob']);
-                $q->whereIn('p.cob_id', $cobs);
+                $q->whereIn('p.cob_id', $filter['cob']);
             });
 
             $query->when($filter['department'], function ($q) use ($filter) {
-                $departments = is_array($filter['department']) ? $filter['department'] : explode(',', $filter['department']);
-                $q->whereIn('cob.department_id', $departments);
+                $q->whereIn('cob.department_id', $filter['department']);
             });
 
             $query->when($filter['group'], function ($q) use ($filter) {
-                $groups = is_array($filter['group']) ? $filter['group'] : explode(',', $filter['group']);
-                $q->whereIn('cob.group_id', $groups);
+                $q->whereIn('cob.group_id', $filter['group']);
             });
         }
 
@@ -224,7 +233,7 @@ class RenewalController extends Controller
 
         return Inertia::render('Renewal/Client', [
             'groups' => $groups,
-            'filter' => $filter,
+            'filters' => $filter,
         ]);
     }
 }

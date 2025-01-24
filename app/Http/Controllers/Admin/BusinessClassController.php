@@ -9,16 +9,20 @@ use App\Models\BusinessClass;
 use App\Http\Controllers\Controller;
 use App\Models\BusinessClassInsurance;
 use App\Models\Department;
+use Illuminate\Support\Facades\Auth;
 
 class BusinessClassController extends Controller
 {
     public function index(Request $request)
     {
+        $user = Auth::user();
+        $role = $user->roles[0];
+
         $filter = [
             'search' => $request->search,
         ];
 
-        $cobs = BusinessClass::query()
+        $query = BusinessClass::query()
             ->select(
                 'cob.id as cob_id',
                 'cob.code as cob_code',
@@ -35,9 +39,18 @@ class BusinessClassController extends Controller
                     ->orWhere('cob.class_name', 'LIKE', '%' . $filter['search'] . '%')
                     ->orWhere('d.name', 'LIKE', '%' . $filter['search'] . '%')
                     ->orWhere('g.name', 'LIKE', '%' . $filter['search'] . '%');
-            })
-            ->paginate(10)
-            ->withQueryString();
+            });
+
+
+        if ($role->id != 1) {
+            $query->join('user_cobs as uc', function ($join) {
+                $join->on('uc.cob_id', '=', 'cob.id')->where('uc.user_id', auth()->id());
+            })->where(function ($q) {
+                $q->whereNotNull('uc.id');
+            });
+        }
+
+        $cobs = $query->paginate(10)->withQueryString();
 
         return Inertia::render('BusinessClass/Index', [
             'cobs' => $cobs,

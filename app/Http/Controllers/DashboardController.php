@@ -53,7 +53,7 @@ class DashboardController extends Controller
             'payments.brokerage_amount as brokerage_amount',
             'payments.brokerage_amount_received as brokerage_amount_received',
         );
-        
+
         $payments = $query->orderBy('policies.date_of_issuance', 'desc')->get();
 
         $total_revenue = $payments->sum('brokerage_amount');
@@ -70,35 +70,48 @@ class DashboardController extends Controller
         $policy_claims = PolicyClaim::policyClaimList([])->get();
         $policy_claim_count = count($policy_claims);
 
-        $cob_groups = Group::get();
+
+        // CLASSES OF BUSINESS & GROUPS
+        $cobs_query = BusinessClass::from('business_classes as cob');
+
+        if ($role->id != 1) {
+            $cobs_query->join('user_cobs as uc', function ($join) {
+                $join->on('uc.cob_id', '=', 'cob.id')->where('uc.user_id', auth()->id());
+            })->where(function ($q) {
+                $q->whereNotNull('uc.id');
+            });
+        }
+
+        $cobs_count = count($cobs_query->get());
+
+        $group_ids = $cobs_query->where('group_id', '!=', NULL)->pluck('group_id')->toArray();
+        $cob_groups = Group::whereIn('id', $group_ids)->get();
         $cob_groups_count = count($cob_groups);
 
-        $cobs = BusinessClass::get();
-        $cobs_count = count($cobs);
+        // CLIENTS & GROUPS
+        $clients_query = User::role('client');
 
+        if ($role->id != 1) {
+            $clients_query->join('user_clients', function ($join) {
+                $join->on('user_clients.client_id', '=', 'users.id')->where('user_clients.user_id', auth()->id());
+            })->where(function ($q) {
+                $q->whereNotNull('user_clients.id');
+            });
+        }
+
+        $clients_count = count($clients_query->get());
+
+        $client_group_codes = $clients_query->where('client_group_code', '!=', NULL)->pluck('client_group_code')->toArray();
         $client_groups = ClientGroup::clientGroupList([])->get();
         $client_groups_count = count($client_groups);
 
-        $clients = User::role('client')->get();
-        $clients_count = count($clients);
-
-        // $users = User::withoutRole('client')->count();
-
-        // if ($role->id == 1) {
-        //     $client_count = User::role('client')->count();
-        //     $cob_count = BusinessClass::count();
-        // } else {
-        //     $client_count = UserClient::where('user_id', $user->id)->count('client_id');
-        //     $cob_count = UserCob::where('user_id', $user->id)->count('cob_id');
-        // }
-
         $monthly_revenue = DB::table('payments')
-        ->select(DB::raw('SUM(brokerage_amount) as total'), DB::raw('MONTH(receipt_at) as month'))
-        ->whereYear('receipt_at', 2024) // Apply year filtering at the query level
-        ->groupBy('month')
-        ->pluck('total', 'month')
-        ->toArray();
-    
+            ->select(DB::raw('SUM(brokerage_amount) as total'), DB::raw('MONTH(receipt_at) as month'))
+            ->whereYear('receipt_at', 2024) // Apply year filtering at the query level
+            ->groupBy('month')
+            ->pluck('total', 'month')
+            ->toArray();
+
 
         $revenue_data = [];
         for ($i = 1; $i <= 12; $i++) {
