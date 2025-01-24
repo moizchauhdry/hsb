@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\UserClient;
 use App\Models\UserCob;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
@@ -20,6 +21,8 @@ class ClientController extends Controller
 {
     public function index(Request $request)
     {
+        $role = Auth::user()->roles[0];
+
         $page_count = $request->page_count ?? 10;
 
         $filter = [
@@ -61,8 +64,21 @@ class ClientController extends Controller
             ->groupBy('users.id', 'users.name', 'users.email', 'users.code', 'users.created_at')
             ->orderBy('policy_count', 'desc');
 
+        if ($role->id != 1) {
+            $query->leftJoin('user_cobs as uc', function ($join) {
+                $join->on('uc.cob_id', '=', 'p.cob_id')->where('uc.user_id', auth()->id());
+            })
+                ->leftJoin('user_clients as ucl', function ($join) {
+                    $join->on('ucl.client_id', '=', 'p.client_id')->where('ucl.user_id', auth()->id());
+                })
+                ->where(function ($q) {
+                    $q->whereNotNull('uc.id')->orWhereNotNull('ucl.id');
+                });
+        }
+
+
         if ($filter) {
-            
+
             $query->when($filter['search'], function ($q) use ($filter) {
                 $q->where('users.code', $filter['search'])
                     ->orWhere('users.name', 'LIKE', '%' . $filter['search'] . '%')
@@ -117,8 +133,8 @@ class ClientController extends Controller
                 if ($filter['client_group_code'] === 0 || $filter['client_group_code'] === '0') {
                     $q->where('users.client_group_code', 0);
                 } else {
-                    $client_groups = is_array($filter['client_group_code']) 
-                        ? $filter['client_group_code'] 
+                    $client_groups = is_array($filter['client_group_code'])
+                        ? $filter['client_group_code']
                         : explode(',', $filter['client_group_code']);
                     $q->whereIn('users.client_group_code', $client_groups);
                 }
@@ -264,8 +280,6 @@ class ClientController extends Controller
 
     public function selectedCob($id)
     {
-        dd($id);
-        
         $items = UserCob::query()
             ->where('user_id', $id)
             ->pluck('cob_id')->toArray();

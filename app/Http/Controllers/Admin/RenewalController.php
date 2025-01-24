@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\ClientGroup;
 use App\Models\Policy;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
@@ -16,6 +17,8 @@ class RenewalController extends Controller
     public function index(Request $request)
     {
         // dd($request->all());
+
+        $role = Auth::user()->roles[0];
 
         $page_count = $request->page_count ?? 10;
 
@@ -47,6 +50,18 @@ class RenewalController extends Controller
         $query->leftJoin('departments as d', 'd.id', '=', 'cob.department_id');
         $query->leftJoin('groups as g', 'g.id', '=', 'cob.group_id');
         $query->leftJoin('policy_renewal_statuses as renewal_status', 'renewal_status.id', '=', 'p.renewal_status_id');
+
+        if ($role->id != 1) {
+            $query->leftJoin('user_cobs as uc', function ($join) {
+                $join->on('uc.cob_id', '=', 'p.cob_id')->where('uc.user_id', auth()->id());
+            })
+                ->leftJoin('user_clients as ucl', function ($join) {
+                    $join->on('ucl.client_id', '=', 'p.client_id')->where('ucl.user_id', auth()->id());
+                })
+                ->where(function ($q) {
+                    $q->whereNotNull('uc.id')->orWhereNotNull('ucl.id');
+                });
+        }
 
         $query->select(
             'p.id as p_id',
@@ -87,6 +102,8 @@ class RenewalController extends Controller
 
     public function clientList(Request $request)
     {
+        $role = Auth::user()->roles[0];
+
         $page_count = $request->page_count ?? 10;
 
         $policy_type = [];
@@ -157,6 +174,18 @@ class RenewalController extends Controller
             ->whereIn('p.policy_type', ['new', 'renewal', 'cover'])
             ->groupBy('group.id', 'group.code', 'group.name')
             ->orderBy('renewal_count', 'desc');
+
+        if ($role->id != 1) {
+            $query->leftJoin('user_cobs as uc', function ($join) {
+                $join->on('uc.cob_id', '=', 'p.cob_id')->where('uc.user_id', auth()->id());
+            })
+                ->leftJoin('user_clients as ucl', function ($join) {
+                    $join->on('ucl.client_id', '=', 'p.client_id')->where('ucl.user_id', auth()->id());
+                })
+                ->where(function ($q) {
+                    $q->whereNotNull('uc.id')->orWhereNotNull('ucl.id');
+                });
+        }
 
 
         if ($filter) {
