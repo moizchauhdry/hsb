@@ -212,10 +212,10 @@ const exportExcel = () => {
                                     <tr>
                                         <th class="px-2">Sr #</th>
                                         <th class="px-2">Policy Number</th>
-                                        <!-- <th class="px-2">Client Name</th> -->
+                                        <th class="px-2">Client Name</th>
                                         <!-- <th class="px-2">Insurer Name</th> -->
                                         <!-- <th class="px-2">Agency Name</th> -->
-                                        <!-- <th class="px-2">Class of Business</th> -->
+                                        <th class="px-2">COB</th>
                                         <th class="px-2">Policy Type</th>
 
                                         <!-- <template v-if="slug == 'renewal' || slug == 'outstanding'">
@@ -253,10 +253,10 @@ const exportExcel = () => {
                                             <td class="px-2">{{ (payments.current_page - 1) * payments.per_page + index
                                                 + 1 }}</td>
                                             <td class="px-2">{{ payment.policy_no }}</td>
-                                            <!-- <td class="px-2">{{ payment.client_name }}</td> -->
+                                            <td class="px-2">{{ payment.client_name }}</td>
                                             <!-- <td class="px-2">{{ payment.insurer_name }}</td> -->
                                             <!-- <td class="px-2">{{ payment.agency_name }}</td> -->
-                                            <!-- <td class="px-2">{{ payment.cob_name }}</td> -->
+                                            <td class="px-2">{{ payment.cob_name }}</td>
                                             <td class="px-2">{{ payment.policy_type }}</td>
 
                                             <!-- <template v-if="slug == 'renewal' || slug == 'outstanding'">
