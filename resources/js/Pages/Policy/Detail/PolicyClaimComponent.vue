@@ -32,7 +32,7 @@ const claimUpload = (id, policy_id) => {
 </script>
 <template>
 
-    <CreateEdit v-bind="$props" ref="claim_create_edit_ref" :create_mode="true">
+    <CreateEdit v-bind="$props" ref="claim_create_edit_ref" :create_mode="true" v-if="permission.policy_claim">
     </CreateEdit>
 
     <Note v-bind="$props" ref="claim_note_ref" v-if="permission.policy_claim"></Note>
@@ -96,5 +96,8 @@ const claimUpload = (id, policy_id) => {
                 </tr>
             </tbody>
         </table>
+    </div>
+    <div v-else>
+        <h5 class="text-center">You do not have permission to view this tab.</h5>
     </div>
 </template>

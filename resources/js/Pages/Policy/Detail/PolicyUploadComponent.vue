@@ -55,4 +55,8 @@ defineProps({
             </tbody>
         </table>
     </div>
+
+    <div v-else>
+        <p>You do not have permission to view this tab.</p>
+    </div>
 </template>

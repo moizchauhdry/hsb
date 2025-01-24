@@ -79,6 +79,7 @@ export default {
                 <th>Net Premium </th>
                 <th>Gross Premium </th>
                 <th>GP Collected </th>
+                <th>Brokerage Percentage </th>
             </tr>
 
             <tbody>
@@ -89,6 +90,7 @@ export default {
                     <td> PKR {{ format_number(policy.net_premium) }} </td>
                     <td> PKR {{ format_number(policy.gross_premium) }} </td>
                     <td> PKR {{ format_number(policy.gp_collected) }} </td>
+                    <td>{{ policy.brokerage_percentage }} %</td>
                 </tr>
             </tbody>
         </table>
@@ -156,5 +158,8 @@ export default {
         </table>
 
 
+    </div>
+    <div v-else>
+        <p>You do not have permission to view this tab.</p>
     </div>
 </template>
