@@ -45,7 +45,7 @@ export default {
                 </tr>
                 <tr>
                     <th>Brokerage Percentage </th>
-                    <td>PKR {{ policy.brokerage_percentage }} % </td>
+                    <td>{{ policy.brokerage_percentage }} % </td>
                 </tr>
                 <tr>
                     <th>Brokerage Received Amount</th>
@@ -140,5 +140,9 @@ export default {
                 </template>
             </tbody>
         </table>
+    </div>
+
+    <div v-else>
+        <p>You do not have permission to view this tab.</p>
     </div>
 </template>
