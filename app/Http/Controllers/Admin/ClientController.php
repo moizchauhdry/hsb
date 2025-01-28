@@ -319,10 +319,8 @@ class ClientController extends Controller
         }
     }
 
-    public function clientGroupList() {}
-
     public function groupIndex(Request $request)
-    {
+    {        
         $page_count = $request->page_count ?? 10;
         $groups = ClientGroup::clientGroupList($request->all())
             ->paginate($page_count)
