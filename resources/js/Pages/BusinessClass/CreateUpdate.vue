@@ -81,6 +81,7 @@ const edit = (id) => {
             form.department_id = data.cob.department_id;
             insurances.value = data.insurances;
             form.insurance_id = data.selected_insurers;
+            departments.value = data.departments;
         });
 };
 
