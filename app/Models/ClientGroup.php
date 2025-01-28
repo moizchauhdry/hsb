@@ -51,13 +51,16 @@ class ClientGroup extends Model
             ->groupBy('group.id', 'group.code', 'group.name')
             ->orderBy('policy_count', 'desc');
 
-
         if ($role->id != 1) {
-            $query->join('user_clients', function ($join) {
-                $join->on('user_clients.client_id', '=', 'client.id')->where('user_clients.user_id', auth()->id());
-            })->where(function ($q) {
-                $q->whereNotNull('user_clients.id');
-            });
+            $query->leftJoin('user_cobs as uc', function ($join) {
+                $join->on('uc.cob_id', '=', 'p.cob_id')->where('uc.user_id', auth()->id());
+            })
+                ->leftJoin('user_clients as ucl', function ($join) {
+                    $join->on('ucl.client_id', '=', 'p.client_id')->where('ucl.user_id', auth()->id());
+                })
+                ->where(function ($q) {
+                    $q->whereNotNull('uc.id')->orWhereNotNull('ucl.id');
+                });
         }
 
         if ($filter) {
