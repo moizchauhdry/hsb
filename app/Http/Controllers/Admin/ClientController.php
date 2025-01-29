@@ -21,6 +21,8 @@ class ClientController extends Controller
 {
     public function index(Request $request)
     {
+        // dd($request->all());
+
         $role = Auth::user()->roles[0];
 
         $page_count = $request->page_count ?? 10;
@@ -33,7 +35,7 @@ class ClientController extends Controller
             'to_date' => $request->to_date ?? "",
 
             'policy_type' => $request->policy_type ?? "",
-            'client' => $request->client ?? "",
+            'client' => $request->client_ids ?? "",
             'agency' => $request->agency ?? "",
             'insurer' => $request->insurer ?? "",
             'department' => $request->department ?? "",
@@ -42,6 +44,8 @@ class ClientController extends Controller
 
             'client_group_code' => $request->client_group_code ?? "",
         ];
+
+        // dd($filter);
 
         $query = User::query()
             ->select([
@@ -76,7 +80,6 @@ class ClientController extends Controller
                 });
         }
 
-
         if ($filter) {
 
             $query->when($filter['search'], function ($q) use ($filter) {
@@ -100,6 +103,7 @@ class ClientController extends Controller
             });
 
             $query->when(!empty($filter['client']), function ($q) use ($filter) {
+                // dd($filter['client']);
                 $clients = is_array($filter['client']) ? $filter['client'] : explode(',', $filter['client']);
                 $q->whereIn('p.client_id', $clients);
             });
@@ -129,16 +133,16 @@ class ClientController extends Controller
                 $q->whereIn('cob.group_id', $groups);
             });
 
-            $query->when($filter['client_group_code'] !== null, function ($q) use ($filter) {
-                if ($filter['client_group_code'] === 0 || $filter['client_group_code'] === '0') {
-                    $q->where('users.client_group_code', 0);
-                } else {
-                    $client_groups = is_array($filter['client_group_code'])
-                        ? $filter['client_group_code']
-                        : explode(',', $filter['client_group_code']);
-                    $q->whereIn('users.client_group_code', $client_groups);
-                }
-            });
+            // $query->when($filter['client_group_code'] !== null, function ($q) use ($filter) {
+            //     if ($filter['client_group_code'] === 0 || $filter['client_group_code'] === '0') {
+            //         $q->where('users.client_group_code', 0);
+            //     } else {
+            //         $client_groups = is_array($filter['client_group_code'])
+            //             ? $filter['client_group_code']
+            //             : explode(',', $filter['client_group_code']);
+            //         $q->whereIn('users.client_group_code', $client_groups);
+            //     }
+            // });
         }
 
         $users = $query->paginate($page_count)->withQueryString();
