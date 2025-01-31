@@ -8,22 +8,22 @@ import Filter from "./Filter.vue";
 
 const props = defineProps({
     groups: Object,
-    filter: Array,
+    filters: Array,
     page_type: String,
 });
 
-const generateFilterUrl = (group_code) => {
+const generateFilterUrl = (client_ids) => {
     var filters = {
-        client_group_code: group_code,
-        date_type: props.filter['date_type'] ?? "",
-        from_date: props.filter['from_date'] ?? "",
-        to_date: props.filter['to_date'] ?? "",
-        policy_type: props.filter['policy_type'] ?? "",
-        agency: props.filter['agency'] ?? "",
-        insurer: props.filter['insurer'] ?? "",
-        department: props.filter['department'] ?? "",
-        group: props.filter['group'] ?? "",
-        cob: props.filter['cob'] ?? "",
+        client_ids: client_ids,
+        date_type: props.filters['date_type'] ?? "",
+        from_date: props.filters['from_date'] ?? "",
+        to_date: props.filters['to_date'] ?? "",
+        policy_type: props.filters['policy_type'] ?? "",
+        agency: props.filters['agency'] ?? "",
+        insurer: props.filters['insurer'] ?? "",
+        department: props.filters['department'] ?? "",
+        group: props.filters['group'] ?? "",
+        cob: props.filters['cob'] ?? "",
     };
 
     const queryParams = new URLSearchParams(filters).toString();
@@ -32,7 +32,16 @@ const generateFilterUrl = (group_code) => {
 
 const generateFilterUrl2 = (client_ids) => {
     var filters = {
-        client: client_ids,
+        client_ids: client_ids,
+        date_type: props.filters['date_type'] ?? "",
+        from_date: props.filters['from_date'] ?? "",
+        to_date: props.filters['to_date'] ?? "",
+        policy_type: props.filters['policy_type'] ?? "",
+        agency: props.filters['agency'] ?? "",
+        insurer: props.filters['insurer'] ?? "",
+        department: props.filters['department'] ?? "",
+        group: props.filters['group'] ?? "",
+        cob: props.filters['cob'] ?? "",
     };
 
     const queryParams = new URLSearchParams(filters).toString();
@@ -41,8 +50,16 @@ const generateFilterUrl2 = (client_ids) => {
 
 const generateFilterUrl3 = (client_ids) => {
     var filters = {
-        client: client_ids,
+        client_ids: client_ids,
         policy_type: "renewal",
+        date_type: props.filters['date_type'] ?? "",
+        from_date: props.filters['from_date'] ?? "",
+        to_date: props.filters['to_date'] ?? "",
+        agency: props.filters['agency'] ?? "",
+        insurer: props.filters['insurer'] ?? "",
+        department: props.filters['department'] ?? "",
+        group: props.filters['group'] ?? "",
+        cob: props.filters['cob'] ?? "",
     };
 
     const queryParams = new URLSearchParams(filters).toString();
@@ -73,13 +90,13 @@ const generateFilterUrl3 = (client_ids) => {
                         </nav>
                     </div>
                     <div class="ms-auto">
-                        <Filter :filter_route="'group'"></Filter>
+                        <Filter :filter_route="'group'" :filters="props.filters"></Filter>
                     </div>
                 </div>
 
                 <div class="card">
                     <div class="card-header">
-                        <Search :route_name="route('client.group.index')" />
+                        <Search :filters="props.filters" :route_name="route('client.group.index')" />
                     </div>
 
                     <div class="card-body">
@@ -101,7 +118,7 @@ const generateFilterUrl3 = (client_ids) => {
                                             <td>{{ (groups.current_page - 1) * groups.per_page + index + 1 }}</td>
                                             <td>{{ group.group_name }}</td>
                                             <td>
-                                                <a :href="generateFilterUrl(group.group_code)" target="_blank">
+                                                <a :href="generateFilterUrl(group.client_ids)" target="_blank">
                                                     <span class="badge bg-dark">
                                                         {{ group.client_count }} <i class="bx bx-link-external"></i>
                                                     </span>

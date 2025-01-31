@@ -26,26 +26,55 @@ class ClientController extends Controller
         $role = Auth::user()->roles[0];
 
         $page_count = $request->page_count ?? 10;
+        
+        $policy_type = [];
+        if ($request->policy_type) {
+            $policy_type = is_array($request->policy_type) ? $request->policy_type : explode(',', $request->policy_type);
+        }
+
+        $client_ids = [];
+        if ($request->client_ids) {
+            $client_ids = is_array($request->client_ids) ? $request->client_ids : explode(',', $request->client_ids);
+        }
+        
+        $agency = [];
+        if ($request->agency) {
+            $agency = is_array($request->agency) ? $request->agency : explode(',', $request->agency);
+        }
+        
+        $insurer = [];
+        if ($request->insurer) {
+            $insurer = is_array($request->insurer) ? $request->insurer : explode(',', $request->insurer);
+        }
+        
+        $department = [];
+        if ($request->department) {
+            $department = is_array($request->department) ? $request->department : explode(',', $request->department);
+        }
+
+        $group = [];
+        if ($request->group) {
+            $group = is_array($request->group) ? $request->group : explode(',', $request->group);
+        }
+
+        $cob = [];
+        if ($request->cob) {
+            $cob = is_array($request->cob) ? $request->cob : explode(',', $request->cob);
+        }
 
         $filter = [
             'search' => $request->search ?? "",
-
             'date_type' => $request->date_type ?? "",
             'from_date' => $request->from_date ?? "",
             'to_date' => $request->to_date ?? "",
-
-            'policy_type' => $request->policy_type ?? "",
-            'client' => $request->client_ids ?? "",
-            'agency' => $request->agency ?? "",
-            'insurer' => $request->insurer ?? "",
-            'department' => $request->department ?? "",
-            'group' => $request->group ?? "",
-            'cob' => $request->cob ?? "",
-
-            'client_group_code' => $request->client_group_code ?? "",
+            'policy_type' => $policy_type,
+            'client_ids' => $client_ids,
+            'agency' => $agency,
+            'insurer' => $insurer,
+            'department' => $department,
+            'group' => $group,
+            'cob' => $cob,
         ];
-
-        // dd($filter);
 
         $query = User::query()
             ->select([
@@ -98,39 +127,31 @@ class ClientController extends Controller
             });
 
             $query->when($filter['policy_type'], function ($q) use ($filter) {
-                $types = is_array($filter['policy_type']) ? $filter['policy_type'] : explode(',', $filter['policy_type']);
-                $q->whereIn('p.policy_type', $types);
+                $q->whereIn('p.policy_type', $filter['policy_type']);
             });
 
-            $query->when(!empty($filter['client']), function ($q) use ($filter) {
-                // dd($filter['client']);
-                $clients = is_array($filter['client']) ? $filter['client'] : explode(',', $filter['client']);
-                $q->whereIn('p.client_id', $clients);
+            $query->when(!empty($filter['client_ids']), function ($q) use ($filter) {
+                $q->whereIn('p.client_id', $filter['client_ids']);
             });
 
             $query->when(!empty($filter['agency']), function ($q) use ($filter) {
-                $agencies = is_array($filter['agency']) ? $filter['agency'] : explode(',', $filter['agency']);
-                $q->whereIn('p.agency_id', $agencies);
+                $q->whereIn('p.agency_id', $filter['agency']);
             });
 
             $query->when(!empty($filter['insurer']), function ($q) use ($filter) {
-                $insurers = is_array($filter['insurer']) ? $filter['insurer'] : explode(',', $filter['insurer']);
-                $q->whereIn('p.insurer_id', $insurers);
+                $q->whereIn('p.insurer_id', $filter['insurer']);
             });
 
             $query->when($filter['cob'], function ($q) use ($filter) {
-                $cobs = is_array($filter['cob']) ? $filter['cob'] : explode(',', $filter['cob']);
-                $q->whereIn('p.cob_id', $cobs);
+                $q->whereIn('p.cob_id', $filter['cob']);
             });
 
             $query->when($filter['department'], function ($q) use ($filter) {
-                $departments = is_array($filter['department']) ? $filter['department'] : explode(',', $filter['department']);
-                $q->whereIn('cob.department_id', $departments);
+                $q->whereIn('cob.department_id', $filter['department']);
             });
 
             $query->when($filter['group'], function ($q) use ($filter) {
-                $groups = is_array($filter['group']) ? $filter['group'] : explode(',', $filter['group']);
-                $q->whereIn('cob.group_id', $groups);
+                $q->whereIn('cob.group_id', $filter['group']);
             });
 
             // $query->when($filter['client_group_code'] !== null, function ($q) use ($filter) {
@@ -149,10 +170,12 @@ class ClientController extends Controller
 
         $roles = Role::select('id', 'name')->get();
 
+        // dd($filter);
+
         return Inertia::render('Client/Index', [
             'users' => $users,
             'roles' => $roles,
-            'filter' => $filter,
+            'filters' => $filter,
         ]);
     }
 
@@ -326,14 +349,64 @@ class ClientController extends Controller
     public function groupIndex(Request $request)
     {        
         $page_count = $request->page_count ?? 10;
-        $groups = ClientGroup::clientGroupList($request->all())
+        
+        $policy_type = [];
+        if ($request->policy_type) {
+            $policy_type = is_array($request->policy_type) ? $request->policy_type : explode(',', $request->policy_type);
+        }
+
+        $client_ids = [];
+        if ($request->client_ids) {
+            $client_ids = is_array($request->client_ids) ? $request->client_ids : explode(',', $request->client_ids);
+        }
+        
+        $agency = [];
+        if ($request->agency) {
+            $agency = is_array($request->agency) ? $request->agency : explode(',', $request->agency);
+        }
+        
+        $insurer = [];
+        if ($request->insurer) {
+            $insurer = is_array($request->insurer) ? $request->insurer : explode(',', $request->insurer);
+        }
+        
+        $department = [];
+        if ($request->department) {
+            $department = is_array($request->department) ? $request->department : explode(',', $request->department);
+        }
+
+        $group = [];
+        if ($request->group) {
+            $group = is_array($request->group) ? $request->group : explode(',', $request->group);
+        }
+
+        $cob = [];
+        if ($request->cob) {
+            $cob = is_array($request->cob) ? $request->cob : explode(',', $request->cob);
+        }
+
+        $filter = [
+            'search' => $request->search ?? "",
+            'date_type' => $request->date_type ?? "",
+            'from_date' => $request->from_date ?? "",
+            'to_date' => $request->to_date ?? "",
+            'policy_type' => $policy_type,
+            'client_ids' => $client_ids,
+            'agency' => $agency,
+            'insurer' => $insurer,
+            'department' => $department,
+            'group' => $group,
+            'cob' => $cob,
+        ];
+        
+        $groups = ClientGroup::clientGroupList($filter)
             ->paginate($page_count)
             ->withQueryString();
 
         return Inertia::render('Client/Group', [
             'page_type' => "policies",
             'groups' => $groups,
-            'filter' => [],
+            'filters' => $filter,
         ]);
     }
 }

@@ -5,17 +5,54 @@ import SecondaryButton from "./SecondaryButton.vue";
 
 const props = defineProps({
     route_name: Array,
+    filters: Object,
 });
 
 const form = useForm({
     page_count: 10,
     search: "",
+    date_type: "",
+    from_date: "",
+    to_date: "",
+    policy_type: [],
+    client_ids: [],
+    agency: [],
+    insurer: [],
+    department: [],
+    group: [],
+    cob: [],
 });
 
 const search = () => {
+
+    var saved_filters = "";
+    saved_filters = props.filters;
+
+    form.date_type = saved_filters?.date_type
+    form.from_date = saved_filters?.from_date
+    form.to_date = saved_filters?.to_date
+    form.policy_type = saved_filters?.policy_type
+    form.client_ids = saved_filters?.client_ids
+    form.agency = saved_filters?.agency
+    form.insurer = saved_filters?.insurer
+    form.department = saved_filters?.department
+    form.group = saved_filters?.group
+    form.cob = saved_filters?.cob
+
     var filters = {
         search: form.search,
         page_count: form.page_count,
+
+        date_type: form.date_type,
+        from_date: form.from_date,
+        to_date: form.to_date,
+        policy_type: form.policy_type,
+        client_ids: form.client_ids,
+        agency: form.agency,
+        insurer: form.insurer,
+        cob: form.cob,
+        department: form.department,
+        group: form.group,
     };
 
     const queryParams = new URLSearchParams(filters).toString();

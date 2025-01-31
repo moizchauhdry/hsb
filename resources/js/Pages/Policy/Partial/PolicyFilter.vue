@@ -78,13 +78,10 @@ var saved_filters = "";
 
 const form = useForm({
     date_type: "",
-    // date_value: "",
-
     from_date: "",
     to_date: "",
-
     policy_type: [],
-    client: [],
+    client_ids: [],
     agency: [],
     insurer: [],
     department: [],
@@ -105,11 +102,10 @@ const create = () => {
     saved_filters = props.filters;
 
     form.date_type = saved_filters?.date_type
-    // form.date_value = saved_filters?.date_value
     form.from_date = saved_filters?.from_date
     form.to_date = saved_filters?.to_date
     form.policy_type = saved_filters?.policy_type
-    form.client = saved_filters?.client
+    form.client_ids = saved_filters?.client_ids
     form.agency = saved_filters?.agency
     form.insurer = saved_filters?.insurer
     form.department = saved_filters?.department
@@ -120,21 +116,16 @@ const create = () => {
 const submit = () => {
     var filters = {
         date_type: form.date_type,
-        // date_value: form.date_value,
-
         from_date: form.from_date,
         to_date: form.to_date,
-
         policy_type: form.policy_type,
-        client: form.client,
+        client_ids: form.client_ids,
         agency: form.agency,
         insurer: form.insurer,
         cob: form.cob,
         department: form.department,
         group: form.group,
     };
-
-    console.log(props.filter_route);
 
     const queryParams = new URLSearchParams(filters).toString();
 
@@ -156,7 +147,7 @@ const submit = () => {
         preserveScroll: true,
         onSuccess: (response) => {
             closeModal();
-            localStorage.setItem('filters', JSON.stringify(filters));
+            // localStorage.setItem('filters', JSON.stringify(filters));
         },
         onError: (errors) => {
             console.log(errors);
@@ -269,7 +260,7 @@ watch(() => form.date_value, (newValue) => {
 
                         <div class="col-md-12">
                             <InputLabel for="" value="Client" class="mb-1" />
-                            <Multiselect v-model="form.client" :options="clients" :searchable="true" mode="tags">
+                            <Multiselect v-model="form.client_ids" :options="clients" :searchable="true" mode="tags">
                             </Multiselect>
                         </div>
 

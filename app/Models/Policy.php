@@ -142,8 +142,8 @@ class Policy extends Model
                 $q->whereIn('p.policy_type', $filter['policy_type']);
             });
 
-            $query->when(!empty($filter['client']), function ($q) use ($filter) {
-                $q->whereIn('p.client_id', $filter['client']);
+            $query->when(!empty($filter['client_ids']), function ($q) use ($filter) {
+                $q->whereIn('p.client_id', $filter['client_ids']);
             });
 
             $query->when(!empty($filter['agency']), function ($q) use ($filter) {
