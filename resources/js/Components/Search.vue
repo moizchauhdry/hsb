@@ -11,12 +11,11 @@ const props = defineProps({
 const form = useForm({
     page_count: 10,
     search: "",
-
     date_type: "",
     from_date: "",
     to_date: "",
     policy_type: [],
-    client: [],
+    client_ids: [],
     agency: [],
     insurer: [],
     department: [],
@@ -33,7 +32,7 @@ const search = () => {
     form.from_date = saved_filters?.from_date
     form.to_date = saved_filters?.to_date
     form.policy_type = saved_filters?.policy_type
-    form.client = saved_filters?.client
+    form.client_ids = saved_filters?.client_ids
     form.agency = saved_filters?.agency
     form.insurer = saved_filters?.insurer
     form.department = saved_filters?.department
@@ -48,7 +47,7 @@ const search = () => {
         from_date: form.from_date,
         to_date: form.to_date,
         policy_type: form.policy_type,
-        client: form.client,
+        client_ids: form.client_ids,
         agency: form.agency,
         insurer: form.insurer,
         cob: form.cob,

@@ -40,9 +40,9 @@ class PolicyController extends Controller
             $policy_type = is_array($request->policy_type) ? $request->policy_type : explode(',', $request->policy_type);
         }
 
-        $client = [];
-        if ($request->client) {
-            $client = is_array($request->client) ? $request->client : explode(',', $request->client);
+        $client_ids = [];
+        if ($request->client_ids) {
+            $client_ids = is_array($request->client_ids) ? $request->client_ids : explode(',', $request->client_ids);
         }
         
         $agency = [];
@@ -76,7 +76,7 @@ class PolicyController extends Controller
             'from_date' => $request->from_date ?? "",
             'to_date' => $request->to_date ?? "",
             'policy_type' => $policy_type,
-            'client' => $client,
+            'client_ids' => $client_ids,
             'agency' => $agency,
             'insurer' => $insurer,
             'department' => $department,

@@ -20,9 +20,9 @@ const edit = (id) => {
     user_create_edit_ref.value.edit(id)
 };
 
-const generateFilterUrl = (client_id) => {
+const generateFilterUrl = (client_ids) => {
     var filters = {
-        client: client_id,
+        client_ids: client_ids,
         date_type: props.filters['date_type'] ?? "", 
         from_date: props.filters['from_date'] ?? "", 
         to_date: props.filters['to_date'] ?? "", 
@@ -63,13 +63,13 @@ const generateFilterUrl = (client_id) => {
                     </div>
                     <div class="ms-auto">
                         <CreateEdit ref="user_create_edit_ref" v-bind="$props"></CreateEdit>
-                        <Filter :filter_route="'client'"></Filter>
+                        <Filter :filters="props.filters" :filter_route="'client'"></Filter>
                     </div>
                 </div>
 
                 <div class="card">
                     <div class="card-header">
-                        <Search :route_name="route('client.index')" />
+                        <Search :filters="props.filters" :route_name="route('client.index')" />
                     </div>
 
                     <div class="card-body">
@@ -101,7 +101,7 @@ const generateFilterUrl = (client_id) => {
                                                 </a>
                                             </td>
                                             <td>
-                                                <a :href="`${route('claim.index')}?client=${user.user_id}`"
+                                                <a :href="`${route('claim.index')}?client_ids=${user.user_id}`"
                                                     target="_blank">
                                                     <span class="badge bg-dark">
                                                         {{ user.policy_claim_count }} <i

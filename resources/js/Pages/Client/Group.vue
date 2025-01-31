@@ -32,7 +32,7 @@ const generateFilterUrl = (client_ids) => {
 
 const generateFilterUrl2 = (client_ids) => {
     var filters = {
-        client: client_ids,
+        client_ids: client_ids,
         date_type: props.filters['date_type'] ?? "",
         from_date: props.filters['from_date'] ?? "",
         to_date: props.filters['to_date'] ?? "",
@@ -50,7 +50,7 @@ const generateFilterUrl2 = (client_ids) => {
 
 const generateFilterUrl3 = (client_ids) => {
     var filters = {
-        client: client_ids,
+        client_ids: client_ids,
         policy_type: "renewal",
         date_type: props.filters['date_type'] ?? "",
         from_date: props.filters['from_date'] ?? "",
