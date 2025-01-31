@@ -33,8 +33,6 @@ class PolicyController extends Controller
 {
     public function index(Request $request)
     {
-        // dd($request->all());
-
         $page_count = $request->page_count ?? 10;
         
         $policy_type = [];

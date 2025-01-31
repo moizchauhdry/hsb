@@ -78,11 +78,8 @@ var saved_filters = "";
 
 const form = useForm({
     date_type: "",
-    // date_value: "",
-
     from_date: "",
     to_date: "",
-
     policy_type: [],
     client: [],
     agency: [],
@@ -105,7 +102,6 @@ const create = () => {
     saved_filters = props.filters;
 
     form.date_type = saved_filters?.date_type
-    // form.date_value = saved_filters?.date_value
     form.from_date = saved_filters?.from_date
     form.to_date = saved_filters?.to_date
     form.policy_type = saved_filters?.policy_type
@@ -120,11 +116,8 @@ const create = () => {
 const submit = () => {
     var filters = {
         date_type: form.date_type,
-        // date_value: form.date_value,
-
         from_date: form.from_date,
         to_date: form.to_date,
-
         policy_type: form.policy_type,
         client: form.client,
         agency: form.agency,
@@ -133,8 +126,6 @@ const submit = () => {
         department: form.department,
         group: form.group,
     };
-
-    console.log(props.filter_route);
 
     const queryParams = new URLSearchParams(filters).toString();
 
@@ -156,7 +147,7 @@ const submit = () => {
         preserveScroll: true,
         onSuccess: (response) => {
             closeModal();
-            localStorage.setItem('filters', JSON.stringify(filters));
+            // localStorage.setItem('filters', JSON.stringify(filters));
         },
         onError: (errors) => {
             console.log(errors);

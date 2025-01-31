@@ -15,6 +15,7 @@ import moment from 'moment';
 
 const props = defineProps({
     data: Array,
+    filters: Object,
     filter_route: {
         type: String,
         required: true
@@ -74,14 +75,6 @@ const fetchGroups = (department_ids) => {
         });
 };
 
-// const cobs = ref([]);
-// const fetchCobs = (group_ids) => {
-//     axios.post(`/axios/fetch/cobs/v2`, { group_ids: group_ids })
-//         .then(({ data }) => {
-//             cobs.value = data.cobs;
-//         });
-// };
-
 const cobs = ref([]);
 const fetchCobs = (department_ids) => {
     axios.post(`/axios/fetch/cobs/v2`, { department_ids: department_ids })
@@ -94,11 +87,8 @@ var saved_filters = "";
 
 const form = useForm({
     date_type: "",
-    date_value: "",
-
     from_date: "",
     to_date: "",
-
     policy_type: [],
     client: [],
     agency: [],
@@ -118,42 +108,32 @@ const create = () => {
     fetchInsurers();
     fetchDepartments();
 
-    saved_filters = localStorage.getItem('filters');
+    saved_filters = props.filters;
 
-    if (saved_filters) {
-        saved_filters = JSON.parse(saved_filters);
-
-        form.date_type = saved_filters.date_type
-        form.date_value = saved_filters.date_value
-
-        form.from_date = saved_filters.from_date
-        form.to_date = saved_filters.to_date
-
-        form.policy_type = saved_filters.policy_type
-        form.client = saved_filters.client
-        form.agency = saved_filters.agency
-        form.insurer = saved_filters.insurer
-        form.department = saved_filters.department
-        form.group = saved_filters.group
-        form.cob = saved_filters.cob
-    }
+    form.date_type = saved_filters?.date_type
+    form.from_date = saved_filters?.from_date
+    form.to_date = saved_filters?.to_date
+    form.policy_type = saved_filters?.policy_type
+    form.client = saved_filters?.client
+    form.agency = saved_filters?.agency
+    form.insurer = saved_filters?.insurer
+    form.department = saved_filters?.department
+    form.group = saved_filters?.group
+    form.cob = saved_filters?.cob
 };
 
 const submit = () => {
     var filters = {
         date_type: form.date_type,
-        date_value: form.date_value,
-
         from_date: form.from_date,
         to_date: form.to_date,
-
         policy_type: form.policy_type,
         client: form.client,
         agency: form.agency,
         insurer: form.insurer,
+        cob: form.cob,
         department: form.department,
         group: form.group,
-        cob: form.cob,
     };
 
     const queryParams = new URLSearchParams(filters).toString();
@@ -172,7 +152,7 @@ const submit = () => {
         preserveScroll: true,
         onSuccess: (response) => {
             closeModal();
-            localStorage.setItem('filters', JSON.stringify(filters));
+            // localStorage.setItem('filters', JSON.stringify(filters));
         },
         onError: (errors) => {
             console.log(errors);

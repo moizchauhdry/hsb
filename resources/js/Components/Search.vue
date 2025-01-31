@@ -29,8 +29,6 @@ const search = () => {
     var saved_filters = "";
     saved_filters = props.filters;
 
-    console.log(saved_filters);
-
     form.date_type = saved_filters?.date_type
     form.from_date = saved_filters?.from_date
     form.to_date = saved_filters?.to_date
