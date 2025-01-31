@@ -12,9 +12,10 @@ const props = defineProps({
     page_type: String,
 });
 
-const generateFilterUrl = (group_code) => {
+const generateFilterUrl = (client_ids) => {
     var filters = {
-        client_group_code: group_code,
+        // client_group_code: group_code,
+        client_ids: client_ids,
         date_type: props.filter['date_type'] ?? "",
         from_date: props.filter['from_date'] ?? "",
         to_date: props.filter['to_date'] ?? "",
@@ -101,7 +102,7 @@ const generateFilterUrl3 = (client_ids) => {
                                             <td>{{ (groups.current_page - 1) * groups.per_page + index + 1 }}</td>
                                             <td>{{ group.group_name }}</td>
                                             <td>
-                                                <a :href="generateFilterUrl(group.group_code)" target="_blank">
+                                                <a :href="generateFilterUrl(group.client_ids)" target="_blank">
                                                     <span class="badge bg-dark">
                                                         {{ group.client_count }} <i class="bx bx-link-external"></i>
                                                     </span>

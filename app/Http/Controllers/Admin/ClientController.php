@@ -42,7 +42,7 @@ class ClientController extends Controller
             'group' => $request->group ?? "",
             'cob' => $request->cob ?? "",
 
-            'client_group_code' => $request->client_group_code ?? "",
+            // 'client_group_code' => $request->client_group_code ?? "",
         ];
 
         // dd($filter);
@@ -103,7 +103,6 @@ class ClientController extends Controller
             });
 
             $query->when(!empty($filter['client']), function ($q) use ($filter) {
-                // dd($filter['client']);
                 $clients = is_array($filter['client']) ? $filter['client'] : explode(',', $filter['client']);
                 $q->whereIn('p.client_id', $clients);
             });
