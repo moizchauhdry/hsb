@@ -29,6 +29,7 @@ class RenewalCommand extends Command
     {
         try {
             $users = User::query()
+                ->where('email','!=', NULL)
                 ->withoutRole('client')
                 ->get();
 
@@ -38,7 +39,8 @@ class RenewalCommand extends Command
             }
 
         } catch (\Throwable $th) {
-            //throw $th;
+            // dd($th);
+            throw $th;
         }
     }
 }
