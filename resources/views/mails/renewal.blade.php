@@ -13,8 +13,10 @@
         <p>Dear <b>{{$user->name}}</b>,</p>
 
         <p>
-            Welcome to the Portal. Please log in to access your account and manage your assigned renewals, policies, and
-            client information efficiently.
+            We wanted to remind you that your policy is due for renewal. To ensure uninterrupted service, please
+            complete the renewal process at your earliest convenience.
+
+            Please check the attached Excel file for the renewal list.
         </p>
 
         <p>

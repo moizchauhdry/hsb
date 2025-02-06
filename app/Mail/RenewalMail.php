@@ -2,12 +2,15 @@
 
 namespace App\Mail;
 
+use App\Exports\RenewalExport;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Mail\Mailables\Attachment;
 
 class RenewalMail extends Mailable
 {
@@ -52,6 +55,25 @@ class RenewalMail extends Mailable
      */
     public function attachments(): array
     {
-        return [];
+        // Define file name`
+        $fileName = 'renewals-' . $this->user->id . '.xlsx';
+
+        // Correct path for saving the file
+        $filePath = storage_path("app/public/renewals/{$fileName}");
+
+        // Ensure directory exists
+        if (!file_exists(storage_path('app/renewals'))) {
+            mkdir(storage_path('app/renewals'), 0777, true);
+        }
+
+        // Save the Excel file in the correct storage directory
+        Excel::store(new RenewalExport($this->user), "renewals/{$fileName}", 'local');
+
+        // Attach file using the correct absolute path
+        return [
+            Attachment::fromPath($filePath)
+                ->as('excel.xlsx')
+                ->withMime('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'),
+        ];
     }
 }
