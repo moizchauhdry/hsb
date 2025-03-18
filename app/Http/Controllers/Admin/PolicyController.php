@@ -28,13 +28,14 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Redirect;
 
 class PolicyController extends Controller
 {
     public function index(Request $request)
     {
         $page_count = $request->page_count ?? 10;
-        
+
         $policy_type = [];
         if ($request->policy_type) {
             $policy_type = is_array($request->policy_type) ? $request->policy_type : explode(',', $request->policy_type);
@@ -44,17 +45,17 @@ class PolicyController extends Controller
         if ($request->client_ids) {
             $client_ids = is_array($request->client_ids) ? $request->client_ids : explode(',', $request->client_ids);
         }
-        
+
         $agency = [];
         if ($request->agency) {
             $agency = is_array($request->agency) ? $request->agency : explode(',', $request->agency);
         }
-        
+
         $insurer = [];
         if ($request->insurer) {
             $insurer = is_array($request->insurer) ? $request->insurer : explode(',', $request->insurer);
         }
-        
+
         $department = [];
         if ($request->department) {
             $department = is_array($request->department) ? $request->department : explode(',', $request->department);
@@ -433,6 +434,22 @@ class PolicyController extends Controller
         } catch (ModelNotFoundException $e) {
             // Handle case when policy with the given ID doesn't exist
             return response()->json(['error' => 'Policy not found'], 404);
+        }
+    }
+    public function deleteUpload($id)
+    {
+        try {
+            $upload = PolicyUpload::findOrFail($id);
+
+            if ($upload->upload && Storage::exists($upload->upload)) {
+                Storage::delete($upload->upload);
+            }
+
+            $upload->delete();
+
+            return Redirect::back()->with('success', 'File deleted successfully!');
+        } catch (\Exception $e) {
+            return Redirect::back()->with('error', 'Failed to delete the file: ' . $e->getMessage());
         }
     }
 

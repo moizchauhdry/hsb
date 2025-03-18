@@ -91,6 +91,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/getBusinessClassByPercent/{id}', [PolicyController::class, 'getBusinessClassByPercent'])->name('policy.getBusinessClassByPercent');
         Route::post('/installment-plan', [PolicyController::class, 'installmentPlan'])->name('policy.installmentPlan');
         Route::post('/import', [PolicyController::class, 'importData'])->name('policy.import')->middleware('permission:excel_import');
+        Route::delete('/uploads/{id}', [PolicyController::class, 'deleteUpload'])->name('policy.uploads.destroy');
     });
 
     Route::prefix('claims')->group(function () {

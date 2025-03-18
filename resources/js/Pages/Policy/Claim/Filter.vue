@@ -20,7 +20,6 @@ const modal = ref(false);
 const edit = ref(false);
 const slug = usePage().props.slug;
 const filter = usePage().props.filter;
-console.log(usePage().props)
 
 var months = [
     { id: 1, name: "January" },

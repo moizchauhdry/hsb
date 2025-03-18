@@ -78,8 +78,8 @@ const closeModal = () => {
 
                                     <select id="input21" class="form-select" v-model="form.type">
 
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
+                                        <option value="1">Image</option>
+                                        <option value="2">Document</option>
                                     </select>
                                     <InputError :message="form.errors.type" />
                                 </div>
