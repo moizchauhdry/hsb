@@ -2,20 +2,22 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-
-use App\Models\PolicyClaimNote;
-use App\Models\PolicyClaimUpload;
-use App\Models\PolicyClaim;
 use Carbon\Carbon;
 use Inertia\Inertia;
+
+use App\Models\PolicyClaim;
+use Illuminate\Http\Request;
+use App\Models\PolicyClaimNote;
+use App\Models\PolicyClaimUpload;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Redirect;
 
 class ClaimController extends Controller
 {
     public function index(Request $request)
     {
-        // dd($request->all());   
+        // dd($request->all());
 
         $page_count = $request->page_count ?? 10;
         $current_month = $request->month ?? Carbon::now()->format('m');
@@ -30,7 +32,7 @@ class ClaimController extends Controller
             'month_name' => getMonthName($current_month) ?? "",
             'year' => $current_year ?? "",
         ];
-        
+
         $claims = PolicyClaim::policyClaimList($filter)
             ->orderBy('pc.id', 'desc')
             ->paginate($page_count)
@@ -183,5 +185,21 @@ class ClaimController extends Controller
         }
 
         return redirect()->back()->with(['data' => $policy_claim_upload]);
+    }
+    public function deleteclaimUpload($id)
+    {
+        try {
+            $upload = PolicyClaimUpload::findOrFail($id);
+
+            if ($upload->upload && Storage::exists($upload->upload)) {
+                Storage::delete($upload->upload);
+            }
+
+            $upload->delete();
+
+            return Redirect::back()->with('success', 'File deleted successfully!');
+        } catch (\Exception $e) {
+            return Redirect::back()->with('error', 'Failed to delete the file: ' . $e->getMessage());
+        }
     }
 }
