@@ -28,16 +28,16 @@ const search = () => {
     var saved_filters = "";
     saved_filters = props.filters;
 
-    form.date_type = saved_filters?.date_type
-    form.from_date = saved_filters?.from_date
-    form.to_date = saved_filters?.to_date
-    form.policy_type = saved_filters?.policy_type
-    form.client_ids = saved_filters?.client_ids
-    form.agency = saved_filters?.agency
-    form.insurer = saved_filters?.insurer
-    form.department = saved_filters?.department
-    form.group = saved_filters?.group
-    form.cob = saved_filters?.cob
+    form.date_type = saved_filters?.date_type || ""
+    form.from_date = saved_filters?.from_date || ""
+    form.to_date = saved_filters?.to_date || ""
+    form.policy_type = saved_filters?.policy_type || []
+    form.client_ids = saved_filters?.client_ids || []
+    form.agency = saved_filters?.agency || []
+    form.insurer = saved_filters?.insurer || []
+    form.department = saved_filters?.department || []
+    form.group = saved_filters?.group || []
+    form.cob = saved_filters?.cob || []
 
     var filters = {
         search: form.search,
