@@ -106,6 +106,7 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/fetch/claim-uploads/{claim_id}/{policy_id}', [ClaimController::class, 'fetchClaimUploads'])->name('claim.fetch.claim-uploads')->middleware('permission:policy_claim');
         Route::post('/store/claim-upload', [ClaimController::class, 'storeClaimUpload'])->name('claim.store.claim-upload')->middleware('permission:policy_claim');
+        Route::delete('/uploads/delete/{id}', [ClaimController::class, 'deleteClaimUpload'])->name('claim.uploads.destroy');
     });
 
     Route::prefix('renewals')->group(function () {

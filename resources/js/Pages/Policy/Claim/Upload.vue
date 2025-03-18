@@ -6,6 +6,8 @@ import { ref } from "vue";
 import Modal from "@/Components/Modal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import SuccessButton from "@/Components/SuccessButton.vue";
+import Swal from 'sweetalert2';
+import DangerButton from "@/Components/DangerButton.vue";
 
 // const { props } = usePage();
 
@@ -61,6 +63,33 @@ const fetchClaimUploads = (id, policy_id) => {
     });
 };
 
+const deleteClaimUpload = (uploadId) => {
+    Swal.fire({
+        title: "Are you sure?",
+        text: "This file will be permanently deleted!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            form.delete(route("claim.uploads.destroy", uploadId), {
+                preserveScroll: true,
+                onSuccess: () => {
+                    Swal.fire("Deleted!", "File deleted successfully.", "success");
+                    fetchClaimUploads(form.policy_claim_id, form.policy_id);
+                },
+                onError: (errors) => {
+                    console.error(errors);
+                    Swal.fire("Error!", "Could not delete the file.", "error");
+                },
+                onFinish: () => form.reset(),
+            });
+        }
+    });
+};
+
 defineExpose({ claimUpload: (id, policy_id) => claimUpload(id, policy_id) });
 
 </script>
@@ -101,6 +130,7 @@ defineExpose({ claimUpload: (id, policy_id) => claimUpload(id, policy_id) });
                       <th>Upload #</th>
                       <th>Policy/Claim ID</th>
                       <th>File</th>
+                      <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -111,6 +141,11 @@ defineExpose({ claimUpload: (id, policy_id) => claimUpload(id, policy_id) });
                         <td>{{ upload.policy_id }}/{{ upload.policy_claim_id }}</td>
                         <td>
                           <img :src="'/storage/' + upload.file_url" alt="" style="height: 100px;width: 100px;">
+                        </td>
+                        <td>
+                            <DangerButton @click="deleteClaimUpload(upload.id)">
+                                <i class='bx bxs-trash-alt  mr-2'></i> DELETE
+                            </DangerButton>
                         </td>
                       </tr>
                     </template>
