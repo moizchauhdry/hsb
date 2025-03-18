@@ -3,6 +3,7 @@ import { ref } from "vue";
 import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
 import Paginate from "@/Components/Paginate.vue";
 import Uploads from "../Partial/Uploads.vue";
+import Swal from 'sweetalert2';
 import DangerButton from "@/Components/DangerButton.vue";
 
 const { props } = usePage();
@@ -14,13 +15,38 @@ defineProps({
     policyUploads: Array,
     assetUrl: String,
 });
-const deleteUpload = (id) =>{
-    form.delete(route("policy.uploads.destroy", id),{
-        preserveScroll:true,
-        onSuccess: () =>alert("File Deleted Successfull"),
-        onError: (errors) => console.error(errors),
-    })
-}
+const deleteUpload = (uploadId) => {
+    Swal.fire({
+        title: "Are you sure?",
+        text: "This file will be permanently deleted!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            form.delete(route("policy.uploads.destroy", uploadId), {
+                preserveScroll: true,
+                onSuccess: () => {
+                    Swal.fire("Deleted!", "File deleted successfully.", "success");
+                },
+                onError: (errors) => {
+                    console.error(errors);
+                    Swal.fire("Error!", "Could not delete the file.", "error");
+                },
+                onFinish: () => form.reset(),
+            });
+        }
+    });
+};
+// const deleteUpload = (id) =>{
+//     form.delete(route("policy.uploads.destroy", id),{
+//         preserveScroll:true,
+//         onSuccess: () =>alert("File Deleted Successfull"),
+//         onError: (errors) => console.error(errors),
+//     })
+// }
 </script>
 <template>
     <Uploads v-bind="$props" v-if="permission.policy_upload"></Uploads>
