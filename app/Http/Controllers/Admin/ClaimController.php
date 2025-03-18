@@ -166,6 +166,8 @@ class ClaimController extends Controller
 
     public function storeClaimUpload(Request $request)
     {
+        // dd($request->all());
+
         $request->validate([
             'policy_id' => ['required'],
             'policy_claim_id' => ['required'],

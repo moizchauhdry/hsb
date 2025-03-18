@@ -24,7 +24,7 @@ const handleFileChange = (event) => {
 const form = useForm({
   policy_id: "",
   policy_claim_id: "",
-  file: "",
+  file: null,
 });
 
 const submit = () => {
@@ -33,7 +33,9 @@ const submit = () => {
     onSuccess: (response) => {
       var data = response.props.flash.data;
       fetchClaimUploads(data.policy_claim_id, data.policy_id);
-      form.uploads = ""
+      modal.value = false;
+      form.reset();
+      form.file = null;
     },
     onError: () => { },
     onFinish: () => { },
@@ -78,7 +80,7 @@ const deleteClaimUpload = (uploadId) => {
                 preserveScroll: true,
                 onSuccess: () => {
                     Swal.fire("Deleted!", "File deleted successfully.", "success");
-                    fetchClaimUploads(form.policy_claim_id, form.policy_id);
+                    modal.value = false;
                 },
                 onError: (errors) => {
                     console.error(errors);
