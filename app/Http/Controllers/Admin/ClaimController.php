@@ -16,18 +16,18 @@ class ClaimController extends Controller
     public function index(Request $request)
     {
         $page_count = $request->page_count ?? 10;
-
-        $current_month = $request->month ?? Carbon::now()->format('m');
-        $current_year = $request->year ?? Carbon::now()->format('Y');
+        // $current_month = $request->month ?? Carbon::now()->format('m');
+        // $current_year = $request->year ?? Carbon::now()->format('Y');
 
         $filter = [
             'search' => $request->search,
             'client' => $request->client,
             'policy_id' => $request->policy_id,
-            'date_type' => $request->date_type,
-            'month' => $current_month,
-            'month_name' => getMonthName($current_month),
-            'year' => $current_year,
+            // 'date_type' => $request->date_type,
+            'date_type' => in_array($request->date_type, ['created_at', 'updated_at', 'approved_at']) ? $request->date_type : null,
+            'month' => $request->month ?? null,
+            // 'month_name' => getMonthName($current_month),
+            'year' => $request->year ?? null,
         ];
 
         $claims = PolicyClaim::policyClaimList($filter)
