@@ -62,7 +62,8 @@ const fetchClaimUploads = (id, policy_id) => {
       claim_uploads.value = data.claim_uploads;
     });
 };
-const deleteclaimUpload = (uploadId) => {
+
+const deleteClaimUpload = (uploadId) => {
     Swal.fire({
         title: "Are you sure?",
         text: "This file will be permanently deleted!",
@@ -73,10 +74,11 @@ const deleteclaimUpload = (uploadId) => {
         confirmButtonText: "Yes, delete it!",
     }).then((result) => {
         if (result.isConfirmed) {
-            form.delete(route("policy.uploads.destroy", uploadId), {
+            form.delete(route("claim.uploads.destroy", uploadId), {
                 preserveScroll: true,
                 onSuccess: () => {
                     Swal.fire("Deleted!", "File deleted successfully.", "success");
+                    fetchClaimUploads(form.policy_claim_id, form.policy_id);
                 },
                 onError: (errors) => {
                     console.error(errors);
@@ -141,7 +143,7 @@ defineExpose({ claimUpload: (id, policy_id) => claimUpload(id, policy_id) });
                           <img :src="'/storage/' + upload.file_url" alt="" style="height: 100px;width: 100px;">
                         </td>
                         <td>
-                            <DangerButton @click="deleteUpload(policyclaimUpload.id)">
+                            <DangerButton @click="deleteClaimUpload(upload.id)">
                                 <i class='bx bxs-trash-alt  mr-2'></i> DELETE
                             </DangerButton>
                         </td>

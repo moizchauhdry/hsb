@@ -186,7 +186,8 @@ class ClaimController extends Controller
 
         return redirect()->back()->with(['data' => $policy_claim_upload]);
     }
-    public function deleteclaimUpload($id)
+
+    public function deleteClaimUpload($id)
     {
         try {
             $upload = PolicyClaimUpload::findOrFail($id);
