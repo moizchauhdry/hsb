@@ -68,7 +68,10 @@ const deleteUpload = (uploadId) => {
                 <template v-for="policyUpload, index in policyUploads.data" :key="policyUpload.id">
                     <tr>
                         <td>{{ ++index }}</td>
-                        <td>{{ policyUpload.type }}</td>
+                        <td>
+                            <span v-if="policyUpload.type == 1">Image</span>
+                            <span v-if="policyUpload.type == 2">Document</span>
+                        </td>
                         <td>
                             <img :src="assetUrl + '/' + policyUpload.upload" alt="" style="width: 70px;">
                         </td>
