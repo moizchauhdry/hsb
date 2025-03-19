@@ -91,7 +91,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/getBusinessClassByPercent/{id}', [PolicyController::class, 'getBusinessClassByPercent'])->name('policy.getBusinessClassByPercent');
         Route::post('/installment-plan', [PolicyController::class, 'installmentPlan'])->name('policy.installmentPlan');
         Route::post('/import', [PolicyController::class, 'importData'])->name('policy.import')->middleware('permission:excel_import');
-        Route::delete('/uploads/{id}', [PolicyController::class, 'deleteUpload'])->name('policy.uploads.destroy');
+        Route::delete('/uploads/destroy/{id}', [PolicyController::class, 'deleteUpload'])->name('policy.uploads.destroy');
+        Route::delete('/notes/destroy/{id}', [PolicyController::class, 'deleteNote'])->name('policy.notes.destroy');
     });
 
     Route::prefix('claims')->group(function () {
@@ -106,7 +107,7 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/fetch/claim-uploads/{claim_id}/{policy_id}', [ClaimController::class, 'fetchClaimUploads'])->name('claim.fetch.claim-uploads')->middleware('permission:policy_claim');
         Route::post('/store/claim-upload', [ClaimController::class, 'storeClaimUpload'])->name('claim.store.claim-upload')->middleware('permission:policy_claim');
-        Route::delete('/uploads/delete/{id}', [ClaimController::class, 'deleteClaimUpload'])->name('claim.uploads.destroy');
+        Route::delete('/uploads/destroy/{id}', [ClaimController::class, 'deleteClaimUpload'])->name('claim.uploads.destroy');
     });
 
     Route::prefix('renewals')->group(function () {

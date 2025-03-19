@@ -373,6 +373,19 @@ class PolicyController extends Controller
         }
     }
 
+    public function deleteNote($id)
+    {
+        try {
+            $note = PolicyNote::findOrFail($id);
+            $note->delete();
+
+            return Redirect::back()->with('success', 'Policy note deleted successfully!');
+        } catch (\Exception $e) {
+            return Redirect::back()->with('error', 'Failed to delete the note: ' . $e->getMessage());
+        }
+    }
+
+
     public function additionalNotes(Request $request)
     {
         $request->validate([
