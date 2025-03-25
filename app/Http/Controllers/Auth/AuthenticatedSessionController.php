@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\LoginLog;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -32,6 +33,12 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
 
+    $user = Auth::user();
+
+    if ($user) {
+        $this->createLoginLog($user, 'login');
+    }
+
         $request->session()->regenerate();
 
         return redirect()->intended(RouteServiceProvider::HOME);
@@ -42,6 +49,12 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        $user = Auth::user();
+
+        if ($user) {
+            $this->createLoginLog($user, 'logout');
+        }
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
@@ -49,5 +62,39 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/');
+    }
+
+    /**
+     * Handle session expiration logout.
+     */
+    public function autoLogoutInactiveUsers()
+    {
+        $inactiveUsers = LoginLog::whereNull('logout_at')
+            ->where('login_at', '<', Carbon::now()->subMinutes(config('session.lifetime')))
+            ->get();
+
+        foreach ($inactiveUsers as $log) {
+            $log->update(['logout_at' => Carbon::now()]);
+        }
+    }
+
+    private function createLoginLog($user, string $event = 'login')
+    {
+        $loginLog = [
+            'user_id' => $user->id,
+            'event' => $event,
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent(),
+        ];
+
+        if ($event == 'login') {
+            $loginLog['login_at'] = Carbon::now();
+        } else {
+            $loginLog['logout_at'] = Carbon::now();
+        }
+
+        LoginLog::create($loginLog);
+
+        return true;
     }
 }
