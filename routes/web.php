@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\ClaimController;
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\EndorsementController;
 use App\Http\Controllers\Admin\RenewalController;
+use App\Http\Controllers\Admin\AuditController;
 use App\Http\Controllers\ExcelImportController;
 use App\Http\Controllers\ReportController;
 
@@ -91,7 +92,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/getBusinessClassByPercent/{id}', [PolicyController::class, 'getBusinessClassByPercent'])->name('policy.getBusinessClassByPercent');
         Route::post('/installment-plan', [PolicyController::class, 'installmentPlan'])->name('policy.installmentPlan');
         Route::post('/import', [PolicyController::class, 'importData'])->name('policy.import')->middleware('permission:excel_import');
-        Route::delete('/uploads/{id}', [PolicyController::class, 'deleteUpload'])->name('policy.uploads.destroy');
+        Route::delete('/uploads/destroy/{id}', [PolicyController::class, 'deleteUpload'])->name('policy.uploads.destroy');
+        Route::delete('/notes/destroy/{id}', [PolicyController::class, 'deleteNote'])->name('policy.notes.destroy');
     });
 
     Route::prefix('claims')->group(function () {
@@ -106,7 +108,7 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/fetch/claim-uploads/{claim_id}/{policy_id}', [ClaimController::class, 'fetchClaimUploads'])->name('claim.fetch.claim-uploads')->middleware('permission:policy_claim');
         Route::post('/store/claim-upload', [ClaimController::class, 'storeClaimUpload'])->name('claim.store.claim-upload')->middleware('permission:policy_claim');
-        Route::delete('/uploads/delete/{id}', [ClaimController::class, 'deleteClaimUpload'])->name('claim.uploads.destroy');
+        Route::delete('/uploads/destroy/{id}', [ClaimController::class, 'deleteClaimUpload'])->name('claim.uploads.destroy');
     });
 
     Route::prefix('renewals')->group(function () {
@@ -133,6 +135,8 @@ Route::middleware('auth')->group(function () {
     Route::prefix('error-logs')->group(function () {
         Route::any('/list', [ExcelImportController::class, 'index'])->name('error-logs.index')->middleware('permission:excel_import');
     });
+    Route::get('/audits', [AuditController::class, 'index'])->name('audits.index')->middleware('permission:admin_audit');
+    Route::get('/user/{id}/audit', [AuditController::class, 'userAudits'])->name('user.audit')->middleware('permission:user_audit');
 });
 
 

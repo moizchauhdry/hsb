@@ -1,4 +1,5 @@
 <script setup>
+import { router } from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
 import { ref } from "vue";
@@ -31,6 +32,9 @@ const assignClient = (id) => {
 const assign_cob_ref = ref(null);
 const assignCob = (id) => {
     assign_cob_ref.value.assignCob(id)
+};
+const userAudit = (userId) => {
+    router.get(route("user.audit", userId));
 };
 </script>
 
@@ -96,6 +100,9 @@ const assignCob = (id) => {
                                             <td>
                                                 <PrimaryButton class="mr-1" @click="edit(user.id)" title="Edit"><i
                                                         class="bx bx-edit mr-1"></i> Edit</PrimaryButton>
+                                                        <PrimaryButton @click="userAudit(user.id)">
+                                                            <i class="bx bx-list-ul mr-1"></i> Audit
+                                                        </PrimaryButton>
 
                                                 <template v-if="user.role_id != 1">
                                                     <PrimaryButton class=" mr-1" @click="assignCob(user.id)"

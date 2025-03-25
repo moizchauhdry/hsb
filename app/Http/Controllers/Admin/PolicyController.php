@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
 use Inertia\Inertia;
+use App\Models\Audit;
 use App\Models\Agency;
 use App\Models\Policy;
 use App\Models\Insurance;
@@ -278,6 +279,9 @@ class PolicyController extends Controller
 
         $policy_amount_list = Payment::where('policy_id', $policy->id)->get();
         $brokerage_amount_list = Payment::where('policy_id', $policy->id)->get();
+        $audits = Audit::where('auditable_id', $policy->id)
+                  ->where('auditable_type', Policy::class) // Ensure it's a Policy audit log
+                  ->get();
 
         $calculations = [
             'sum_insured_final_amount' => $policy->sum_insured + $endorsements->sum('sum_insured'),
@@ -311,6 +315,7 @@ class PolicyController extends Controller
             'brokerage_amount_list' => $brokerage_amount_list,
             'payment_endorsement_list' => $payment_endorsement_list,
             'calculations' => $calculations,
+            'audits' => $audits,
         ]);
     }
 
@@ -372,6 +377,19 @@ class PolicyController extends Controller
             $policy->delete();
         }
     }
+
+    public function deleteNote($id)
+    {
+        try {
+            $note = PolicyNote::findOrFail($id);
+            $note->delete();
+
+            return Redirect::back()->with('success', 'Policy note deleted successfully!');
+        } catch (\Exception $e) {
+            return Redirect::back()->with('error', 'Failed to delete the note: ' . $e->getMessage());
+        }
+    }
+
 
     public function additionalNotes(Request $request)
     {

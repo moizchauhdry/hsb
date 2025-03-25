@@ -1,3 +1,20 @@
+<script>
+export default {
+  props: {
+    login_logs: {
+      type: Array,
+      default: () => []
+    }
+  },
+  methods: {
+    formatDate(dateString) {
+      if (!dateString) return "N/A";
+      return new Date(dateString).toLocaleString();
+    }
+  },
+};
+</script>
+
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Link, Head, usePage } from "@inertiajs/vue3";
@@ -10,7 +27,7 @@ defineProps({
 
 const main_data = usePage().props.data;
 const revenue_data = usePage().props.data.revenue_data;
-
+const login_logs = usePage().props.data.login_logs;
 const gross_premium_amount = usePage().props.data.gross_premium_amount;
 const gross_premium_collected = usePage().props.data.gross_premium_collected;
 const gross_premium_outstanding = usePage().props.data.gross_premium_outstanding;
@@ -342,7 +359,7 @@ const format_number = (number) => {
                                     </div>
                                 </Link>
                             </div>
-                            
+
                             <div class="col-xxl-4 col-xl-6" v-if="permission.revenue_card">
                                 <div class="card radius-10">
                                     <Link :href="route('report.index','commission')">
@@ -380,7 +397,7 @@ const format_number = (number) => {
                                     </Link>
                                 </div>
                             </div>
-                            <div class="col-xxl-4 col-xl-6" v-if="permission.gross_premium_outstanding_card"> 
+                            <div class="col-xxl-4 col-xl-6" v-if="permission.gross_premium_outstanding_card">
                                 <div class="card radius-10">
                                     <Link :href="route('report.index','gross')">
                                         <div class="card-body">
@@ -441,6 +458,36 @@ const format_number = (number) => {
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                        <div class="card radius-10 overflow-hidden w-100">
+                            <div class="card-body">
+                            <h6 class="mb-3">Login & Logout Logs</h6>
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Event</th>
+                                    <th>Time</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="log in login_logs" :key="log.id">
+                                    <td>{{ log.user?.name || 'Unknown' }}</td>
+                                    <td :class="log.event === 'login' ? 'text-success' : 'text-danger'">
+                                    {{ log.event.charAt(0).toUpperCase() + log.event.slice(1) }}
+                                    </td>
+                                    <td>{{ formatDate(log.created_at) }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+
+
+
 
                 </div>
             </div>

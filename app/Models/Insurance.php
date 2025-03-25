@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Insurance extends Model // Insurer (This model in not Insurance)
+class Insurance extends Model implements Auditable
 {
-    use HasFactory;
-    
+    use HasFactory , \OwenIt\Auditing\Auditable;
+
     protected $guarded = [];
 }

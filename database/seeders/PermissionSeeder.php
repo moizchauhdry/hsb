@@ -45,6 +45,7 @@ class PermissionSeeder extends Seeder
             ['name' => 'user_list', 'guard_name' => 'web', 'order' => 31, 'level' => 2],
             ['name' => 'user_create', 'guard_name' => 'web', 'order' => 32, 'level' => 2],
             ['name' => 'user_update', 'guard_name' => 'web', 'order' => 33, 'level' => 2],
+            ['name' => 'user_audit', 'guard_name' => 'web', 'order' => 34, 'level' => 2],
 
             // Client 40
             ['name' => 'client', 'guard_name' => 'web', 'order' => 40, 'level' => 1],
@@ -109,6 +110,10 @@ class PermissionSeeder extends Seeder
             ['name' => 'renewal_list', 'guard_name' => 'web', 'order' => 121, 'level' => 2],
             ['name' => 'renewal_create', 'guard_name' => 'web', 'order' => 122, 'level' => 2],
             ['name' => 'renewal_update', 'guard_name' => 'web', 'order' => 123, 'level' => 2],
+
+            // Audit 130
+            ['name' => 'audit', 'guard_name' => 'web', 'order' => 130, 'level' => 1],
+            ['name' => 'admin_audit', 'guard_name' => 'web', 'order' => 131, 'level' => 2],
         ];
 
         foreach ($permissions as $permission) {
