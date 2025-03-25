@@ -19,6 +19,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use App\Models\LoginLog;
 
 class DashboardController extends Controller
 {
@@ -190,6 +191,20 @@ class DashboardController extends Controller
             'gross_premium_amount' => $gross_premium_amount,
             'gross_premium_collected' => $gross_premium_collected,
             'gross_premium_outstanding' => $gross_premium_outstanding,
+            'login_logs' => LoginLog::with('user')
+            ->orderBy('created_at', 'desc')
+            ->limit(10)
+            ->get()
+            ->map(function ($log) {
+                return [
+                    'id' => $log->id,
+                    'user' => [
+                        'name' => $log->user->name,
+                    ],
+                    'event' => $log->event,
+                    'created_at' => $log->created_at,
+                ];
+            }),
         ];
 
         return Inertia::render('Dashboard/Index', [

@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\ClaimController;
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\EndorsementController;
 use App\Http\Controllers\Admin\RenewalController;
+use App\Http\Controllers\Admin\AuditController;
 use App\Http\Controllers\ExcelImportController;
 use App\Http\Controllers\ReportController;
 
@@ -134,6 +135,8 @@ Route::middleware('auth')->group(function () {
     Route::prefix('error-logs')->group(function () {
         Route::any('/list', [ExcelImportController::class, 'index'])->name('error-logs.index')->middleware('permission:excel_import');
     });
+    Route::get('/audits', [AuditController::class, 'index'])->name('audits.index');
+    Route::get('/user/{id}/audit', [AuditController::class, 'userAudits'])->name('user.audit');
 });
 
 

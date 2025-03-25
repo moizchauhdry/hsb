@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\LoginLog;
+use Carbon\Carbon;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -33,11 +34,11 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
 
-    $user = Auth::user();
+        $user = Auth::user();
 
-    if ($user) {
-        $this->createLoginLog($user, 'login');
-    }
+        if ($user) {
+            $this->createLoginLog($user, 'login');
+        }
 
         $request->session()->regenerate();
 
@@ -58,7 +59,6 @@ class AuthenticatedSessionController extends Controller
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
         return redirect('/');

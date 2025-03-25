@@ -12,6 +12,7 @@ import PolicyNoteComponent from "./Detail/PolicyNoteComponent.vue";
 import PolicyUploadComponent from "./Detail/PolicyUploadComponent.vue";
 import EndorsementComponent from "./Detail/EndorsementComponent.vue";
 import LeaderComponent from "./Detail/LeaderComponent.vue";
+import PolicyAuditComponent from "./Detail/PolicyAuditComponent.vue";
 
 defineProps({
     policy: Object,
@@ -28,6 +29,7 @@ defineProps({
     renewals: Array,
     leads: Array,
     assetUrl: Object,
+    audits: Array,
 });
 
 
@@ -80,6 +82,12 @@ const tabs = ref([
         title: 'Coinsurer',
         icon: 'bx bx-note font-18 me-1',
         component: LeaderComponent,
+    },
+    {
+        id: 'policy_audit',
+        title: 'Audit',
+        icon: 'bx bx-note font-18 me-1',
+        component: PolicyAuditComponent,
     },
 ]);
 
@@ -549,13 +557,13 @@ const setActiveTab = (tabId) => {
 </style>
 
 <!-- props -->
-<!-- 
+<!--
 // desiredSingleOpenBehavior: {
     //     type: Boolean,
     //     default: false,
     // },
 
-    
+
 // const edit_mode = ref(false);
 
 // const toggleAccordion = (index) => {
