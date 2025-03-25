@@ -135,8 +135,8 @@ Route::middleware('auth')->group(function () {
     Route::prefix('error-logs')->group(function () {
         Route::any('/list', [ExcelImportController::class, 'index'])->name('error-logs.index')->middleware('permission:excel_import');
     });
-    Route::get('/audits', [AuditController::class, 'index'])->name('audits.index');
-    Route::get('/user/{id}/audit', [AuditController::class, 'userAudits'])->name('user.audit');
+    Route::get('/audits', [AuditController::class, 'index'])->name('audits.index')->middleware('permission:admin_audit');
+    Route::get('/user/{id}/audit', [AuditController::class, 'userAudits'])->name('user.audit')->middleware('permission:user_audit');
 });
 
 

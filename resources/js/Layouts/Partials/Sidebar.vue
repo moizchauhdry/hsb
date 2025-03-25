@@ -227,12 +227,14 @@ watch(
                         </li>
                     </ul>
                 </li>
+                <template v-if="permission.admin_audit">
                 <li :class="{ 'mm-active': route().current('audits.index') }">
                     <Link :href="route('audits.index')">
                         <div class="parent-icon"><i class='bx bx-file'></i></div>
                         <div class="menu-title">Audit</div>
                     </Link>
                 </li>
+                </template>
             </template>
 
             <!-- <li class="menu-label" v-if="permission.excel_import">Settings</li> -->
