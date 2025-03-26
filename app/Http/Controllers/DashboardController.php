@@ -174,9 +174,14 @@ class DashboardController extends Controller
                 'id' => $log->id,
                 'user' => ['name' => $log->user->name],
                 'event' => $log->event,
-                'created_at' => $log->created_at,
+                'created_at' => $log->created_at->format('Y-m-d H:i A'),
             ];
         });
+
+
+        // dd($request->all());
+
+        // dd($login_logs->toArray());
 
         $data = [
             'role' => $role,
