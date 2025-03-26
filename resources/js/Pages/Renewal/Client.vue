@@ -48,8 +48,8 @@ const generateFilterUrl2 = (client_ids, renewal_ids) => {
     const queryParams = new URLSearchParams(filters).toString();
     return `${route("renewal.index")}?${queryParams}`;
 };
-const exportRenewals = () => {
-    window.location.href = route('export.renewals');
+const Renewalsexport = () => {
+    window.location.href = route('renewals.export');
 };
 </script>
 
@@ -78,7 +78,7 @@ const exportRenewals = () => {
                     <div class="ms-auto" style="display: flex; justify-content: space-between; align-items: center;">
                         <Filter :filter_route="'client'" :filters="props.filters"></Filter>
                         <div class="ml-1">
-                            <SuccessButton @click="exportRenewals">
+                            <SuccessButton @click="Renewalsexport">
                                 <i class="bx bx-export text-lg mr-1"></i> Excel Export
                             </SuccessButton>
                         </div>

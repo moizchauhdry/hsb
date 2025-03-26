@@ -114,7 +114,8 @@ Route::middleware('auth')->group(function () {
     Route::prefix('renewals')->group(function () {
         Route::any('/', [RenewalController::class, 'index'])->name('renewal.index');
         Route::any('/clients', [RenewalController::class, 'clientList'])->name('renewal.client.index');
-        Route::get('/export/renewals', [RenewalController::class, 'export'])->name('export.renewals');    });
+        Route::get('/export', [RenewalController::class, 'export'])->name('renewals.export');
+    });
 
     Route::prefix('endorsements')->group(function () {
         Route::any('/', [EndorsementController::class, 'index'])->name('endorsement.index');
