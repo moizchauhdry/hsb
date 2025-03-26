@@ -1,68 +1,66 @@
-<script>
-export default {
-    props: {
-        login_logs: {
-            type: Array,
-            default: () => []
-        }
-    },
-    methods: {
-        formatDate(dateString) {
-            if (!dateString) return "N/A";
-            return new Date(dateString).toLocaleString();
-        }
-    },
-};
-</script>
-
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Link, Head, usePage } from "@inertiajs/vue3";
+import { Link, Head, usePage, useForm } from "@inertiajs/vue3";
 import Chart from 'chart.js/auto';
 import { onMounted } from "vue";
 import Paginate from "@/Components/Paginate.vue";
 import { ref, watch } from 'vue';
-import Datepicker from '@vuepic/vue-datepicker';
+import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import axios from 'axios';
+import moment from 'moment';
 
 defineProps({
     data: Array,
     audits: Object,
 });
 
-const selectedDate = ref(null);
+const form = useForm({
+    date: "",
+});
 
-watch(selectedDate, async (newDate) => {
-    if (newDate) {
-        await fetchLogs();
+const filterLoginLogs = () => {
+    var filters = {
+        date: form.date,
+    };
+
+    const queryParams = new URLSearchParams(filters).toString();
+    var url_with_filters = `${route('dashboard')}?${queryParams}`;
+
+    form.post(url_with_filters, {
+        preserveScroll: true,
+        onSuccess: (response) => {
+            // 
+        },
+        onError: (errors) => {
+            console.log(errors)
+        },
+        onFinish: () => { },
+    });
+};
+
+const format_date = (date) => {
+    let parsedDate = moment(date);
+    let formattedDate = parsedDate.format('YYYY-MM-DD');
+    return formattedDate;
+}
+
+watch(() => form.date, (new_date) => {
+    if (form.date) {
+        form.date = format_date(new_date);
+        console.log(form.date);
+        filterLoginLogs();
+    } else {
+        form.date = "";
     }
 });
 
-const fetchLogs = async () => {
-    if (!selectedDate.value) return;
-
-    try {
-        const formattedDate = selectedDate.value.toISOString().split('T')[0];
-
-        const response = await axios.get(route('dashboard'), {
-            params: { date: formattedDate }
-        });
-
-        login_logs.value = response.data;
-    } catch (error) {
-        console.error('Error fetching logs:', error);
-    }
-};
-
 const main_data = usePage().props.data;
+const permission = usePage().props.can;
 const revenue_data = usePage().props.data.revenue_data;
-const login_logs = ref(main_data.login_logs);
 const gross_premium_amount = usePage().props.data.gross_premium_amount;
 const gross_premium_collected = usePage().props.data.gross_premium_collected;
 const gross_premium_outstanding = usePage().props.data.gross_premium_outstanding;
-
-const permission = usePage().props.can;
 
 onMounted(() => {
 
@@ -256,11 +254,8 @@ onMounted(() => {
 
 });
 
-
 const format_number = (number) => {
     return new Intl.NumberFormat('en-US', {
-        // minimumFractionDigits: 2,
-        // maximumFractionDigits: 2
     }).format(number);
 };
 
@@ -288,7 +283,7 @@ const format_number = (number) => {
                                     <div class="chart-container-9">
                                         <div class="piechart-legend">
                                             <h2 class="mb-1">{{ format_number(data.policies_count + data.renewals_count)
-                                                }}</h2>
+                                            }}</h2>
                                             <h6 class="mb-0">Total Policies</h6>
                                         </div>
                                         <canvas id="chart-1"></canvas>
@@ -338,7 +333,7 @@ const format_number = (number) => {
                                             <div>
                                                 <p class="mb-0 text-secondary">Total Clients</p>
                                                 <h4 class="my-1">Clients: {{ format_number(data.client_groups_count)
-                                                    }}
+                                                }}
                                                     <i class="bx bx-caret-right"></i> Subsidiaries: {{
                                                         format_number(data.clients_count) }}
                                                 </h4>
@@ -416,7 +411,7 @@ const format_number = (number) => {
                                                 <p class="mb-0 text-secondary">Net Commission Collected</p>
                                                 <h4 class="my-1">PKR {{
                                                     format_number(data.total_commission_collected)
-                                                    }}
+                                                }}
                                                 </h4>
                                             </div>
                                             <div class="widgets-icons bg-light-info text-info ms-auto"><i
@@ -435,7 +430,7 @@ const format_number = (number) => {
                                             <div>
                                                 <p class="mb-0 text-secondary">Gross Premium Outstanding</p>
                                                 <h4 class="my-1">PKR {{ format_number(data.gp_collected_outstanding)
-                                                    }}
+                                                }}
                                                 </h4>
                                             </div>
                                             <div class="widgets-icons bg-light-info text-info ms-auto"><i
@@ -490,13 +485,13 @@ const format_number = (number) => {
                     </div>
                     <div class="row">
                         <div class="col-md-6">
-                            <div class="card radius-10 overflow-hidden w-100">
+                            <div class="card radius-10 overflow-hidden w-100" style="min-height: 600px;">
                                 <div class="card-body">
                                     <h6 class="mb-3">Login & Logout Logs</h6>
-
                                     <div class="row mb-2">
                                         <div class="col-md-4">
-                                            <Datepicker v-model="selectedDate" placeholder="Select a Date" :enableTimePicker="false" />
+                                            <VueDatePicker v-model="form.date" placeholder="Select a Date"
+                                                :enableTimePicker="false" />
                                         </div>
                                     </div>
                                     <table class="table table-striped">
@@ -508,22 +503,23 @@ const format_number = (number) => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr v-for="log in login_logs.data" :key="log.id">
+                                            <tr v-for="log in data.login_logs.data" :key="log.id">
                                                 <td>{{ log.user?.name || 'Unknown' }}</td>
                                                 <td :class="log.event === 'login' ? 'text-success' : 'text-danger'">
                                                     {{ log.event.charAt(0).toUpperCase() + log.event.slice(1) }}
                                                 </td>
-                                                <td>{{ formatDate(log.created_at) }}</td>
+                                                <td>{{ log.created_at }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="card-footer d-flex justify-content-between align-items-center" v-if="login_logs.data">
-                                    <span >
-                                        <h6>Showing {{ login_logs.from || 0 }} to {{ login_logs.to || 0 }} of {{
-                                            login_logs.total || 0 }} entries</h6>
+                                <div class="card-footer d-flex justify-content-between align-items-center"
+                                    v-if="data.login_logs.data">
+                                    <span>
+                                        <h6>Showing {{ data.login_logs.from || 0 }} to {{ data.login_logs.to || 0 }} of {{
+                                            data.login_logs.total || 0 }} entries</h6>
                                     </span>
-                                    <Paginate :links="login_logs.links" />
+                                    <Paginate :links="data.login_logs.links" :scroll="true"/>
                                 </div>
                             </div>
                         </div>
