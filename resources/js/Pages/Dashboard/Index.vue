@@ -1,17 +1,17 @@
 <script>
 export default {
-  props: {
-    login_logs: {
-      type: Array,
-      default: () => []
-    }
-  },
-  methods: {
-    formatDate(dateString) {
-      if (!dateString) return "N/A";
-      return new Date(dateString).toLocaleString();
-    }
-  },
+    props: {
+        login_logs: {
+            type: Array,
+            default: () => []
+        }
+    },
+    methods: {
+        formatDate(dateString) {
+            if (!dateString) return "N/A";
+            return new Date(dateString).toLocaleString();
+        }
+    },
 };
 </script>
 
@@ -30,23 +30,26 @@ defineProps({
     data: Array,
     audits: Object,
 });
+
 const selectedDate = ref(null);
+
 watch(selectedDate, async (newDate) => {
     if (newDate) {
         await fetchLogs();
     }
 });
+
 const fetchLogs = async () => {
     if (!selectedDate.value) return;
 
     try {
-        const formattedDate = selectedDate.value.toISOString().split('T')[0]; // Extract only the date (YYYY-MM-DD)
+        const formattedDate = selectedDate.value.toISOString().split('T')[0];
 
-        const response = await axios.get('/dashboard/logs', {
-            params: { date: formattedDate } // Send only the date
+        const response = await axios.get(route('dashboard'), {
+            params: { date: formattedDate }
         });
 
-        login_logs.value = response.data; // ✅ Update logs
+        login_logs.value = response.data;
     } catch (error) {
         console.error('Error fetching logs:', error);
     }
@@ -371,93 +374,93 @@ const format_number = (number) => {
 
                             <div class="col-xxl-4 col-xl-4" v-if="permission.total_claims_card">
                                 <Link :href="route('claim.index')">
-                                    <div class="card radius-10">
-                                        <div class="card-body">
-                                            <div class="d-flex align-items-center">
-                                                <div>
-                                                    <p class="mb-0 text-secondary">Total Claims</p>
-                                                    <h4 class="my-1">{{ format_number(data.policy_claim_count) }}</h4>
-                                                </div>
-                                                <div class="widgets-icons bg-light-info text-info ms-auto"><i
-                                                        class='bx bx-list-ul'></i>
-                                                </div>
+                                <div class="card radius-10">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div>
+                                                <p class="mb-0 text-secondary">Total Claims</p>
+                                                <h4 class="my-1">{{ format_number(data.policy_claim_count) }}</h4>
+                                            </div>
+                                            <div class="widgets-icons bg-light-info text-info ms-auto"><i
+                                                    class='bx bx-list-ul'></i>
                                             </div>
                                         </div>
                                     </div>
+                                </div>
                                 </Link>
                             </div>
 
                             <div class="col-xxl-4 col-xl-6" v-if="permission.revenue_card">
                                 <div class="card radius-10">
-                                    <Link :href="route('report.index','commission')">
-                                        <div class="card-body">
-                                            <div class="d-flex align-items-center">
-                                                <div>
-                                                    <p class="mb-0 text-secondary">Revenue</p>
-                                                    <h4 class="my-1">PKR {{ format_number(data.total_revenue) }}</h4>
-                                                </div>
-                                                <div class="widgets-icons bg-light-info text-info ms-auto"><i
-                                                        class='bx bx-list-ul'></i>
-                                                </div>
+                                    <Link :href="route('report.index', 'commission')">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div>
+                                                <p class="mb-0 text-secondary">Revenue</p>
+                                                <h4 class="my-1">PKR {{ format_number(data.total_revenue) }}</h4>
+                                            </div>
+                                            <div class="widgets-icons bg-light-info text-info ms-auto"><i
+                                                    class='bx bx-list-ul'></i>
                                             </div>
                                         </div>
+                                    </div>
                                     </Link>
                                 </div>
                             </div>
                             <div class="col-xxl-4 col-xl-6" v-if="permission.net_commission_collected_card">
                                 <div class="card radius-10">
-                                    <Link :href="route('report.index','commission')">
-                                        <div class="card-body">
-                                            <div class="d-flex align-items-center">
-                                                <div>
-                                                    <p class="mb-0 text-secondary">Net Commission Collected</p>
-                                                    <h4 class="my-1">PKR {{
-                                                        format_number(data.total_commission_collected)
-                                                        }}
-                                                    </h4>
-                                                </div>
-                                                <div class="widgets-icons bg-light-info text-info ms-auto"><i
-                                                        class='bx bx-list-ul'></i>
-                                                </div>
+                                    <Link :href="route('report.index', 'commission')">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div>
+                                                <p class="mb-0 text-secondary">Net Commission Collected</p>
+                                                <h4 class="my-1">PKR {{
+                                                    format_number(data.total_commission_collected)
+                                                    }}
+                                                </h4>
+                                            </div>
+                                            <div class="widgets-icons bg-light-info text-info ms-auto"><i
+                                                    class='bx bx-list-ul'></i>
                                             </div>
                                         </div>
+                                    </div>
                                     </Link>
                                 </div>
                             </div>
                             <div class="col-xxl-4 col-xl-6" v-if="permission.gross_premium_outstanding_card">
                                 <div class="card radius-10">
-                                    <Link :href="route('report.index','gross')">
-                                        <div class="card-body">
-                                            <div class="d-flex align-items-center">
-                                                <div>
-                                                    <p class="mb-0 text-secondary">Gross Premium Outstanding</p>
-                                                    <h4 class="my-1">PKR {{ format_number(data.gp_collected_outstanding)
-                                                        }}
-                                                    </h4>
-                                                </div>
-                                                <div class="widgets-icons bg-light-info text-info ms-auto"><i
-                                                        class='bx bx-list-ul'></i>
-                                                </div>
+                                    <Link :href="route('report.index', 'gross')">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div>
+                                                <p class="mb-0 text-secondary">Gross Premium Outstanding</p>
+                                                <h4 class="my-1">PKR {{ format_number(data.gp_collected_outstanding)
+                                                    }}
+                                                </h4>
+                                            </div>
+                                            <div class="widgets-icons bg-light-info text-info ms-auto"><i
+                                                    class='bx bx-list-ul'></i>
                                             </div>
                                         </div>
+                                    </div>
                                     </Link>
                                 </div>
                             </div>
                             <div class="col-xxl-4 col-xl-6" v-if="permission.sum_insured_card">
                                 <div class="card radius-10">
-                                    <Link :href="route('report.index','sales')">
-                                        <div class="card-body">
-                                            <div class="d-flex align-items-center">
-                                                <div>
-                                                    <p class="mb-0 text-secondary">Sum Insured</p>
-                                                    <h4 class="my-1">PKR {{ format_number(data.total_sum_insured) }}
-                                                    </h4>
-                                                </div>
-                                                <div class="widgets-icons bg-light-info text-info ms-auto"><i
-                                                        class='bx bx-list-ul'></i>
-                                                </div>
+                                    <Link :href="route('report.index', 'sales')">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div>
+                                                <p class="mb-0 text-secondary">Sum Insured</p>
+                                                <h4 class="my-1">PKR {{ format_number(data.total_sum_insured) }}
+                                                </h4>
+                                            </div>
+                                            <div class="widgets-icons bg-light-info text-info ms-auto"><i
+                                                    class='bx bx-list-ul'></i>
                                             </div>
                                         </div>
+                                    </div>
                                     </Link>
                                 </div>
                             </div>
@@ -487,42 +490,44 @@ const format_number = (number) => {
                     </div>
                     <div class="row">
                         <div class="col-md-6">
-                        <div class="card radius-10 overflow-hidden w-100">
-                            <div class="card-body">
-                            <h6 class="mb-3">Login & Logout Logs</h6>
-                            <Datepicker v-model="selectedDate" placeholder="Select a Date" />
-                            <table class="table table-striped">
-                                <thead>
-                                <tr>
-                                    <th>User</th>
-                                    <th>Event</th>
-                                    <th>Time</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="log in data.login_logs?.data ?? []" :key="log.id">
-                                    <td>{{ log.user?.name || 'Unknown' }}</td>
-                                    <td :class="log.event === 'login' ? 'text-success' : 'text-danger'">
-                                    {{ log.event.charAt(0).toUpperCase() + log.event.slice(1) }}
-                                    </td>
-                                    <td>{{ formatDate(log.created_at) }}</td>
-                                </tr>
-                                </tbody>
-                            </table>
+                            <div class="card radius-10 overflow-hidden w-100">
+                                <div class="card-body">
+                                    <h6 class="mb-3">Login & Logout Logs</h6>
+
+                                    <div class="row mb-2">
+                                        <div class="col-md-4">
+                                            <Datepicker v-model="selectedDate" placeholder="Select a Date" :enableTimePicker="false" />
+                                        </div>
+                                    </div>
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>User</th>
+                                                <th>Event</th>
+                                                <th>Time</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="log in login_logs.data" :key="log.id">
+                                                <td>{{ log.user?.name || 'Unknown' }}</td>
+                                                <td :class="log.event === 'login' ? 'text-success' : 'text-danger'">
+                                                    {{ log.event.charAt(0).toUpperCase() + log.event.slice(1) }}
+                                                </td>
+                                                <td>{{ formatDate(log.created_at) }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="card-footer d-flex justify-content-between align-items-center" v-if="login_logs.data">
+                                    <span >
+                                        <h6>Showing {{ login_logs.from || 0 }} to {{ login_logs.to || 0 }} of {{
+                                            login_logs.total || 0 }} entries</h6>
+                                    </span>
+                                    <Paginate :links="login_logs.links" />
+                                </div>
                             </div>
-                            <div class="card-footer d-flex justify-content-between align-items-center">
-                                <span v-if="login_logs">
-                                    <h6>Showing {{ login_logs.from || 0 }} to {{ login_logs.to || 0 }} of {{ login_logs.total || 0 }} entries</h6>
-                                </span>
-                                <Paginate v-if="login_logs" :links="login_logs.links" />
-                            </div>
-                        </div>
                         </div>
                     </div>
-
-
-
-
                 </div>
             </div>
         </div>
