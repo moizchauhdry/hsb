@@ -21,15 +21,40 @@ import { Link, Head, usePage } from "@inertiajs/vue3";
 import Chart from 'chart.js/auto';
 import { onMounted } from "vue";
 import Paginate from "@/Components/Paginate.vue";
+import { ref, watch } from 'vue';
+import Datepicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css';
+import axios from 'axios';
 
 defineProps({
     data: Array,
     audits: Object,
 });
+const selectedDate = ref(null);
+watch(selectedDate, async (newDate) => {
+    if (newDate) {
+        await fetchLogs();
+    }
+});
+const fetchLogs = async () => {
+    if (!selectedDate.value) return;
+
+    try {
+        const formattedDate = selectedDate.value.toISOString().split('T')[0]; // Extract only the date (YYYY-MM-DD)
+
+        const response = await axios.get('/dashboard/logs', {
+            params: { date: formattedDate } // Send only the date
+        });
+
+        login_logs.value = response.data; // ✅ Update logs
+    } catch (error) {
+        console.error('Error fetching logs:', error);
+    }
+};
 
 const main_data = usePage().props.data;
 const revenue_data = usePage().props.data.revenue_data;
-const login_logs = usePage().props.data.login_logs;
+const login_logs = ref(main_data.login_logs);
 const gross_premium_amount = usePage().props.data.gross_premium_amount;
 const gross_premium_collected = usePage().props.data.gross_premium_collected;
 const gross_premium_outstanding = usePage().props.data.gross_premium_outstanding;
@@ -465,6 +490,7 @@ const format_number = (number) => {
                         <div class="card radius-10 overflow-hidden w-100">
                             <div class="card-body">
                             <h6 class="mb-3">Login & Logout Logs</h6>
+                            <Datepicker v-model="selectedDate" placeholder="Select a Date" />
                             <table class="table table-striped">
                                 <thead>
                                 <tr>

@@ -23,7 +23,7 @@ use App\Models\LoginLog;
 
 class DashboardController extends Controller
 {
-    public function dashboard()
+    public function dashboard(Request $request)
     {
         $user = Auth::user();
         $role = $user->roles[0];
@@ -167,6 +167,21 @@ class DashboardController extends Controller
             ->get()
             ->pluck('gross_premium_outstanding', 'month_name')
             ->toArray();
+            $loginLogsQuery = LoginLog::with('user')->orderBy('created_at', 'desc');
+
+            if ($request->has('date')) {
+                $loginLogsQuery->whereDate('created_at', $request->date);
+            }
+
+            $login_logs = $loginLogsQuery->paginate(10)->through(function ($log) {
+                return [
+                    'id' => $log->id,
+                    'user' => ['name' => $log->user->name],
+                    'event' => $log->event,
+                    'created_at' => $log->created_at,
+                ];
+            });
+
 
 
         $data = [
@@ -191,19 +206,7 @@ class DashboardController extends Controller
             'gross_premium_amount' => $gross_premium_amount,
             'gross_premium_collected' => $gross_premium_collected,
             'gross_premium_outstanding' => $gross_premium_outstanding,
-            'login_logs' => LoginLog::with('user')
-            ->orderBy('created_at', 'desc')
-            ->paginate(10)
-            ->through(function ($log) {
-                return [
-                    'id' => $log->id,
-                    'user' => [
-                        'name' => $log->user->name,
-                    ],
-                    'event' => $log->event,
-                    'created_at' => $log->created_at,
-                ];
-            }),
+            'login_logs' => $login_logs,
         ];
 
         return Inertia::render('Dashboard/Index', [
