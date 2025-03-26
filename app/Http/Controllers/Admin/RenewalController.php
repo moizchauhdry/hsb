@@ -11,6 +11,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\RenewalExport;
 
 class RenewalController extends Controller
 {
@@ -236,4 +238,10 @@ class RenewalController extends Controller
             'filters' => $filter,
         ]);
     }
+    public function export(Request $request)
+    {
+        $user = auth()->user();
+        return Excel::download(new RenewalExport($user), 'renewals.xlsx');
+    }
+
 }

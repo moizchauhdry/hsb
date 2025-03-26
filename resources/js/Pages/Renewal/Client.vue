@@ -5,6 +5,7 @@ import { ref } from "vue";
 import Paginate from "@/Components/Paginate.vue";
 import Search from "@/Components/Search.vue";
 import Filter from "./Filter.vue";
+import SuccessButton from "@/Components/SuccessButton.vue";
 
 const props = defineProps({
     groups: Object,
@@ -47,6 +48,9 @@ const generateFilterUrl2 = (client_ids, renewal_ids) => {
     const queryParams = new URLSearchParams(filters).toString();
     return `${route("renewal.index")}?${queryParams}`;
 };
+const exportRenewals = () => {
+    window.location.href = route('export.renewals');
+};
 </script>
 
 
@@ -71,8 +75,13 @@ const generateFilterUrl2 = (client_ids, renewal_ids) => {
                             </ol>
                         </nav>
                     </div>
-                    <div class="ms-auto">
+                    <div class="ms-auto" style="display: flex; justify-content: space-between; align-items: center;">
                         <Filter :filter_route="'client'" :filters="props.filters"></Filter>
+                        <div class="ml-1">
+                            <SuccessButton @click="exportRenewals">
+                                <i class="bx bx-export text-lg mr-1"></i> Excel Export
+                            </SuccessButton>
+                        </div>
                     </div>
                 </div>
 
