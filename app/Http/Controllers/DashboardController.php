@@ -193,9 +193,8 @@ class DashboardController extends Controller
             'gross_premium_outstanding' => $gross_premium_outstanding,
             'login_logs' => LoginLog::with('user')
             ->orderBy('created_at', 'desc')
-            ->limit(10)
-            ->get()
-            ->map(function ($log) {
+            ->paginate(10)
+            ->through(function ($log) {
                 return [
                     'id' => $log->id,
                     'user' => [

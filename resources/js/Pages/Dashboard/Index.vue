@@ -20,9 +20,11 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Link, Head, usePage } from "@inertiajs/vue3";
 import Chart from 'chart.js/auto';
 import { onMounted } from "vue";
+import Paginate from "@/Components/Paginate.vue";
 
 defineProps({
     data: Array,
+    audits: Object,
 });
 
 const main_data = usePage().props.data;
@@ -472,7 +474,7 @@ const format_number = (number) => {
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr v-for="log in login_logs" :key="log.id">
+                                    <tr v-for="log in data.login_logs?.data ?? []" :key="log.id">
                                     <td>{{ log.user?.name || 'Unknown' }}</td>
                                     <td :class="log.event === 'login' ? 'text-success' : 'text-danger'">
                                     {{ log.event.charAt(0).toUpperCase() + log.event.slice(1) }}
@@ -481,6 +483,12 @@ const format_number = (number) => {
                                 </tr>
                                 </tbody>
                             </table>
+                            </div>
+                            <div class="card-footer d-flex justify-content-between align-items-center">
+                                <span v-if="login_logs">
+                                    <h6>Showing {{ login_logs.from || 0 }} to {{ login_logs.to || 0 }} of {{ login_logs.total || 0 }} entries</h6>
+                                </span>
+                                <Paginate v-if="login_logs" :links="login_logs.links" />
                             </div>
                         </div>
                         </div>
