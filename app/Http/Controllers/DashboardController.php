@@ -2,19 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Booking;
 use App\Models\BusinessClass;
 use App\Models\ClientGroup;
-use App\Models\CustomerAccount;
 use App\Models\Group;
 use App\Models\Payment;
 use App\Models\Policy;
 use App\Models\PolicyClaim;
 use App\Models\User;
-use App\Models\UserClient;
-use App\Models\UserCob;
-use App\Models\WorkOrder;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -23,7 +17,7 @@ use App\Models\LoginLog;
 
 class DashboardController extends Controller
 {
-    public function dashboard()
+    public function dashboard(Request $request)
     {
         $user = Auth::user();
         $role = $user->roles[0];
@@ -169,6 +163,21 @@ class DashboardController extends Controller
             ->toArray();
 
 
+        $loginLogsQuery = LoginLog::with('user')->orderBy('created_at', 'desc');
+
+        if ($request->has('date')) {
+            $loginLogsQuery->whereDate('created_at', $request->date);
+        }
+
+        $login_logs = $loginLogsQuery->paginate(10)->through(function ($log) {
+            return [
+                'id' => $log->id,
+                'user' => ['name' => $log->user->name],
+                'event' => $log->event,
+                'created_at' => $log->created_at,
+            ];
+        });
+
         $data = [
             'role' => $role,
 
@@ -191,20 +200,7 @@ class DashboardController extends Controller
             'gross_premium_amount' => $gross_premium_amount,
             'gross_premium_collected' => $gross_premium_collected,
             'gross_premium_outstanding' => $gross_premium_outstanding,
-            'login_logs' => LoginLog::with('user')
-            ->orderBy('created_at', 'desc')
-            ->limit(10)
-            ->get()
-            ->map(function ($log) {
-                return [
-                    'id' => $log->id,
-                    'user' => [
-                        'name' => $log->user->name,
-                    ],
-                    'event' => $log->event,
-                    'created_at' => $log->created_at,
-                ];
-            }),
+            'login_logs' => $login_logs,
         ];
 
         return Inertia::render('Dashboard/Index', [

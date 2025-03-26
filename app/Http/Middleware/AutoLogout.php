@@ -21,8 +21,8 @@ class AutoLogout
     {
         if (Auth::check()) {
             $lastActivity = session('lastActivityTime');
-            // $timeout = 60 * 60; // 1 hour in seconds
-            $timeout = 60;
+            $timeout = 60 * 60; // 1 hour in seconds
+            // $timeout = 60;
 
             if ($lastActivity && (time() - $lastActivity) > $timeout) {
 
